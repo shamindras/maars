@@ -1,9 +1,9 @@
 
-<!-- badges: start --> [![Codecov test
-coverage](https://codecov.io/gh/shamindras/maar/branch/master/graph/badge.svg)](https://codecov.io/gh/shamindras/maar?branch=master)
-<!-- badges: end -->
+<!-- badges: start -->
 
-<!-- badges: start --> [![R build
+[![Codecov test
+coverage](https://codecov.io/gh/shamindras/maar/branch/master/graph/badge.svg)](https://codecov.io/gh/shamindras/maar?branch=master)
+[![R build
 status](https://github.com/shamindras/maar/workflows/R-CMD-check/badge.svg)](https://github.com/shamindras/maar/actions)
 <!-- badges: end -->
 
