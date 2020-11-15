@@ -1,11 +1,9 @@
 Package: maar
-Title: What the Package Does (One Line, Title Case)
+Title: An implementation of the Models As Approximations series of statistics papers
 Version: 0.1.0
-Authors@R: 
-    person(given = "Shamindra",
-           family = "Shrotriya",
-           role = c("aut", "cre"),
-           email = "shamindra.shrotriya@gmail.com")
+Authors@R: c(
+    person(given = "Shamindra", family = "Shrotriya", email = "shamindra.shrotriya@gmail.com", role = c("aut", "cre")),
+    person(given = "Riccardo", family = "Fogliato", email = "rfogliat@andrew.cmu.edu", role = c("aut")))
 Description: What the package does (one paragraph).
 License: MIT + file LICENSE
 Encoding: UTF-8
