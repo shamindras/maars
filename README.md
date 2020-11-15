@@ -1,5 +1,5 @@
 
-# maar
+# `maar` `R` implementation of Models As Approximations
 
 The goal of the `maar` package is to implement the *Models As
 Approximations* series of statistics papers. This package was inspired
@@ -8,24 +8,17 @@ taught by [Prof. Arun Kumar
 Kuchibhotla](https://arun-kuchibhotla.github.io/) at Carnegie Mellon
 University (CMU) in Fall 2020.
 
-## Installation
+## Installation and User Guide
 
-You can install the development version from
-[GitHub](https://github.com/) with:
+All the detailed installation instructions and user guides can be found
+at [the official package website](https://shamindras.github.io/maar/).
 
-``` r
-# install.packages("devtools")
-devtools::install_github("shamindras/maar")
-```
+## Code of Conduct
 
-## Example
-
-This is a basic example which shows you how to solve a common problem:
-
-``` r
-# library(maar)
-## basic example code
-```
+Please note that the maar project is released with a [Contributor Code
+of
+Conduct](https://contributor-covenant.org/version/2/0/CODE_OF_CONDUCT.html).
+By contributing to this project, you agree to abide by its terms.
 
 ## Credits
 
