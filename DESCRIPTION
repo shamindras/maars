@@ -19,7 +19,8 @@ Imports:
 Suggests: 
     spelling,
     testthat,
-    roxygen2
+    roxygen2,
+    covr
 Encoding: UTF-8
 Language: en-US
 LazyData: true

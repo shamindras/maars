@@ -1,7 +1,14 @@
 ---
 output: github_document
 ---
-
+  <!-- badges: start -->
+  [![Codecov test coverage](https://codecov.io/gh/shamindras/maar/branch/master/graph/badge.svg)](https://codecov.io/gh/shamindras/maar?branch=master)
+  <!-- badges: end -->
+  
+  <!-- badges: start -->
+  [![R build status](https://github.com/shamindras/maar/workflows/R-CMD-check/badge.svg)](https://github.com/shamindras/maar/actions)
+  <!-- badges: end -->
+  
 # `maar` `R` implementation of Models As Approximations
 
 The goal of the `maar` package is to implement the *Models As Approximations* series of
