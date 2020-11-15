@@ -1,16 +1,28 @@
 Package: maar
-Title: An implementation of the Models As Approximations series of statistics papers
+Title: An implementation of the Models As Approximations series
+    of statistics papers
 Version: 0.1.0
-Authors@R: c(
-    person(given = "Shamindra", family = "Shrotriya", email = "shamindra.shrotriya@gmail.com", role = c("aut", "cre")),
-    person(given = "Riccardo", family = "Fogliato", email = "rfogliat@andrew.cmu.edu", role = c("aut")))
+Authors@R: 
+    c(person(given = "Shamindra",
+             family = "Shrotriya",
+             role = c("aut", "cre"),
+             email = "shamindra.shrotriya@gmail.com"),
+      person(given = "Riccardo",
+             family = "Fogliato",
+             role = "aut",
+             email = "rfogliat@andrew.cmu.edu"))
 Description: What the package does (one paragraph).
 License: MIT + file LICENSE
+Imports: 
+    magrittr,
+    rlang (>= 0.1.2)
+Suggests: 
+    spelling,
+    testthat,
+    roxygen2,
+    covr
 Encoding: UTF-8
+Language: en-US
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
-Suggests: 
-    testthat,
-    spelling
-Language: en-US

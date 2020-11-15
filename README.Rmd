@@ -2,30 +2,26 @@
 output: github_document
 ---
 
-# maar
+<!-- badges: start -->
+[![Codecov test coverage](https://codecov.io/gh/shamindras/maar/branch/master/graph/badge.svg)](https://codecov.io/gh/shamindras/maar?branch=master)
+[![R build status](https://github.com/shamindras/maar/workflows/R-CMD-check/badge.svg)](https://github.com/shamindras/maar/actions)
+<!-- badges: end -->
+  
+# `maar` `R` implementation of Models As Approximations
 
 The goal of the `maar` package is to implement the *Models As Approximations* series of
 statistics papers. This package was inspired by the fantastic
 __"STAT 36761: Modern Linear Regression"__ course taught by 
 [Prof. Arun Kumar Kuchibhotla](https://arun-kuchibhotla.github.io/) at Carnegie Mellon University (CMU) in Fall 2020.
 
-## Installation
+## Installation and User Guide
 
-You can install the development version from [GitHub](https://github.com/) with:
+All the detailed installation instructions and user guides can be found at
+[the official package website](https://shamindras.github.io/maar/).
 
-``` r
-# install.packages("devtools")
-devtools::install_github("shamindras/maar")
-```
+## Code of Conduct
 
-## Example
-
-This is a basic example which shows you how to solve a common problem:
-
-```{r example}
-# library(maar)
-## basic example code
-```
+Please note that the maar project is released with a [Contributor Code of Conduct](https://contributor-covenant.org/version/2/0/CODE_OF_CONDUCT.html). By contributing to this project, you agree to abide by its terms.
 
 ## Credits
 
