@@ -22,5 +22,11 @@ install_deps:
 install: install_deps build
 	R CMD INSTALL $(PKGNAME)_$(PKGVERS).tar.gz
 
+build_pkgdown:
+	Rscript \
+	-e 'devtools::load_all(path = here::here())' \
+	-e 'devtools::document()' \
+	-e 'pkgdown::build_site()' \
+
 clean:
 	@rm -rf $(PKGNAME)_$(PKGVERS).tar.gz $(PKGNAME).Rcheck
