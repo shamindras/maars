@@ -4,13 +4,10 @@ output: github_document
 
 # maar
 
-<!-- badges: start -->
-<!-- badges: end -->
-
-The goal of maar is to implement the *Models As Approximations* series of
-statistics papers. This package was inspired by 
-Prof. Arun Kumar Kuchibhotla's fantastic
-__"STAT 36761: Modern Linear Regression"__ course taught at CMU in Fall 2020.
+The goal of the `maar` package is to implement the *Models As Approximations* series of
+statistics papers. This package was inspired by the fantastic
+__"STAT 36761: Modern Linear Regression"__ course taught by 
+[Prof. Arun Kumar Kuchibhotla](https://arun-kuchibhotla.github.io/) at Carnegie Mellon University (CMU) in Fall 2020.
 
 ## Installation
 
@@ -37,5 +34,5 @@ This package is developed and maintained by:
 - [Riccardo Fogliato](http://www.stat.cmu.edu/~rfogliat/)
 - [Shamindra Shrotriya](https://www.shamindras.com/)
 
-We want this to be a community project, so please contact us, or file an issue
-if you would like to contribute to it.
+We want this to be a community project, so please feel free to contact us, 
+or file an issue if you would like to contribute to it.
