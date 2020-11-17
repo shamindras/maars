@@ -15,7 +15,8 @@ Description: What the package does (one paragraph).
 License: MIT + file LICENSE
 Imports: 
     magrittr,
-    rlang (>= 0.1.2)
+    rlang (>= 0.1.2),
+    broom
 Suggests: 
     spelling,
     testthat,
