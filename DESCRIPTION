@@ -16,7 +16,9 @@ License: MIT + file LICENSE
 Imports: 
     magrittr,
     rlang (>= 0.1.2),
-    broom
+    broom,
+    Matrix,
+    sandwich
 Suggests: 
     spelling,
     testthat,
