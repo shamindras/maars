@@ -1,0 +1,10 @@
+citHeader("To cite maar in publications use:")
+
+citEntry(
+  entry    = "Article",
+  title    = "maar: Models as Approximations in R",
+  author   = "Riccardo Fogliato and Shamindra Shrotriya",
+  year     = "2020",
+  journal  = "preprint",
+  textVersion = "R. Fogliato, S. Shrotriya. maar: Models as Approximations in R, 2020."
+)
