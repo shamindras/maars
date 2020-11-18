@@ -10,9 +10,11 @@ output: github_document
 # `maar` `R` implementation of Models As Approximations
 
 The goal of the `maar` package is to implement the *Models As Approximations* series of
-statistics papers. This package was inspired by the fantastic
-__"STAT 36761: Modern Linear Regression"__ course taught by 
-[Prof. Arun Kumar Kuchibhotla](https://arun-kuchibhotla.github.io/) at Carnegie Mellon University (CMU) in Fall 2020.
+statistics papers. This package was inspired by the fantastic series of
+lectures by [Prof. Arun Kumar Kuchibhotla](https://arun-kuchibhotla.github.io/)
+and [Prof. Andreas Buja](http://www-stat.wharton.upenn.edu/~buja/), 
+as part of the __"STAT 36761: Modern Linear Regression"__ course 
+at Carnegie Mellon University (CMU) in Fall 2020.
 
 ## Installation and User Guide
 

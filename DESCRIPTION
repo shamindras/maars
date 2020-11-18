@@ -9,7 +9,7 @@ Authors@R:
              email = "shamindra.shrotriya@gmail.com"),
       person(given = "Riccardo",
              family = "Fogliato",
-             role = "aut",
+             role = c("aut"),
              email = "rfogliat@andrew.cmu.edu"))
 Description: What the package does (one paragraph).
 License: MIT + file LICENSE

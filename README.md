@@ -11,10 +11,11 @@ status](https://github.com/shamindras/maar/workflows/R-CMD-check/badge.svg)](htt
 
 The goal of the `maar` package is to implement the *Models As
 Approximations* series of statistics papers. This package was inspired
-by the fantastic **“STAT 36761: Modern Linear Regression”** course
-taught by [Prof. Arun Kumar
-Kuchibhotla](https://arun-kuchibhotla.github.io/) at Carnegie Mellon
-University (CMU) in Fall 2020.
+by the fantastic series of lectures by [Prof. Arun Kumar
+Kuchibhotla](https://arun-kuchibhotla.github.io/) and [Prof. Andreas
+Buja](http://www-stat.wharton.upenn.edu/~buja/), as part of the **“STAT
+36761: Modern Linear Regression”** course at Carnegie Mellon University
+(CMU) in Fall 2020.
 
 ## Installation and User Guide
 
