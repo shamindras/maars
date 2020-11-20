@@ -21,3 +21,18 @@ test_that("sandwich variance from our estimator and estimator from Sandwich pkg"
     c(round(sandwich_qr_var, NUM_DEC_PL))
   )
 })
+
+
+test_that("sandwich variance from estimator via qr and lm", {
+  n <- 1e4
+  X <- stats::rnorm(n, 0, 1)
+  y <- 2 + X * 1 + stats::rnorm(n, 0, 10)
+  lm_fit <- stats::lm(y ~ X)
+  sandwich_qr_var <- comp_sandwich_qr_var(lm_fit)
+  sandwich_lm_var_term <- coef(lm(diag(lm_fit$residuals) ~ 0 + qr.X(lm_fit$qr)))
+  sandwich_lm_var <- sandwich_lm_var_term %*% t(sandwich_lm_var_term)
+  expect_equal(
+    c(round(sandwich_lm_var, NUM_DEC_PL)),
+    c(round(sandwich_qr_var, NUM_DEC_PL))
+  )
+})
