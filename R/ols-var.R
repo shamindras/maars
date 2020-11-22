@@ -1,6 +1,7 @@
 #' Compute the White sandwich estimator of standard errors for
 #' ordinary least squares (OLS) regression. This is based on the series of
-#' papers \insertCite{white1980usinglsapproxunknownregfuncs,white1980heteroskedasticconsistentcovest}{Rdpack}. For more details
+#' papers \insertCite{white1980usinglsapproxunknownregfuncs}{Rdpack} and
+#' \insertCite{white1980heteroskedasticconsistentcovest}{Rdpack}. For more details
 #' \insertCite{@see also @buja2019modelsasapproximationspart1 and @buja2019modelsasapproximationspart2;textual}{Rdpack}
 #'
 #' @param lm_object (lm) : lm object
@@ -20,8 +21,8 @@
 #' sandwich_qr_var <- comp_sandwich_qr_var(lm_fit)
 #' }
 comp_sandwich_qr_var <- function(lm_object){
-  J_inv <- summary.lm(lm_object)$cov.unscaled
+  J_inv <- stats::summary.lm(lm_object)$cov.unscaled
   X <- qr.X(lm_object$qr)
-  V <- t(X) %*% Matrix::Diagonal(x = residuals(lm_object)^2) %*% X
+  V <- t(X) %*% Matrix::Diagonal(x = stats::residuals(lm_object)^2) %*% X
   return(unname(as.matrix(J_inv %*% V %*% J_inv)))
 }
