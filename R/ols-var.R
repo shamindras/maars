@@ -7,9 +7,8 @@
 #'
 #' @examples
 comp_sandwich_qr_var <- function(lm_object){
-  qR <- qr.R(lm_object$qr)
-  J_inv <- chol2inv(qR)
+  J_inv <- summary.lm(lm_object)$cov.unscaled
   X <- qr.X(lm_object$qr)
-  V <- t(X) %*% Matrix::Diagonal(x = lm_object$residuals^2) %*% X
+  V <- t(X) %*% Matrix::Diagonal(x = residuals(lm_object)^2) %*% X
   return(unname(as.matrix(J_inv %*% V %*% J_inv)))
 }
