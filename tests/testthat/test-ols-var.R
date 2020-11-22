@@ -22,7 +22,6 @@ test_that("sandwich variance from our estimator and estimator from Sandwich pkg"
   )
 })
 
-
 test_that("sandwich variance from estimator via qr and lm", {
   n <- 1e4
   X <- stats::rnorm(n, 0, 1)
@@ -36,7 +35,6 @@ test_that("sandwich variance from estimator via qr and lm", {
     c(round(sandwich_qr_var, NUM_DEC_PL))
   )
 })
-
 
 test_that("sandwich variance from estimator via qr and solve", {
   n <- 2e4

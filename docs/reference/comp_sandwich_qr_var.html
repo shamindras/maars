@@ -6,7 +6,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Compute the White sandwich estimator for ordinary least squares (OLS) regression. — comp_sandwich_qr_var • maar</title>
+<title>Compute the White sandwich estimator of standard errors for
+ordinary least squares (OLS) regression. This is based on the series of
+papers 
+. For more details
+see also ) and ) — comp_sandwich_qr_var • maar</title>
 
 
 <!-- jquery -->
@@ -39,8 +43,16 @@
 
 
 
-<meta property="og:title" content="Compute the White sandwich estimator for ordinary least squares (OLS) regression. — comp_sandwich_qr_var" />
-<meta property="og:description" content="Compute the White sandwich estimator for ordinary least squares (OLS) regression." />
+<meta property="og:title" content="Compute the White sandwich estimator of standard errors for
+ordinary least squares (OLS) regression. This is based on the series of
+papers 
+. For more details
+see also ) and ) — comp_sandwich_qr_var" />
+<meta property="og:description" content="Compute the White sandwich estimator of standard errors for
+ordinary least squares (OLS) regression. This is based on the series of
+papers 
+. For more details
+see also ) and )" />
 
 
 
@@ -106,13 +118,21 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Compute the White sandwich estimator for ordinary least squares (OLS) regression.</h1>
+    <h1>Compute the White sandwich estimator of standard errors for
+ordinary least squares (OLS) regression. This is based on the series of
+papers 
+. For more details
+see also ) and )</h1>
     
     <div class="hidden name"><code>comp_sandwich_qr_var.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Compute the White sandwich estimator for ordinary least squares (OLS) regression.</p>
+    <p>Compute the White sandwich estimator of standard errors for
+ordinary least squares (OLS) regression. This is based on the series of
+papers 
+. For more details
+see also ) and )</p>
     </div>
 
     <pre class="usage"><span class='fu'>comp_sandwich_qr_var</span><span class='op'>(</span><span class='va'>lm_object</span><span class='op'>)</span></pre>
@@ -129,7 +149,22 @@
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>(matrix) : White sandwich estimator of variance for OLS regression</p>
+    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
+    
+<pre>\insertAllCited{}
+</pre>
+
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+<span class='va'>n</span> <span class='op'>&lt;-</span> <span class='fl'>1e5</span>
+<span class='va'>X</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>
+<span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fl'>2</span> <span class='op'>+</span> <span class='va'>X</span> <span class='op'>*</span> <span class='fl'>1</span> <span class='op'>+</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>10</span><span class='op'>)</span>
+<span class='va'>lm_fit</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>y</span> <span class='op'>~</span> <span class='va'>X</span><span class='op'>)</span>
+<span class='va'>sandwich_qr_var</span> <span class='op'>&lt;-</span> <span class='fu'>comp_sandwich_qr_var</span><span class='op'>(</span><span class='va'>lm_fit</span><span class='op'>)</span>
+<span class='op'>}</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -19,12 +19,14 @@ Imports:
     broom,
     Matrix,
     sandwich,
-    bench
+    bench,
+    Rdpack
 Suggests: 
     spelling,
     testthat,
     roxygen2,
     covr
+RdMacros: Rdpack
 Encoding: UTF-8
 Language: en-US
 LazyData: true

@@ -1,6 +1,6 @@
 ---
 output: github_document
-bibliography: refs.bib
+bibliography: inst/REFERENCES.bib
 ---
 
 <!-- badges: start -->
