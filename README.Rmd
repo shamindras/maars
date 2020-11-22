@@ -1,5 +1,6 @@
 ---
 output: github_document
+bibliography: inst/REFERENCES.bib
 ---
 
 <!-- badges: start -->
@@ -7,12 +8,14 @@ output: github_document
 [![R build status](https://github.com/shamindras/maar/workflows/R-CMD-check/badge.svg)](https://github.com/shamindras/maar/actions)
 <!-- badges: end -->
   
-# `maar` `R` implementation of Models As Approximations
+# `maar` - an `R` implementation of Models As Approximations
 
 The goal of the `maar` package is to implement the *Models As Approximations* series of
-statistics papers. This package was inspired by the fantastic
-__"STAT 36761: Modern Linear Regression"__ course taught by 
-[Prof. Arun Kumar Kuchibhotla](https://arun-kuchibhotla.github.io/) at Carnegie Mellon University (CMU) in Fall 2020.
+statistics papers [@buja2019modelsasapproximationspart1] and [@buja2019modelsasapproximationspart2]. This package was inspired by the fantastic series of
+lectures by [Prof. Arun Kumar Kuchibhotla](https://arun-kuchibhotla.github.io/)
+and [Prof. Andreas Buja](http://www-stat.wharton.upenn.edu/~buja/), 
+as part of the __"STAT 36761: Modern Linear Regression"__ course 
+at Carnegie Mellon University (CMU) in Fall 2020.
 
 ## Installation and User Guide
 
@@ -21,7 +24,7 @@ All the detailed installation instructions and user guides can be found at
 
 ## Code of Conduct
 
-Please note that the maar project is released with a [Contributor Code of Conduct](https://contributor-covenant.org/version/2/0/CODE_OF_CONDUCT.html). By contributing to this project, you agree to abide by its terms.
+Please note that the `maar` project is released with a [Contributor Code of Conduct](https://contributor-covenant.org/version/2/0/CODE_OF_CONDUCT.html). By contributing to this project, you agree to abide by its terms.
 
 ## Credits
 
@@ -32,3 +35,5 @@ This package is developed and maintained by:
 
 We want this to be a community project, so please feel free to contact us, 
 or file an issue if you would like to contribute to it.
+
+## References

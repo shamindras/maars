@@ -33,7 +33,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">maar</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.0</span>
       </span>
     </div>
 
@@ -64,25 +64,21 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="maar" class="section level1">
+
+
+<div id="maar---an-r-implementation-of-models-as-approximations" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
-<a href="#maar" class="anchor"></a>maar</h1></div>
-<p>The goal of the <code>maar</code> package is to implement the <em>Models As Approximations</em> series of statistics papers. This package was inspired by the fantastic <strong>“STAT 36761: Modern Linear Regression”</strong> course taught by <a href="https://arun-kuchibhotla.github.io/">Prof. Arun Kumar Kuchibhotla</a> at Carnegie Mellon University (CMU) in Fall 2020.</p>
-<div id="installation" class="section level2">
+<a href="#maar---an-r-implementation-of-models-as-approximations" class="anchor"></a><code>maar</code> - an <code>R</code> implementation of Models As Approximations</h1></div>
+<p>The goal of the <code>maar</code> package is to implement the <em>Models As Approximations</em> series of statistics papers (Buja, Brown, Berk, et al. 2019) and (Buja, Brown, Kuchibhotla, et al. 2019). This package was inspired by the fantastic series of lectures by <a href="https://arun-kuchibhotla.github.io/">Prof. Arun Kumar Kuchibhotla</a> and <a href="http://www-stat.wharton.upenn.edu/~buja/">Prof. Andreas Buja</a>, as part of the <strong>“STAT 36761: Modern Linear Regression”</strong> course at Carnegie Mellon University (CMU) in Fall 2020.</p>
+<div id="installation-and-user-guide" class="section level2">
 <h2 class="hasAnchor">
-<a href="#installation" class="anchor"></a>Installation</h2>
-<p>You can install the development version from <a href="https://github.com/">GitHub</a> with:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># install.packages("devtools")</span>
-<span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org//reference/remote-reexports.html">install_github</a></span><span class="op">(</span><span class="st">"shamindras/maar"</span><span class="op">)</span></code></pre></div>
+<a href="#installation-and-user-guide" class="anchor"></a>Installation and User Guide</h2>
+<p>All the detailed installation instructions and user guides can be found at <a href="https://shamindras.github.io/maar/">the official package website</a>.</p>
 </div>
-<div id="example" class="section level2">
+<div id="code-of-conduct" class="section level2">
 <h2 class="hasAnchor">
-<a href="#example" class="anchor"></a>Example</h2>
-<p>This is a basic example which shows you how to solve a common problem:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># library(maar)</span>
-<span class="co">## basic example code</span></code></pre></div>
+<a href="#code-of-conduct" class="anchor"></a>Code of Conduct</h2>
+<p>Please note that the <code>maar</code> project is released with a <a href="https://contributor-covenant.org/version/2/0/CODE_OF_CONDUCT.html">Contributor Code of Conduct</a>. By contributing to this project, you agree to abide by its terms.</p>
 </div>
 <div id="credits" class="section level2">
 <h2 class="hasAnchor">
@@ -94,7 +90,20 @@
 </ul>
 <p>We want this to be a community project, so please feel free to contact us, or file an issue if you would like to contribute to it.</p>
 </div>
+<div id="references" class="section level2">
+<h2 class="hasAnchor">
+<a href="#references" class="anchor"></a>References</h2>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-buja2019modelsasapproximationspart1" class="csl-entry">
+<p>Buja, Andreas, Lawrence Brown, Richard Berk, Edward George, Emil Pitkin, Mikhail Traskin, Kai Zhang, and Linda Zhao. 2019. “Models as Approximations I: Consequences Illustrated with Linear Regression.” <em>Statist. Sci.</em> 34 (4): 523–44. <a href="https://doi.org/10.1214/18-STS693" class="uri">https://doi.org/10.1214/18-STS693</a>.</p>
 </div>
+<div id="ref-buja2019modelsasapproximationspart2" class="csl-entry">
+<p>Buja, Andreas, Lawrence Brown, Arun Kumar Kuchibhotla, Richard Berk, Edward George, and Linda Zhao. 2019. “Models as Approximations II: A Model-Free Theory of Parametric Regression.” <em>Statist. Sci.</em> 34 (4): 545–65. <a href="https://doi.org/10.1214/18-STS694" class="uri">https://doi.org/10.1214/18-STS694</a>.</p>
+</div>
+</div>
+</div>
+</div>
+
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -112,6 +121,12 @@
 <li><a href="CODE_OF_CONDUCT.html">Code of conduct</a></li>
 </ul>
 </div>
+<div class="citation">
+<h2>Citation</h2>
+<ul class="list-unstyled">
+<li><a href="authors.html">Citing maar</a></li>
+</ul>
+</div>
 <div class="developers">
 <h2>Developers</h2>
 <ul class="list-unstyled">
@@ -120,7 +135,14 @@
 </ul>
 </div>
 
-  </div>
+  <div class="dev-status">
+<h2>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://codecov.io/gh/shamindras/maar?branch=master"><img src="https://codecov.io/gh/shamindras/maar/branch/master/graph/badge.svg" alt="Codecov test coverage"></a></li>
+<li><a href="https://github.com/shamindras/maar/actions"><img src="https://github.com/shamindras/maar/workflows/R-CMD-check/badge.svg" alt="R build status"></a></li>
+</ul>
+</div>
+</div>
 </div>
 
 

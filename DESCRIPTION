@@ -1,7 +1,7 @@
 Package: maar
 Title: An implementation of the Models As Approximations series
     of statistics papers
-Version: 0.1.0
+Version: 0.2.0
 Authors@R: 
     c(person(given = "Shamindra",
              family = "Shrotriya",
@@ -9,18 +9,24 @@ Authors@R:
              email = "shamindra.shrotriya@gmail.com"),
       person(given = "Riccardo",
              family = "Fogliato",
-             role = "aut",
+             role = c("aut"),
              email = "rfogliat@andrew.cmu.edu"))
 Description: What the package does (one paragraph).
 License: MIT + file LICENSE
 Imports: 
     magrittr,
-    rlang (>= 0.1.2)
+    rlang (>= 0.1.2),
+    broom,
+    Matrix,
+    sandwich,
+    bench,
+    Rdpack
 Suggests: 
     spelling,
     testthat,
     roxygen2,
     covr
+RdMacros: Rdpack
 Encoding: UTF-8
 Language: en-US
 LazyData: true
