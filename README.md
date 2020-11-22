@@ -20,8 +20,16 @@ Buja](http://www-stat.wharton.upenn.edu/~buja/), as part of the **“STAT
 
 ## Installation and User Guide
 
-All the detailed installation instructions and user guides can be found
-at [the official package website](https://shamindras.github.io/maar/).
+To get a bug fix or to use a feature from the development version, you
+can install the development version of `maar` from `GitHub`, as follows:
+
+``` r
+# install.packages("remotes")
+remotes::install_github("shamindras/maar")
+```
+
+More detailed instructions and user guides can be found at the [official
+package website](https://shamindras.github.io/maar/).
 
 ## Code of Conduct
 
