@@ -10,17 +10,16 @@ MAX_DIFF_high_precision <- 1e-7
 
 test_that("lm and sandwhich variance", {
   expect_true(
-    max(unname(diag(vcov(lm_fit)))-diag(sandwich_qr_var))<MAX_DIFF_low_precision
+    max(abs(unname(diag(vcov(lm_fit))) - diag(sandwich_qr_var))) < MAX_DIFF_low_precision
   )
 })
 
 test_that("sandwich variance from our estimator and estimator from Sandwich pkg", {
   sandwich_sandpkg_var <- sandwich::sandwich(lm_fit)
   expect_true(
-    max(c(sandwich_sandpkg_var)-c(sandwich_qr_var))<MAX_DIFF_high_precision
+    max(abs(c(sandwich_sandpkg_var) - c(sandwich_qr_var))) < MAX_DIFF_high_precision
   )
 })
-
 
 test_that("sandwich variance from estimator via qr and lm", {
   n <- 1e4
@@ -31,7 +30,7 @@ test_that("sandwich variance from estimator via qr and lm", {
   sandwich_lm_var_term <- coef(lm(diag(lm_fit$residuals) ~ 0 + qr.X(lm_fit$qr)))
   sandwich_lm_var <- sandwich_lm_var_term %*% t(sandwich_lm_var_term)
   expect_true(
-    max(c(sandwich_lm_var)-c(sandwich_qr_var))<MAX_DIFF_high_precision
+    max(abs(c(sandwich_lm_var) - c(sandwich_qr_var))) < MAX_DIFF_high_precision
   )
 })
 
