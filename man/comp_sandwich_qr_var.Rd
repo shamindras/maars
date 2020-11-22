@@ -2,26 +2,21 @@
 % Please edit documentation in R/ols-var.R
 \name{comp_sandwich_qr_var}
 \alias{comp_sandwich_qr_var}
-\title{Compute the White sandwich estimator of standard errors for
-ordinary least squares (OLS) regression. This is based on the series of
-papers \insertCite{white1980usinglsapproxunknownregfuncs}{Rdpack} and
-\insertCite{white1980heteroskedasticconsistentcovest}{Rdpack}. For more details
-\insertCite{@see also @buja2019modelsasapproximationspart1 and @buja2019modelsasapproximationspart2;textual}{Rdpack}}
+\title{Compute the White sandwich estimator of standard errors for OLS}
 \usage{
 comp_sandwich_qr_var(lm_object)
 }
 \arguments{
-\item{lm_object}{(lm) : lm object}
+\item{lm_object}{An lm (OLS) object}
 }
 \value{
-(matrix) : White sandwich estimator of variance for OLS regression
+(matrix) White sandwich estimator of variance for OLS regression
 }
 \description{
 Compute the White sandwich estimator of standard errors for
-ordinary least squares (OLS) regression. This is based on the series of
-papers \insertCite{white1980usinglsapproxunknownregfuncs}{Rdpack} and
-\insertCite{white1980heteroskedasticconsistentcovest}{Rdpack}. For more details
-\insertCite{@see also @buja2019modelsasapproximationspart1 and @buja2019modelsasapproximationspart2;textual}{Rdpack}
+ordinary least squares (OLS) regression, \insertCite{@see @white1980usinglsapproxunknownregfuncs and @white1980heteroskedasticconsistentcovest;textual}{maar}. For
+more details
+\insertCite{@see also @buja2019modelsasapproximationspart1 and @buja2019modelsasapproximationspart2;textual}{maar}.
 }
 \examples{
 \dontrun{
@@ -33,6 +28,5 @@ sandwich_qr_var <- comp_sandwich_qr_var(lm_fit)
 }
 }
 \references{
-\preformatted{\\insertAllCited\{\}
-}
+\insertAllCited{}
 }

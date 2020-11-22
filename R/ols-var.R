@@ -1,17 +1,20 @@
+#' Compute the White sandwich estimator of standard errors for OLS
+#'
 #' Compute the White sandwich estimator of standard errors for
-#' ordinary least squares (OLS) regression. This is based on the series of
-#' papers \insertCite{white1980usinglsapproxunknownregfuncs}{Rdpack} and
-#' \insertCite{white1980heteroskedasticconsistentcovest}{Rdpack}. For more details
-#' \insertCite{@see also @buja2019modelsasapproximationspart1 and @buja2019modelsasapproximationspart2;textual}{Rdpack}
+#' ordinary least squares (OLS) regression, \insertCite{@see @white1980usinglsapproxunknownregfuncs and @white1980heteroskedasticconsistentcovest;textual}{maar}. For
+#' more details
+#' \insertCite{@see also @buja2019modelsasapproximationspart1 and @buja2019modelsasapproximationspart2;textual}{maar}.
 #'
-#' @param lm_object (lm) : lm object
+#' @param lm_object An lm (OLS) object
 #'
-#' @return (matrix) : White sandwich estimator of variance for OLS regression
+#' @return (matrix) White sandwich estimator of variance for OLS regression
+#'
 #' @export
 #'
 #' @importFrom Rdpack reprompt
-#' @references
-#'     \insertAllCited{}
+#'
+#' @references \insertAllCited{}
+#'
 #' @examples
 #' \dontrun{
 #' n <- 1e5

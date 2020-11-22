@@ -6,13 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Compute the White sandwich estimator of standard errors for
-ordinary least squares (OLS) regression. This is based on the series of
-papers 
- and
-
-. For more details
-see also ) and ) — comp_sandwich_qr_var • maar</title>
+<title>Compute the White sandwich estimator of standard errors for OLS — comp_sandwich_qr_var • maar</title>
 
 
 <!-- jquery -->
@@ -45,20 +39,13 @@ see also ) and ) — comp_sandwich_qr_var • maar</title>
 
 
 
-<meta property="og:title" content="Compute the White sandwich estimator of standard errors for
-ordinary least squares (OLS) regression. This is based on the series of
-papers 
- and
-
-. For more details
-see also ) and ) — comp_sandwich_qr_var" />
+<meta property="og:title" content="Compute the White sandwich estimator of standard errors for OLS — comp_sandwich_qr_var" />
 <meta property="og:description" content="Compute the White sandwich estimator of standard errors for
-ordinary least squares (OLS) regression. This is based on the series of
-papers 
- and
-
-. For more details
-see also ) and )" />
+ordinary least squares (OLS) regression, see White (1980) and White (1980)
+. For
+more details
+see also Buja et al. (2019) and Buja et al. (2019)
+." />
 
 
 
@@ -124,25 +111,18 @@ see also ) and )" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Compute the White sandwich estimator of standard errors for
-ordinary least squares (OLS) regression. This is based on the series of
-papers 
- and
-
-. For more details
-see also ) and )</h1>
+    <h1>Compute the White sandwich estimator of standard errors for OLS</h1>
     
     <div class="hidden name"><code>comp_sandwich_qr_var.Rd</code></div>
     </div>
 
     <div class="ref-description">
     <p>Compute the White sandwich estimator of standard errors for
-ordinary least squares (OLS) regression. This is based on the series of
-papers 
- and
-
-. For more details
-see also ) and )</p>
+ordinary least squares (OLS) regression, see White (1980) and White (1980)
+. For
+more details
+see also Buja et al. (2019) and Buja et al. (2019)
+.</p>
     </div>
 
     <pre class="usage"><span class='fu'>comp_sandwich_qr_var</span><span class='op'>(</span><span class='va'>lm_object</span><span class='op'>)</span></pre>
@@ -152,19 +132,32 @@ see also ) and )</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>lm_object</th>
-      <td><p>(lm) : lm object</p></td>
+      <td><p>An lm (OLS) object</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>(matrix) : White sandwich estimator of variance for OLS regression</p>
+    <p>(matrix) White sandwich estimator of variance for OLS regression</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
-    
-<pre>\insertAllCited{}
-</pre>
-
+    <p>Buja A, Brown L, Berk R, George E, Pitkin E, Traskin M, Zhang K, Zhao L (2019).
+&#8220;Models as approximations I: consequences illustrated with linear regression.&#8221;
+<em>Statist. Sci.</em>, <b>34</b>(4), 523--544.
+ISSN 0883-4237, doi: <a href='https://doi.org/10.1214/18-STS693'>10.1214/18-STS693</a>
+, <a href='https://doi.org/10.1214/18-STS693'>https://doi.org/10.1214/18-STS693</a>.<br /><br /> Buja A, Brown L, Kuchibhotla AK, Berk R, George E, Zhao L (2019).
+&#8220;Models as approximations II: A model-free theory of parametric regression.&#8221;
+<em>Statist. Sci.</em>, <b>34</b>(4), 545--565.
+ISSN 0883-4237, doi: <a href='https://doi.org/10.1214/18-STS694'>10.1214/18-STS694</a>
+, <a href='https://doi.org/10.1214/18-STS694'>https://doi.org/10.1214/18-STS694</a>.<br /><br /> White H (1980).
+&#8220;Using least squares to approximate unknown regression functions.&#8221;
+<em>Internat. Econom. Rev.</em>, <b>21</b>(1), 149--170.
+ISSN 0020-6598, doi: <a href='https://doi.org/10.2307/2526245'>10.2307/2526245</a>
+, <a href='https://doi.org/10.2307/2526245'>https://doi.org/10.2307/2526245</a>.<br /><br /> White H (1980).
+&#8220;A heteroskedasticity-consistent covariance matrix estimator and a direct test for heteroskedasticity.&#8221;
+<em>Econometrica</em>, <b>48</b>(4), 817--838.
+ISSN 0012-9682, doi: <a href='https://doi.org/10.2307/1912934'>10.2307/1912934</a>
+, <a href='https://doi.org/10.2307/1912934'>https://doi.org/10.2307/1912934</a>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
