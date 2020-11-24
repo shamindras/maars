@@ -1,114 +1,186 @@
 
-
-multiplier_single_bootstrap <- function(n, J_inv_X_res){
-
-    #e <- matrix(rnorm(n, 0, 1), ncol = 1)
-    e <- matrix(rep(0.1, n), ncol = 1)
-
-    out <- t(J_inv_X_res)%*%e
-    # e <- rnorm(n,0,1)
-    #
-    #
-    # purrr::map2(
-    #     .x = e,
-    #     .y = J_inv_X_res,
-    #     ~ t(.x*.y)
-    # ) %>%
-    #     do.call(rbind, .) %>%
-    #          apply(., 2, mean)
-    # out <- as.list(1:n) %>% purrr::map(~ t(e[.x]*J_inv%*%X[.x,]*res[.x])) %>%
-    #     do.call(rbind, .) %>%
-    #     apply(., 2, mean) %>%
-    #     matrix()
-
-    return(out)
+multiplier_single_bootstrap <- function(n, J_inv_X_res, e) {
+  out <- t(J_inv_X_res) %*% e / n
+  return(out)
 }
 
-multiplier_bootstrap <- function(lm_fit, B = 1000) {
-    # this is wrong for some reason
-    J_inv <- summary.lm(lm_fit)$cov.unscaled
-    X <- qr.X(lm_fit$qr)
-    res <- residuals(lm_fit)
+multiplier_bootstrap <- function(lm_fit, B = 100) {
+  J_inv <- summary.lm(lm_fit)$cov.unscaled
+  X <- qr.X(lm_fit$qr)
+  res <- residuals(lm_fit)
+  n <- length(res)
+  J_inv_X_res <- 1:nrow(X) %>%
+    purrr::map(~ t(J_inv %*% X[.x, ] * res[.x])) %>%
+    do.call(rbind, .)
 
-    iter_list <- as.list(1:B)
-    names(iter_list) <- paste0("Iter_", 1:B)
-print('asda')
-    J_inv_X_res <- 1:nrow(X) %>% purrr::map(~ t(J_inv%*%X[.x,]*res[.x])) %>%
-        do.call(rbind, .)
+  e <- 1:B %>% purrr::map(~ rnorm(n, 0, 1))
 
-    print('dddd')
+  dist <- 1:B %>%
+    purrr::map(~ multiplier_single_bootstrap(n, J_inv_X_res, e[[.x]])) %>%
+    do.call(rbind, .)
 
-    out <- 1:B %>% purrr::map(~ multiplier_single_bootstrap(nrow(X), J_inv_X_res)) %>%
-        do.call(rbind, .) %>%
-        matrix(., byrow = T, ncol = ncol(X))
-    colnames(out) <- colnames(qr.X(lm_fit$qr))
+  out <- tibble(
+    iteration = rep(1:B, each = ncol(X)),
+    term = rownames(dist),
+    estimate = as.numeric(dist)
+  )
 
-    return(out)
+  return(out)
 }
 
-n <- 100
+
+
+multiplier_single_bootstrap2 <- function(n, J_inv_X_res, e) {
+  out <- purrr::map2(
+    .x = e,
+    .y = J_inv_X_res,
+    ~ .x * .y
+  ) %>%
+    do.call(rbind, .) %>%
+    apply(., 2, mean)
+  return(out)
+}
+
+multiplier_bootstrap2 <- function(lm_fit, B = 100) {
+  J_inv <- summary.lm(lm_fit)$cov.unscaled
+  X <- qr.X(lm_fit$qr)
+  res <- residuals(lm_fit)
+  n <- length(res)
+  J_inv_X_res <- 1:nrow(X) %>% purrr::map(~ t(J_inv %*% X[.x, ] * res[.x]))
+  e <- 1:B %>% purrr::map(~ rnorm(n, 0, 1))
+
+  dist <- 1:B %>%
+    purrr::map(~ multiplier_single_bootstrap2(n, J_inv_X_res, e[[.x]])) %>%
+    do.call(rbind, .)
+
+  out <- tibble(
+    iteration = rep(1:B, ncol(X)),
+    term = rep(colnames(X), each = B),
+    estimate = as.numeric(dist)
+  ) %>%
+    arrange(iteration, term)
+
+  return(out)
+}
+
+
+
+multiplier_single_bootstrap3 <- function(n, J_inv, res, e) {
+  out <- as.list(1:n) %>%
+    purrr::map(~ t(e[.x] * J_inv %*% X[.x, ] * res[.x])) %>%
+    do.call(rbind, .) %>%
+    apply(., 2, mean)
+  return(out)
+}
+
+
+multiplier_bootstrap3 <- function(lm_fit, B = 100) {
+  J_inv <- summary.lm(lm_fit)$cov.unscaled
+  X <- qr.X(lm_fit$qr)
+  res <- residuals(lm_fit)
+  n <- nrow(X)
+
+  e <- 1:B %>% purrr::map(~ rnorm(n, 0, 1))
+
+  dist <- 1:B %>%
+    purrr::map(~ multiplier_single_bootstrap3(n, J_inv, res, e[[.x]])) %>%
+    do.call(rbind, .)
+
+  out <- tibble(
+    iteration = rep(1:B, ncol(X)),
+    term = rep(colnames(X), each = B),
+    estimate = as.numeric(dist)
+  ) %>%
+    arrange(iteration, term)
+
+  return(out)
+}
+
+
+# other functions -- idea for how to process the output of the boostrap multipliers above
+# we should add another method for this
+boot_conf_int <- function(coef_info, alpha = 0.05) {
+    # "stolen from int_pctl and pctl_single from rsample
+    coef_info %>%
+        group_by(term) %>%
+        summarise(
+            lower = quantile(estimate, prob = alpha / 2, na.rm = TRUE),
+            estimate = mean(estimate, na.rm = TRUE),
+            upper = quantile(estimate, prob = 1 - alpha / 2, na.rm = TRUE),
+            alpha = alpha,
+            method = "percentile"
+        )
+}
+
+
+
+#### EXAMPLE
+n <- 1e2
 X <- stats::rnorm(n, 0, 1)
-y <- 2 + X * 1 + stats::rnorm(n, 0, 10)
+y <- 2 + X * 1 + stats::rnorm(n, 0, 1)
 lm_fit <- stats::lm(y ~ X)
+multiplier_bootstrap(lm_fit, B = 15)
+multiplier_bootstrap2(lm_fit, B = 15)
+multiplier_bootstrap3(lm_fit, B = 15) # this is not working for some reason
 
-set.seed(10)
-multiplier_bootstrap(lm_fit, B = 1)
 
+boot_conf_int(multiplier_bootstrap(lm_fit, B = 15))
+
+
+############# -- all code for examples
+n <- 1e2
+X <- stats::rnorm(n, 0, 1)
+y <- 2 + X * 1 + stats::rnorm(n, 0, 1)
+lm_fit <- stats::lm(y ~ X)
 J_inv <- summary.lm(lm_fit)$cov.unscaled
-X <- qr.X(lm_fit$qr)
-value <- 0
-e <- matrix(rep(0.1, n), ncol = 1)
-for(i in 1:n){
-    value <- value+e[i]*J_inv%*%X[i,]*residuals(lm_fit)[i]
-}
-value/n
-
-
-
-J_inv <- summary.lm(lm_fit)$cov.unscaled
-X <- qr.X(lm_fit$qr)
-set.seed(1)
-e <- rnorm(nrow(X),0,1)
 res <- residuals(lm_fit)
-
-start.time <- Sys.time()
-as.list(1:nrow(X)) %>% purrr::map(~ t(e[.x]*J_inv%*%X[.x,]*res[.x])) %>%
-    do.call(rbind, .) %>%
-    apply(., 2, mean)
-end.time <- Sys.time()
-time.taken <- end.time - start.time
-time.taken
-
+X <- qr.X(lm_fit$qr)
+J_inv_X_res <- 1:nrow(X) %>% purrr::map(~ t(J_inv %*% X[.x, ] * res[.x]))
 value <- 0
-for(i in 1:n){
-    value <- value+e[i]*J_inv%*%X[i,]*residuals(lm_fit)[i]
+
+e <- matrix(rnorm(n, 0, 1), ncol = 1)
+e <- rnorm(n, 0, 1)
+# value_store <- c()
+# for (i in 1:n) {
+#   #value <- value + e[i] * J_inv %*% X[i, ] * residuals(lm_fit)[i]
+#   value_store <- rbind(value_store,
+#                       t(e[i] * J_inv %*% X[i, ] * residuals(lm_fit)[i]))
+# }
+#
+# start <- Sys.time(); d <- apply(value_store, 2, mean); print(Sys.time()-start)
+
+start <- Sys.time()
+a <- multiplier_single_bootstrap3(length(res), J_inv, res, e)
+print(Sys.time() - start)
+start <- Sys.time()
+b <- multiplier_single_bootstrap2(nrow(X), J_inv_X_res, e)
+print(Sys.time() - start)
+start <- Sys.time()
+c <- multiplier_single_bootstrap(n, J_inv_X_res %>%
+  do.call(rbind, .), e)
+print(Sys.time() - start)
+a
+b
+c
+
+start <- Sys.time()
+a <- multiplier_bootstrap3(lm_fit, B = 15)
+print(Sys.time() - start)
+start <- Sys.time()
+b <- multiplier_bootstrap2(lm_fit, B = 15)
+print(Sys.time() - start)
+start <- Sys.time()
+a <- multiplier_bootstrap(lm_fit, B = 15)
+print(Sys.time() - start)
+a
+
+end_time <- c()
+seq_B <- seq(5, 100, by = 10)
+for (i in seq_B) {
+  print(i)
+  start <- Sys.time()
+  a <- multiplier_bootstrap(lm_fit, B = i)
+  end_time <- c(end_time, Sys.time() - start)
+  print(end_time[i])
 }
-value/n
-
-gamma <- matrix(e*residuals(lm_fit), ncol = 1)
-# #gamma2 <- Matrix::Diagonal(x = e)%*%residuals(lm_fit)
-# J_inv_block <- Matrix::bdiag(replicate(nrow(X), J_inv, simplify=FALSE))
-# vec_X <- matrix(t(X), ncol = 1)
-
-start.time <- Sys.time()
-X_list <- as.list(1:nrow(X)) %>% purrr::map(~ X[.x,])
-X_list2 <- X_list %>% purrr::map(~ J_inv%*%.x)
-purrr::map2(.x=X_list2, .y=gamma, ~ t(.x*.y)) %>%
-    do.call(rbind, .) %>%
-    apply(., 2, mean)
-end.time <- Sys.time()
-time.taken <- end.time - start.time
-time.taken
-
-
-# vec_X <- matrix(t(X), ncol = 1)
-# diag(gamma)%*%
-# t(gamma)%*%(J_inv_block%*%vec_X)
-# G <- as.vector(gamma)
-# G2 <- G %>% purrr::map(~ .x*diag(ncol(X))) %>% Matrix::bdiag(.)
-# G2%*%(J_inv_block%*%vec_X)
-# apply(matrix(G2%*%(J_inv_block%*%vec_X), byrow = F, ncol = 2), 2, mean)
-# # as.matrix(rnorm(nrow(X), 0, 1) * residuals(lm_fit), ncol = 1)
-# e <- as.matrix(coef(lm_fit),ncol=1)
-# e + 1 / nrow(X) * J_inv %*% t(X) %*% e * residuals(lm_fit)
-
+plot(seq_B, end_time)
