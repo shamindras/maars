@@ -1,9 +1,86 @@
-
+#' Calculate a single replication of the multiplier bootstrap for an OLS fitted dataset
+#'
+#' Calculate a single replication of the multiplier bootstrap for an OLS fitted dataset based on an \code{lm} fitted object in \code{R}.
+#' This is given by the following expression:
+#' \deqn{\frac{1}{n}\sum_{i=1}^{n} e_{i}\widehat{J}^{-1}X_{i}(Y_{i}-X_{i}^{T} \widehat{\beta})}
+#'
+#' @param n Number of observations (rows) of the underlying dataset.
+#' In the given notation we assume our dataset has \eqn{n}
+#' observations and \eqn{d} features (including an intercept)
+#' @param J_inv_X_res A \eqn{d \times \d} matrix given by the
+#' expression \eqn{\sum_{i=1}^{n}\widehat{J}^{-1}X_{i}(Y_{i}-X_{i}^{T} \widehat{\beta})}
+#' @param e An \eqn{n \times 1} vector of mean zero, variance 1
+#' random variables
+#'
+#' @return A tibble of the bootstrap standard errors
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Run an linear model (OLS) fit
+#' set.seed(162632)
+#' n <- 1e2
+#' X <- stats::rnorm(n, 0, 1)
+#' y <- 2 + X * 1 + stats::rnorm(n, 0, 1)
+#' lm_fit <- stats::lm(y ~ X)
+#'
+#' # Calculate the necessary required inputs for the bootstrap
+#' J_inv <- summary.lm(lm_fit)$cov.unscaled
+#' X <- qr.X(lm_fit$qr)
+#' res <- residuals(lm_fit)
+#' n <- length(res)
+#' J_inv_X_res <-
+#'    1:nrow(X) %>%
+#'      purrr::map(~ t(J_inv %*% X[.x, ] * res[.x])) %>%
+#'      do.call(rbind, .)
+#'
+#' # Generate a single random vector of length n, containing
+#' # mean 0, variance 1 random variables
+#' e <- rnorm(n, 0, 1)
+#'
+#' # Run a single replication of the multiplier bootstrap
+#' mult_boot_single_rep <-
+#' multiplier_single_bootstrap(n = n,
+#'                             J_inv_X_res = J_inv_X_res,
+#'                             e = e)
+#' # Display the output
+#' print(mult_boot)
+#' }
 multiplier_single_bootstrap <- function(n, J_inv_X_res, e) {
   out <- t(J_inv_X_res) %*% e / n
   return(out)
 }
 
+#' A wrapper to replicate the multiplier bootstrap calculation for an OLS fitted dataset
+#'
+#' The multiplier bootstrap calculated for a single replication
+#' for an OLS fitted dataset is given by the following expression:
+#' \deqn{\frac{1}{n}\sum_{i=1}^{n} e_{i}\widehat{J}^{-1}X_{i}(Y_{i}-X_{i}^{T} \widehat{\beta})}
+#' This wrapper function calls on the helper function \code{\link{multiplier_single_bootstrap}}. See it's documentation
+#' for how a single instance is run.
+#'
+#' @param lm_fit An lm (OLS) object
+#' @param B The number of bootstrap replications
+#'
+#' @return A tibble of the bootstrap calculations
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Simulate data from a linear model
+#' set.seed(35542)
+#' n <- 1e2
+#' X <- stats::rnorm(n, 0, 1)
+#' y <- 2 + X * 1 + stats::rnorm(n, 0, 1)
+#'
+#' # Fit the linear model using OLS (ordinary least squares)
+#' lm_fit <- stats::lm(y ~ X)
+#'
+#' # Run the multiplier bootstrap on the fitted (OLS) linear model
+#' set.seed(162632)
+#' multiplier_bootstrap(lm_fit, B = 15)
+#' }
 multiplier_bootstrap <- function(lm_fit, B = 100) {
   J_inv <- summary.lm(lm_fit)$cov.unscaled
   X <- qr.X(lm_fit$qr)
@@ -13,22 +90,21 @@ multiplier_bootstrap <- function(lm_fit, B = 100) {
     purrr::map(~ t(J_inv %*% X[.x, ] * res[.x])) %>%
     do.call(rbind, .)
 
-  e <- 1:B %>% purrr::map(~ rnorm(n, 0, 1))
+  # TODO: Check this change from list to matrix
+  # e <- 1:B %>% purrr::map(~ rnorm(n, 0, 1))
+  e <- matrix( rnorm(B*n,mean=0,sd=1), B, n)
 
   dist <- 1:B %>%
-    purrr::map(~ multiplier_single_bootstrap(n, J_inv_X_res, e[[.x]])) %>%
+    purrr::map(~ multiplier_single_bootstrap(n, J_inv_X_res, e[.x, ])) %>%
     do.call(rbind, .)
 
-  out <- tibble(
+  out <- tibble::tibble(
     iteration = rep(1:B, each = ncol(X)),
     term = rownames(dist),
     estimate = as.numeric(dist)
   )
-
   return(out)
 }
-
-
 
 multiplier_single_bootstrap2 <- function(n, J_inv_X_res, e) {
   out <- purrr::map2(
@@ -47,140 +123,32 @@ multiplier_bootstrap2 <- function(lm_fit, B = 100) {
   res <- residuals(lm_fit)
   n <- length(res)
   J_inv_X_res <- 1:nrow(X) %>% purrr::map(~ t(J_inv %*% X[.x, ] * res[.x]))
-  e <- 1:B %>% purrr::map(~ rnorm(n, 0, 1))
+
+  # TODO: Check this change from list to matrix
+  # e <- 1:B %>% purrr::map(~ rnorm(n, 0, 1))
+  e <- matrix( rnorm(B*n,mean=0,sd=1), B, n)
 
   dist <- 1:B %>%
-    purrr::map(~ multiplier_single_bootstrap2(n, J_inv_X_res, e[[.x]])) %>%
+    purrr::map(~ multiplier_single_bootstrap2(n, J_inv_X_res, e[.x, ])) %>%
     do.call(rbind, .)
 
-  out <- tibble(
+  out <- tibble::tibble(
     iteration = rep(1:B, ncol(X)),
     term = rep(colnames(X), each = B),
     estimate = as.numeric(dist)
   ) %>%
-    arrange(iteration, term)
+    dplyr::arrange(iteration, term)
 
   return(out)
 }
-
-
-
-multiplier_single_bootstrap3 <- function(n, J_inv, res, e) {
-  out <- as.list(1:n) %>%
-    purrr::map(~ t(e[.x] * J_inv %*% X[.x, ] * res[.x])) %>%
-    do.call(rbind, .) %>%
-    apply(., 2, mean)
-  return(out)
-}
-
-
-multiplier_bootstrap3 <- function(lm_fit, B = 100) {
-  J_inv <- summary.lm(lm_fit)$cov.unscaled
-  X <- qr.X(lm_fit$qr)
-  res <- residuals(lm_fit)
-  n <- nrow(X)
-
-  e <- 1:B %>% purrr::map(~ rnorm(n, 0, 1))
-
-  dist <- 1:B %>%
-    purrr::map(~ multiplier_single_bootstrap3(n, J_inv, res, e[[.x]])) %>%
-    do.call(rbind, .)
-
-  out <- tibble(
-    iteration = rep(1:B, ncol(X)),
-    term = rep(colnames(X), each = B),
-    estimate = as.numeric(dist)
-  ) %>%
-    arrange(iteration, term)
-
-  return(out)
-}
-
-
-# other functions -- idea for how to process the output of the boostrap multipliers above
-# we should add another method for this
-boot_conf_int <- function(coef_info, alpha = 0.05) {
-    # "stolen from int_pctl and pctl_single from rsample
-    coef_info %>%
-        group_by(term) %>%
-        summarise(
-            lower = quantile(estimate, prob = alpha / 2, na.rm = TRUE),
-            estimate = mean(estimate, na.rm = TRUE),
-            upper = quantile(estimate, prob = 1 - alpha / 2, na.rm = TRUE),
-            alpha = alpha,
-            method = "percentile"
-        )
-}
-
-
 
 #### EXAMPLE
-n <- 1e2
-X <- stats::rnorm(n, 0, 1)
-y <- 2 + X * 1 + stats::rnorm(n, 0, 1)
-lm_fit <- stats::lm(y ~ X)
-multiplier_bootstrap(lm_fit, B = 15)
-multiplier_bootstrap2(lm_fit, B = 15)
-multiplier_bootstrap3(lm_fit, B = 15) # this is not working for some reason
-
-
-boot_conf_int(multiplier_bootstrap(lm_fit, B = 15))
-
-
-############# -- all code for examples
-n <- 1e2
-X <- stats::rnorm(n, 0, 1)
-y <- 2 + X * 1 + stats::rnorm(n, 0, 1)
-lm_fit <- stats::lm(y ~ X)
-J_inv <- summary.lm(lm_fit)$cov.unscaled
-res <- residuals(lm_fit)
-X <- qr.X(lm_fit$qr)
-J_inv_X_res <- 1:nrow(X) %>% purrr::map(~ t(J_inv %*% X[.x, ] * res[.x]))
-value <- 0
-
-e <- matrix(rnorm(n, 0, 1), ncol = 1)
-e <- rnorm(n, 0, 1)
-# value_store <- c()
-# for (i in 1:n) {
-#   #value <- value + e[i] * J_inv %*% X[i, ] * residuals(lm_fit)[i]
-#   value_store <- rbind(value_store,
-#                       t(e[i] * J_inv %*% X[i, ] * residuals(lm_fit)[i]))
-# }
-#
-# start <- Sys.time(); d <- apply(value_store, 2, mean); print(Sys.time()-start)
-
-start <- Sys.time()
-a <- multiplier_single_bootstrap3(length(res), J_inv, res, e)
-print(Sys.time() - start)
-start <- Sys.time()
-b <- multiplier_single_bootstrap2(nrow(X), J_inv_X_res, e)
-print(Sys.time() - start)
-start <- Sys.time()
-c <- multiplier_single_bootstrap(n, J_inv_X_res %>%
-  do.call(rbind, .), e)
-print(Sys.time() - start)
-a
-b
-c
-
-start <- Sys.time()
-a <- multiplier_bootstrap3(lm_fit, B = 15)
-print(Sys.time() - start)
-start <- Sys.time()
-b <- multiplier_bootstrap2(lm_fit, B = 15)
-print(Sys.time() - start)
-start <- Sys.time()
-a <- multiplier_bootstrap(lm_fit, B = 15)
-print(Sys.time() - start)
-a
-
-end_time <- c()
-seq_B <- seq(5, 100, by = 10)
-for (i in seq_B) {
-  print(i)
-  start <- Sys.time()
-  a <- multiplier_bootstrap(lm_fit, B = i)
-  end_time <- c(end_time, Sys.time() - start)
-  print(end_time[i])
-}
-plot(seq_B, end_time)
+# set.seed(162632)
+# n <- 1e2
+# X <- stats::rnorm(n, 0, 1)
+# y <- 2 + X * 1 + stats::rnorm(n, 0, 1)
+# lm_fit <- stats::lm(y ~ X)
+# set.seed(162632)
+# multiplier_bootstrap(lm_fit, B = 15)
+# set.seed(162632)
+# multiplier_bootstrap2(lm_fit, B = 15)

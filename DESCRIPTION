@@ -20,7 +20,8 @@ Imports:
     Matrix,
     sandwich,
     bench,
-    Rdpack
+    Rdpack,
+    tibble
 Suggests: 
     spelling,
     testthat,
