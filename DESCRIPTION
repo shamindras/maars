@@ -21,7 +21,9 @@ Imports:
     sandwich,
     bench,
     Rdpack,
-    tibble
+    tibble,
+    assertthat,
+    glue
 Suggests: 
     spelling,
     testthat,

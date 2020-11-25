@@ -82,73 +82,34 @@ multiplier_single_bootstrap <- function(n, J_inv_X_res, e) {
 #' multiplier_bootstrap(lm_fit, B = 15)
 #' }
 multiplier_bootstrap <- function(lm_fit, B = 100) {
-  J_inv <- summary.lm(lm_fit)$cov.unscaled
+  assertthat::assert_that( all("lm" == class(lm_fit)),
+                          msg = glue::glue("lm_fit must only be of class lm"))
+  assertthat::assert_that(B == as.integer(B),
+                          msg = glue::glue("B must be an integer e.g. 100, it is currently {B}"))
+  assertthat::assert_that(B > 0,
+                          msg = glue::glue("B must be positive e.g. 100, it is currently {B}"))
+  # Get OLS related output
+  betas <- stats::coef(lm_fit)
+  J_inv <- stats::summary.lm(lm_fit)$cov.unscaled
   X <- qr.X(lm_fit$qr)
-  res <- residuals(lm_fit)
+  res <- stats::residuals(lm_fit)
   n <- length(res)
   J_inv_X_res <- 1:nrow(X) %>%
-    purrr::map(~ t(J_inv %*% X[.x, ] * res[.x])) %>%
-    do.call(rbind, .)
+                  purrr::map(~ t(J_inv %*% X[.x, ] * res[.x])) %>%
+                  do.call(rbind, .)
 
-  # TODO: Check this change from list to matrix
-  # e <- 1:B %>% purrr::map(~ rnorm(n, 0, 1))
-  e <- matrix( rnorm(B*n,mean=0,sd=1), B, n)
+  # Multiplier weights (mean 0, variance = 1)
+  e <- matrix(rnorm(B * n, mean = 0, sd = 1), B, n)
 
-  dist <- 1:B %>%
-    purrr::map(~ multiplier_single_bootstrap(n, J_inv_X_res, e[.x, ])) %>%
-    do.call(rbind, .)
+  # Multiplier Bootstrap replications, B times
+  boot_out <- 1:B %>%
+                purrr::map(~ betas +
+                             multiplier_single_bootstrap(n, J_inv_X_res,
+                                                         e[.x, ])) %>%
+                purrr::map(~ tibble::tibble(term = rownames(.x),
+                                            estimate = .x[, 1]))
 
-  out <- tibble::tibble(
-    iteration = rep(1:B, each = ncol(X)),
-    term = rownames(dist),
-    estimate = as.numeric(dist)
-  )
+  # Consolidate output in a nested tibble
+  out <- tibble::tibble("B" = 1:B) %>% dplyr::mutate("boot_out" = boot_out)
   return(out)
 }
-
-multiplier_single_bootstrap2 <- function(n, J_inv_X_res, e) {
-  out <- purrr::map2(
-    .x = e,
-    .y = J_inv_X_res,
-    ~ .x * .y
-  ) %>%
-    do.call(rbind, .) %>%
-    apply(., 2, mean)
-  return(out)
-}
-
-multiplier_bootstrap2 <- function(lm_fit, B = 100) {
-  J_inv <- summary.lm(lm_fit)$cov.unscaled
-  X <- qr.X(lm_fit$qr)
-  res <- residuals(lm_fit)
-  n <- length(res)
-  J_inv_X_res <- 1:nrow(X) %>% purrr::map(~ t(J_inv %*% X[.x, ] * res[.x]))
-
-  # TODO: Check this change from list to matrix
-  # e <- 1:B %>% purrr::map(~ rnorm(n, 0, 1))
-  e <- matrix( rnorm(B*n,mean=0,sd=1), B, n)
-
-  dist <- 1:B %>%
-    purrr::map(~ multiplier_single_bootstrap2(n, J_inv_X_res, e[.x, ])) %>%
-    do.call(rbind, .)
-
-  out <- tibble::tibble(
-    iteration = rep(1:B, ncol(X)),
-    term = rep(colnames(X), each = B),
-    estimate = as.numeric(dist)
-  ) %>%
-    dplyr::arrange(iteration, term)
-
-  return(out)
-}
-
-#### EXAMPLE
-# set.seed(162632)
-# n <- 1e2
-# X <- stats::rnorm(n, 0, 1)
-# y <- 2 + X * 1 + stats::rnorm(n, 0, 1)
-# lm_fit <- stats::lm(y ~ X)
-# set.seed(162632)
-# multiplier_bootstrap(lm_fit, B = 15)
-# set.seed(162632)
-# multiplier_bootstrap2(lm_fit, B = 15)
