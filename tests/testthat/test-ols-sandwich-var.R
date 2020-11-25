@@ -34,3 +34,7 @@ test_that("sandwich variance from estimator via qr and lm", {
   )
 })
 
+testthat::test_that("Check assertions are handled correctly", {
+  # Check that lm_fit is an object of class "lm"
+  expect_error(comp_sandwich_qr_var(lm_object = mtcars))
+})

@@ -82,7 +82,7 @@ multiplier_single_bootstrap <- function(n, J_inv_X_res, e) {
 #' multiplier_bootstrap(lm_fit, B = 15)
 #' }
 multiplier_bootstrap <- function(lm_fit, B = 100) {
-  assertthat::assert_that( all("lm" == class(lm_fit)),
+  assertthat::assert_that(all("lm" == class(lm_fit)),
                           msg = glue::glue("lm_fit must only be of class lm"))
   assertthat::assert_that(B == as.integer(B),
                           msg = glue::glue("B must be an integer e.g. 100, it is currently {B}"))

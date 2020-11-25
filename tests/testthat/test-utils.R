@@ -1,10 +1,4 @@
-# Create OLS linear regression simulated data
-set.seed(1246426)
-n <- 1e5
-X <- stats::rnorm(n, 0, 1)
-y <- 2 + X * 1 + stats::rnorm(n, 0, 1)
-lm_fit <- stats::lm(y ~ X)
-MAX_DIFF_high_precision <- 1e-10
+# Multiplier Bootstrap ---------------------------------------------------------
 
 #' This is the \code{purrr} implementation of
 #' \code{\link{multiplier_single_bootstrap}}. It should be slower
@@ -32,7 +26,7 @@ multiplier_bootstrap_purrr <- function(lm_fit, B = 100) {
     res <- stats::residuals(lm_fit)
     n <- length(res)
     J_inv_X_res <- 1:nrow(X) %>%
-                    purrr::map(~ t(J_inv %*% X[.x, ] * res[.x]))
+        purrr::map(~ t(J_inv %*% X[.x, ] * res[.x]))
 
     # Multiplier weights (mean 0, variance = 1)
     e <- matrix(rnorm(B * n, mean = 0, sd = 1), B, n)
@@ -41,7 +35,7 @@ multiplier_bootstrap_purrr <- function(lm_fit, B = 100) {
     boot_out <- 1:B %>%
         purrr::map(~ betas +
                        multiplier_single_bootstrap_purrr(n, J_inv_X_res,
-                                                   e[.x, ])) %>%
+                                                         e[.x, ])) %>%
         purrr::map(~ tibble::tibble(term = rownames(.x),
                                     estimate = .x[, 1]))
 
@@ -50,13 +44,3 @@ multiplier_bootstrap_purrr <- function(lm_fit, B = 100) {
 
     return(out)
 }
-
-test_that("Check matrix and purrr multiplier bootstrap implmentations", {
-    set.seed(162632)
-    mult_boot_1 <- multiplier_bootstrap(lm_fit, B = 3)
-    set.seed(162632)
-    mult_boot_2 <- multiplier_bootstrap_purrr(lm_fit, B = 3)
-    testthat::expect_equal(object = mult_boot_1,
-                           expected = mult_boot_2,
-                           tolerance = MAX_DIFF_high_precision)
-})

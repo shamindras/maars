@@ -23,7 +23,9 @@
 #' lm_fit <- stats::lm(y ~ X)
 #' sandwich_qr_var <- comp_sandwich_qr_var(lm_fit)
 #' }
-comp_sandwich_qr_var <- function(lm_object){
+comp_sandwich_qr_var <- function(lm_object) {
+  assertthat::assert_that(all("lm" == class(lm_object)),
+                          msg = glue::glue("lm_object must only be of class lm"))
   J_inv <- stats::summary.lm(lm_object)$cov.unscaled
   X <- qr.X(lm_object$qr)
   V <- t(X) %*% Matrix::Diagonal(x = stats::residuals(lm_object)^2) %*% X
