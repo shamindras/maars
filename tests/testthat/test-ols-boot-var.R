@@ -1,53 +1,62 @@
+# Create OLS linear regression simulated data
 set.seed(1246426)
-n <- 1e2
+n <- 1e5
 X <- stats::rnorm(n, 0, 1)
 y <- 2 + X * 1 + stats::rnorm(n, 0, 1)
 lm_fit <- stats::lm(y ~ X)
-MAX_DIFF_low_precision <- 1e-5
-MAX_DIFF_high_precision <- 1e-7
+MAX_DIFF_high_precision <- 1e-10
 
-multiplier_single_bootstrap2 <- function(n, J_inv_X_res, e) {
+#' This is the \code{purrr} implementation of
+#' \code{\link{multiplier_single_bootstrap}}. It should be slower
+#' than the matrix implementation \code{\link{multiplier_single_bootstrap}}
+multiplier_single_bootstrap_purrr <- function(n, J_inv_X_res, e) {
     out <- purrr::map2(
         .x = e,
         .y = J_inv_X_res,
         ~ .x * .y
     ) %>%
         do.call(rbind, .) %>%
-        apply(., 2, mean)
+        apply(., 2, mean) %>%
+        as.matrix(x = .)
     return(out)
 }
 
-multiplier_bootstrap2 <- function(lm_fit, B = 100) {
-    J_inv <- summary.lm(lm_fit)$cov.unscaled
+#' This is the wrapper for the purrr implementation of the equivalent
+#' \code{\link{multiplier_single_bootstrap}} function. It should be slower
+#' than the matrix implementation \code{\link{multiplier_bootstrap_purrr}}
+multiplier_bootstrap_purrr <- function(lm_fit, B = 100) {
+    # Get OLS related output
+    betas <- stats::coef(lm_fit)
+    J_inv <- stats::summary.lm(lm_fit)$cov.unscaled
     X <- qr.X(lm_fit$qr)
-    res <- residuals(lm_fit)
+    res <- stats::residuals(lm_fit)
     n <- length(res)
-    J_inv_X_res <- 1:nrow(X) %>% purrr::map(~ t(J_inv %*% X[.x, ] * res[.x]))
+    J_inv_X_res <- 1:nrow(X) %>%
+                    purrr::map(~ t(J_inv %*% X[.x, ] * res[.x]))
 
-    e <- matrix( rnorm(B*n,mean=0,sd=1), B, n)
+    # Multiplier weights (mean 0, variance = 1)
+    e <- matrix(rnorm(B * n, mean = 0, sd = 1), B, n)
 
-    dist <- 1:B %>%
-        purrr::map(~ multiplier_single_bootstrap2(n, J_inv_X_res, e[.x, ])) %>%
-        do.call(rbind, .)
+    # Multiplier Bootstrap replications, B times
+    boot_out <- 1:B %>%
+        purrr::map(~ betas +
+                       multiplier_single_bootstrap_purrr(n, J_inv_X_res,
+                                                   e[.x, ])) %>%
+        purrr::map(~ tibble::tibble(term = rownames(.x),
+                                    estimate = .x[, 1]))
 
-    out <- tibble::tibble(
-        iteration = rep(1:B, ncol(X)),
-        term = rep(colnames(X), each = B),
-        estimate = as.numeric(dist)
-    ) %>%
-        dplyr::arrange(iteration, term)
+    # Consolidate output in a nested tibble
+    out <- tibble::tibble("B" = 1:B) %>% dplyr::mutate("boot_out" = boot_out)
 
     return(out)
 }
 
-# test_that("Check multiplier bootstrap implementations", {
-#     set.seed(162632)
-#     mult_boot_1 <- multiplier_bootstrap(lm_fit, B = 15) %>% tidyr::unnest(cols = boot_out)
-#     set.seed(162632)
-#     mult_boot_2 <- multiplier_bootstrap2(lm_fit, B = 15)
-#     mult_boot_1
-#     mult_boot_2
-#     testthat::expect_equal(object = mult_boot_1,
-#                            expected = mult_boot_2,
-#                            MAX_DIFF_low_precision)
-# })
+test_that("Check matrix and purrr multiplier bootstrap implmentations", {
+    set.seed(162632)
+    mult_boot_1 <- multiplier_bootstrap(lm_fit, B = 3)
+    set.seed(162632)
+    mult_boot_2 <- multiplier_bootstrap_purrr(lm_fit, B = 3)
+    testthat::expect_equal(object = mult_boot_1,
+                           expected = mult_boot_2,
+                           tolerance = MAX_DIFF_high_precision)
+})

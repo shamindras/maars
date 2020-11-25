@@ -9,8 +9,8 @@
 #' observations and \eqn{d} features (including an intercept)
 #' @param J_inv_X_res A \eqn{d \times \d} matrix given by the
 #' expression \eqn{\sum_{i=1}^{n}\widehat{J}^{-1}X_{i}(Y_{i}-X_{i}^{T} \widehat{\beta})}
-#' @param e An \eqn{n \times 1} vector of mean zero, variance 1
-#' random variables
+#' @param e Multiplier bootstrap weights. This is an \eqn{n \times 1}
+#' vector of mean zero, variance 1 random variables
 #'
 #' @return A tibble of the bootstrap standard errors
 #'

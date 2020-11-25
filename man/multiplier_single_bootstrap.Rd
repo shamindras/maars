@@ -14,8 +14,8 @@ observations and \eqn{d} features (including an intercept)}
 \item{J_inv_X_res}{A \eqn{d \times \d} matrix given by the
 expression \eqn{\sum_{i=1}^{n}\widehat{J}^{-1}X_{i}(Y_{i}-X_{i}^{T} \widehat{\beta})}}
 
-\item{e}{An \eqn{n \times 1} vector of mean zero, variance 1
-random variables}
+\item{e}{Multiplier bootstrap weights. This is an \eqn{n \times 1}
+vector of mean zero, variance 1 random variables}
 }
 \value{
 A tibble of the bootstrap standard errors
