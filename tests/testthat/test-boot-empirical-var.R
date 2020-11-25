@@ -44,11 +44,11 @@ test_that("lm and glm fitted with conditional_model return the same outputs as t
 
 test_that("test sample mean of coefficients estimated via bootstrap matches the original coefficients", {
   # ols
-  boot_out <- empirical_bootstrap(lm_fit, B = 1e3, m = 1e3) %>% tidyr::unnest(cols = boot_out)
+  boot_out <- empirical_bootstrap(lm_fit, B = 1e3) %>% tidyr::unnest(cols = boot_out)
   expect_equal(boot_out %>% group_by(term) %>% summarise(mean = mean(estimate)) %>% pull(mean) %>% unname(), unname(coef(lm_fit)), tol = 1e-2)
 
   # glm
-  boot_out <- empirical_bootstrap(glm_fit, B = 1e3, m = 1e3) %>% tidyr::unnest(cols = boot_out)
+  boot_out <- empirical_bootstrap(glm_fit, B = 1e3) %>% tidyr::unnest(cols = boot_out)
   expect_equal(boot_out %>% group_by(term) %>% summarise(mean = mean(estimate)) %>% pull(mean) %>% unname(), unname(coef(glm_fit)), tol = 1e-2)
 })
 

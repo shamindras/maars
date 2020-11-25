@@ -113,7 +113,7 @@ empirical_bootstrap <- function(mod_fit, B = 100, m = NULL) {
 
   data <- model.frame(mod_fit)
   if (missing(m)) {
-    m <- n
+    m <- nrow(data)
   }
 
   assertthat::assert_that(m == as.integer(m),
