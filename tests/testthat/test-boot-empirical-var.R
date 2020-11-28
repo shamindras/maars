@@ -32,7 +32,7 @@ test_that("sample mean of bootstraped data sets equals asymptotic mean", {
 
 test_that("lm and glm fitted with conditional_model return the same outputs as the original models", {
   # ols
-  mod_fit <- conditional_model(lm_fit, model.frame(lm_fit))
+  mod_fit <- conditional_model(lm_fit, stats::model.frame(lm_fit))
   expect_equal(mod_fit %>% dplyr::pull(estimate) %>% unname(), broom::tidy(lm_fit) %>% dplyr::pull(estimate))
 
   # glm
@@ -45,11 +45,11 @@ test_that("lm and glm fitted with conditional_model return the same outputs as t
 test_that("test sample mean of coefficients estimated via bootstrap matches the original coefficients", {
   # ols
   boot_out <- empirical_bootstrap(lm_fit, B = 1e3) %>% tidyr::unnest(cols = boot_out)
-  expect_equal(boot_out %>% group_by(term) %>% summarise(mean = mean(estimate)) %>% pull(mean) %>% unname(), unname(coef(lm_fit)), tol = 1e-2)
+  expect_equal(boot_out %>% dplyr::group_by(term) %>% dplyr::summarise(mean = mean(estimate)) %>% dplyr::pull(mean) %>% unname(), unname(stats::coef(lm_fit)), tol = 1e-2)
 
   # glm
   boot_out <- empirical_bootstrap(glm_fit, B = 1e3) %>% tidyr::unnest(cols = boot_out)
-  expect_equal(boot_out %>% group_by(term) %>% summarise(mean = mean(estimate)) %>% pull(mean) %>% unname(), unname(coef(glm_fit)), tol = 1e-2)
+  expect_equal(boot_out %>% dplyr::group_by(term) %>% dplyr::summarise(mean = mean(estimate)) %>% dplyr::pull(mean) %>% unname(), unname(stats::coef(glm_fit)), tol = 1e-2)
 })
 
 

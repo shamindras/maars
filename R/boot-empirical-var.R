@@ -68,11 +68,11 @@ bootstrap_samples <- function(data,
 #' }
 conditional_model <- function(mod_fit, data) {
   if (all("lm" == class(mod_fit))) {
-    out <- lm(formula = formula(mod_fit), data = data)
+    out <- stats::lm(formula = stats::formula(mod_fit), data = data)
   } else {
-    out <- glm(formula = formula(mod_fit), data = data, family = family(mod_fit))
+    out <- stats::glm(formula = stats::formula(mod_fit), data = data, family = stats::family(mod_fit))
   }
-  out <- tibble(term = names(coef(out)), estimate = coef(out))
+  out <- tibble::tibble(term = names(stats::coef(out)), estimate = stats::coef(out))
   return(out)
 }
 
@@ -110,23 +110,25 @@ empirical_bootstrap <- function(mod_fit, B = 100, m = NULL) {
     msg = glue::glue("B must be an integer e.g. 100, it is currently {B}"))
   assertthat::assert_that(B > 0,
     msg = glue::glue("B must be positive e.g. 100, it is currently {B}"))
+  if(!is.null(m)){
+    assertthat::assert_that(m == as.integer(m),
+                            msg = glue::glue("m must be an integer e.g. 100, it is currently {m}"))
+    assertthat::assert_that(m > 0,
+                            msg = glue::glue("m must be positive e.g. 100, it is currently {m}"))
 
-  data <- model.frame(mod_fit)
-  if (missing(m)) {
-    m <- nrow(data)
   }
 
-  assertthat::assert_that(m == as.integer(m),
-    msg = glue::glue("m must be an integer e.g. 100, it is currently {m}"))
-  assertthat::assert_that(m > 0,
-    msg = glue::glue("m must be positive e.g. 100, it is currently {m}"))
+  data <- stats::model.frame(mod_fit)
+  if (is.null(m) | missing(m)) {
+    m <- nrow(data)
+  }
 
 
   boot_samples <- bootstrap_samples(data, B, m)
 
   boot_out <- boot_samples %>%
-    mutate(boot_out = purrr::map(data, ~ conditional_model(mod_fit = mod_fit, data = .))) %>%
-    select(B, boot_out)
+    dplyr::mutate(boot_out = purrr::map(data, ~ conditional_model(mod_fit = mod_fit, data = .))) %>%
+    dplyr::select(B, boot_out)
 
   return(boot_out)
 }
