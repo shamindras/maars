@@ -32,10 +32,13 @@ Suggests:
     spelling,
     testthat,
     roxygen2,
-    covr
+    covr,
+    knitr,
+    rmarkdown
 RdMacros: Rdpack
 Encoding: UTF-8
 Language: en-US
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
+VignetteBuilder: knitr
