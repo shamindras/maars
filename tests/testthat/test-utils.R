@@ -3,7 +3,7 @@
 #' This is the \code{purrr} implementation of
 #' \code{\link{multiplier_single_bootstrap}}. It should be slower
 #' than the matrix implementation \code{\link{multiplier_single_bootstrap}}
-multiplier_single_bootstrap_purrr <- function(n, J_inv_X_res, e) {
+comp_multiplier_single_bootstrap_purrr_var <- function(n, J_inv_X_res, e) {
     out <- purrr::map2(
         .x = e,
         .y = J_inv_X_res,
@@ -17,25 +17,26 @@ multiplier_single_bootstrap_purrr <- function(n, J_inv_X_res, e) {
 
 #' This is the wrapper for the purrr implementation of the equivalent
 #' \code{\link{multiplier_single_bootstrap}} function. It should be slower
-#' than the matrix implementation \code{\link{multiplier_bootstrap_purrr}}
-multiplier_bootstrap_purrr <- function(lm_fit, B = 100) {
+#' than the matrix implementation \code{\link{comp_multiplier_bootstrap_var}}
+comp_multiplier_bootstrap_purrr_var <- function(mod_fit, B = 100) {
     # Get OLS related output
-    betas <- stats::coef(lm_fit)
-    J_inv <- stats::summary.lm(lm_fit)$cov.unscaled
-    X <- qr.X(lm_fit$qr)
-    res <- stats::residuals(lm_fit)
+    betas <- stats::coef(mod_fit)
+    J_inv <- stats::summary.lm(mod_fit)$cov.unscaled
+    X <- qr.X(mod_fit$qr)
+    res <- stats::residuals(mod_fit)
     n <- length(res)
     J_inv_X_res <- 1:nrow(X) %>%
         purrr::map(~ t(J_inv %*% X[.x, ] * res[.x]))
 
     # Multiplier weights (mean 0, variance = 1)
-    e <- matrix(rnorm(B * n, mean = 0, sd = 1), B, n)
+    e <- matrix(data = rnorm(n = B * n, mean = 0, sd = 1), nrow = B, ncol = n)
 
     # Multiplier Bootstrap replications, B times
     boot_out <- 1:B %>%
         purrr::map(~ betas +
-                       multiplier_single_bootstrap_purrr(n, J_inv_X_res,
-                                                         e[.x, ])) %>%
+                       comp_multiplier_single_bootstrap_purrr_var(n = n,
+                                                         J_inv_X_res = J_inv_X_res,
+                                                         e = e[.x, ])) %>%
         purrr::map(~ tibble::tibble(term = rownames(.x),
                                     estimate = .x[, 1]))
 

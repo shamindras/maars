@@ -4,10 +4,10 @@
 \alias{comp_sandwich_qr_var}
 \title{Compute the White sandwich estimator of standard errors for OLS}
 \usage{
-comp_sandwich_qr_var(lm_object)
+comp_sandwich_qr_var(mod_fit)
 }
 \arguments{
-\item{lm_object}{An lm (OLS) object}
+\item{mod_fit}{An lm (OLS) object}
 }
 \value{
 (matrix) White sandwich estimator of variance for OLS regression

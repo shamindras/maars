@@ -23,7 +23,11 @@ Imports:
     Rdpack,
     tibble,
     assertthat,
-    glue
+    glue,
+    here,
+    dplyr,
+    tidyr,
+    purrr
 Suggests: 
     spelling,
     testthat,
