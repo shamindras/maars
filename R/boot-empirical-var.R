@@ -21,7 +21,7 @@
 #' # Display the output
 #' print(boot)
 #' }
-bootstrap_samples <- function(data,
+comp_empirical_bootstrap_samples <- function(data,
                               B = 100,
                               m = NULL) {
   n <- nrow(data)
@@ -60,13 +60,13 @@ bootstrap_samples <- function(data,
 #' X <- stats::rnorm(n, 0, 1)
 #' y <- 2 + X * 1 + stats::rnorm(n, 0, 1)
 #' lm_fit <- stats::lm(y ~ X)
-#' boot <- bootstrap_samples(model.frame(lm_fit))$data[[1]]
-#' mod <- conditional_model(lm_fit, boot)
+#' boot <- comp_empirical_bootstrap_samples(model.frame(lm_fit))$data[[1]]
+#' mod <- comp_empirical_bootstrap_cond_model(lm_fit, boot)
 #'
 #' # Display the output
 #' print(mod)
 #' }
-conditional_model <- function(mod_fit, data) {
+comp_empirical_bootstrap_cond_model <- function(mod_fit, data) {
   if (all("lm" == class(mod_fit))) {
     out <- stats::lm(formula = stats::formula(mod_fit), data = data)
   } else {
@@ -99,11 +99,11 @@ conditional_model <- function(mod_fit, data) {
 #' X <- stats::rnorm(n, 0, 1)
 #' y <- 2 + X * 1 + stats::rnorm(n, 0, 1)
 #' lm_fit <- stats::lm(y ~ X)
-#' out <- empirical_bootstrap(lm_fit, B = 100, m = 300)
+#' out <- comp_empirical_bootstrap(lm_fit, B = 100, m = 300)
 #'
 #' print(out)
 #' }
-empirical_bootstrap <- function(mod_fit, B = 100, m = NULL) {
+comp_empirical_bootstrap <- function(mod_fit, B = 100, m = NULL) {
   assertthat::assert_that(all("lm" == class(mod_fit)) | any("glm" == class(mod_fit)),
     msg = glue::glue("lm_fit must only be of class lm"))
   assertthat::assert_that(B == as.integer(B),
@@ -124,11 +124,11 @@ empirical_bootstrap <- function(mod_fit, B = 100, m = NULL) {
   }
 
 
-  boot_samples <- bootstrap_samples(data, B, m)
+  boot_samples <- comp_empirical_bootstrap_samples(data, B, m)
 
   boot_out <- boot_samples %>%
     tibble::add_column(m = m) %>%
-    dplyr::mutate(boot_out = purrr::map(data, ~ conditional_model(mod_fit = mod_fit, data = .))) %>%
+    dplyr::mutate(boot_out = purrr::map(data, ~ comp_empirical_bootstrap_cond_model(mod_fit = mod_fit, data = .))) %>%
     dplyr::select(B, boot_out)
 
   return(boot_out)

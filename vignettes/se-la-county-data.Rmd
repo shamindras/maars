@@ -45,7 +45,7 @@ se_lm <- broom::tidy(mod_fit) %>% dplyr::select(term, std.error)
 
 We now compute the standard errors via $10^3$ bootstrap replications of the dataset of the same size as the original dataset.
 ```{r}
-se_emp <- maar::empirical_bootstrap(mod_fit = mod_fit, B = 1000) %>%
+se_emp <- maar::comp_empirical_bootstrap(mod_fit = mod_fit, B = 1000) %>%
   tidyr::unnest(boot_out) %>%
   dplyr::group_by(term) %>%
   dplyr::summarise(std.error.boot = sd(estimate))
