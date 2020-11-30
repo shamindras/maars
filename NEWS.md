@@ -1,3 +1,5 @@
+# maar 0.3.0
+
 # maar 0.2.0
 
 * Create the `comp_sandwich_qr_var` function with documentation, tests, benchmarking
