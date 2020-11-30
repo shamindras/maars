@@ -1,7 +1,7 @@
 Package: maar
 Title: An implementation of the Models As Approximations series
     of statistics papers
-Version: 0.2.0
+Version: 0.3.0
 Authors@R: 
     c(person(given = "Shamindra",
              family = "Shrotriya",
@@ -20,15 +20,27 @@ Imports:
     Matrix,
     sandwich,
     bench,
-    Rdpack
+    Rdpack,
+    tibble,
+    assertthat,
+    glue,
+    here,
+    dplyr,
+    tidyr,
+    purrr,
+    vroom,
+    DT
 Suggests: 
     spelling,
     testthat,
     roxygen2,
-    covr
+    covr,
+    knitr,
+    rmarkdown
 RdMacros: Rdpack
 Encoding: UTF-8
 Language: en-US
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
+VignetteBuilder: knitr

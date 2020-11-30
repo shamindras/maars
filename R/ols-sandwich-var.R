@@ -5,7 +5,7 @@
 #' more details
 #' \insertCite{@see also @buja2019modelsasapproximationspart1 and @buja2019modelsasapproximationspart2;textual}{maar}.
 #'
-#' @param lm_object An lm (OLS) object
+#' @param mod_fit An lm (OLS) object
 #'
 #' @return (matrix) White sandwich estimator of variance for OLS regression
 #'
@@ -23,9 +23,11 @@
 #' lm_fit <- stats::lm(y ~ X)
 #' sandwich_qr_var <- comp_sandwich_qr_var(lm_fit)
 #' }
-comp_sandwich_qr_var <- function(lm_object){
-  J_inv <- stats::summary.lm(lm_object)$cov.unscaled
-  X <- qr.X(lm_object$qr)
-  V <- t(X) %*% Matrix::Diagonal(x = stats::residuals(lm_object)^2) %*% X
+comp_sandwich_qr_var <- function(mod_fit) {
+  assertthat::assert_that(all("lm" == class(mod_fit)),
+                          msg = glue::glue("lm_object must only be of class lm"))
+  J_inv <- stats::summary.lm(mod_fit)$cov.unscaled
+  X <- qr.X(mod_fit$qr)
+  V <- t(X) %*% Matrix::Diagonal(x = stats::residuals(mod_fit)^2) %*% X
   return(unname(as.matrix(J_inv %*% V %*% J_inv)))
 }

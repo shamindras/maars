@@ -1,0 +1,94 @@
+---
+title: "Standard Errors LA County Data"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Standard Errors LA County Data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+First, we'll load the `maar` package. You may install by uncommenting the `remote::install_github command` if you wish.
+```{r setup}
+#remotes::install_github('shamindras/maar')
+library(maar)
+```
+
+We try to replicate the results of table 1 in ... 
+
+Let's load the data and briefly examine it.
+```{r, load_data}
+df <- vroom::vroom('http://www-stat.wharton.upenn.edu/~buja/STAT-961/Homeless_LA_by_Census_Tracts.csv')
+DT::datatable(data = head(df))
+```
+
+## Fitting the OLS model
+
+We now fit an linear model of the number of homeless people (`StreetTotal`) on the other features via OLS.
+```{r}
+mod_fit <- lm(StreetTotal ~ ., df)
+```
+
+## Computing standard errors 
+
+Let's first obtain the coefficient's standard errors returned from the `lm` object.
+```{r}
+se_lm <- broom::tidy(mod_fit) %>% dplyr::select(term, std.error)
+```
+
+
+We now compute the standard errors via $10^3$ bootstrap replications of the dataset of the same size as the original dataset.
+```{r}
+se_emp <- maar::comp_empirical_bootstrap(mod_fit = mod_fit, B = 1000) %>%
+  tidyr::unnest(boot_out) %>%
+  dplyr::group_by(term) %>%
+  dplyr::summarise(std.error.boot = sd(estimate))
+```
+
+Then we obtain the standard errors using the White sandwich estimator.
+```{r}
+se_sand <- diag(maar::comp_sandwich_qr_var(mod_fit)) %>% sqrt()
+```
+
+## Comparing standard errors
+
+We combine the standard errors into one tibble.
+```{r}
+se_comb <- broom::tidy(mod_fit) %>%
+  dplyr::select(term, estimate) %>%
+  tibble::add_column(std.error.lm = dplyr::pull(se_lm, std.error)) %>%
+  tibble::add_column(std.error.boot = dplyr::pull(se_emp, std.error.boot)) %>%
+  tibble::add_column(std.error.sand = se_sand)
+# se_comb %>% knitr::kable(x=.)
+se_comb %>%
+  DT::datatable(data = .) %>%
+  DT::formatRound(
+    table = ., columns = c("term", "estimate", "std.error.lm", "std.error.boot", "std.error.sand"),
+    # valueColumns = c('Term', 'Estimate', '$SE_{lin}$', '$SE_{boot}$', '$SE_{sand}$'),
+    digits = 3
+  )
+```
+
+We can also compute the ratios of the standard errors and the t-statistics as in the paper.
+```{r}
+t_stats <- se_comb %>%
+  dplyr::mutate(
+    rat.boot.vs.lm = std.error.boot / std.error.lm,
+    rat.sand.vs.lm = std.error.sand / std.error.lm,
+    rat.sand.vs.boot = std.error.sand / std.error.boot,
+    t.lm = estimate / std.error.lm,
+    t.boot = estimate / std.error.boot,
+    t.sand = estimate / std.error.sand
+  )
+t_stats %>% DT::datatable(data = .) %>%
+  DT::formatRound(table = .,  columns =c("term", "estimate", "std.error.lm", "std.error.boot", "std.error.sand", "rat.boot.vs.lm", "rat.sand.vs.lm", "rat.sand.vs.boot", "t.lm", "t.boot", "t.sand"), digits = 3)
+```
+
+
+
