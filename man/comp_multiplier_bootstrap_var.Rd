@@ -4,7 +4,7 @@
 \alias{comp_multiplier_bootstrap_var}
 \title{A wrapper to replicate the multiplier bootstrap calculation for an OLS fitted dataset}
 \usage{
-comp_multiplier_bootstrap_var(mod_fit, B = 100)
+comp_multiplier_bootstrap_var(mod_fit, B = 100, weights_type)
 }
 \arguments{
 \item{mod_fit}{An lm (OLS) object}
