@@ -11,7 +11,7 @@ Authors@R:
              family = "Fogliato",
              role = c("aut"),
              email = "rfogliat@andrew.cmu.edu"))
-Description: What the package does (one paragraph).
+Description: An implementation of the Models As Approximations series of statistics papers
 License: MIT + file LICENSE
 Imports: 
     magrittr,
