@@ -4,12 +4,18 @@
 \alias{comp_multiplier_bootstrap_var}
 \title{A wrapper to replicate the multiplier bootstrap calculation for an OLS fitted dataset}
 \usage{
-comp_multiplier_bootstrap_var(mod_fit, B = 100, weights_type)
+comp_multiplier_bootstrap_var(mod_fit, B, weights_type)
 }
 \arguments{
 \item{mod_fit}{An lm (OLS) object}
 
-\item{B}{The number of bootstrap replications}
+\item{B}{The number of bootstrap replications
+#' @param weights_type The type of Multiplier bootstrap weights to generate.
+Based on the \code{weighttype} option in the \code{Stata boottest} package,
+this can only take the following five prespecified values
+\code{"rademacher", "mammen", "webb", "std_gaussian", "gamma"}. For more
+details see the documentation for
+\code{\link[maar]{gen_multiplier_bootstrap_weights}}.}
 }
 \value{
 A tibble of the bootstrap calculations

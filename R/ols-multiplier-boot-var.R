@@ -60,20 +60,25 @@ gen_multiplier_bootstrap_weights <- function(n, weights_type) {
 
   if (weights_type == "rademacher") {
     out <- sample(
-      x = c(-1, 1), n = n, replace = TRUE,
+      x = c(-1, 1),
+      size = n,
+      replace = TRUE,
       prob = rep(x = 1 / 2, times = 2)
     )
   } else if (weights_type == "mammen") {
     phi <- (1 + sqrt(5)) / 2 # Golden ratio
     out <- sample(
-      x = c(1 - phi, phi), n = n, replace = TRUE,
+      x = c(1 - phi, phi),
+      size = n,
+      replace = TRUE,
       prob = c(phi / sqrt(5), 1 - phi / sqrt(5))
     )
   } else if (weights_type == "webb") {
     webb_neg_supp <- c(-sqrt(3 / 2), -1, -sqrt(1 / 2)) # Negative Webb weights
     out <- sample(
       x = c(webb_neg_supp, -webb_neg_supp),
-      n = n, replace = TRUE,
+      size = n,
+      replace = TRUE,
       prob = rep(x = 1 / 6, times = 6)
     )
   } else if (weights_type == "std_gaussian") {
@@ -148,6 +153,12 @@ comp_multiplier_single_bootstrap_var <- function(n, J_inv_X_res, e) {
 #'
 #' @param mod_fit An lm (OLS) object
 #' @param B The number of bootstrap replications
+#' #' @param weights_type The type of Multiplier bootstrap weights to generate.
+#' Based on the \code{weighttype} option in the \code{Stata boottest} package,
+#' this can only take the following five prespecified values
+#' \code{"rademacher", "mammen", "webb", "std_gaussian", "gamma"}. For more
+#' details see the documentation for
+#' \code{\link[maar]{gen_multiplier_bootstrap_weights}}.
 #'
 #' @return A tibble of the bootstrap calculations
 #' @export
@@ -167,7 +178,7 @@ comp_multiplier_single_bootstrap_var <- function(n, J_inv_X_res, e) {
 #' set.seed(162632)
 #' comp_multiplier_bootstrap_var(lm_fit, B = 15)
 #' }
-comp_multiplier_bootstrap_var <- function(mod_fit, B = 100, weights_type) {
+comp_multiplier_bootstrap_var <- function(mod_fit, B, weights_type) {
   assertthat::assert_that(all("lm" == class(mod_fit)),
                           msg = glue::glue("mod_fit must only be of class lm"))
   assertthat::assert_that(B == as.integer(B),
