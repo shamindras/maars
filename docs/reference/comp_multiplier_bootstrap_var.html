@@ -99,7 +99,7 @@ for how a single instance is run." />
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/se-la-county-data.html">Standard Errors LA County Data</a>
+      <a href="../articles/se-la-county-data.html">Reproducing LA County Standard Errors from [@buja2019modelsasapproximationspart1]</a>
     </li>
   </ul>
 </li>
@@ -135,7 +135,7 @@ This wrapper function calls on the helper function <code><a href='comp_multiplie
 for how a single instance is run.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>comp_multiplier_bootstrap_var</span><span class='op'>(</span><span class='va'>mod_fit</span>, B <span class='op'>=</span> <span class='fl'>100</span>, <span class='va'>weights_type</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>comp_multiplier_bootstrap_var</span><span class='op'>(</span><span class='va'>mod_fit</span>, <span class='va'>B</span>, <span class='va'>weights_type</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -147,6 +147,15 @@ for how a single instance is run.</p>
     <tr>
       <th>B</th>
       <td><p>The number of bootstrap replications</p></td>
+    </tr>
+    <tr>
+      <th>weights_type</th>
+      <td><p>The type of Multiplier bootstrap weights to generate.
+Based on the <code>weighttype</code> option in the <code>Stata boottest</code> package,
+this can only take the following five prespecified values
+<code>"rademacher", "mammen", "webb", "std_gaussian", "gamma"</code>. For more
+details see the documentation for
+<code><a href='gen_multiplier_bootstrap_weights.html'>gen_multiplier_bootstrap_weights</a></code>.</p></td>
     </tr>
     </table>
 

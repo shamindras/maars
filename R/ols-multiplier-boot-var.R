@@ -153,7 +153,7 @@ comp_multiplier_single_bootstrap_var <- function(n, J_inv_X_res, e) {
 #'
 #' @param mod_fit An lm (OLS) object
 #' @param B The number of bootstrap replications
-#' #' @param weights_type The type of Multiplier bootstrap weights to generate.
+#' @param weights_type The type of Multiplier bootstrap weights to generate.
 #' Based on the \code{weighttype} option in the \code{Stata boottest} package,
 #' this can only take the following five prespecified values
 #' \code{"rademacher", "mammen", "webb", "std_gaussian", "gamma"}. For more

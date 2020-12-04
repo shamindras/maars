@@ -1,94 +1,197 @@
 ---
-title: "Standard Errors LA County Data"
+title: "Reproducing LA County Standard Errors from [@buja2019modelsasapproximationspart1]"
+# author: "Riccardo Fogliato, Shamindra Shrotriya"
 output: rmarkdown::html_vignette
+package: maar    
+bibliography: ../inst/REFERENCES.bib
 vignette: >
-  %\VignetteIndexEntry{Standard Errors LA County Data}
+  %\VignetteIndexEntry{Reproducing LA County Standard Errors from [@buja2019modelsasapproximationspart1]}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
+``` {r  include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  linewidth = 80
 )
 ```
 
-First, we'll load the `maar` package. You may install by uncommenting the `remote::install_github command` if you wish.
-```{r setup}
-#remotes::install_github('shamindras/maar')
-library(maar)
+```{r create_chunk_options, include=FALSE}
+source(here::here("R", "scripts_and_filters", "create-chunk-options.R"))
+source(here::here("R", "scripts_and_filters", "wrap-lines.R"))
 ```
 
-We try to replicate the results of table 1 in ... 
+## Setup and Installation
 
-Let's load the data and briefly examine it.
-```{r, load_data}
-df <- vroom::vroom('http://www-stat.wharton.upenn.edu/~buja/STAT-961/Homeless_LA_by_Census_Tracts.csv')
-DT::datatable(data = head(df))
+First, we'll load the `maar` package, and other `tidyverse` analysis packages.
+If you are a new user, you will need to manually run the following commands in a
+new in an `R` session before running the vignette code below:
+
+``` {r install_maar, eval=FALSE}
+install.packages(pkgs = c("tidyverse", "vroom", "remotes", "glue", 
+                          "knitr", "kable", "kableExtra"))
+remotes::install_github('shamindras/maar', force = TRUE)
 ```
+
+We will explicitly load the `tidyverse` set of packages to get access to the
+`magrittr` pipe (`%>%`) operator.
+
+``` {r load_pkgs, message=FALSE, warning=FALSE}
+library(tidyverse)
+```
+
+For all other functions we will refer to them explicitly using the
+`package::function` reference method to avoid ambiguity in the source package of
+the specific function used (to avoid function name conflicts).
+
+## Goal of Analysis
+
+We try to replicate the results of Table 1 in
+[@buja2019modelsasapproximationspart1], as shown below:
+
+``` {r table1_img, echo=FALSE, fig.cap="Table 1 from [@buja2019modelsasapproximationspart1]", out.width = '90%'}
+knitr::include_graphics(here::here("vignettes", "figures", "buja1_table1.png"))
+```
+
+## Loading the data
+
+Let's load the LA County Homeless persons data as used in
+[@buja2019modelsasapproximationspart1] and briefly examine it.
+
+``` {r load_data, linewidth=80, message=FALSE}
+# LA County source data url, use glue to split string in easy to read format
+url_la_county_dat <- glue::glue("http://www-stat.wharton.upenn.edu/~buja",
+                                "STAT-961/Homeless_LA_by_Census_Tracts.csv",
+                                .sep = "/")
+
+la_county_df <- vroom::vroom(file = url_la_county_dat)
+la_county_df %>% dim(x = .)
+```
+The loaded dataset contains `r dim(la_county_df)[1]` observations and
+`r dim(la_county_df)[2]` covariates.
+
+Let's view the first few rows to understand the structure of the data frame.
+
+``` {r load_data_rows}
+la_county_df %>% 
+  head(x = .) %>% 
+  knitr::kable(x = ., format = "html", digits = 3, align = "c")
+```
+
+It is already in tidy format [@wickham2014tidydata]. So we have imported the 
+data correctly, given that we match the column names in Table 1 of the [@buja2019modelsasapproximationspart1] paper.
 
 ## Fitting the OLS model
 
-We now fit an linear model of the number of homeless people (`StreetTotal`) on the other features via OLS.
-```{r}
-mod_fit <- lm(StreetTotal ~ ., df)
+We now fit an linear model of the count of homeless people (`StreetTotal`) as
+the response variable, against the other covariates using Ordinary Least Squares
+(OLS).
+
+``` {r mod_fit_lm}
+mod_fit <- stats::lm(formula = StreetTotal ~ ., data = la_county_df)
 ```
 
-## Computing standard errors 
+## Computing standard errors from OLS (Assuming Well Specification)
 
-Let's first obtain the coefficient's standard errors returned from the `lm` object.
-```{r}
-se_lm <- broom::tidy(mod_fit) %>% dplyr::select(term, std.error)
+Let's first obtain the standard errors for the fitted coefficients returned from
+the `lm` object. We can do this in a tidy manner using the `broom::tidy`
+function applied to our fitted `lm` object, and selecting only the required
+columns.
+
+``` {r se_fit_lm}
+se_lm <- broom::tidy(mod_fit) %>% 
+          dplyr::select(term, std.error) %>% 
+          dplyr::rename(.data = ., std.error.lm = std.error)
+se_lm %>% 
+  knitr::kable(x = ., format = "html", digits = 3, align = "c")
 ```
 
+## Computing standard errors from OLS using Empirical Bootstrap
 
-We now compute the standard errors via $10^3$ bootstrap replications of the dataset of the same size as the original dataset.
-```{r}
+We now compute the standard errors via $B = 10^{3}$ bootstrap replications of the
+dataset of the same size as the original dataset i.e. of the $B$ replications
+samples with replacement $n = 505$ observations from the entire data (which 
+contains $n = 505$ observations).
+
+``` {r se_emp_fit_lm, message=FALSE, warning=FALSE}
 se_emp <- maar::comp_empirical_bootstrap(mod_fit = mod_fit, B = 1000) %>%
-  tidyr::unnest(boot_out) %>%
-  dplyr::group_by(term) %>%
-  dplyr::summarise(std.error.boot = sd(estimate))
+            tidyr::unnest(boot_out) %>%
+            dplyr::group_by(term) %>%
+            dplyr::summarise(std.error.boot = sd(estimate))
 ```
 
-Then we obtain the standard errors using the White sandwich estimator.
-```{r}
-se_sand <- diag(maar::comp_sandwich_qr_var(mod_fit)) %>% sqrt()
+This now fits, the $B =  10^{3}$ replications. let's view the output.
+
+``` {r se_emp_fit_lm_table}
+se_emp %>% 
+  head(x = .) %>% 
+  knitr::kable(x = ., format = "html", digits = 3, align = "c")
 ```
+
+As we can see, the output is in tidy format as a `tibble` object. This makes it
+much more readily amenable for additional transformations using the `tidyverse`
+set of packages.
+
+## Computing standard errors from OLS using Sandwich Estimator
+
+Then we obtain the standard errors using the White sandwich estimator see
+[@white1980heteroskedasticconsistentcovest,
+@white1980usinglsapproxunknownregfuncs].
+
+``` {r se_sand_fit_lm}
+se_sand <- maar::comp_sandwich_qr_var(mod_fit) %>% diag(x = .) %>% sqrt(x = .)
+se_sand
+```
+
+**TODO:** We should change sandwich estimator to output a tibble with the Term.
 
 ## Comparing standard errors
 
 We combine the standard errors into one tibble.
-```{r}
+
+``` {r}
 se_comb <- broom::tidy(mod_fit) %>%
-  dplyr::select(term, estimate) %>%
-  tibble::add_column(std.error.lm = dplyr::pull(se_lm, std.error)) %>%
-  tibble::add_column(std.error.boot = dplyr::pull(se_emp, std.error.boot)) %>%
-  tibble::add_column(std.error.sand = se_sand)
-# se_comb %>% knitr::kable(x=.)
+            dplyr::select(term, estimate) %>%
+            dplyr::left_join(x = ., y = se_lm, by = "term") %>% 
+            dplyr::left_join(x = ., y = se_emp, by = "term") %>% 
+            tibble::add_column(std.error.sand = se_sand)
+
 se_comb %>%
-  DT::datatable(data = .) %>%
-  DT::formatRound(
-    table = ., columns = c("term", "estimate", "std.error.lm", "std.error.boot", "std.error.sand"),
-    # valueColumns = c('Term', 'Estimate', '$SE_{lin}$', '$SE_{boot}$', '$SE_{sand}$'),
-    digits = 3
-  )
+  purrr::set_names(x = ., 
+                   nm = c('Term', 'Estimate', '$SE_{\\text{lin}}$',
+                          '$SE_{\\text{boot}}$', '$SE_{\\text{sand}}$')) %>% 
+  knitr::kable(x = ., format = "html", digits = 3, align = "c", escape = TRUE)
 ```
 
-We can also compute the ratios of the standard errors and the t-statistics as in the paper.
-```{r}
+## Reproduce Table 1 from [@buja2019modelsasapproximationspart1]
+
+We can also compute the ratios of the standard errors and the t-statistics 
+as in Table 1 from [@buja2019modelsasapproximationspart1].
+
+``` {r}
 t_stats <- se_comb %>%
-  dplyr::mutate(
-    rat.boot.vs.lm = std.error.boot / std.error.lm,
-    rat.sand.vs.lm = std.error.sand / std.error.lm,
-    rat.sand.vs.boot = std.error.sand / std.error.boot,
-    t.lm = estimate / std.error.lm,
-    t.boot = estimate / std.error.boot,
-    t.sand = estimate / std.error.sand
-  )
-t_stats %>% DT::datatable(data = .) %>%
-  DT::formatRound(table = .,  columns =c("term", "estimate", "std.error.lm", "std.error.boot", "std.error.sand", "rat.boot.vs.lm", "rat.sand.vs.lm", "rat.sand.vs.boot", "t.lm", "t.boot", "t.sand"), digits = 3)
+            dplyr::mutate(
+              rat.boot.vs.lm = std.error.boot / std.error.lm,
+              rat.sand.vs.lm = std.error.sand / std.error.lm,
+              rat.sand.vs.boot = std.error.sand / std.error.boot,
+              t.lm = estimate / std.error.lm,
+              t.boot = estimate / std.error.boot,
+              t.sand = estimate / std.error.sand
+            )
+t_stats %>%
+  purrr::set_names(x = ., 
+                   nm = c("Term", '$\\widehat{\\beta}_{j}$', 
+                          '$SE_{\\text{lin}}$', '$SE_{\\text{boot}}$',
+                          '$SE_{\\text{sand}}$',
+                          "$\\frac{SE_{\\text{boot}}}{SE_{\\text{lin}}}$",
+                          "$\\frac{SE_{\\text{sand}}}{SE_{\\text{lin}}}$", 
+                          "$\\frac{SE_{\\text{sand}}}{SE_{\\text{boot}}}$",
+                          "$t_{\\text{lin}}$", "$t_{\\text{boot}}$", 
+                          "$t_{\\text{sand}}$")) %>%
+  knitr::kable(x = ., format = "html", digits = 3, 
+               align = "c", escape = TRUE)
 ```
 
-
-
+## References

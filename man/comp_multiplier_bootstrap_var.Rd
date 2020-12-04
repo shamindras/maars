@@ -9,8 +9,9 @@ comp_multiplier_bootstrap_var(mod_fit, B, weights_type)
 \arguments{
 \item{mod_fit}{An lm (OLS) object}
 
-\item{B}{The number of bootstrap replications
-#' @param weights_type The type of Multiplier bootstrap weights to generate.
+\item{B}{The number of bootstrap replications}
+
+\item{weights_type}{The type of Multiplier bootstrap weights to generate.
 Based on the \code{weighttype} option in the \code{Stata boottest} package,
 this can only take the following five prespecified values
 \code{"rademacher", "mammen", "webb", "std_gaussian", "gamma"}. For more

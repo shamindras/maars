@@ -29,13 +29,13 @@ Imports:
     tidyr,
     purrr,
     vroom,
-    DT
+    DT,
+    knitr
 Suggests: 
     spelling,
     testthat,
     roxygen2,
     covr,
-    knitr,
     rmarkdown
 RdMacros: Rdpack
 Encoding: UTF-8
