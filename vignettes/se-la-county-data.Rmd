@@ -14,7 +14,10 @@ vignette: >
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  linewidth = 80
+  linewidth = 80,
+  fig.align = 'center',
+  warning = FALSE,
+  message = FALSE
 )
 ```
 
@@ -38,7 +41,7 @@ remotes::install_github('shamindras/maar', force = TRUE)
 We will explicitly load the `tidyverse` set of packages to get access to the
 `magrittr` pipe (`%>%`) operator.
 
-``` {r load_pkgs, message=FALSE, warning=FALSE}
+``` {r load_pkgs}
 library(magrittr)
 ```
 
@@ -60,7 +63,7 @@ knitr::include_graphics(here::here("vignettes", "figures", "buja1_table1.png"))
 Let's load the LA County Homeless persons data as used in
 [@buja2019modelsasapproximationspart1] and briefly examine it.
 
-``` {r load_data, linewidth=80, message=FALSE}
+``` {r load_data}
 # LA County source data url, use glue to split string in easy to read format
 url_la_county_dat <- glue::glue("http://www-stat.wharton.upenn.edu/~buja",
                                 "STAT-961/Homeless_LA_by_Census_Tracts.csv",
@@ -106,7 +109,10 @@ se_lm <- broom::tidy(mod_fit) %>%
           dplyr::select(term, std.error) %>% 
           dplyr::rename(.data = ., std.error.lm = std.error)
 se_lm %>% 
-  knitr::kable(x = ., format = "html", digits = 3, align = "c") %>% 
+  purrr::set_names(x = ., 
+                   nm = c('Term', '$SE_{\\text{lin}}$')) %>% 
+  knitr::kable(x = ., format = "html", digits = 3, 
+               align = "c", escape = TRUE) %>% 
   kableExtra::kable_styling(position = "center")
 ```
 
@@ -129,7 +135,10 @@ This now fits, the $B =  10^{3}$ replications. let's view the output.
 ``` {r se_emp_fit_lm_table}
 se_emp %>% 
   head(x = .) %>% 
-  knitr::kable(x = ., format = "html", digits = 3, align = "c") %>% 
+  purrr::set_names(x = ., 
+                   nm = c('Term', '$SE_{\\text{boot}}$')) %>% 
+  knitr::kable(x = ., format = "html", digits = 3, 
+               align = "c", escape = TRUE) %>% 
   kableExtra::kable_styling(position = "center")
 ```
 
@@ -154,7 +163,7 @@ se_sand
 
 We combine the standard errors into one tibble.
 
-``` {r}
+``` {r se_comb}
 se_comb <- broom::tidy(mod_fit) %>%
             dplyr::select(term, estimate) %>%
             dplyr::left_join(x = ., y = se_lm, by = "term") %>% 
@@ -163,7 +172,8 @@ se_comb <- broom::tidy(mod_fit) %>%
 
 se_comb %>%
   purrr::set_names(x = ., 
-                   nm = c('Term', 'Estimate', '$SE_{\\text{lin}}$',
+                   nm = c('Term', '$\\widehat{\\beta}_{j}$', 
+                          '$SE_{\\text{lin}}$',
                           '$SE_{\\text{boot}}$', '$SE_{\\text{sand}}$')) %>% 
   knitr::kable(x = ., format = "html", digits = 3, 
                align = "c", escape = TRUE) %>% 
@@ -175,7 +185,7 @@ se_comb %>%
 We can also compute the ratios of the standard errors and the t-statistics 
 as in Table 1 from [@buja2019modelsasapproximationspart1].
 
-``` {r}
+``` {r se_comb_t_stats}
 t_stats <- se_comb %>%
             dplyr::mutate(
               rat.boot.vs.lm = std.error.boot / std.error.lm,

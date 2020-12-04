@@ -105,7 +105,7 @@
 <h2 class="hasAnchor">
 <a href="#goal-of-analysis" class="anchor"></a>Goal of Analysis</h2>
 <p>We try to replicate the results of Table 1 in <span class="citation">(Buja et al. 2019)</span>, as shown below:</p>
-<div class="figure">
+<div class="figure" style="text-align: center">
 <img src="figures/buja1_table1.png" alt="Table 1 from [@buja2019modelsasapproximationspart1]" width="90%"><p class="caption">
 Table 1 from <span class="citation">(Buja et al. 2019)</span>
 </p>
@@ -314,15 +314,18 @@ PercIndustrial
           <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">term</span>, <span class="va">std.error</span><span class="op">)</span> <span class="op">%&gt;%</span> 
           <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span>.data <span class="op">=</span> <span class="va">.</span>, std.error.lm <span class="op">=</span> <span class="va">std.error</span><span class="op">)</span>
 <span class="va">se_lm</span> <span class="op">%&gt;%</span> 
-  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">.</span>, format <span class="op">=</span> <span class="st">"html"</span>, digits <span class="op">=</span> <span class="fl">3</span>, align <span class="op">=</span> <span class="st">"c"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/set_names.html">set_names</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">.</span>, 
+                   nm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'Term'</span>, <span class="st">'$SE_{\\text{lin}}$'</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">.</span>, format <span class="op">=</span> <span class="st">"html"</span>, digits <span class="op">=</span> <span class="fl">3</span>, 
+               align <span class="op">=</span> <span class="st">"c"</span>, escape <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu">kableExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/kable_styling.html">kable_styling</a></span><span class="op">(</span>position <span class="op">=</span> <span class="st">"center"</span><span class="op">)</span></code></pre></div>
 <table class="table table">
 <thead><tr>
 <th style="text-align:center;">
-term
+Term
 </th>
 <th style="text-align:center;">
-std.error.lm
+<span class="math inline">\(SE_{\text{lin}}\)</span>
 </th>
 </tr></thead>
 <tbody>
@@ -398,15 +401,18 @@ PercIndustrial
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">se_emp</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">.</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">.</span>, format <span class="op">=</span> <span class="st">"html"</span>, digits <span class="op">=</span> <span class="fl">3</span>, align <span class="op">=</span> <span class="st">"c"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/set_names.html">set_names</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">.</span>, 
+                   nm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'Term'</span>, <span class="st">'$SE_{\\text{boot}}$'</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">.</span>, format <span class="op">=</span> <span class="st">"html"</span>, digits <span class="op">=</span> <span class="fl">3</span>, 
+               align <span class="op">=</span> <span class="st">"c"</span>, escape <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu">kableExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/kable_styling.html">kable_styling</a></span><span class="op">(</span>position <span class="op">=</span> <span class="st">"center"</span><span class="op">)</span></code></pre></div>
 <table class="table table">
 <thead><tr>
 <th style="text-align:center;">
-term
+Term
 </th>
 <th style="text-align:center;">
-std.error.boot
+<span class="math inline">\(SE_{\text{boot}}\)</span>
 </th>
 </tr></thead>
 <tbody>
@@ -415,7 +421,7 @@ std.error.boot
 (Intercept)
 </td>
 <td style="text-align:center;">
-16.835
+16.599
 </td>
 </tr>
 <tr>
@@ -423,7 +429,7 @@ std.error.boot
 <code>MedianInc ($1000)</code>
 </td>
 <td style="text-align:center;">
-0.109
+0.113
 </td>
 </tr>
 <tr>
@@ -431,7 +437,7 @@ std.error.boot
 PercCommercial
 </td>
 <td style="text-align:center;">
-0.388
+0.393
 </td>
 </tr>
 <tr>
@@ -439,7 +445,7 @@ PercCommercial
 PercIndustrial
 </td>
 <td style="text-align:center;">
-0.586
+0.612
 </td>
 </tr>
 <tr>
@@ -447,7 +453,7 @@ PercIndustrial
 PercMinority
 </td>
 <td style="text-align:center;">
-0.160
+0.169
 </td>
 </tr>
 <tr>
@@ -455,7 +461,7 @@ PercMinority
 PercResidential
 </td>
 <td style="text-align:center;">
-0.112
+0.113
 </td>
 </tr>
 </tbody>
@@ -485,7 +491,8 @@ PercResidential
 
 <span class="va">se_comb</span> <span class="op">%&gt;%</span>
   <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/set_names.html">set_names</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">.</span>, 
-                   nm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'Term'</span>, <span class="st">'Estimate'</span>, <span class="st">'$SE_{\\text{lin}}$'</span>,
+                   nm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'Term'</span>, <span class="st">'$\\widehat{\\beta}_{j}$'</span>, 
+                          <span class="st">'$SE_{\\text{lin}}$'</span>,
                           <span class="st">'$SE_{\\text{boot}}$'</span>, <span class="st">'$SE_{\\text{sand}}$'</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">.</span>, format <span class="op">=</span> <span class="st">"html"</span>, digits <span class="op">=</span> <span class="fl">3</span>, 
                align <span class="op">=</span> <span class="st">"c"</span>, escape <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">%&gt;%</span> 
@@ -496,7 +503,7 @@ PercResidential
 Term
 </th>
 <th style="text-align:center;">
-Estimate
+<span class="math inline">\(\widehat{\beta}_{j}\)</span>
 </th>
 <th style="text-align:center;">
 <span class="math inline">\(SE_{\text{lin}}\)</span>
@@ -520,7 +527,7 @@ Estimate
 22.767
 </td>
 <td style="text-align:center;">
-16.835
+16.599
 </td>
 <td style="text-align:center;">
 15.909
@@ -537,7 +544,7 @@ Estimate
 0.187
 </td>
 <td style="text-align:center;">
-0.109
+0.113
 </td>
 <td style="text-align:center;">
 0.105
@@ -554,7 +561,7 @@ PercVacant
 0.901
 </td>
 <td style="text-align:center;">
-1.411
+1.349
 </td>
 <td style="text-align:center;">
 1.287
@@ -571,7 +578,7 @@ PercMinority
 0.176
 </td>
 <td style="text-align:center;">
-0.160
+0.169
 </td>
 <td style="text-align:center;">
 0.162
@@ -588,7 +595,7 @@ PercResidential
 0.171
 </td>
 <td style="text-align:center;">
-0.112
+0.113
 </td>
 <td style="text-align:center;">
 0.108
@@ -605,7 +612,7 @@ PercCommercial
 0.273
 </td>
 <td style="text-align:center;">
-0.388
+0.393
 </td>
 <td style="text-align:center;">
 0.388
@@ -622,7 +629,7 @@ PercIndustrial
 0.321
 </td>
 <td style="text-align:center;">
-0.586
+0.612
 </td>
 <td style="text-align:center;">
 0.579
@@ -707,25 +714,25 @@ Term
 22.767
 </td>
 <td style="text-align:center;">
-16.835
+16.599
 </td>
 <td style="text-align:center;">
 15.909
 </td>
 <td style="text-align:center;">
-0.739
+0.729
 </td>
 <td style="text-align:center;">
 0.699
 </td>
 <td style="text-align:center;">
-0.945
+0.958
 </td>
 <td style="text-align:center;">
 0.033
 </td>
 <td style="text-align:center;">
-0.045
+0.046
 </td>
 <td style="text-align:center;">
 0.048
@@ -742,25 +749,25 @@ Term
 0.187
 </td>
 <td style="text-align:center;">
-0.109
+0.113
 </td>
 <td style="text-align:center;">
 0.105
 </td>
 <td style="text-align:center;">
-0.582
+0.602
 </td>
 <td style="text-align:center;">
 0.560
 </td>
 <td style="text-align:center;">
-0.961
+0.929
 </td>
 <td style="text-align:center;">
 -0.977
 </td>
 <td style="text-align:center;">
--1.678
+-1.621
 </td>
 <td style="text-align:center;">
 -1.745
@@ -777,25 +784,25 @@ PercVacant
 0.901
 </td>
 <td style="text-align:center;">
-1.411
+1.349
 </td>
 <td style="text-align:center;">
 1.287
 </td>
 <td style="text-align:center;">
-1.566
+1.498
 </td>
 <td style="text-align:center;">
 1.429
 </td>
 <td style="text-align:center;">
-0.912
+0.954
 </td>
 <td style="text-align:center;">
 5.140
 </td>
 <td style="text-align:center;">
-3.281
+3.432
 </td>
 <td style="text-align:center;">
 3.597
@@ -812,25 +819,25 @@ PercMinority
 0.176
 </td>
 <td style="text-align:center;">
-0.160
+0.169
 </td>
 <td style="text-align:center;">
 0.162
 </td>
 <td style="text-align:center;">
-0.908
+0.957
 </td>
 <td style="text-align:center;">
 0.921
 </td>
 <td style="text-align:center;">
-1.015
+0.962
 </td>
 <td style="text-align:center;">
 0.701
 </td>
 <td style="text-align:center;">
-0.772
+0.732
 </td>
 <td style="text-align:center;">
 0.761
@@ -847,25 +854,25 @@ PercResidential
 0.171
 </td>
 <td style="text-align:center;">
-0.112
+0.113
 </td>
 <td style="text-align:center;">
 0.108
 </td>
 <td style="text-align:center;">
-0.657
+0.662
 </td>
 <td style="text-align:center;">
 0.633
 </td>
 <td style="text-align:center;">
-0.964
+0.957
 </td>
 <td style="text-align:center;">
 -0.292
 </td>
 <td style="text-align:center;">
--0.445
+-0.442
 </td>
 <td style="text-align:center;">
 -0.462
@@ -882,25 +889,25 @@ PercCommercial
 0.273
 </td>
 <td style="text-align:center;">
-0.388
+0.393
 </td>
 <td style="text-align:center;">
 0.388
 </td>
 <td style="text-align:center;">
-1.423
+1.440
 </td>
 <td style="text-align:center;">
 1.421
 </td>
 <td style="text-align:center;">
-0.999
+0.987
 </td>
 <td style="text-align:center;">
 2.700
 </td>
 <td style="text-align:center;">
-1.898
+1.875
 </td>
 <td style="text-align:center;">
 1.901
@@ -917,25 +924,25 @@ PercIndustrial
 0.321
 </td>
 <td style="text-align:center;">
-0.586
+0.612
 </td>
 <td style="text-align:center;">
 0.579
 </td>
 <td style="text-align:center;">
-1.823
+1.903
 </td>
 <td style="text-align:center;">
 1.801
 </td>
 <td style="text-align:center;">
-0.988
+0.946
 </td>
 <td style="text-align:center;">
 2.818
 </td>
 <td style="text-align:center;">
-1.546
+1.480
 </td>
 <td style="text-align:center;">
 1.565
