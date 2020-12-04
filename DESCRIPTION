@@ -30,7 +30,8 @@ Imports:
     purrr,
     vroom,
     DT,
-    knitr
+    knitr,
+    kableExtra
 Suggests: 
     spelling,
     testthat,
