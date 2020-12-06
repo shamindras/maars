@@ -94,7 +94,7 @@
 <p>First, we’ll load the <code>maar</code> package, and other <code>tidyverse</code> analysis packages. If you are a new user, you will need to manually run the following commands in a new in an <code>R</code> session before running the vignette code below:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span>pkgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"tidyverse"</span>, <span class="st">"vroom"</span>, <span class="st">"glue"</span>, <span class="st">"magrittr"</span>, 
-                          <span class="st">"knitr"</span>, <span class="st">"kableExtra"</span>, <span class="st">"remotes"</span><span class="op">)</span><span class="op">)</span>
+                          <span class="st">"knitr"</span>, <span class="st">"kableExtra"</span>, <span class="st">"remotes"</span>, <span class="st">"magick"</span><span class="op">)</span><span class="op">)</span>
 <span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">'shamindras/maar'</span>, force <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p>We will explicitly load the <code>tidyverse</code> set of packages to get access to the <code>magrittr</code> pipe (<code><a href="../reference/%&gt;%.html">%&gt;%</a></code>) operator.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
@@ -421,7 +421,7 @@ Term
 (Intercept)
 </td>
 <td style="text-align:center;">
-16.702
+16.238
 </td>
 </tr>
 <tr>
@@ -429,7 +429,7 @@ Term
 <code>MedianInc ($1000)</code>
 </td>
 <td style="text-align:center;">
-0.115
+0.117
 </td>
 </tr>
 <tr>
@@ -437,7 +437,7 @@ Term
 PercCommercial
 </td>
 <td style="text-align:center;">
-0.407
+0.394
 </td>
 </tr>
 <tr>
@@ -453,7 +453,7 @@ PercIndustrial
 PercMinority
 </td>
 <td style="text-align:center;">
-0.167
+0.163
 </td>
 </tr>
 <tr>
@@ -461,7 +461,7 @@ PercMinority
 PercResidential
 </td>
 <td style="text-align:center;">
-0.109
+0.112
 </td>
 </tr>
 </tbody>
@@ -527,7 +527,7 @@ Term
 22.767
 </td>
 <td style="text-align:center;">
-16.702
+16.238
 </td>
 <td style="text-align:center;">
 15.909
@@ -544,7 +544,7 @@ Term
 0.187
 </td>
 <td style="text-align:center;">
-0.115
+0.117
 </td>
 <td style="text-align:center;">
 0.105
@@ -561,7 +561,7 @@ PercVacant
 0.901
 </td>
 <td style="text-align:center;">
-1.407
+1.310
 </td>
 <td style="text-align:center;">
 1.287
@@ -578,7 +578,7 @@ PercMinority
 0.176
 </td>
 <td style="text-align:center;">
-0.167
+0.163
 </td>
 <td style="text-align:center;">
 0.162
@@ -595,7 +595,7 @@ PercResidential
 0.171
 </td>
 <td style="text-align:center;">
-0.109
+0.112
 </td>
 <td style="text-align:center;">
 0.108
@@ -612,7 +612,7 @@ PercCommercial
 0.273
 </td>
 <td style="text-align:center;">
-0.407
+0.394
 </td>
 <td style="text-align:center;">
 0.388
@@ -714,25 +714,25 @@ Term
 22.767
 </td>
 <td style="text-align:center;">
-16.702
+16.238
 </td>
 <td style="text-align:center;">
 15.909
 </td>
 <td style="text-align:center;">
-0.734
+0.713
 </td>
 <td style="text-align:center;">
 0.699
 </td>
 <td style="text-align:center;">
-0.952
+0.980
 </td>
 <td style="text-align:center;">
 0.033
 </td>
 <td style="text-align:center;">
-0.046
+0.047
 </td>
 <td style="text-align:center;">
 0.048
@@ -749,25 +749,25 @@ Term
 0.187
 </td>
 <td style="text-align:center;">
-0.115
+0.117
 </td>
 <td style="text-align:center;">
 0.105
 </td>
 <td style="text-align:center;">
-0.613
+0.624
 </td>
 <td style="text-align:center;">
 0.560
 </td>
 <td style="text-align:center;">
-0.914
+0.897
 </td>
 <td style="text-align:center;">
 -0.977
 </td>
 <td style="text-align:center;">
--1.595
+-1.565
 </td>
 <td style="text-align:center;">
 -1.745
@@ -784,25 +784,25 @@ PercVacant
 0.901
 </td>
 <td style="text-align:center;">
-1.407
+1.310
 </td>
 <td style="text-align:center;">
 1.287
 </td>
 <td style="text-align:center;">
-1.562
+1.455
 </td>
 <td style="text-align:center;">
 1.429
 </td>
 <td style="text-align:center;">
-0.915
+0.982
 </td>
 <td style="text-align:center;">
 5.140
 </td>
 <td style="text-align:center;">
-3.290
+3.532
 </td>
 <td style="text-align:center;">
 3.597
@@ -819,25 +819,25 @@ PercMinority
 0.176
 </td>
 <td style="text-align:center;">
-0.167
+0.163
 </td>
 <td style="text-align:center;">
 0.162
 </td>
 <td style="text-align:center;">
-0.951
+0.927
 </td>
 <td style="text-align:center;">
 0.921
 </td>
 <td style="text-align:center;">
-0.969
+0.993
 </td>
 <td style="text-align:center;">
 0.701
 </td>
 <td style="text-align:center;">
-0.737
+0.756
 </td>
 <td style="text-align:center;">
 0.761
@@ -854,25 +854,25 @@ PercResidential
 0.171
 </td>
 <td style="text-align:center;">
-0.109
+0.112
 </td>
 <td style="text-align:center;">
 0.108
 </td>
 <td style="text-align:center;">
-0.638
+0.655
 </td>
 <td style="text-align:center;">
 0.633
 </td>
 <td style="text-align:center;">
-0.992
+0.967
 </td>
 <td style="text-align:center;">
 -0.292
 </td>
 <td style="text-align:center;">
--0.458
+-0.446
 </td>
 <td style="text-align:center;">
 -0.462
@@ -889,25 +889,25 @@ PercCommercial
 0.273
 </td>
 <td style="text-align:center;">
-0.407
+0.394
 </td>
 <td style="text-align:center;">
 0.388
 </td>
 <td style="text-align:center;">
-1.490
+1.441
 </td>
 <td style="text-align:center;">
 1.421
 </td>
 <td style="text-align:center;">
-0.953
+0.986
 </td>
 <td style="text-align:center;">
 2.700
 </td>
 <td style="text-align:center;">
-1.812
+1.873
 </td>
 <td style="text-align:center;">
 1.901
@@ -930,19 +930,19 @@ PercIndustrial
 0.579
 </td>
 <td style="text-align:center;">
-1.800
+1.798
 </td>
 <td style="text-align:center;">
 1.801
 </td>
 <td style="text-align:center;">
-1.000
+1.001
 </td>
 <td style="text-align:center;">
 2.818
 </td>
 <td style="text-align:center;">
-1.565
+1.567
 </td>
 <td style="text-align:center;">
 1.565

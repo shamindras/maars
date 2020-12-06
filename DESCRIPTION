@@ -31,7 +31,8 @@ Imports:
     vroom,
     DT,
     knitr,
-    kableExtra
+    kableExtra,
+    magick
 Suggests: 
     spelling,
     testthat,
