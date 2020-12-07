@@ -150,7 +150,7 @@ see also Buja et al. (2019) and Buja et al. (2019)
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>(matrix) White sandwich estimator of variance for OLS regression</p>
+    <p>(tibble) White sandwich estimator of variance for OLS regression</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Buja A, Brown L, Berk R, George E, Pitkin E, Traskin M, Zhang K, Zhao L (2019).
@@ -177,7 +177,7 @@ ISSN 0012-9682, doi: <a href='https://doi.org/10.2307/1912934'>10.2307/1912934</
 <span class='va'>X</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>
 <span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fl'>2</span> <span class='op'>+</span> <span class='va'>X</span> <span class='op'>*</span> <span class='fl'>1</span> <span class='op'>+</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>10</span><span class='op'>)</span>
 <span class='va'>lm_fit</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>y</span> <span class='op'>~</span> <span class='va'>X</span><span class='op'>)</span>
-<span class='va'>sandwich_qr_var</span> <span class='op'>&lt;-</span> <span class='fu'>comp_sandwich_qr_var</span><span class='op'>(</span><span class='va'>lm_fit</span><span class='op'>)</span>
+<span class='va'>sandwich_qr_std_err</span> <span class='op'>&lt;-</span> <span class='fu'>comp_sandwich_qr_var</span><span class='op'>(</span><span class='va'>lm_fit</span><span class='op'>)</span>
 <span class='op'>}</span>
 </div></pre>
   </div>

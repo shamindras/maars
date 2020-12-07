@@ -117,17 +117,17 @@ se_lm %>%
 ```
 
 ```{r se_fit_lm_save_image, include=FALSE}
-broom::tidy(mod_fit) %>% 
-  dplyr::select(term, estimate, std.error) %>%
-  purrr::set_names(x = ., 
-                   nm = c('Term', '$\\widehat{\\beta}_{j}$', 
-                          '$SE_{\\text{lin}}$')) %>% 
-  knitr::kable(x = ., format = "latex", digits = 3, 
-               align = "c", escape = FALSE) %>% 
-  kableExtra::kable_styling(position = "center") %>% 
-  kableExtra::as_image(x = ., width = 15, 
-                       file = here::here("vignettes","figures",
-                                          "output", "r00_mod_lm_fit.png"))
+# broom::tidy(mod_fit) %>% 
+#   dplyr::select(term, estimate, std.error) %>%
+#   purrr::set_names(x = ., 
+#                    nm = c('Term', '$\\widehat{\\beta}_{j}$', 
+#                           '$SE_{\\text{lin}}$')) %>% 
+#   knitr::kable(x = ., format = "latex", digits = 3, 
+#                align = "c", escape = FALSE) %>% 
+#   kableExtra::kable_styling(position = "center") %>% 
+#   kableExtra::as_image(x = ., width = 15, 
+#                        file = here::here("vignettes","figures",
+#                                           "output", "r00_mod_lm_fit.png"))
 ```
 
 
@@ -158,18 +158,18 @@ se_emp %>%
 ```
 
 ```{r se_emp_save_image, include=FALSE}
-se_emp %>% 
-  head(x = .) %>% 
-  purrr::set_names(x = ., 
-                   nm = c('Term', '$SE_{\\text{boot}}$')) %>% 
-  knitr::kable(x = ., format = "latex", digits = 3, 
-               align = "c", escape = FALSE) %>% 
-  kableExtra::kable_styling(position = "center",
-                            latex_options = "scale_down") %>% 
-  kableExtra::as_image(x = ., width = 11, 
-                       file = here::here("vignettes","figures",
-                                          "output", "r02_se_emp.png"),
-                       density = 1000)
+# se_emp %>% 
+#   head(x = .) %>% 
+#   purrr::set_names(x = ., 
+#                    nm = c('Term', '$SE_{\\text{boot}}$')) %>% 
+#   knitr::kable(x = ., format = "latex", digits = 3, 
+#                align = "c", escape = FALSE) %>% 
+#   kableExtra::kable_styling(position = "center",
+#                             latex_options = "scale_down") %>% 
+#   kableExtra::as_image(x = ., width = 11, 
+#                        file = here::here("vignettes","figures",
+#                                           "output", "r02_se_emp.png"),
+#                        density = 1000)
 ```
 
 As we can see, the output is in tidy format as a `tibble` object. This makes it
@@ -183,23 +183,23 @@ Then we obtain the standard errors using the White sandwich estimator see
 @white1980usinglsapproxunknownregfuncs].
 
 ``` {r se_sand_fit_lm}
-se_sand <- maar::comp_sandwich_qr_var(mod_fit) %>% diag(x = .) %>% sqrt(x = .)
+se_sand <- maar::comp_sandwich_qr_var(mod_fit) %>% dplyr::select(term, std.error.sand)
 se_sand
 ```
 
 ```{r se_sand_save_image, include=FALSE}
-broom::tidy(mod_fit) %>%
-  dplyr::select(term, estimate, std.error) %>% 
-  tibble::add_column(std.error.sand = se_sand) %>%
-  purrr::set_names(x = ., 
-                   nm = c('Term', '$\\widehat{\\beta}_{j}$', 
-                          '$SE_{\\text{lin}}$', '$SE_{\\text{sand}}$')) %>% 
-  knitr::kable(x = ., format = "latex", digits = 3, 
-               align = "c", escape = FALSE) %>% 
-  kableExtra::kable_styling(position = "center") %>% 
-  kableExtra::as_image(x = ., width = 15, 
-                       file = here::here("vignettes","figures",
-                                          "output", "r01_se_sand.png"))
+# broom::tidy(mod_fit) %>%
+#   dplyr::select(term, estimate, std.error) %>% 
+#   tibble::add_column(std.error.sand = se_sand) %>%
+#   purrr::set_names(x = ., 
+#                    nm = c('Term', '$\\widehat{\\beta}_{j}$', 
+#                           '$SE_{\\text{lin}}$', '$SE_{\\text{sand}}$')) %>% 
+#   knitr::kable(x = ., format = "latex", digits = 3, 
+#                align = "c", escape = FALSE) %>% 
+#   kableExtra::kable_styling(position = "center") %>% 
+#   kableExtra::as_image(x = ., width = 15, 
+#                        file = here::here("vignettes","figures",
+#                                           "output", "r01_se_sand.png"))
 ```
 
 **TODO:** We should change sandwich estimator to output a tibble with the Term.
@@ -213,7 +213,7 @@ se_comb <- broom::tidy(mod_fit) %>%
             dplyr::select(term, estimate) %>%
             dplyr::left_join(x = ., y = se_lm, by = "term") %>% 
             dplyr::left_join(x = ., y = se_emp, by = "term") %>% 
-            tibble::add_column(std.error.sand = se_sand)
+            dplyr::left_join(x = ., y = se_sand, by = "term")
 
 se_comb %>%
   purrr::set_names(x = ., 
@@ -226,17 +226,17 @@ se_comb %>%
 ```
 
 ```{r se_comb_save_image, include=FALSE}
-se_comb %>%
-  purrr::set_names(x = ., 
-                   nm = c('Term', '$\\widehat{\\beta}_{j}$', 
-                          '$SE_{\\text{lin}}$',
-                          '$SE_{\\text{boot}}$', '$SE_{\\text{sand}}$')) %>% 
-  knitr::kable(x = ., format = "latex", digits = 3, 
-               align = "c", escape = FALSE) %>% 
-  kableExtra::kable_styling(position = "center") %>% 
-  kableExtra::as_image(x = ., width = 15, 
-                       file = here::here("vignettes","figures",
-                                          "output", "r05_se_comb.png"))
+# se_comb %>%
+#   purrr::set_names(x = ., 
+#                    nm = c('Term', '$\\widehat{\\beta}_{j}$', 
+#                           '$SE_{\\text{lin}}$',
+#                           '$SE_{\\text{boot}}$', '$SE_{\\text{sand}}$')) %>% 
+#   knitr::kable(x = ., format = "latex", digits = 3, 
+#                align = "c", escape = FALSE) %>% 
+#   kableExtra::kable_styling(position = "center") %>% 
+#   kableExtra::as_image(x = ., width = 15, 
+#                        file = here::here("vignettes","figures",
+#                                           "output", "r05_se_comb.png"))
 ```
 
 ## Reproduce Table 1 from [@buja2019modelsasapproximationspart1]
@@ -270,24 +270,24 @@ t_stats %>%
 ```
 
 ```{r se_comb_t_stats_save_image, include=FALSE}
-t_stats %>%
-  purrr::set_names(x = ., 
-                   nm = c("Term", '$\\widehat{\\beta}_{j}$', 
-                          '$SE_{\\text{lin}}$', '$SE_{\\text{boot}}$',
-                          '$SE_{\\text{sand}}$',
-                          "$\\frac{SE_{\\text{boot}}}{SE_{\\text{lin}}}$",
-                          "$\\frac{SE_{\\text{sand}}}{SE_{\\text{lin}}}$", 
-                          "$\\frac{SE_{\\text{sand}}}{SE_{\\text{boot}}}$",
-                          "$t_{\\text{lin}}$", "$t_{\\text{boot}}$", 
-                          "$t_{\\text{sand}}$")) %>%
-  knitr::kable(x = ., format = "latex", digits = 3, 
-               align = "c", escape = FALSE) %>% 
-  kableExtra::kable_styling(position = "center",
-                            latex_options = "scale_down") %>% 
-  kableExtra::as_image(x = ., width = 11, 
-                       file = here::here("vignettes","figures",
-                                          "output", "r06_se_comb_t_stats.png"),
-                       density = 1000)
+# t_stats %>%
+#   purrr::set_names(x = ., 
+#                    nm = c("Term", '$\\widehat{\\beta}_{j}$', 
+#                           '$SE_{\\text{lin}}$', '$SE_{\\text{boot}}$',
+#                           '$SE_{\\text{sand}}$',
+#                           "$\\frac{SE_{\\text{boot}}}{SE_{\\text{lin}}}$",
+#                           "$\\frac{SE_{\\text{sand}}}{SE_{\\text{lin}}}$", 
+#                           "$\\frac{SE_{\\text{sand}}}{SE_{\\text{boot}}}$",
+#                           "$t_{\\text{lin}}$", "$t_{\\text{boot}}$", 
+#                           "$t_{\\text{sand}}$")) %>%
+#   knitr::kable(x = ., format = "latex", digits = 3, 
+#                align = "c", escape = FALSE) %>% 
+#   kableExtra::kable_styling(position = "center",
+#                             latex_options = "scale_down") %>% 
+#   kableExtra::as_image(x = ., width = 11, 
+#                        file = here::here("vignettes","figures",
+#                                           "output", "r06_se_comb_t_stats.png"),
+#                        density = 1000)
 ```
 
 

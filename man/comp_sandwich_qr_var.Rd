@@ -10,7 +10,7 @@ comp_sandwich_qr_var(mod_fit)
 \item{mod_fit}{An lm (OLS) object}
 }
 \value{
-(matrix) White sandwich estimator of variance for OLS regression
+(tibble) White sandwich estimator of variance for OLS regression
 }
 \description{
 Compute the White sandwich estimator of standard errors for
@@ -24,7 +24,7 @@ n <- 1e5
 X <- stats::rnorm(n, 0, 1)
 y <- 2 + X * 1 + stats::rnorm(n, 0, 10)
 lm_fit <- stats::lm(y ~ X)
-sandwich_qr_var <- comp_sandwich_qr_var(lm_fit)
+sandwich_qr_std_err <- comp_sandwich_qr_var(lm_fit)
 }
 }
 \references{
