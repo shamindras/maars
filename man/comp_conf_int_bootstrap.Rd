@@ -15,8 +15,7 @@ comp_conf_int_bootstrap(boot_out, probs = c(0.025, 0.975), group_vars = "term")
 \item{group_vars}{A vector of characters with the variables used to form the groups}
 }
 \value{
-A tibble containing the number of the bootstrapped data set (b),
-the names of the regressor under reweighting, and the sets of model estimates
+A tibble containing the quantiles (x) and the probabilities (q) for  group_vars
 }
 \description{
 Confidence intervals for regression models estimates on bootstrapped data sets
@@ -26,7 +25,7 @@ It returns the corresponding quantiles.
 }
 \examples{
 \dontrun{
-# Get OLS estimates under reweighting of regressor X1
+# Get confidence interval for OLS estimates via bootstrap
 n <- 1e3
 X1 <- stats::rnorm(n, 0, 1)
 X2 <- stats::rnorm(n, 0, 3)

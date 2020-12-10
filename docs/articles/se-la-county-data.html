@@ -91,7 +91,7 @@
 <div id="setup-and-installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#setup-and-installation" class="anchor"></a>Setup and Installation</h2>
-<p>First, we’ll load the <code>maar</code> package, and other <code>tidyverse</code> analysis packages. If you are a new user, you will need to manually run the following commands in a new in an <code>R</code> session before running the vignette code below:</p>
+<p>First, we’ll load the <code>maars</code> package, and other <code>tidyverse</code> analysis packages. If you are a new user, you will need to manually run the following commands in a new in an <code>R</code> session before running the vignette code below:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span>pkgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"tidyverse"</span>, <span class="st">"vroom"</span>, <span class="st">"glue"</span>, <span class="st">"magrittr"</span>, 
                           <span class="st">"knitr"</span>, <span class="st">"kableExtra"</span>, <span class="st">"remotes"</span>, <span class="st">"magick"</span><span class="op">)</span><span class="op">)</span>
@@ -392,13 +392,29 @@ PercIndustrial
 <h2 class="hasAnchor">
 <a href="#computing-standard-errors-from-ols-using-empirical-bootstrap" class="anchor"></a>Computing standard errors from OLS using Empirical Bootstrap</h2>
 <p>We now compute the standard errors via <span class="math inline">\(B = 10^{3}\)</span> bootstrap replications of the dataset of the same size as the original dataset i.e. of the <span class="math inline">\(B\)</span> replications samples with replacement <span class="math inline">\(n = 505\)</span> observations from the entire data (which contains <span class="math inline">\(n = 505\)</span> observations).</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">se_emp</span> <span class="op">&lt;-</span> <span class="fu">maar</span><span class="fu">::</span><span class="fu"><a href="../reference/comp_empirical_bootstrap.html">comp_empirical_bootstrap</a></span><span class="op">(</span>mod_fit <span class="op">=</span> <span class="va">mod_fit</span>, B <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span> <span class="op">%&gt;%</span>
+<p>Let’s first get the OLS estimates.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>coef_emp_boot <span class="ot">&lt;-</span> maar<span class="sc">::</span><span class="fu">comp_empirical_bootstrap</span>(<span class="at">mod_fit =</span> mod_fit, <span class="at">B =</span> <span class="dv">1000</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>dplyr<span class="sc">::</span><span class="fu">glimpse</span>(coef_emp_boot)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Rows: 1,000</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Columns: 3</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ b &lt;int&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 1…</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ m &lt;int&gt; 505, 505, 505, 505, 505, 505, 505, 505, 505, 505, 505, 505, …</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ boot_out &lt;list&gt; [&lt;tbl_df[7 x 2]&gt;, &lt;tbl_df[7 x 2]&gt;, &lt;tbl_df[7 x 2]&gt;,</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="sc">&lt;</span>tbl_df…</span></code></pre></div>
+<p>We can visualize the distribution of the variance to check whether it well approximates the normal distribution.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">qnorm_boot</span> <span class="op">&lt;-</span> <span class="fu">maar</span><span class="fu">::</span><span class="fu"><a href="../reference/qqnorm_bootstrap.html">qqnorm_bootstrap</a></span><span class="op">(</span><span class="va">coef_emp_boot</span><span class="op">)</span>
+<span class="va">qnorm_boot</span></code></pre></div>
+<p><img src="se-la-county-data_files/figure-html/emp_qqnorm-1.png" width="700" style="display: block; margin: auto;"></p>
+<p>The distribution of the OLS coefficients estimates appears to be approximately normal. Thanks to the fairly large sample size, we can assume to be in the asymptotic regime.</p>
+<p>Let’s now compute the standard errors from the outcome of the bootstrap. This can be done through the following function.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">se_emp</span> <span class="op">&lt;-</span> <span class="va">coef_emp_boot</span> <span class="op">%&gt;%</span>
             <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/nest.html">unnest</a></span><span class="op">(</span><span class="va">boot_out</span><span class="op">)</span> <span class="op">%&gt;%</span>
             <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">term</span><span class="op">)</span> <span class="op">%&gt;%</span>
             <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span>std.error.boot <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">estimate</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p>This now fits, the <span class="math inline">\(B = 10^{3}\)</span> replications. let’s view the output.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">se_emp</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">.</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/set_names.html">set_names</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">.</span>, 
@@ -421,7 +437,7 @@ Term
 (Intercept)
 </td>
 <td style="text-align:center;">
-16.651
+17.137
 </td>
 </tr>
 <tr>
@@ -429,7 +445,7 @@ Term
 <code>MedianInc ($1000)</code>
 </td>
 <td style="text-align:center;">
-0.112
+0.119
 </td>
 </tr>
 <tr>
@@ -437,7 +453,7 @@ Term
 PercCommercial
 </td>
 <td style="text-align:center;">
-0.385
+0.395
 </td>
 </tr>
 <tr>
@@ -445,7 +461,7 @@ PercCommercial
 PercIndustrial
 </td>
 <td style="text-align:center;">
-0.577
+0.589
 </td>
 </tr>
 <tr>
@@ -453,7 +469,7 @@ PercIndustrial
 PercMinority
 </td>
 <td style="text-align:center;">
-0.170
+0.164
 </td>
 </tr>
 <tr>
@@ -467,12 +483,28 @@ PercResidential
 </tbody>
 </table>
 <p>As we can see, the output is in tidy format as a <code>tibble</code> object. This makes it much more readily amenable for additional transformations using the <code>tidyverse</code> set of packages.</p>
+<p>Last, let’s compute the confidence intervals for the coefficients estimated on the bootstrapped data sets via the percentile method.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">coef_emp_boot</span> <span class="op">%&gt;%</span> 
+  <span class="fu">maar</span><span class="fu">::</span><span class="fu"><a href="../reference/comp_conf_int_bootstrap.html">comp_conf_int_bootstrap</a></span><span class="op">(</span>probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.025</span>, <span class="fl">0.975</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">pivot_wider</a></span><span class="op">(</span>names_from <span class="op">=</span> <span class="va">q</span>, values_from <span class="op">=</span> <span class="va">x</span><span class="op">)</span>
+<span class="co">#&gt; # A tibble: 7 x 3</span>
+<span class="co">#&gt; # Groups:   term [7]</span>
+<span class="co">#&gt;   term                  `0.025` `0.975`</span>
+<span class="co">#&gt;   &lt;chr&gt;                   &lt;dbl&gt;   &lt;dbl&gt;</span>
+<span class="co">#&gt; 1 (Intercept)         -33.1     35.9   </span>
+<span class="co">#&gt; 2 `MedianInc ($1000)`  -0.452    0.0182</span>
+<span class="co">#&gt; 3 PercCommercial        0.00183  1.57  </span>
+<span class="co">#&gt; 4 PercIndustrial       -0.139    2.06  </span>
+<span class="co">#&gt; 5 PercMinority         -0.193    0.471 </span>
+<span class="co">#&gt; 6 PercResidential      -0.258    0.167 </span>
+<span class="co">#&gt; 7 PercVacant            2.63     8.11</span></code></pre></div>
 </div>
 <div id="computing-standard-errors-from-ols-using-sandwich-estimator" class="section level2">
 <h2 class="hasAnchor">
 <a href="#computing-standard-errors-from-ols-using-sandwich-estimator" class="anchor"></a>Computing standard errors from OLS using Sandwich Estimator</h2>
 <p>Then we obtain the standard errors using the White sandwich estimator see <span class="citation">White (1980b)</span>.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">se_sand</span> <span class="op">&lt;-</span> <span class="fu">maar</span><span class="fu">::</span><span class="fu"><a href="../reference/comp_sandwich_qr_var.html">comp_sandwich_qr_var</a></span><span class="op">(</span><span class="va">mod_fit</span><span class="op">)</span> <span class="op">%&gt;%</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">term</span>, <span class="va">std.error.sand</span><span class="op">)</span>
 <span class="va">se_sand</span>
 <span class="co">#&gt; # A tibble: 7 x 2</span>
@@ -485,13 +517,12 @@ PercResidential
 <span class="co">#&gt; 5 PercResidential              0.108</span>
 <span class="co">#&gt; 6 PercCommercial               0.388</span>
 <span class="co">#&gt; 7 PercIndustrial               0.579</span></code></pre></div>
-<p><strong>TODO:</strong> We should change sandwich estimator to output a tibble with the Term.</p>
 </div>
 <div id="comparing-standard-errors" class="section level2">
 <h2 class="hasAnchor">
 <a href="#comparing-standard-errors" class="anchor"></a>Comparing standard errors</h2>
 <p>We combine the standard errors into one tibble.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">se_comb</span> <span class="op">&lt;-</span> <span class="fu">broom</span><span class="fu">::</span><span class="fu"><a href="https://generics.r-lib.org/reference/tidy.html">tidy</a></span><span class="op">(</span><span class="va">mod_fit</span><span class="op">)</span> <span class="op">%&gt;%</span>
             <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">term</span>, <span class="va">estimate</span><span class="op">)</span> <span class="op">%&gt;%</span>
             <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">.</span>, y <span class="op">=</span> <span class="va">se_lm</span>, by <span class="op">=</span> <span class="st">"term"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
@@ -536,7 +567,7 @@ Term
 22.767
 </td>
 <td style="text-align:center;">
-16.651
+17.137
 </td>
 <td style="text-align:center;">
 15.909
@@ -553,7 +584,7 @@ Term
 0.187
 </td>
 <td style="text-align:center;">
-0.112
+0.119
 </td>
 <td style="text-align:center;">
 0.105
@@ -570,7 +601,7 @@ PercVacant
 0.901
 </td>
 <td style="text-align:center;">
-1.410
+1.375
 </td>
 <td style="text-align:center;">
 1.287
@@ -587,7 +618,7 @@ PercMinority
 0.176
 </td>
 <td style="text-align:center;">
-0.170
+0.164
 </td>
 <td style="text-align:center;">
 0.162
@@ -621,7 +652,7 @@ PercCommercial
 0.273
 </td>
 <td style="text-align:center;">
-0.385
+0.395
 </td>
 <td style="text-align:center;">
 0.388
@@ -638,7 +669,7 @@ PercIndustrial
 0.321
 </td>
 <td style="text-align:center;">
-0.577
+0.589
 </td>
 <td style="text-align:center;">
 0.579
@@ -652,7 +683,7 @@ PercIndustrial
 <a href="#reproduce-table-1-from-buja2019modelsasapproximationspart1" class="anchor"></a>Reproduce Table 1 from <span class="citation">(Buja et al. 2019)</span>
 </h2>
 <p>We can also compute the ratios of the standard errors and the t-statistics as in Table 1 from <span class="citation">(Buja et al. 2019)</span>.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">t_stats</span> <span class="op">&lt;-</span> <span class="va">se_comb</span> <span class="op">%&gt;%</span>
             <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>
               rat.boot.vs.lm <span class="op">=</span> <span class="va">std.error.boot</span> <span class="op">/</span> <span class="va">std.error.lm</span>,
@@ -723,25 +754,25 @@ Term
 22.767
 </td>
 <td style="text-align:center;">
-16.651
+17.137
 </td>
 <td style="text-align:center;">
 15.909
 </td>
 <td style="text-align:center;">
-0.731
+0.753
 </td>
 <td style="text-align:center;">
 0.699
 </td>
 <td style="text-align:center;">
-0.955
+0.928
 </td>
 <td style="text-align:center;">
 0.033
 </td>
 <td style="text-align:center;">
-0.046
+0.044
 </td>
 <td style="text-align:center;">
 0.048
@@ -758,25 +789,25 @@ Term
 0.187
 </td>
 <td style="text-align:center;">
-0.112
+0.119
 </td>
 <td style="text-align:center;">
 0.105
 </td>
 <td style="text-align:center;">
-0.599
+0.638
 </td>
 <td style="text-align:center;">
 0.560
 </td>
 <td style="text-align:center;">
-0.934
+0.877
 </td>
 <td style="text-align:center;">
 -0.977
 </td>
 <td style="text-align:center;">
--1.631
+-1.531
 </td>
 <td style="text-align:center;">
 -1.745
@@ -793,25 +824,25 @@ PercVacant
 0.901
 </td>
 <td style="text-align:center;">
-1.410
+1.375
 </td>
 <td style="text-align:center;">
 1.287
 </td>
 <td style="text-align:center;">
-1.566
+1.527
 </td>
 <td style="text-align:center;">
 1.429
 </td>
 <td style="text-align:center;">
-0.913
+0.936
 </td>
 <td style="text-align:center;">
 5.140
 </td>
 <td style="text-align:center;">
-3.282
+3.366
 </td>
 <td style="text-align:center;">
 3.597
@@ -828,25 +859,25 @@ PercMinority
 0.176
 </td>
 <td style="text-align:center;">
-0.170
+0.164
 </td>
 <td style="text-align:center;">
 0.162
 </td>
 <td style="text-align:center;">
-0.963
+0.934
 </td>
 <td style="text-align:center;">
 0.921
 </td>
 <td style="text-align:center;">
-0.956
+0.986
 </td>
 <td style="text-align:center;">
 0.701
 </td>
 <td style="text-align:center;">
-0.728
+0.751
 </td>
 <td style="text-align:center;">
 0.761
@@ -869,19 +900,19 @@ PercResidential
 0.108
 </td>
 <td style="text-align:center;">
-0.642
+0.644
 </td>
 <td style="text-align:center;">
 0.633
 </td>
 <td style="text-align:center;">
-0.986
+0.983
 </td>
 <td style="text-align:center;">
 -0.292
 </td>
 <td style="text-align:center;">
--0.455
+-0.454
 </td>
 <td style="text-align:center;">
 -0.462
@@ -898,25 +929,25 @@ PercCommercial
 0.273
 </td>
 <td style="text-align:center;">
-0.385
+0.395
 </td>
 <td style="text-align:center;">
 0.388
 </td>
 <td style="text-align:center;">
-1.410
+1.446
 </td>
 <td style="text-align:center;">
 1.421
 </td>
 <td style="text-align:center;">
-1.007
+0.982
 </td>
 <td style="text-align:center;">
 2.700
 </td>
 <td style="text-align:center;">
-1.914
+1.867
 </td>
 <td style="text-align:center;">
 1.901
@@ -933,25 +964,25 @@ PercIndustrial
 0.321
 </td>
 <td style="text-align:center;">
-0.577
+0.589
 </td>
 <td style="text-align:center;">
 0.579
 </td>
 <td style="text-align:center;">
-1.795
+1.833
 </td>
 <td style="text-align:center;">
 1.801
 </td>
 <td style="text-align:center;">
-1.003
+0.983
 </td>
 <td style="text-align:center;">
 2.818
 </td>
 <td style="text-align:center;">
-1.570
+1.538
 </td>
 <td style="text-align:center;">
 1.565
@@ -959,6 +990,31 @@ PercIndustrial
 </tr>
 </tbody>
 </table>
+</div>
+<div id="model-diagnostics-from-buja2019modelsasapproximationspart1" class="section level2">
+<h2 class="hasAnchor">
+<a href="#model-diagnostics-from-buja2019modelsasapproximationspart1" class="anchor"></a>Model diagnostics from <span class="citation">(Buja et al. 2019)</span>
+</h2>
+<p>When the model is misspecified, regression coefficients should be seen as statistical functionals rather than fixed quantities. These parameters depend on the distribution of the regressors and it is therefore important to study across the regions of the parameter space.</p>
+<p>Let’s then first get OLS estimates under the default reweighting schema implemented in the <code>maars</code> package.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>coef_rwgt <span class="ot">&lt;-</span> mod_fit <span class="sc">%&gt;%</span> </span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  maar<span class="sc">::</span><span class="fu">comp_coef_rwgt</span>(<span class="at">mod_fit =</span> .,</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">terms_to_rwgt =</span> <span class="fu">names</span>(la_county_df)[<span class="sc">-</span><span class="dv">1</span>],</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">B =</span> <span class="dv">300</span>)</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>dplyr<span class="sc">::</span><span class="fu">glimpse</span>(coef_rwgt)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Rows: 15,000</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Columns: 5</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ term_rwgt &lt;chr&gt; "MedianInc ($1000)", "MedianInc ($1000)", "MedianInc…</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ b &lt;int&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 1…</span></span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ term_rwgt_center &lt;dbl&gt; 21.5386, 21.5386, 21.5386, 21.5386, 21.5386,</span></span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a><span class="fl">21.5386</span>…</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ m &lt;int&gt; 505, 505, 505, 505, 505, 505, 505, 505, 505, 505, 50…</span></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ boot_out &lt;list&gt; [&lt;tbl_df[7 x 2]&gt;, &lt;tbl_df[7 x 2]&gt;, &lt;tbl_df[7 x 2]&gt;,…</span></span></code></pre></div>
+<p>To facilitate the interpretation of the results, we rely on graphical model diagnostics. Here, we show the “focal slope” model diagnostics. The <code>focal_slope</code> plot shows how one coefficient of interests varies under reweighting of each of the regressors. In the plot below we consider teh case of “PercVacant.”</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">fs</span> <span class="op">&lt;-</span> <span class="fu">maar</span><span class="fu">::</span><span class="fu"><a href="../reference/focal_slope.html">focal_slope</a></span><span class="op">(</span><span class="va">coef_rwgt</span>, <span class="st">'PercVacant'</span><span class="op">)</span>
+<span class="va">fs</span></code></pre></div>
+<p><img src="se-la-county-data_files/figure-html/model_diag_focal_slope-1.png" width="700" style="display: block; margin: auto;"></p>
 </div>
 <div id="references" class="section level2 unnumbered">
 <h2 class="hasAnchor">

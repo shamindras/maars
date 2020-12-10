@@ -157,12 +157,11 @@ It returns the corresponding quantiles.</p>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A tibble containing the number of the bootstrapped data set (b),
-the names of the regressor under reweighting, and the sets of model estimates</p>
+    <p>A tibble containing the quantiles (x) and the probabilities (q) for  group_vars</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='co'># Get OLS estimates under reweighting of regressor X1</span>
+<span class='co'># Get confidence interval for OLS estimates via bootstrap</span>
 <span class='va'>n</span> <span class='op'>&lt;-</span> <span class='fl'>1e3</span>
 <span class='va'>X1</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>
 <span class='va'>X2</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>3</span><span class='op'>)</span>
