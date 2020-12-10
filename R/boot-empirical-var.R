@@ -146,14 +146,13 @@ comp_empirical_bootstrap <- function(mod_fit, B = 100, m = NULL) {
 #' @param probs Numeric vector containing the probabilities of the corresponding quantiles
 #' @param group_vars A vector of characters with the variables used to form the groups
 #'
-#' @return A tibble containing the number of the bootstrapped data set (b),
-#' the names of the regressor under reweighting, and the sets of model estimates
+#' @return A tibble containing the quantiles (x) and the probabilities (q) for  group_vars
 #'
 #' @export
 #'
 #' @examples
 #' \dontrun{
-#' # Get OLS estimates under reweighting of regressor X1
+#' # Get confidence interval for OLS estimates via bootstrap
 #' n <- 1e3
 #' X1 <- stats::rnorm(n, 0, 1)
 #' X2 <- stats::rnorm(n, 0, 3)
@@ -172,6 +171,44 @@ comp_conf_int_bootstrap <- function(boot_out, probs = c(0.025, 0.975), group_var
     tidyr::unnest(boot_out) %>%
     dplyr::group_by_at(group_vars) %>%
     dplyr::summarise(x = quantile(estimate, probs = probs), q = probs, .groups = "keep")
+  return(out)
+}
+
+
+#' Normal QQ plot of the terms in an output of the bootstrap function
+#'
+#' This function produces a normal QQPlot for each term
+#' in the output of the bootstrap function.
+#' This function is a wrapper for the ggplot2::stat_qq function.
+#'
+#' @param boot_out A tibble of the model's coefficients estimated on the bootstrapped data sets
+#'
+#' @return A ggplot2 object containing normal QQ plot for each term
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Obtain normal QQ plot of the
+#' n <- 1e3
+#' X1 <- stats::rnorm(n, 0, 1)
+#' X2 <- stats::rnorm(n, 0, 3)
+#' y <- 2 + X1 + X2*0.3 + stats::rnorm(n, 0, 1)
+#' df <- tibble::tibble(y = y, X1 = X1, X2 = X2, n_obs = 1:length(X1))
+#' mod_fit <- stats::lm(y ~ X1+X2, df)
+#' boot_out <- comp_empirical_bootstrap(mod_fit)
+#'
+#' # Display the output
+#' qqnorm_bootstrap(boot_out)
+#' }
+qqnorm_bootstrap <- function(boot_out) {
+  out <- boot_out %>%
+    tidyr::unnest(boot_out) %>%
+    ggplot2::ggplot(ggplot2::aes(sample = estimate)) +
+    ggplot2::stat_qq() + ggplot2::stat_qq_line() +
+    ggplot2::facet_wrap(~ term, ncol = 3, scales = 'free_y') +
+    ggplot2::labs(x = 'Theoretical quantiles', y = 'Sample quantiles') +
+    ggplot2::theme_bw()
   return(out)
 }
 
