@@ -32,7 +32,7 @@ comp_empirical_bootstrap_samples <- function(data,
   indices <- purrr::map(rep(n, B), sample, replace = TRUE, size = m)
 
   out <- tibble::tibble(
-    B = paste0(1:length(indices)),
+    b = as.integer(paste0(1:length(indices))),
     data = purrr::map(indices, ~ data[.x, ])
   )
   return(out)
@@ -129,9 +129,50 @@ comp_empirical_bootstrap <- function(mod_fit, B = 100, m = NULL) {
   boot_out <- boot_samples %>%
     tibble::add_column(m = m) %>%
     dplyr::mutate(boot_out = purrr::map(data, ~ comp_empirical_bootstrap_cond_model(mod_fit = mod_fit, data = .))) %>%
-    dplyr::select(B, boot_out)
+    dplyr::select(b, m, boot_out)
 
   return(boot_out)
+}
+
+#' Confidence intervals for regression models estimates on bootstrapped data sets
+#' via percentile bootstrap
+#'
+#' Confidence intervals for regression models estimates on bootstrapped data sets
+#' via percentile bootstrap. The functions takes in set of bootstrap estimates,
+#' a series of probabilities for the quantiles, and some "grouping" terms.
+#' It returns the corresponding quantiles.
+#'
+#' @param boot_out A tibble of the model's coefficients estimated on the bootstrapped data sets
+#' @param probs Numeric vector containing the probabilities of the corresponding quantiles
+#' @param group_vars A vector of characters with the variables used to form the groups
+#'
+#' @return A tibble containing the number of the bootstrapped data set (b),
+#' the names of the regressor under reweighting, and the sets of model estimates
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Get OLS estimates under reweighting of regressor X1
+#' n <- 1e3
+#' X1 <- stats::rnorm(n, 0, 1)
+#' X2 <- stats::rnorm(n, 0, 3)
+#' y <- 2 + X1 + X2*0.3 + stats::rnorm(n, 0, 1)
+#' df <- tibble::tibble(y = y, X1 = X1, X2 = X2, n_obs = 1:length(X1))
+#' mod_fit <- stats::lm(y ~ X1+X2, df)
+#' boot_out <- comp_empirical_bootstrap(mod_fit)
+#' conf_int <- comp_conf_int_boot(boot_out, c(0.05,0.95)) %>%
+#' tidyr::pivot_wider(names_from = q, values_from = x)
+#'
+#' # Display the output
+#' print(conf_int)
+#' }
+comp_conf_int_bootstrap <- function(boot_out, probs = c(0.025, 0.975), group_vars = "term") {
+  out <- boot_out %>%
+    tidyr::unnest(boot_out) %>%
+    dplyr::group_by_at(group_vars) %>%
+    dplyr::summarise(x = quantile(estimate, probs = probs), q = probs, .groups = "keep")
+  return(out)
 }
 
 
