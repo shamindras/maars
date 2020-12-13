@@ -42,7 +42,10 @@
 <meta property="og:title" content="Create grid of centers for reweighting the distribution of the regressor — comp_grid_centers" />
 <meta property="og:description" content="Create grid of centers for reweighting the distribution of the regressor.
 The function creates either a grid of evenly spaced values between the
-minimum and the maximum of the regressor's values or based on the quantiles." />
+minimum and the maximum of the regressor's values or based on the quantiles.
+If based on the quantiles, then the values of the grid consists
+of the quantiles corresponding
+to seq(0.1,0.9,length=n_grid)." />
 
 
 
@@ -128,7 +131,10 @@ minimum and the maximum of the regressor's values or based on the quantiles." />
     <div class="ref-description">
     <p>Create grid of centers for reweighting the distribution of the regressor.
 The function creates either a grid of evenly spaced values between the
-minimum and the maximum of the regressor's values or based on the quantiles.</p>
+minimum and the maximum of the regressor's values or based on the quantiles.
+If based on the quantiles, then the values of the grid consists
+of the quantiles corresponding
+to seq(0.1,0.9,length=n_grid).</p>
     </div>
 
     <pre class="usage"><span class='fu'>comp_grid_centers</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>grid_method</span>, <span class='va'>n_grid</span><span class='op'>)</span></pre>
@@ -142,7 +148,7 @@ minimum and the maximum of the regressor's values or based on the quantiles.</p>
     </tr>
     <tr>
       <th>grid_method</th>
-      <td><p>Method to construct the grid</p></td>
+      <td><p>Method to construct the grid ("regular" or "quantiles")</p></td>
     </tr>
     <tr>
       <th>n_grid</th>

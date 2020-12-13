@@ -153,10 +153,17 @@ qnorm_boot
 ```
 
 ```{r emp_qqnorm_save, include = F}
-qnorm_boot %>% 
+qnorm_boot +
+      ggplot2::theme(
+    axis.text = ggplot2::element_text(size = 17),
+    axis.title = ggplot2::element_text(size = 17),
+    strip.text.x = ggplot2::element_text(size = 17),
+    legend.text = ggplot2::element_text(size = 17),
+    legend.title = ggplot2::element_text(size = 17)
+  ) +
   ggplot2::ggsave(filename = here::here("vignettes","figures",
                                         "output", "r_qqnorm_emp.png"), 
-                  height = 10, width = 10)
+                  height = 6, width = 10)
 ```
 
 
@@ -260,6 +267,47 @@ se_sand %>%
                        file = here::here("vignettes","figures",
                                           "output", "r01_se_sand.png"))
 ```
+
+
+We can also visually compare the two types of confidence intervals.
+```{r plot_std_sand}
+
+comp_se <- se_sand %>%
+  tidyr::pivot_longer(cols = c(std.error, std.error.sand), names_to = 'Type', values_to = 'std.error') %>%
+  dplyr::mutate(Type = ifelse(Type == 'std.error', 'lm', 'sandwich')) %>%
+  ggplot2::ggplot(ggplot2::aes(term, estimate, col = Type)) + 
+  ggplot2::theme_bw() + 
+    ggplot2::geom_point(position=ggplot2::position_dodge(width=0.5)) + 
+  ggplot2::geom_errorbar(ggplot2::aes(ymin = estimate-1.96*std.error, ymax = estimate+1.96*std.error, col = Type),
+                         position = ggplot2::position_dodge(width=0.5), width = 0.1
+                         ) + 
+  ggplot2::facet_wrap(~ term, scales = 'free')
+comp_se
+```
+
+```{r plot_std_sand_save_image, include = F}
+
+comp_se +
+  ggplot2::theme(
+    axis.text.x = ggplot2::element_blank(), axis.ticks = ggplot2::element_blank(),
+    axis.text.y = ggplot2::element_text(size = 17),
+    axis.title.y = ggplot2::element_text(size = 17),
+    strip.text.x = ggplot2::element_text(size = 17),
+    legend.text = ggplot2::element_text(size = 17),
+    legend.title = ggplot2::element_text(size = 17)
+  ) +
+  ggplot2::labs(x = "", y = "Value of coefficient") 
+ggplot2::ggsave(
+    filename = here::here(
+      "vignettes", "figures",
+      "output", "conf_int_comparison.png"
+    ),
+    height = 6, width = 10
+  )
+
+```
+
+
 
 ## Comparing standard errors
 
@@ -383,14 +431,22 @@ To facilitate the interpretation of the results, we rely on graphical model
 diagnostics. Here, we show the "focal slope" model diagnostics. 
 The `focal_slope` plot shows how one coefficient of interests varies 
 under reweighting of each of the regressors. 
-In the plot below we consider teh case of "PercVacant".
+In the plot below we consider the case of "PercVacant".
 ```{r  model_diag_focal_slope}
 fs <- maar::focal_slope(coef_rwgt, 'PercVacant')
 fs
 ```
 
 ```{r model_diag_focal_slope_image_save, include = F}
-fs %>% ggplot2::ggsave(filename = here::here("vignettes","figures",
+fs + 
+    ggplot2::theme(
+    axis.text = ggplot2::element_text(size = 17),
+    axis.title = ggplot2::element_text(size = 17),
+    strip.text.x = ggplot2::element_text(size = 17),
+    legend.text = ggplot2::element_text(size = 17),
+    legend.title = ggplot2::element_text(size = 17)
+  ) +
+ggplot2::ggsave(filename = here::here("vignettes","figures",
                                           "output", "r_focal_slope.png"), 
               height = 6, width = 10)
 ```

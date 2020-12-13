@@ -48,6 +48,8 @@ comp_empirical_bootstrap_samples <- function(data,
 #' should contain the formula, the data, and, in case of "glm", the family
 #' @param data A tibble or data frame containing the data set on which the model
 #' will be trained
+#' @param weights A character corresponding to the name of the weights
+#' feature name in the data
 #'
 #' @return A tibble containing the estimated coefficients of the model
 #'
@@ -61,16 +63,35 @@ comp_empirical_bootstrap_samples <- function(data,
 #' y <- 2 + X * 1 + stats::rnorm(n, 0, 1)
 #' lm_fit <- stats::lm(y ~ X)
 #' boot <- comp_empirical_bootstrap_samples(model.frame(lm_fit))$data[[1]]
-#' mod <- comp_empirical_bootstrap_cond_model(lm_fit, boot)
+#' mod <- comp_cond_model(lm_fit, boot)
+#'
+#' # Display the output
+#' print(mod)
+#'
+#' #' # Estimate OLS from a data set with weights
+#' n <- 1e3
+#' X <- stats::rnorm(n, 0, 1)
+#' y <- 2 + X * 1 + stats::rnorm(n, 0, 1)
+#' mod_fit <- stats::lm(y ~ X)
+#' df <- tibble::tibble(y = y, X = X, weights = 1:length(X))
+#' mod <- comp_cond_model(mod_fit, df, 'weights')
 #'
 #' # Display the output
 #' print(mod)
 #' }
-comp_empirical_bootstrap_cond_model <- function(mod_fit, data) {
+comp_cond_model <- function(mod_fit, data, weights=NULL){
   if (all("lm" == class(mod_fit))) {
-    out <- stats::lm(formula = stats::formula(mod_fit), data = data)
+    if(is.null(weights)){
+      out <- stats::lm(formula = stats::formula(mod_fit), data = data)
+    } else{
+      out <- stats::lm(formula = stats::formula(mod_fit), data = data, weights = weights)
+    }
   } else {
-    out <- stats::glm(formula = stats::formula(mod_fit), data = data, family = stats::family(mod_fit))
+    if(is.null(weights)){
+      out <- stats::glm(formula = stats::formula(mod_fit), data = data, family = stats::family(mod_fit))
+    } else{
+      out <- stats::glm(formula = stats::formula(mod_fit), data = data, family = stats::family(mod_fit), weights = weights)
+    }
   }
   out <- tibble::tibble(term = names(stats::coef(out)), estimate = stats::coef(out))
   return(out)
@@ -105,7 +126,7 @@ comp_empirical_bootstrap_cond_model <- function(mod_fit, data) {
 #' }
 comp_empirical_bootstrap <- function(mod_fit, B = 100, m = NULL) {
   assertthat::assert_that(all("lm" == class(mod_fit)) | any("glm" == class(mod_fit)),
-    msg = glue::glue("lm_fit must only be of class lm"))
+    msg = glue::glue("mod_fit must only be of class lm or glm"))
   assertthat::assert_that(B == as.integer(B),
     msg = glue::glue("B must be an integer e.g. 100, it is currently {B}"))
   assertthat::assert_that(B > 0,
@@ -131,7 +152,7 @@ comp_empirical_bootstrap <- function(mod_fit, B = 100, m = NULL) {
     tibble::add_column(n = nrow(data)) %>%
     dplyr::mutate(boot_out =
                     purrr::map(data,
-                               ~ comp_empirical_bootstrap_cond_model(mod_fit = mod_fit, data = .))) %>%
+                               ~ comp_cond_model(mod_fit = mod_fit, data = .))) %>%
     dplyr::select(b, m, n, boot_out)
 
   return(boot_out)
@@ -173,7 +194,7 @@ comp_conf_int_bootstrap <- function(boot_out, probs = c(0.025, 0.975), group_var
   out <- boot_out %>%
     tidyr::unnest(boot_out) %>%
     dplyr::group_by_at(group_vars) %>%
-    dplyr::summarise(x = quantile(estimate, probs = probs), q = probs, .groups = "keep")
+    dplyr::summarise(x = quantile(sqrt(m/n)*estimate, probs = probs), q = probs, .groups = "keep")
   return(out)
 }
 

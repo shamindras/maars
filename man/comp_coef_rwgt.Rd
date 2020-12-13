@@ -9,7 +9,7 @@ comp_coef_rwgt(
   terms_to_rwgt,
   B = 100,
   m = NULL,
-  grid_bins_centers = NULL,
+  grid_centers = NULL,
   grid_method = "quantiles",
   n_grid = 9
 )
@@ -18,14 +18,20 @@ comp_coef_rwgt(
 \item{mod_fit}{An object of class "lm" or "glm" to fit on the data. This object
 should contain the formula, the data, and, in case of "glm", the family}
 
-\item{terms_to_rwgt}{A character corresponding to the regressor to be reweighted}
+\item{terms_to_rwgt}{A vector of characters corresponding to the regressors
+used in the reweighting}
 
-\item{boot_samples}{A list of data sets that have been bootstrapped from the
-original data set. Each data set needs to contain a column "n_obs" which indicates
-the order of each observation in the original data}
+\item{B}{an integer corresponding to the number of bootstrap repetitions or number of bootstrap samples to be drawn}
 
-\item{term_to_rwgt_centers}{A vector of numeric values corresponding to the
-centers for the reweighting procedure}
+\item{m}{an integer corresponding to the number of observations to be sampled with replacement from the dataset
+for each bootstrap repetition}
+
+\item{grid_centers}{Dataframe containing the regressors and reweighting centers.
+Each column corresponds to a different regressor (specified in the column's name).}
+
+\item{grid_method}{Method to construct the grid ("regular" or "quantiles")}
+
+\item{n_grid}{Number of centers present in the grid}
 }
 \value{
 A tibble containing the number of the bootstrapped data set (b),
@@ -40,16 +46,22 @@ for each bootstrapped data set, and for each center of reweighting.
 }
 \examples{
 \dontrun{
-# Get OLS estimates under reweighting of all regressors
+# Get OLS estimates under reweighting of all regressors with default grid
 n <- 1e3
 X1 <- stats::rnorm(n, 0, 1)
 X2 <- stats::rnorm(n, 0, 3)
-y <- 2 + X1 + X2*0.3 + stats::rnorm(n, 0, 1)
+y <- 2 + X1 + X2 * 0.3 + stats::rnorm(n, 0, 1)
 df <- tibble::tibble(y = y, X1 = X1, X2 = X2, n_obs = 1:length(X1))
-mod_fit <- stats::lm(y ~ X1+X2, df)
-ols_rwgt <- comp_coef_rwgt(mod_fit, c('X1', 'X2'))
+mod_fit <- stats::lm(y ~ X1 + X2, df)
+ols_rwgt <- comp_coef_rwgt(mod_fit, c("X1", "X2"))
 
 # Display the output
 print(ols_rwgt)
+
+# Get OLS estimates under reweighting of all regressors by feeding grid of centers into the function
+ols_rwgt_grid_fixed <- comp_coef_rwgt(mod_fit, "X1", grid_centers = data.frame(X1 = c(0,1)))
+
+#' # Display the output
+print(ols_rwgt_grid_fixed)
 }
 }

@@ -9,7 +9,7 @@ comp_grid_centers(x, grid_method, n_grid)
 \arguments{
 \item{x}{Vector of values of the regressor}
 
-\item{grid_method}{Method to construct the grid}
+\item{grid_method}{Method to construct the grid ("regular" or "quantiles")}
 
 \item{n_grid}{Number of centers present in the grid}
 }
@@ -20,6 +20,9 @@ A vector of values corresponding to the centers for the reweighting
 Create grid of centers for reweighting the distribution of the regressor.
 The function creates either a grid of evenly spaced values between the
 minimum and the maximum of the regressor's values or based on the quantiles.
+If based on the quantiles, then the values of the grid consists
+of the quantiles corresponding
+to seq(0.1,0.9,length=n_grid).
 }
 \examples{
 \dontrun{
