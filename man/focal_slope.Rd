@@ -4,9 +4,12 @@
 \alias{focal_slope}
 \title{Obtain the "focal slope" model diagnostic}
 \usage{
-focal_slope(coef_rwgt, term_chosen)
+focal_slope(mod_fit, coef_rwgt, term_chosen)
 }
 \arguments{
+\item{mod_fit}{An object of class "lm" or "glm" to fit on the data. This object
+should contain the formula, the data, and, in case of "glm", the family}
+
 \item{coef_rwgt}{A tibble containing the number of the bootstrapped data set (b),
 the names of the regressors under reweighting, and the sets of model estimates}
 
@@ -41,7 +44,7 @@ mod_fit <- stats::lm(y ~ X1 + X2, df)
 ols_rwgt <- comp_coef_rwgt(mod_fit, c("X1", "X2"), B = 300)
 
 # Display the output
-focal_slope(ols_rwgt, "X1")
+focal_slope(mod_fit, ols_rwgt, "X1")
 }
 }
 \references{

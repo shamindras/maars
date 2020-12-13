@@ -153,13 +153,17 @@ qnorm_boot
 ```
 
 ```{r emp_qqnorm_save, include = F}
+qnorm_boot <- maar::qqnorm_bootstrap(coef_emp_boot %>% tidyr::unnest(boot_out) %>% 
+                                       dplyr::filter(term != '(Intercept)') %>%
+                                       tidyr::nest(boot_out = c(term, estimate)))
 qnorm_boot +
       ggplot2::theme(
     axis.text = ggplot2::element_text(size = 17),
     axis.title = ggplot2::element_text(size = 17),
     strip.text.x = ggplot2::element_text(size = 17),
     legend.text = ggplot2::element_text(size = 17),
-    legend.title = ggplot2::element_text(size = 17)
+    legend.title = ggplot2::element_text(size = 17),
+    legend.position="bottom"
   ) +
   ggplot2::ggsave(filename = here::here("vignettes","figures",
                                         "output", "r_qqnorm_emp.png"), 
@@ -273,15 +277,18 @@ We can also visually compare the two types of confidence intervals.
 ```{r plot_std_sand}
 
 comp_se <- se_sand %>%
+  dplyr::filter(term != '(Intercept)') %>%
   tidyr::pivot_longer(cols = c(std.error, std.error.sand), names_to = 'Type', values_to = 'std.error') %>%
   dplyr::mutate(Type = ifelse(Type == 'std.error', 'lm', 'sandwich')) %>%
   ggplot2::ggplot(ggplot2::aes(term, estimate, col = Type)) + 
   ggplot2::theme_bw() + 
     ggplot2::geom_point(position=ggplot2::position_dodge(width=0.5)) + 
+  ggplot2::labs(x = 'Regressor', y = 'Estimate') +
+  ggplot2::geom_hline(yintercept = 0, linetype = 'dashed') +
   ggplot2::geom_errorbar(ggplot2::aes(ymin = estimate-1.96*std.error, ymax = estimate+1.96*std.error, col = Type),
                          position = ggplot2::position_dodge(width=0.5), width = 0.1
-                         ) + 
-  ggplot2::facet_wrap(~ term, scales = 'free')
+                         ) #+ 
+  #ggplot2::facet_wrap(~ term, scales = 'free')
 comp_se
 ```
 
@@ -289,14 +296,17 @@ comp_se
 
 comp_se +
   ggplot2::theme(
-    axis.text.x = ggplot2::element_blank(), axis.ticks = ggplot2::element_blank(),
+    #axis.text.x = ggplot2::element_blank(),
+    #axis.ticks = ggplot2::element_blank(),
     axis.text.y = ggplot2::element_text(size = 17),
-    axis.title.y = ggplot2::element_text(size = 17),
-    strip.text.x = ggplot2::element_text(size = 17),
+    axis.text.x = ggplot2::element_text(size = 10),
+    axis.title = ggplot2::element_text(size = 17),
+    strip.text = ggplot2::element_text(size = 17),
     legend.text = ggplot2::element_text(size = 17),
-    legend.title = ggplot2::element_text(size = 17)
+    legend.title = ggplot2::element_text(size = 17),
+    legend.position="bottom"
   ) +
-  ggplot2::labs(x = "", y = "Value of coefficient") 
+  ggplot2::labs(x = "Regressor", y = "OLS estimate") 
 ggplot2::ggsave(
     filename = here::here(
       "vignettes", "figures",
@@ -433,7 +443,7 @@ The `focal_slope` plot shows how one coefficient of interests varies
 under reweighting of each of the regressors. 
 In the plot below we consider the case of "PercVacant".
 ```{r  model_diag_focal_slope}
-fs <- maar::focal_slope(coef_rwgt, 'PercVacant')
+fs <- maar::focal_slope(mod_fit, coef_rwgt, 'PercVacant')
 fs
 ```
 
@@ -444,7 +454,8 @@ fs +
     axis.title = ggplot2::element_text(size = 17),
     strip.text.x = ggplot2::element_text(size = 17),
     legend.text = ggplot2::element_text(size = 17),
-    legend.title = ggplot2::element_text(size = 17)
+    legend.title = ggplot2::element_text(size = 17),
+    legend.position="bottom"
   ) +
 ggplot2::ggsave(filename = here::here("vignettes","figures",
                                           "output", "r_focal_slope.png"), 

@@ -224,6 +224,8 @@ comp_coef_rwgt <- function(mod_fit,
 #' The diagnostic is useful to investigate interaction terms that have not been included
 #' in the model in the first place.
 #'
+#' @param mod_fit An object of class "lm" or "glm" to fit on the data. This object
+#' should contain the formula, the data, and, in case of "glm", the family
 #' @param coef_rwgt A tibble containing the number of the bootstrapped data set (b),
 #' the names of the regressors under reweighting, and the sets of model estimates
 #' @param term_chosen Character corresponding to the coefficient to be analysed
@@ -256,9 +258,9 @@ comp_coef_rwgt <- function(mod_fit,
 #' ols_rwgt <- comp_coef_rwgt(mod_fit, c("X1", "X2"), B = 300)
 #'
 #' # Display the output
-#' focal_slope(ols_rwgt, "X1")
+#' focal_slope(mod_fit, ols_rwgt, "X1")
 #' }
-focal_slope <- function(coef_rwgt, term_chosen) {
+focal_slope <- function(mod_fit, coef_rwgt, term_chosen) {
   coef_rwgt_conf_int <- comp_conf_int_bootstrap(
     boot_out = coef_rwgt,
     probs = c(0.025, 0.975),
@@ -274,21 +276,6 @@ focal_slope <- function(coef_rwgt, term_chosen) {
   coef_rwgt_means <- coef_rwgt %>%
     dplyr::group_by(term_rwgt, term_rwgt_center) %>%
     dplyr::summarise(estimate = mean(estimate), .groups = "keep")
-
-  # tilt_test <- coef_rwgt %>%
-  #   dplyr::group_by(term_rwgt) %>%
-  #   dplyr::mutate(center = dplyr::case_when(
-  #     term_rwgt_center == max(term_rwgt_center) ~ "Max_center",
-  #     term_rwgt_center == min(term_rwgt_center) ~ "Min_center"
-  #   )) %>%
-  #   tidyr::drop_na() %>%
-  #   dplyr::select(term_rwgt, b, center, estimate) %>%
-  #   tidyr::pivot_wider(names_from = center, values_from = estimate) %>%
-  #   dplyr::group_by(term_rwgt) %>%
-  #   dplyr::summarise(d = mean(Max_center - Min_center),
-  #                    p = t.test(Max_center, Min_center)$p.value,
-  #                    .groups = "keep") %>%
-  # dplyr::mutate(text_test = paste0("Tilt test: p=", round(p, 2), " d=", round(d, 2)))
 
   out <- coef_rwgt %>%
     ggplot2::ggplot(mapping = ggplot2::aes(term_rwgt_center, estimate, group = b)) +
@@ -306,13 +293,11 @@ focal_slope <- function(coef_rwgt, term_chosen) {
     ggplot2::geom_line(
       data = coef_rwgt_means,
       mapping = ggplot2::aes(x = term_rwgt_center, y = estimate, group = NULL)
-    )
-  # ) +
-  # ggplot2::geom_text(
-  #   data = tilt_test %>% dplyr::mutate(term_rwgt_center = -Inf, estimate = Inf),
-  #   ggplot2::aes(term_rwgt_center, estimate, label = text_test, group = NULL),
-  #   hjust = 0, vjust = 1
-  # )
+    ) +
+    ggplot2::geom_hline(data = broom::tidy(mod_fit) %>% dplyr::filter(term==term_chosen),
+                        mapping = ggplot2::aes(yintercept=estimate, group = NULL),
+                        linetype = 'dashed',
+                        col = 'blue')
   return(out)
 }
 
@@ -323,6 +308,9 @@ focal_slope <- function(coef_rwgt, term_chosen) {
 #' \insertCite{@see @buja2019modelsasapproximationspart2;textual}{maar}.
 #' This tool provides insights into marginal nonlinear behavior of response surfaces.
 #'
+#'
+#' @param mod_fit An object of class "lm" or "glm" to fit on the data. This object
+#' should contain the formula, the data, and, in case of "glm", the family
 #' @param coef_rwgt A tibble containing the number of the bootstrapped data set (b),
 #' the names of the regressors under reweighting, and the sets of model estimates
 #'
@@ -344,7 +332,7 @@ focal_slope <- function(coef_rwgt, term_chosen) {
 #'
 #' @examples
 #' \dontrun{
-#' # Get focal slope of X1
+#' # Get nonlinearity detection plot
 #' n <- 1e3
 #' X1 <- stats::rnorm(n, 0, 1)
 #' X2 <- stats::rnorm(n, 0, 3)
@@ -354,9 +342,9 @@ focal_slope <- function(coef_rwgt, term_chosen) {
 #' ols_rwgt <- comp_coef_rwgt(mod_fit, c("X1", "X2"), B = 300)
 #'
 #' # Display the output
-#' nonlinearity_detection(ols_rwgt)
+#' nonlinearity_detection(mod_fit, ols_rwgt)
 #' }
-nonlinearity_detection <- function(coef_rwgt) {
+nonlinearity_detection <- function(mod_fit, coef_rwgt) {
   coef_rwgt_conf_int <- comp_conf_int_bootstrap(
     boot_out = coef_rwgt,
     probs = c(0.025, 0.975),
@@ -389,7 +377,12 @@ nonlinearity_detection <- function(coef_rwgt) {
     ggplot2::geom_line(
       data = coef_rwgt_means,
       mapping = ggplot2::aes(x = term_rwgt_center, y = estimate, group = NULL)
-    )
+    ) +
+    ggplot2::geom_hline(data = broom::tidy(mod_fit) %>% dplyr::rename(term_rwgt = term) %>%
+                          dplyr::inner_join(coef_rwgt %>% dplyr::select(term_rwgt), by = 'term_rwgt'),
+                        mapping = ggplot2::aes(yintercept=estimate, group = NULL),
+                        col = 'blue',
+                        linetype = 'dashed')
   return(out)
 }
 
@@ -399,6 +392,8 @@ nonlinearity_detection <- function(coef_rwgt) {
 #' Obtain the "focal reweighting variable" model diagnostic described in
 #' \insertCite{@see @buja2019modelsasapproximationspart2;textual}{maar}.
 #'
+#' @param mod_fit An object of class "lm" or "glm" to fit on the data. This object
+#' should contain the formula, the data, and, in case of "glm", the family
 #' @param coef_rwgt A tibble containing the number of the bootstrapped data set (b),
 #' the names of the regressors under reweighting, and the sets of model estimates
 #' @param term_chosen Character corresponding to the coefficient to be analysed
@@ -423,7 +418,7 @@ nonlinearity_detection <- function(coef_rwgt) {
 #'
 #' @examples
 #' \dontrun{
-#' # Get focal slope of X1
+#' # Get focal reweighting variable plot of X1
 #' n <- 1e3
 #' X1 <- stats::rnorm(n, 0, 1)
 #' X2 <- stats::rnorm(n, 0, 3)
@@ -433,10 +428,10 @@ nonlinearity_detection <- function(coef_rwgt) {
 #' ols_rwgt <- comp_coef_rwgt(mod_fit, c("X1", "X2"), B = 300)
 #'
 #' # Display the output
-#' focal_reweighting_variable(ols_rwgt, "X1")
+#' focal_rwgt_var(mod_fit, ols_rwgt, "X1")
 #' }
 #'
-focal_rwgt_var <- function(coef_rwgt, term_chosen) {
+focal_rwgt_var <- function(mod_fit, coef_rwgt, term_chosen) {
   coef_rwgt_conf_int <- comp_conf_int_bootstrap(
     boot_out = coef_rwgt,
     probs = c(0.025, 0.975),
@@ -469,7 +464,12 @@ focal_rwgt_var <- function(coef_rwgt, term_chosen) {
     ggplot2::geom_line(
       data = coef_rwgt_means,
       mapping = ggplot2::aes(x = term_rwgt_center, y = estimate, group = NULL)
-    )
+    ) +
+    ggplot2::geom_hline(data = broom::tidy(mod_fit) %>%
+                          dplyr::inner_join(coef_rwgt %>% dplyr::select(term), by = 'term'),
+                        mapping = ggplot2::aes(yintercept=estimate, group = NULL),
+                        col = 'blue',
+                        linetype = 'dashed')
   return(out)
 }
 

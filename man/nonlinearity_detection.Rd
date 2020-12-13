@@ -4,9 +4,12 @@
 \alias{nonlinearity_detection}
 \title{Obtain the "nonlinearity detection" model diagnostic}
 \usage{
-nonlinearity_detection(coef_rwgt)
+nonlinearity_detection(mod_fit, coef_rwgt)
 }
 \arguments{
+\item{mod_fit}{An object of class "lm" or "glm" to fit on the data. This object
+should contain the formula, the data, and, in case of "glm", the family}
+
 \item{coef_rwgt}{A tibble containing the number of the bootstrapped data set (b),
 the names of the regressors under reweighting, and the sets of model estimates}
 }
@@ -28,7 +31,7 @@ This tool provides insights into marginal nonlinear behavior of response surface
 }
 \examples{
 \dontrun{
-# Get focal slope of X1
+# Get nonlinearity detection plot
 n <- 1e3
 X1 <- stats::rnorm(n, 0, 1)
 X2 <- stats::rnorm(n, 0, 3)
@@ -38,7 +41,7 @@ mod_fit <- stats::lm(y ~ X1 + X2, df)
 ols_rwgt <- comp_coef_rwgt(mod_fit, c("X1", "X2"), B = 300)
 
 # Display the output
-nonlinearity_detection(ols_rwgt)
+nonlinearity_detection(mod_fit, ols_rwgt)
 }
 }
 \references{

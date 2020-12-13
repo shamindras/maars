@@ -4,9 +4,12 @@
 \alias{focal_rwgt_var}
 \title{Obtain the "focal reweighting variable" model diagnostic}
 \usage{
-focal_rwgt_var(coef_rwgt, term_chosen)
+focal_rwgt_var(mod_fit, coef_rwgt, term_chosen)
 }
 \arguments{
+\item{mod_fit}{An object of class "lm" or "glm" to fit on the data. This object
+should contain the formula, the data, and, in case of "glm", the family}
+
 \item{coef_rwgt}{A tibble containing the number of the bootstrapped data set (b),
 the names of the regressors under reweighting, and the sets of model estimates}
 
@@ -31,7 +34,7 @@ Obtain the "focal reweighting variable" model diagnostic described in
 }
 \examples{
 \dontrun{
-# Get focal slope of X1
+# Get focal reweighting variable plot of X1
 n <- 1e3
 X1 <- stats::rnorm(n, 0, 1)
 X2 <- stats::rnorm(n, 0, 3)
@@ -41,7 +44,7 @@ mod_fit <- stats::lm(y ~ X1 + X2, df)
 ols_rwgt <- comp_coef_rwgt(mod_fit, c("X1", "X2"), B = 300)
 
 # Display the output
-focal_reweighting_variable(ols_rwgt, "X1")
+focal_rwgt_var(mod_fit, ols_rwgt, "X1")
 }
 
 }
