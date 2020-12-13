@@ -128,8 +128,11 @@ comp_empirical_bootstrap <- function(mod_fit, B = 100, m = NULL) {
 
   boot_out <- boot_samples %>%
     tibble::add_column(m = m) %>%
-    dplyr::mutate(boot_out = purrr::map(data, ~ comp_empirical_bootstrap_cond_model(mod_fit = mod_fit, data = .))) %>%
-    dplyr::select(b, m, boot_out)
+    tibble::add_column(n = nrow(data)) %>%
+    dplyr::mutate(boot_out =
+                    purrr::map(data,
+                               ~ comp_empirical_bootstrap_cond_model(mod_fit = mod_fit, data = .))) %>%
+    dplyr::select(b, m, n, boot_out)
 
   return(boot_out)
 }

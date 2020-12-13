@@ -80,7 +80,7 @@ Let's view the first few rows to understand the structure of the data frame.
 ``` {r load_data_rows}
 la_county_df %>% 
   head(x = .) %>% 
-  knitr::kable(x = ., format = "html", digits = 3, align = "c") %>% 
+  knitr::kable(x = ., format = "html", digits = 2, align = "c") %>% 
   kableExtra::kable_styling(position = "center")
 ```
 
@@ -111,7 +111,7 @@ se_lm <- broom::tidy(mod_fit) %>%
 se_lm %>% 
   purrr::set_names(x = ., 
                    nm = c('Term', '$SE_{\\text{lin}}$')) %>% 
-  knitr::kable(x = ., format = "html", digits = 3, 
+  knitr::kable(x = ., format = "html", digits = 2, 
                align = "c", escape = TRUE) %>% 
   kableExtra::kable_styling(position = "center")
 ```
@@ -122,9 +122,9 @@ broom::tidy(mod_fit) %>%
   purrr::set_names(x = .,
                    nm = c('Term', '$\\widehat{\\beta}_{j}$',
                           '$SE_{\\text{lin}}$')) %>%
-  knitr::kable(x = ., format = "latex", digits = 3,
+  knitr::kable(x = ., format = "latex", digits = 2,
                align = "c", escape = FALSE) %>%
-  kableExtra::kable_styling(position = "center") %>%
+  kableExtra::kable_styling(position = "center", latex_options = "striped") %>%
   kableExtra::as_image(x = ., width = 15,
                        file = here::here("vignettes","figures",
                                           "output", "r00_mod_lm_fit.png"))
@@ -153,9 +153,10 @@ qnorm_boot
 ```
 
 ```{r emp_qqnorm_save, include = F}
-qnorm_boot %>% ggplot2::ggsave(filename = here::here("vignettes","figures",
-                                          "output", "r_qqnorm_emp.png"), 
-              height = 10, width = 10)
+qnorm_boot %>% 
+  ggplot2::ggsave(filename = here::here("vignettes","figures",
+                                        "output", "r_qqnorm_emp.png"), 
+                  height = 10, width = 10)
 ```
 
 
@@ -166,10 +167,10 @@ regime.
 Let's now compute the standard errors from the outcome of the bootstrap. 
 This can be done through the following function.
 ``` {r se_emp_fit_lm, message=FALSE, warning=FALSE}
-se_emp <- coef_emp_boot %>%
-            tidyr::unnest(boot_out) %>%
-            dplyr::group_by(term) %>%
-            dplyr::summarise(std.error.boot = sd(estimate))
+se_emp <- maar::comp_bootstrap_summary(mod_fit = mod_fit, 
+                                       boot_out = coef_emp_boot, 
+                                       boot_type = 'emp') %>%
+            dplyr::select(-std.error, -t.stat, -p.val)
 ```
 
 
@@ -177,26 +178,27 @@ This now fits, the $B =  10^{3}$ replications. let's view the output.
 
 ``` {r se_emp_fit_lm_table}
 se_emp %>% 
-  head(x = .) %>% 
   purrr::set_names(x = ., 
-                   nm = c('Term', '$SE_{\\text{boot}}$')) %>% 
-  knitr::kable(x = ., format = "html", digits = 3, 
+                   nm = c('Term', '$\\widehat{\\beta}_{j}$',
+                          '$SE_{\\text{boot}}$', '$t_{\\text{boot}}$',
+                          '$p_{\\text{boot}}$')) %>% 
+  knitr::kable(x = ., format = "html", digits = 2, 
                align = "c", escape = TRUE) %>% 
   kableExtra::kable_styling(position = "center")
 ```
 
 ```{r se_emp_save_image, include=FALSE}
 se_emp %>%
-  head(x = .) %>%
-  purrr::set_names(x = .,
-                   nm = c('Term', '$SE_{\\text{boot}}$')) %>%
-  knitr::kable(x = ., format = "latex", digits = 3,
+  purrr::set_names(x = ., 
+                   nm = c('Term', '$\\widehat{\\beta}_{j}$',
+                          '$SE_{\\text{boot}}$', '$t_{\\text{boot}}$',
+                          '$p_{\\text{boot}}$')) %>% 
+  knitr::kable(x = ., format = "latex", digits = 2,
                align = "c", escape = FALSE) %>%
-  kableExtra::kable_styling(position = "center",
-                            latex_options = "scale_down") %>%
+  kableExtra::kable_styling(position = "center", latex_options = "striped") %>%
   kableExtra::as_image(x = ., width = 11,
                        file = here::here("vignettes","figures",
-                                          "output", "r02_se_emp.png"),
+                                          "output", "r02b_se_emp.png"),
                        density = 1000)
 ```
 
@@ -212,6 +214,25 @@ coef_emp_boot %>%
   tidyr::pivot_wider(names_from = q, values_from = x)
 ```
 
+## Computing standard errors from OLS using Multiplier Bootstrap
+
+We now compute the standard errors via $B = 10^{3}$ multiplier bootstrap 
+replications. This can be done through the following function.
+
+Let's first get the OLS estimates. 
+``` {r mult_fit_lm, message=FALSE, warning=FALSE}
+coef_mult_boot <- maar::comp_multiplier_bootstrap_var(mod_fit = mod_fit, 
+                                                      B = 1000, 
+                                                      weights_type = "std_gaussian")
+dplyr::glimpse(coef_mult_boot)
+```
+
+``` {r se_mult_fit_lm, message=FALSE, warning=FALSE}
+# se_mult <- maar::comp_bootstrap_summary(mod_fit = mod_fit, 
+#                                        boot_out = coef_mult_boot, 
+#                                        boot_type = 'mult') %>%
+#             dplyr::select(-std.error, -t.stat, -p.val)
+```
 
 ## Computing standard errors from OLS using Sandwich Estimator
 
@@ -220,57 +241,71 @@ Then we obtain the standard errors using the White sandwich estimator see
 @white1980usinglsapproxunknownregfuncs].
 
 ``` {r se_sand_fit_lm}
-se_sand <- maar::comp_sandwich_qr_var(mod_fit) %>% dplyr::select(term, std.error.sand)
+se_sand <- maar::comp_sandwich_qr_var(mod_fit = mod_fit)
 se_sand
 ```
 
 ```{r se_sand_save_image, include=FALSE}
-broom::tidy(mod_fit) %>%
-  dplyr::select(term, estimate, std.error) %>%
-  dplyr::inner_join(se_sand, by = 'term') %>%
+se_sand %>%
+  dplyr::select(-t.stat, -p.val) %>%
   purrr::set_names(x = .,
                    nm = c('Term', '$\\widehat{\\beta}_{j}$',
-                          '$SE_{\\text{lin}}$', '$SE_{\\text{sand}}$')) %>%
-  knitr::kable(x = ., format = "latex", digits = 3,
+                          '$SE_{\\text{lin}}$', 
+                          '$SE_{\\text{sand}}$', 
+                          '$t_{\\text{sand}}$', '$p_{\\text{sand}}$')) %>%
+  knitr::kable(x = ., format = "latex", digits = 2,
                align = "c", escape = FALSE) %>%
-  kableExtra::kable_styling(position = "center") %>%
+  kableExtra::kable_styling(position = "center", latex_options = "striped") %>%
   kableExtra::as_image(x = ., width = 15,
                        file = here::here("vignettes","figures",
                                           "output", "r01_se_sand.png"))
 ```
-
 
 ## Comparing standard errors
 
 We combine the standard errors into one tibble.
 
 ``` {r se_comb}
-se_comb <- broom::tidy(mod_fit) %>%
-            dplyr::select(term, estimate) %>%
-            dplyr::left_join(x = ., y = se_lm, by = "term") %>% 
-            dplyr::left_join(x = ., y = se_emp, by = "term") %>% 
-            dplyr::left_join(x = ., y = se_sand, by = "term")
+se_comb <- se_sand %>% 
+      dplyr::left_join(x = ., 
+                       y = se_emp %>% dplyr::select(-estimate), 
+                       by = "term")
 
 se_comb %>%
   purrr::set_names(x = ., 
                    nm = c('Term', '$\\widehat{\\beta}_{j}$', 
                           '$SE_{\\text{lin}}$',
-                          '$SE_{\\text{boot}}$', '$SE_{\\text{sand}}$')) %>% 
-  knitr::kable(x = ., format = "html", digits = 3, 
+                          '$t_{\\text{lin}}$',
+                          '$p_{\\text{lin}}$',
+                          '$SE_{\\text{sand}}$', 
+                          '$t_{\\text{sand}}$',
+                          '$p_{\\text{sand}}$',
+                          '$SE_{\\text{boot}}$',
+                          '$t_{\\text{boot}}$',
+                          '$p_{\\text{boot}}$')) %>% 
+  knitr::kable(x = ., format = "html", digits = 2, 
                align = "c", escape = TRUE) %>% 
   kableExtra::kable_styling(position = "center")
 ```
 
 ```{r se_comb_save_image, include=FALSE}
 se_comb %>%
-  purrr::set_names(x = .,
-                   nm = c('Term', '$\\widehat{\\beta}_{j}$',
+  dplyr::select(-t.stat, -p.val) %>% 
+  purrr::set_names(x = ., 
+                   nm = c('Term', '$\\widehat{\\beta}_{j}$', 
                           '$SE_{\\text{lin}}$',
-                          '$SE_{\\text{boot}}$', '$SE_{\\text{sand}}$')) %>%
-  knitr::kable(x = ., format = "latex", digits = 3,
+                          # '$t_{\\text{lin}}$',
+                          # '$p_{\\text{lin}}$',
+                          '$SE_{\\text{sand}}$', 
+                          '$t_{\\text{sand}}$',
+                          '$p_{\\text{sand}}$',
+                          '$SE_{\\text{boot}}$',
+                          '$t_{\\text{boot}}$',
+                          '$p_{\\text{boot}}$')) %>% 
+  knitr::kable(x = ., format = "latex", digits = 1,
                align = "c", escape = FALSE) %>%
-  kableExtra::kable_styling(position = "center") %>%
-  kableExtra::as_image(x = ., width = 15,
+  kableExtra::kable_styling(position = "left", latex_options = "striped") %>%
+  kableExtra::as_image(x = .,
                        file = here::here("vignettes","figures",
                                           "output", "r05_se_comb.png"))
 ```
@@ -281,49 +316,48 @@ We can also compute the ratios of the standard errors and the t-statistics
 as in Table 1 from [@buja2019modelsasapproximationspart1].
 
 ``` {r se_comb_t_stats}
-t_stats <- se_comb %>%
-            dplyr::mutate(
-              rat.boot.vs.lm = std.error.boot / std.error.lm,
-              rat.sand.vs.lm = std.error.sand / std.error.lm,
-              rat.sand.vs.boot = std.error.sand / std.error.boot,
-              t.lm = estimate / std.error.lm,
-              t.boot = estimate / std.error.boot,
-              t.sand = estimate / std.error.sand
-            )
-t_stats %>%
-  purrr::set_names(x = ., 
-                   nm = c("Term", '$\\widehat{\\beta}_{j}$', 
-                          '$SE_{\\text{lin}}$', '$SE_{\\text{boot}}$',
-                          '$SE_{\\text{sand}}$',
-                          "$\\frac{SE_{\\text{boot}}}{SE_{\\text{lin}}}$",
-                          "$\\frac{SE_{\\text{sand}}}{SE_{\\text{lin}}}$", 
-                          "$\\frac{SE_{\\text{sand}}}{SE_{\\text{boot}}}$",
-                          "$t_{\\text{lin}}$", "$t_{\\text{boot}}$", 
-                          "$t_{\\text{sand}}$")) %>%
-  knitr::kable(x = ., format = "html", digits = 3, 
-               align = "c", escape = TRUE) %>% 
-  kableExtra::kable_styling(position = "center")
+# t_stats <- se_comb %>%
+#             dplyr::mutate(
+#               rat.boot.vs.lm = std.error.boot / std.error.lm,
+#               rat.sand.vs.lm = std.error.sand / std.error.lm,
+#               rat.sand.vs.boot = std.error.sand / std.error.boot,
+#               t.lm = estimate / std.error.lm,
+#               t.boot = estimate / std.error.boot,
+#               t.sand = estimate / std.error.sand
+#             )
+# t_stats %>%
+#   purrr::set_names(x = ., 
+#                    nm = c("Term", '$\\widehat{\\beta}_{j}$', 
+#                           '$SE_{\\text{lin}}$', '$SE_{\\text{boot}}$',
+#                           '$SE_{\\text{sand}}$',
+#                           "$\\frac{SE_{\\text{boot}}}{SE_{\\text{lin}}}$",
+#                           "$\\frac{SE_{\\text{sand}}}{SE_{\\text{lin}}}$", 
+#                           "$\\frac{SE_{\\text{sand}}}{SE_{\\text{boot}}}$",
+#                           "$t_{\\text{lin}}$", "$t_{\\text{boot}}$", 
+#                           "$t_{\\text{sand}}$")) %>%
+#   knitr::kable(x = ., format = "html", digits = 2, 
+#                align = "c", escape = TRUE) %>% 
+#   kableExtra::kable_styling(position = "center")
 ```
 
 ```{r se_comb_t_stats_save_image, include=FALSE}
-t_stats %>%
-  purrr::set_names(x = .,
-                   nm = c("Term", '$\\widehat{\\beta}_{j}$',
-                          '$SE_{\\text{lin}}$', '$SE_{\\text{boot}}$',
-                          '$SE_{\\text{sand}}$',
-                          "$\\frac{SE_{\\text{boot}}}{SE_{\\text{lin}}}$",
-                          "$\\frac{SE_{\\text{sand}}}{SE_{\\text{lin}}}$",
-                          "$\\frac{SE_{\\text{sand}}}{SE_{\\text{boot}}}$",
-                          "$t_{\\text{lin}}$", "$t_{\\text{boot}}$",
-                          "$t_{\\text{sand}}$")) %>%
-  knitr::kable(x = ., format = "latex", digits = 3,
-               align = "c", escape = FALSE) %>%
-  kableExtra::kable_styling(position = "center",
-                            latex_options = "scale_down") %>%
-  kableExtra::as_image(x = ., width = 11,
-                       file = here::here("vignettes","figures",
-                                          "output", "r06_se_comb_t_stats.png"),
-                       density = 1000)
+# t_stats %>%
+#   purrr::set_names(x = .,
+#                    nm = c("Term", '$\\widehat{\\beta}_{j}$',
+#                           '$SE_{\\text{lin}}$', '$SE_{\\text{boot}}$',
+#                           '$SE_{\\text{sand}}$',
+#                           "$\\frac{SE_{\\text{boot}}}{SE_{\\text{lin}}}$",
+#                           "$\\frac{SE_{\\text{sand}}}{SE_{\\text{lin}}}$",
+#                           "$\\frac{SE_{\\text{sand}}}{SE_{\\text{boot}}}$",
+#                           "$t_{\\text{lin}}$", "$t_{\\text{boot}}$",
+#                           "$t_{\\text{sand}}$")) %>%
+#   knitr::kable(x = ., format = "latex", digits = 2,
+#                align = "c", escape = FALSE) %>%
+#   kableExtra::kable_styling(position = "center", latex_options = "striped") %>%
+#   kableExtra::as_image(x = ., width = 11,
+#                        file = here::here("vignettes","figures",
+#                                           "output", "r06_se_comb_t_stats.png"),
+#                        density = 1000)
 ```
 
 

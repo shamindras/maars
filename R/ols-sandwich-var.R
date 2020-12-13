@@ -34,6 +34,9 @@ comp_sandwich_qr_var <- function(mod_fit) {
   out <- tibble::tibble(
     term = names(mod_fit$coefficients),
     estimate = mod_fit$coefficients,
+    std.error = summary(mod_fit)[["coefficients"]][, "Std. Error"],
+    t.stat = summary(mod_fit)[["coefficients"]][, "t value"],
+    p.val = summary(mod_fit)[["coefficients"]][, "Pr(>|t|)"],
     std.error.sand = sqrt(diag(as.matrix(J_inv %*% V %*% J_inv)))
   ) %>%
     dplyr::mutate(
