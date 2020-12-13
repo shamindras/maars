@@ -269,20 +269,26 @@ se_sand %>%
                           "output", "r01_se_sand.tex"))
 ```
 
+
 We can also visually compare the two types of confidence intervals.
 ```{r plot_std_sand}
-comp_se <- se_sand %>%
+comp_se <- se_sand %>% dplyr::select(term, estimate, std.error.sand, std.error) %>%
   dplyr::filter(term != '(Intercept)') %>%
-  tidyr::pivot_longer(cols = c(std.error, std.error.sand), names_to = 'Type', values_to = 'std.error') %>%
-  dplyr::mutate(Type = ifelse(Type == 'std.error', 'lm', 'sandwich')) %>%
+  dplyr::inner_join(se_emp %>% dplyr::select(term, std.error.boot.emp), by = 'term') %>% 
+  tidyr::pivot_longer(cols = c(std.error, std.error.sand, std.error.boot.emp), names_to = 'Type', values_to = 'std.error') %>%
+  dplyr::mutate(Type = dplyr::case_when(Type == 'std.error' ~ 'lm', 
+                                 Type ==  'std.error.sand' ~ 'sandwich',
+                                 Type == 'std.error.boot.emp' ~ 'emp.boot.')) %>%
   ggplot2::ggplot(ggplot2::aes(term, estimate, col = Type)) + 
   ggplot2::theme_bw() + 
     ggplot2::geom_point(position=ggplot2::position_dodge(width=0.5)) + 
   ggplot2::labs(x = 'Regressor', y = 'Estimate') +
   ggplot2::geom_hline(yintercept = 0, linetype = 'dashed') +
-  ggplot2::geom_errorbar(ggplot2::aes(ymin = estimate-1.96*std.error, ymax = estimate+1.96*std.error, col = Type),
+  ggplot2::geom_errorbar(ggplot2::aes(ymin = estimate-1.96*std.error, ymax = estimate+1.96*std.error),
                          position = ggplot2::position_dodge(width=0.5), width = 0.1
-                         )
+                         ) + 
+  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 30, hjust = 1)) + 
+  ggplot2::guides(col=ggplot2::guide_legend(title="Type of standard errors"))
 comp_se
 ```
 
@@ -292,7 +298,7 @@ comp_se +
     #axis.text.x = ggplot2::element_blank(),
     #axis.ticks = ggplot2::element_blank(),
     axis.text.y = ggplot2::element_text(size = 17),
-    axis.text.x = ggplot2::element_text(size = 10),
+    axis.text.x = ggplot2::element_text(size = 15),
     axis.title = ggplot2::element_text(size = 17),
     strip.text = ggplot2::element_text(size = 17),
     legend.text = ggplot2::element_text(size = 17),
