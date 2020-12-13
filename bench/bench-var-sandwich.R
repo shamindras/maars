@@ -19,7 +19,7 @@ results <- bench::press(
         lm_fit <- create_lm_fit(n, p)
         bench::mark(
             min_iterations = 50,
-            qr_var = unname(round(maar::comp_sandwich_qr_var(lm_fit),
+            qr_var = unname(round(maar::comp_sandwich_qr_var(lm_fit)[, 3],
                                   NUM_DEC_PL)),
             sandwich_sandpkg_var = unname(round(sandwich::sandwich(lm_fit),
                                                 NUM_DEC_PL))

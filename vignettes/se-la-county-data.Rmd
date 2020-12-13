@@ -69,7 +69,8 @@ url_la_county_dat <- glue::glue("http://www-stat.wharton.upenn.edu/~buja",
                                 "STAT-961/Homeless_LA_by_Census_Tracts.csv",
                                 .sep = "/")
 
-la_county_df <- vroom::vroom(file = url_la_county_dat)
+la_county_df <- vroom::vroom(file = url_la_county_dat) %>% 
+                  dplyr::rename("MedianInc1000" = "MedianInc ($1000)")
 la_county_df %>% dim(x = .)
 ```
 The loaded dataset contains `r dim(la_county_df)[1]` observations and
@@ -116,18 +117,17 @@ se_lm %>%
   kableExtra::kable_styling(position = "center")
 ```
 
-```{r se_fit_lm_save_image, include=FALSE}
+```{r se_fit_lm_save_table, include=FALSE, eval=FALSE}
 broom::tidy(mod_fit) %>%
   dplyr::select(term, estimate, std.error) %>%
   purrr::set_names(x = .,
                    nm = c('Term', '$\\widehat{\\beta}_{j}$',
                           '$SE_{\\text{lin}}$')) %>%
-  knitr::kable(x = ., format = "latex", digits = 2,
-               align = "c", escape = FALSE) %>%
-  kableExtra::kable_styling(position = "center", latex_options = "striped") %>%
-  kableExtra::as_image(x = ., width = 15,
-                       file = here::here("vignettes","figures",
-                                          "output", "r00_mod_lm_fit.png"))
+  xtable::xtable(x = ., digits = 2,
+                 caption = 'Summary output from lm()') %>%
+  print(include.rownames = FALSE, sanitize.text.function=function(x){x},
+        file = here::here("vignettes","figures",
+                          "output", "r00_mod_lm_fit.tex"))
 ```
 
 
@@ -152,7 +152,7 @@ qnorm_boot <- maar::qqnorm_bootstrap(coef_emp_boot)
 qnorm_boot
 ```
 
-```{r emp_qqnorm_save, include = F}
+```{r emp_qqnorm_save_image, include = F}
 qnorm_boot <- maar::qqnorm_bootstrap(coef_emp_boot %>% tidyr::unnest(boot_out) %>% 
                                        dplyr::filter(term != '(Intercept)') %>%
                                        tidyr::nest(boot_out = c(term, estimate)))
@@ -198,19 +198,17 @@ se_emp %>%
   kableExtra::kable_styling(position = "center")
 ```
 
-```{r se_emp_save_image, include=FALSE}
+```{r se_emp_save_table, include=FALSE, eval=TRUE}
 se_emp %>%
   purrr::set_names(x = ., 
                    nm = c('Term', '$\\widehat{\\beta}_{j}$',
                           '$SE_{\\text{boot}}$', '$t_{\\text{boot}}$',
                           '$p_{\\text{boot}}$')) %>% 
-  knitr::kable(x = ., format = "latex", digits = 2,
-               align = "c", escape = FALSE) %>%
-  kableExtra::kable_styling(position = "center", latex_options = "striped") %>%
-  kableExtra::as_image(x = ., width = 11,
-                       file = here::here("vignettes","figures",
-                                          "output", "r02b_se_emp.png"),
-                       density = 1000)
+  xtable::xtable(x = ., digits = 2,
+                 caption = 'Empirical Bootstrap Standard Errors') %>% 
+  print(include.rownames = FALSE, sanitize.text.function=function(x){x},
+        file = here::here("vignettes","figures",
+                          "output", "r02b_se_emp.tex"))
 ```
 
 As we can see, the output is in tidy format as a `tibble` object. This makes it
@@ -256,7 +254,7 @@ se_sand <- maar::comp_sandwich_qr_var(mod_fit = mod_fit)
 se_sand
 ```
 
-```{r se_sand_save_image, include=FALSE}
+```{r se_sand_save_table, include=FALSE, eval=TRUE}
 se_sand %>%
   dplyr::select(-t.stat, -p.val) %>%
   purrr::set_names(x = .,
@@ -264,18 +262,15 @@ se_sand %>%
                           '$SE_{\\text{lin}}$', 
                           '$SE_{\\text{sand}}$', 
                           '$t_{\\text{sand}}$', '$p_{\\text{sand}}$')) %>%
-  knitr::kable(x = ., format = "latex", digits = 2,
-               align = "c", escape = FALSE) %>%
-  kableExtra::kable_styling(position = "center", latex_options = "striped") %>%
-  kableExtra::as_image(x = ., width = 15,
-                       file = here::here("vignettes","figures",
-                                          "output", "r01_se_sand.png"))
+  xtable::xtable(x = ., digits = 2,
+                 caption = 'Sandwich Estimator Standard Errors') %>% 
+  print(include.rownames = FALSE, sanitize.text.function=function(x){x},
+        file = here::here("vignettes","figures",
+                          "output", "r01_se_sand.tex"))
 ```
-
 
 We can also visually compare the two types of confidence intervals.
 ```{r plot_std_sand}
-
 comp_se <- se_sand %>%
   dplyr::filter(term != '(Intercept)') %>%
   tidyr::pivot_longer(cols = c(std.error, std.error.sand), names_to = 'Type', values_to = 'std.error') %>%
@@ -287,13 +282,11 @@ comp_se <- se_sand %>%
   ggplot2::geom_hline(yintercept = 0, linetype = 'dashed') +
   ggplot2::geom_errorbar(ggplot2::aes(ymin = estimate-1.96*std.error, ymax = estimate+1.96*std.error, col = Type),
                          position = ggplot2::position_dodge(width=0.5), width = 0.1
-                         ) #+ 
-  #ggplot2::facet_wrap(~ term, scales = 'free')
+                         )
 comp_se
 ```
 
 ```{r plot_std_sand_save_image, include = F}
-
 comp_se +
   ggplot2::theme(
     #axis.text.x = ggplot2::element_blank(),
@@ -314,7 +307,6 @@ ggplot2::ggsave(
     ),
     height = 6, width = 10
   )
-
 ```
 
 
@@ -346,7 +338,7 @@ se_comb %>%
   kableExtra::kable_styling(position = "center")
 ```
 
-```{r se_comb_save_image, include=FALSE}
+```{r se_comb_save_table, include=FALSE, eval=TRUE}
 se_comb %>%
   dplyr::select(-t.stat, -p.val) %>% 
   purrr::set_names(x = ., 
@@ -360,12 +352,11 @@ se_comb %>%
                           '$SE_{\\text{boot}}$',
                           '$t_{\\text{boot}}$',
                           '$p_{\\text{boot}}$')) %>% 
-  knitr::kable(x = ., format = "latex", digits = 1,
-               align = "c", escape = FALSE) %>%
-  kableExtra::kable_styling(position = "left", latex_options = "striped") %>%
-  kableExtra::as_image(x = .,
-                       file = here::here("vignettes","figures",
-                                          "output", "r05_se_comb.png"))
+  xtable::xtable(x = ., digits = 2,
+                 caption = 'Summary - Sandwich Estimator and Empirical Bootstrap') %>% 
+  print(include.rownames = FALSE, sanitize.text.function=function(x){x},
+        file = here::here("vignettes","figures",
+                          "output", "r05_se_comb.tex"))
 ```
 
 ## Reproduce Table 1 from [@buja2019modelsasapproximationspart1]
@@ -398,7 +389,7 @@ as in Table 1 from [@buja2019modelsasapproximationspart1].
 #   kableExtra::kable_styling(position = "center")
 ```
 
-```{r se_comb_t_stats_save_image, include=FALSE}
+```{r se_comb_t_stats_save_image, include=FALSE, eval=FALSE}
 # t_stats %>%
 #   purrr::set_names(x = .,
 #                    nm = c("Term", '$\\widehat{\\beta}_{j}$',
@@ -428,7 +419,7 @@ therefore important to study across the regions of the parameter space.
 
 Let's then first get OLS estimates under the default reweighting schema 
 implemented in the `maars` package. 
-```{r model_diag}
+```{r model_diag, eval=FALSE}
 coef_rwgt <- mod_fit %>% 
   maar::comp_coef_rwgt(mod_fit = .,
                  terms_to_rwgt = names(la_county_df)[-1],
@@ -442,12 +433,12 @@ diagnostics. Here, we show the "focal slope" model diagnostics.
 The `focal_slope` plot shows how one coefficient of interests varies 
 under reweighting of each of the regressors. 
 In the plot below we consider the case of "PercVacant".
-```{r  model_diag_focal_slope}
+```{r  model_diag_focal_slope, eval=FALSE}
 fs <- maar::focal_slope(mod_fit, coef_rwgt, 'PercVacant')
 fs
 ```
 
-```{r model_diag_focal_slope_image_save, include = F}
+```{r model_diag_focal_slope_save_image, include = FALSE, eval=FALSE}
 fs + 
     ggplot2::theme(
     axis.text = ggplot2::element_text(size = 17),
