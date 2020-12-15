@@ -33,7 +33,8 @@ Imports:
     knitr,
     kableExtra,
     xtable,
-    forcats
+    forcats,
+    ggplot2
 Suggests: 
     spelling,
     testthat,
