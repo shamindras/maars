@@ -32,7 +32,8 @@ Imports:
     DT,
     knitr,
     kableExtra,
-    magick
+    xtable,
+    forcats
 Suggests: 
     spelling,
     testthat,

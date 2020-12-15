@@ -452,7 +452,7 @@ Term
 0.76
 </td>
 <td style="text-align:center;">
-16.83
+16.23
 </td>
 <td style="text-align:center;">
 0.05
@@ -469,13 +469,13 @@ MedianInc1000
 -0.18
 </td>
 <td style="text-align:center;">
-0.12
+0.11
 </td>
 <td style="text-align:center;">
--1.53
+-1.63
 </td>
 <td style="text-align:center;">
-0.88
+0.90
 </td>
 </tr>
 <tr>
@@ -486,13 +486,13 @@ PercCommercial
 0.74
 </td>
 <td style="text-align:center;">
-0.41
+0.38
 </td>
 <td style="text-align:center;">
-1.81
+1.95
 </td>
 <td style="text-align:center;">
-0.94
+0.95
 </td>
 </tr>
 <tr>
@@ -509,7 +509,7 @@ PercIndustrial
 1.58
 </td>
 <td style="text-align:center;">
-0.89
+0.88
 </td>
 </tr>
 <tr>
@@ -520,13 +520,13 @@ PercMinority
 0.12
 </td>
 <td style="text-align:center;">
-0.17
+0.16
 </td>
 <td style="text-align:center;">
-0.74
+0.77
 </td>
 <td style="text-align:center;">
-0.54
+0.55
 </td>
 </tr>
 <tr>
@@ -540,10 +540,10 @@ PercResidential
 0.11
 </td>
 <td style="text-align:center;">
--0.44
+-0.46
 </td>
 <td style="text-align:center;">
-0.36
+0.37
 </td>
 </tr>
 <tr>
@@ -554,13 +554,13 @@ PercVacant
 4.63
 </td>
 <td style="text-align:center;">
-1.38
+1.36
 </td>
 <td style="text-align:center;">
-3.35
+3.40
 </td>
 <td style="text-align:center;">
-0.99
+1.00
 </td>
 </tr>
 </tbody>
@@ -573,15 +573,15 @@ PercVacant
   <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">pivot_wider</a></span><span class="op">(</span>names_from <span class="op">=</span> <span class="va">q</span>, values_from <span class="op">=</span> <span class="va">x</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 7 x 3</span>
 <span class="co">#&gt; # Groups:   term [7]</span>
-<span class="co">#&gt;   term              `0.025` `0.975`</span>
-<span class="co">#&gt;   &lt;chr&gt;               &lt;dbl&gt;   &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 (Intercept)     -35.0     33.5   </span>
-<span class="co">#&gt; 2 MedianInc1000    -0.442    0.0440</span>
-<span class="co">#&gt; 3 PercCommercial   -0.00313  1.54  </span>
-<span class="co">#&gt; 4 PercIndustrial   -0.109    2.07  </span>
-<span class="co">#&gt; 5 PercMinority     -0.182    0.439 </span>
-<span class="co">#&gt; 6 PercResidential  -0.293    0.174 </span>
-<span class="co">#&gt; 7 PercVacant        2.58     7.97</span></code></pre></div>
+<span class="co">#&gt;   term             `0.025` `0.975`</span>
+<span class="co">#&gt;   &lt;chr&gt;              &lt;dbl&gt;   &lt;dbl&gt;</span>
+<span class="co">#&gt; 1 (Intercept)     -33.1    32.0   </span>
+<span class="co">#&gt; 2 MedianInc1000    -0.423   0.0135</span>
+<span class="co">#&gt; 3 PercCommercial    0.0323  1.50  </span>
+<span class="co">#&gt; 4 PercIndustrial   -0.128   2.10  </span>
+<span class="co">#&gt; 5 PercMinority     -0.183   0.445 </span>
+<span class="co">#&gt; 6 PercResidential  -0.270   0.156 </span>
+<span class="co">#&gt; 7 PercVacant        2.69    7.93</span></code></pre></div>
 </div>
 <div id="computing-standard-errors-from-ols-using-multiplier-bootstrap" class="section level2">
 <h2 class="hasAnchor">
@@ -623,18 +623,32 @@ PercVacant
 <span class="co">#&gt; # … with 1 more variable: p.value.sand &lt;dbl&gt;</span></code></pre></div>
 <p>We can also visually compare the two types of confidence intervals.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">comp_se</span> <span class="op">&lt;-</span> <span class="va">se_sand</span> <span class="op">%&gt;%</span>
+<code class="sourceCode R"><span class="va">comp_se</span> <span class="op">&lt;-</span> <span class="va">se_sand</span> <span class="op">%&gt;%</span> 
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">term</span>, <span class="va">estimate</span>, <span class="va">std.error.sand</span>, <span class="va">std.error</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">term</span> <span class="op">!=</span> <span class="st">'(Intercept)'</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">std.error</span>, <span class="va">std.error.sand</span><span class="op">)</span>, names_to <span class="op">=</span> <span class="st">'Type'</span>, values_to <span class="op">=</span> <span class="st">'std.error'</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Type <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">Type</span> <span class="op">==</span> <span class="st">'std.error'</span>, <span class="st">'lm'</span>, <span class="st">'sandwich'</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">inner_join</a></span><span class="op">(</span><span class="va">se_emp</span> <span class="op">%&gt;%</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">term</span>, <span class="va">std.error.boot.emp</span><span class="op">)</span>, 
+                    by <span class="op">=</span> <span class="st">'term'</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">std.error</span>, <span class="va">std.error.sand</span>, <span class="va">std.error.boot.emp</span><span class="op">)</span>,
+                      names_to <span class="op">=</span> <span class="st">'Type'</span>, 
+                      values_to <span class="op">=</span> <span class="st">'std.error'</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Type <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html">case_when</a></span><span class="op">(</span>
+                          <span class="va">Type</span> <span class="op">==</span> <span class="st">"std.error"</span> <span class="op">~</span> <span class="st">"lm"</span>,
+                          <span class="va">Type</span> <span class="op">==</span> <span class="st">"std.error.sand"</span> <span class="op">~</span> <span class="st">"sandwich"</span>,
+                          <span class="va">Type</span> <span class="op">==</span> <span class="st">"std.error.boot.emp"</span> <span class="op">~</span> <span class="st">"emp.boot."</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Type <span class="op">=</span> 
+                  <span class="fu">forcats</span><span class="fu">::</span><span class="fu"><a href="https://forcats.tidyverse.org/reference/fct_relevel.html">fct_relevel</a></span><span class="op">(</span><span class="va">Type</span>, 
+                                       <span class="st">"lm"</span>, <span class="st">"sandwich"</span>, <span class="st">"emp.boot."</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span><span class="va">term</span>, <span class="va">estimate</span>, col <span class="op">=</span> <span class="va">Type</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
   <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> 
-    <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span>position<span class="op">=</span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/position_dodge.html">position_dodge</a></span><span class="op">(</span>width<span class="op">=</span><span class="fl">0.5</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span>position<span class="op">=</span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/position_dodge.html">position_dodge</a></span><span class="op">(</span>width<span class="op">=</span><span class="fl">0.5</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
   <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">'Regressor'</span>, y <span class="op">=</span> <span class="st">'Estimate'</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">0</span>, linetype <span class="op">=</span> <span class="st">'dashed'</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_linerange.html">geom_errorbar</a></span><span class="op">(</span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>ymin <span class="op">=</span> <span class="va">estimate</span><span class="op">-</span><span class="fl">1.96</span><span class="op">*</span><span class="va">std.error</span>, ymax <span class="op">=</span> <span class="va">estimate</span><span class="op">+</span><span class="fl">1.96</span><span class="op">*</span><span class="va">std.error</span>, col <span class="op">=</span> <span class="va">Type</span><span class="op">)</span>,
-                         position <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/position_dodge.html">position_dodge</a></span><span class="op">(</span>width<span class="op">=</span><span class="fl">0.5</span><span class="op">)</span>, width <span class="op">=</span> <span class="fl">0.1</span>
-                         <span class="op">)</span>
+  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_linerange.html">geom_errorbar</a></span><span class="op">(</span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>ymin <span class="op">=</span> <span class="va">estimate</span><span class="op">-</span><span class="fl">1.96</span><span class="op">*</span><span class="va">std.error</span>, 
+                                      ymax <span class="op">=</span> <span class="va">estimate</span><span class="op">+</span><span class="fl">1.96</span><span class="op">*</span><span class="va">std.error</span><span class="op">)</span>,
+                         position <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/position_dodge.html">position_dodge</a></span><span class="op">(</span>width<span class="op">=</span><span class="fl">0.5</span><span class="op">)</span>, 
+                         width <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span> <span class="op">+</span> 
+  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>axis.text.x <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>angle <span class="op">=</span> <span class="fl">30</span>, hjust <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guides.html">guides</a></span><span class="op">(</span>col<span class="op">=</span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guide_legend.html">guide_legend</a></span><span class="op">(</span>title<span class="op">=</span><span class="st">"Type of standard errors"</span><span class="op">)</span><span class="op">)</span>
 <span class="va">comp_se</span></code></pre></div>
 <p><img src="se-la-county-data_files/figure-html/plot_std_sand-1.png" width="700" style="display: block; margin: auto;"></p>
 </div>
@@ -726,7 +740,7 @@ Term
 0.96
 </td>
 <td style="text-align:center;">
-16.83
+16.23
 </td>
 <td style="text-align:center;">
 0.05
@@ -761,13 +775,13 @@ MedianInc1000
 0.08
 </td>
 <td style="text-align:center;">
-0.12
+0.11
 </td>
 <td style="text-align:center;">
--1.53
+-1.63
 </td>
 <td style="text-align:center;">
-0.88
+0.90
 </td>
 </tr>
 <tr>
@@ -796,13 +810,13 @@ PercVacant
 0.00
 </td>
 <td style="text-align:center;">
-1.38
+1.36
 </td>
 <td style="text-align:center;">
-3.35
+3.40
 </td>
 <td style="text-align:center;">
-0.99
+1.00
 </td>
 </tr>
 <tr>
@@ -831,13 +845,13 @@ PercMinority
 0.45
 </td>
 <td style="text-align:center;">
-0.17
+0.16
 </td>
 <td style="text-align:center;">
-0.74
+0.77
 </td>
 <td style="text-align:center;">
-0.54
+0.55
 </td>
 </tr>
 <tr>
@@ -869,10 +883,10 @@ PercResidential
 0.11
 </td>
 <td style="text-align:center;">
--0.44
+-0.46
 </td>
 <td style="text-align:center;">
-0.36
+0.37
 </td>
 </tr>
 <tr>
@@ -901,13 +915,13 @@ PercCommercial
 0.06
 </td>
 <td style="text-align:center;">
-0.41
+0.38
 </td>
 <td style="text-align:center;">
-1.81
+1.95
 </td>
 <td style="text-align:center;">
-0.94
+0.95
 </td>
 </tr>
 <tr>
@@ -942,7 +956,7 @@ PercIndustrial
 1.58
 </td>
 <td style="text-align:center;">
-0.89
+0.88
 </td>
 </tr>
 </tbody>
