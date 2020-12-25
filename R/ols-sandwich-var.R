@@ -39,9 +39,10 @@ comp_sandwich_qr_var <- function(mod_fit) {
     p.val = summary(mod_fit)[["coefficients"]][, "Pr(>|t|)"],
     std.error.sand = sqrt(diag(as.matrix(J_inv %*% V %*% J_inv)))
   ) %>%
-    dplyr::mutate(
-      t.stat.sand = estimate/std.error.sand,
-      p.value.sand = 2*(1-sapply(abs(t.stat.sand), pnorm))
+    dplyr::mutate(.data = .,
+                  t.stat.sand = .data$estimate/.data$std.error.sand,
+                  p.value.sand = 2*(1-sapply(abs(.data$t.stat.sand),
+                                             stats::pnorm))
     )
   return(out)
 }

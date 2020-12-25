@@ -69,8 +69,7 @@ url_la_county_dat <- glue::glue("http://www-stat.wharton.upenn.edu/~buja",
                                 "STAT-961/Homeless_LA_by_Census_Tracts.csv",
                                 .sep = "/")
 
-la_county_df <- vroom::vroom(file = url_la_county_dat) %>% 
-                  dplyr::rename("MedianInc1000" = "MedianInc ($1000)")
+la_county_df <- vroom::vroom(file = url_la_county_dat) # %>% dplyr::rename("MedianInc1000" = "MedianInc ($1000)")
 la_county_df %>% dim(x = .)
 ```
 The loaded dataset contains `r dim(la_county_df)[1]` observations and
@@ -307,7 +306,7 @@ comp_se +
     #axis.text.x = ggplot2::element_blank(),
     #axis.ticks = ggplot2::element_blank(),
     axis.text.y = ggplot2::element_text(size = 20),
-    axis.text.x = ggplot2::element_text(size = 15),
+    axis.text.x = ggplot2::element_text(size = 13),
     axis.title = ggplot2::element_text(size = 20),
     strip.text = ggplot2::element_text(size = 20),
     legend.text = ggplot2::element_text(size = 20),
@@ -463,6 +462,7 @@ fs +
     legend.title = ggplot2::element_text(size = 17),
     legend.position="bottom"
   ) +
+ggplot2::labs(x = "Grid of centers on the regressor") +
 ggplot2::ggsave(filename = here::here("vignettes","figures",
                                           "output", "r_focal_slope.png"), 
               height = 6, width = 10)

@@ -34,7 +34,8 @@ Imports:
     kableExtra,
     xtable,
     forcats,
-    ggplot2
+    ggplot2,
+    stringr
 Suggests: 
     spelling,
     testthat,

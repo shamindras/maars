@@ -78,10 +78,10 @@ comp_grid_centers <- function(x, grid_method, n_grid) {
 #' print(ols_rwgt_X1)
 #' }
 comp_coef_rwgt_single <- function(mod_fit, term_to_rwgt, boot_samples, term_to_rwgt_centers) {
-  data <- model.frame(mod_fit)
+  data <- stats::model.frame(mod_fit)
 
   alpha <- 1
-  gamma <- sd(data[[term_to_rwgt]]) * alpha
+  gamma <- stats::sd(data[[term_to_rwgt]]) * alpha
   weights_assigned <- tibble::tibble(
     center = sort(unique(term_to_rwgt_centers)),
     weights = as.list(center) %>%
@@ -181,7 +181,7 @@ comp_coef_rwgt <- function(mod_fit,
                             msg = glue::glue("grid_centers must be a data frame where column names correspond to the names of the regressors and the centers values"))
   }
 
-  data <- model.frame(mod_fit)
+  data <- stats::model.frame(mod_fit)
   terms_to_rwgt <- as.list(terms_to_rwgt)
   names(terms_to_rwgt) <- unlist(terms_to_rwgt)
 
@@ -197,7 +197,9 @@ comp_coef_rwgt <- function(mod_fit,
 
   if (is.null(grid_centers)) {
     grid_centers <- data %>%
-      dplyr::summarise_all(function(x) comp_grid_centers(x, grid_method = grid_method, n_grid = n_grid))
+      dplyr::summarise_all(function(x) comp_grid_centers(x,
+                                                         grid_method = grid_method,
+                                                         n_grid = n_grid))
   }
 
   out <- terms_to_rwgt %>%
@@ -210,7 +212,8 @@ comp_coef_rwgt <- function(mod_fit,
     dplyr::bind_rows(.id = "term_rwgt") %>%
     dplyr::mutate(m = m) %>%
     dplyr::mutate(n = nrow(data)) %>%
-    tidyr::nest(boot_out = c(term, estimate))
+    tidyr::nest(.data = .,
+                boot_out = c(.data$term, .data$estimate))
 
   return(out)
 }
@@ -266,19 +269,31 @@ focal_slope <- function(mod_fit, coef_rwgt, term_chosen) {
     probs = c(0.025, 0.975),
     group_vars = c("term", "term_rwgt", "term_rwgt_center")
   ) %>%
-    tidyr::pivot_wider(names_from = q, values_from = x) %>%
-    dplyr::filter(term == term_chosen)
+    tidyr::pivot_wider(data = .,
+                       names_from = .data$q,
+                       values_from = .data$x) %>%
+    dplyr::filter(.data = .,
+                  term == .data$term_chosen)
 
   coef_rwgt <- coef_rwgt %>%
-    tidyr::unnest(boot_out) %>%
-    dplyr::filter(term == term_chosen)
+    tidyr::unnest(data = .,
+                  .data$boot_out) %>%
+    dplyr::filter(.data = .,
+                  term == .data$term_chosen)
 
   coef_rwgt_means <- coef_rwgt %>%
-    dplyr::group_by(term_rwgt, term_rwgt_center) %>%
-    dplyr::summarise(estimate = mean(estimate), .groups = "keep")
+    dplyr::group_by(.data = .,
+                    .data$term_rwgt,
+                    .data$term_rwgt_center) %>%
+    dplyr::summarise(.data = .,
+                     estimate = mean(.data$estimate),
+                     .groups = "keep")
 
   out <- coef_rwgt %>%
-    ggplot2::ggplot(mapping = ggplot2::aes(term_rwgt_center, estimate, group = b)) +
+    ggplot2::ggplot(data = .,
+                    mapping = ggplot2::aes(.data$term_rwgt_center,
+                                           .data$estimate,
+                                           group = .data$b)) +
     ggplot2::geom_line(alpha = 0.3, col = "grey") +
     ggplot2::theme_bw() +
     ggplot2::labs(x = "Value of regressor", y = paste("Coeffient of", term_chosen)) +
@@ -286,16 +301,24 @@ focal_slope <- function(mod_fit, coef_rwgt, term_chosen) {
     ggplot2::geom_segment(
       data = coef_rwgt_conf_int,
       mapping = ggplot2::aes(
-        x = term_rwgt_center, xend = term_rwgt_center,
-        y = `0.025`, yend = `0.975`, group = NULL
+        x = .data$term_rwgt_center,
+        xend = .data$term_rwgt_center,
+        y = .data$`0.025`,
+        yend = .data$`0.975`,
+        group = NULL
       )
     ) +
     ggplot2::geom_line(
       data = coef_rwgt_means,
-      mapping = ggplot2::aes(x = term_rwgt_center, y = estimate, group = NULL)
+      mapping = ggplot2::aes(x = .data$term_rwgt_center,
+                             y = .data$estimate,
+                             group = NULL)
     ) +
-    ggplot2::geom_hline(data = broom::tidy(mod_fit) %>% dplyr::filter(term==term_chosen),
-                        mapping = ggplot2::aes(yintercept=estimate, group = NULL),
+    ggplot2::geom_hline(data = broom::tidy(mod_fit) %>%
+                          dplyr::filter(.data = .,
+                                        term == .data$term_chosen),
+                        mapping = ggplot2::aes(yintercept = .data$estimate,
+                                               group = NULL),
                         linetype = 'dashed',
                         col = 'blue')
   return(out)
@@ -327,6 +350,7 @@ focal_slope <- function(mod_fit, coef_rwgt, term_chosen) {
 #' @export
 #'
 #' @importFrom Rdpack reprompt
+#' @importFrom rlang .data
 #'
 #' @references \insertAllCited{}
 #'
@@ -350,19 +374,29 @@ nonlinearity_detection <- function(mod_fit, coef_rwgt) {
     probs = c(0.025, 0.975),
     group_vars = c("term", "term_rwgt", "term_rwgt_center")
   ) %>%
-    tidyr::pivot_wider(names_from = q, values_from = x) %>%
-    dplyr::filter(term == term_rwgt)
+    tidyr::pivot_wider(data = .,
+                       names_from = .data$q,
+                       values_from = .data$x) %>%
+    dplyr::filter(.data = .,
+                  term == .data$term_rwgt)
 
   coef_rwgt <- coef_rwgt %>%
-    tidyr::unnest(boot_out) %>%
-    dplyr::filter(term == term_rwgt)
+    tidyr::unnest(data = .,
+                  .data$boot_out) %>%
+    dplyr::filter(.data = .,
+                  term == .data$term_rwgt)
 
   coef_rwgt_means <- coef_rwgt %>%
-    dplyr::group_by(term_rwgt, term_rwgt_center) %>%
-    dplyr::summarise(estimate = mean(estimate), .groups = "keep")
+    dplyr::group_by(.data = ., .data$term_rwgt, .data$term_rwgt_center) %>%
+    dplyr::summarise(.data = .,
+                     estimate = mean(.data$estimate),
+                     .groups = "keep")
 
   out <- coef_rwgt %>%
-    ggplot2::ggplot(mapping = ggplot2::aes(term_rwgt_center, estimate, group = b)) +
+    ggplot2::ggplot(data = .,
+                    mapping = ggplot2::aes(.data$term_rwgt_center,
+                                           .data$estimate,
+                                           group = .data$b)) +
     ggplot2::geom_line(alpha = 0.3, col = "grey") +
     ggplot2::theme_bw() +
     ggplot2::labs(x = "Value of regressor", y = paste("Coefficient")) +
@@ -370,17 +404,31 @@ nonlinearity_detection <- function(mod_fit, coef_rwgt) {
     ggplot2::geom_segment(
       data = coef_rwgt_conf_int,
       mapping = ggplot2::aes(
-        x = term_rwgt_center, xend = term_rwgt_center,
-        y = `0.025`, yend = `0.975`, group = NULL
+        x = .data$term_rwgt_center,
+        xend = .data$term_rwgt_center,
+        y = .data$`0.025`,
+        yend = .data$`0.975`,
+        group = NULL
       )
     ) +
     ggplot2::geom_line(
       data = coef_rwgt_means,
-      mapping = ggplot2::aes(x = term_rwgt_center, y = estimate, group = NULL)
+      mapping = ggplot2::aes(
+        x = .data$term_rwgt_center,
+        y = .data$estimate,
+        group = NULL)
     ) +
-    ggplot2::geom_hline(data = broom::tidy(mod_fit) %>% dplyr::rename(term_rwgt = term) %>%
-                          dplyr::inner_join(coef_rwgt %>% dplyr::select(term_rwgt), by = 'term_rwgt'),
-                        mapping = ggplot2::aes(yintercept=estimate, group = NULL),
+    ggplot2::geom_hline(data =
+                          broom::tidy(mod_fit) %>%
+                          dplyr::rename(.data = .,
+                                        term_rwgt = term) %>%
+                          dplyr::inner_join(x = .,
+                                            y = coef_rwgt %>%
+                                              dplyr::select(.data = .,
+                                                            .data$term_rwgt),
+                                            by = 'term_rwgt'),
+                        mapping = ggplot2::aes(yintercept = .data$estimate,
+                                               group = NULL),
                         col = 'blue',
                         linetype = 'dashed')
   return(out)
@@ -437,19 +485,31 @@ focal_rwgt_var <- function(mod_fit, coef_rwgt, term_chosen) {
     probs = c(0.025, 0.975),
     group_vars = c("term", "term_rwgt", "term_rwgt_center")
   ) %>%
-    tidyr::pivot_wider(names_from = q, values_from = x) %>%
-    dplyr::filter(term_rwgt == term_chosen)
+    tidyr::pivot_wider(data = .,
+                       names_from = .data$q,
+                       values_from = .data$x) %>%
+    dplyr::filter(term_rwgt == .data$term_chosen)
 
   coef_rwgt <- coef_rwgt %>%
-    tidyr::unnest(boot_out) %>%
-    dplyr::filter(term_rwgt == term_chosen)
+    tidyr::unnest(data = .,
+                  .data$boot_out) %>%
+    dplyr::filter(.data = .,
+                  term_rwgt == .data$term_chosen)
 
   coef_rwgt_means <- coef_rwgt %>%
-    dplyr::group_by(term_rwgt, term, term_rwgt_center) %>%
-    dplyr::summarise(estimate = mean(estimate), .groups = "keep")
+    dplyr::group_by(.data = .,
+                    .data$term_rwgt,
+                    .data$term,
+                    .data$term_rwgt_center) %>%
+    dplyr::summarise(.data = .,
+                     estimate = mean(.data$estimate),
+                     .groups = "keep")
 
   out <- coef_rwgt %>%
-    ggplot2::ggplot(mapping = ggplot2::aes(term_rwgt_center, estimate, group = b)) +
+    ggplot2::ggplot(data = .,
+                    mapping = ggplot2::aes(.data$term_rwgt_center,
+                                           .data$estimate,
+                                           group = .data$b)) +
     ggplot2::geom_line(alpha = 0.3, col = "grey") +
     ggplot2::theme_bw() +
     ggplot2::labs(x = term_chosen, y = "Coeffient") +
@@ -457,17 +517,27 @@ focal_rwgt_var <- function(mod_fit, coef_rwgt, term_chosen) {
     ggplot2::geom_segment(
       data = coef_rwgt_conf_int,
       mapping = ggplot2::aes(
-        x = term_rwgt_center, xend = term_rwgt_center,
-        y = `0.025`, yend = `0.975`, group = NULL
+        x = .data$term_rwgt_center,
+        xend = .data$term_rwgt_center,
+        y = .data$`0.025`,
+        yend = .data$`0.975`,
+        group = NULL
       )
     ) +
     ggplot2::geom_line(
       data = coef_rwgt_means,
-      mapping = ggplot2::aes(x = term_rwgt_center, y = estimate, group = NULL)
+      mapping = ggplot2::aes(x = .data$term_rwgt_center,
+                             y = .data$estimate,
+                             group = NULL)
     ) +
-    ggplot2::geom_hline(data = broom::tidy(mod_fit) %>%
-                          dplyr::inner_join(coef_rwgt %>% dplyr::select(term), by = 'term'),
-                        mapping = ggplot2::aes(yintercept=estimate, group = NULL),
+    ggplot2::geom_hline(data = broom::tidy(x = mod_fit) %>%
+                          dplyr::inner_join(x = .,
+                                            y = coef_rwgt %>%
+                                              dplyr::select(.data = .,
+                                                            .data$term),
+                                            by = 'term'),
+                        mapping = ggplot2::aes(yintercept = .data$estimate,
+                                               group = NULL),
                         col = 'blue',
                         linetype = 'dashed')
   return(out)

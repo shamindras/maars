@@ -227,8 +227,10 @@ comp_conf_int_bootstrap <- function(boot_out, probs = c(0.025, 0.975), group_var
 #' }
 qqnorm_bootstrap <- function(boot_out) {
   out <- boot_out %>%
-    tidyr::unnest(boot_out) %>%
-    ggplot2::ggplot(ggplot2::aes(sample = estimate)) +
+    tidyr::unnest(data = .,
+                  .data$boot_out) %>%
+    ggplot2::ggplot(data = .,
+                    ggplot2::aes(sample = .data$estimate)) +
     ggplot2::stat_qq() + ggplot2::stat_qq_line() +
     ggplot2::facet_wrap(~ term, ncol = 3, scales = 'free_y') +
     ggplot2::labs(x = 'Theoretical quantiles', y = 'Sample quantiles') +
