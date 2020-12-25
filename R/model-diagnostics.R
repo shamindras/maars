@@ -15,6 +15,8 @@
 #'
 #' @export
 #'
+#' @importFrom rlang .data
+#'
 #' @examples
 #' \dontrun{
 #' # Construct a grid of centers for the reweighting of the regressor
@@ -61,6 +63,8 @@ comp_grid_centers <- function(x, grid_method, n_grid) {
 #' the names of the regressor under reweighting, and the sets of model estimates
 #'
 #' @export
+#'
+#' @importFrom rlang .data
 #'
 #' @examples
 #' \dontrun{
@@ -130,6 +134,8 @@ comp_coef_rwgt_single <- function(mod_fit, term_to_rwgt, boot_samples, term_to_r
 #' and the sets of model estimates
 #'
 #' @export
+#'
+#' @importFrom rlang .data
 #'
 #' @examples
 #' \dontrun{
@@ -246,6 +252,7 @@ comp_coef_rwgt <- function(mod_fit,
 #' @export
 #'
 #' @importFrom Rdpack reprompt
+#' @importFrom rlang .data
 #'
 #' @references \insertAllCited{}
 #'

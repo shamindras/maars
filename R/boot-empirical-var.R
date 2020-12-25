@@ -11,6 +11,8 @@
 #'
 #' @export
 #'
+#' @importFrom rlang .data
+#'
 #' @examples
 #' \dontrun{
 #' # Draw B=100 bootstrap samples of size m=5
@@ -55,6 +57,8 @@ comp_empirical_bootstrap_samples <- function(data,
 #'
 #' @export
 #'
+#' @importFrom rlang .data
+#'
 #' @examples
 #' \dontrun{
 #' # Estimate OLS from a bootstraped data set
@@ -82,18 +86,28 @@ comp_empirical_bootstrap_samples <- function(data,
 comp_cond_model <- function(mod_fit, data, weights=NULL){
   if (all("lm" == class(mod_fit))) {
     if(is.null(weights)){
-      out <- stats::lm(formula = stats::formula(mod_fit), data = data)
+      out <- stats::lm(formula = stats::formula(mod_fit),
+                       data = data)
     } else{
-      out <- stats::lm(formula = stats::formula(mod_fit), data = data, weights = weights)
+      out <- stats::lm(formula = stats::formula(mod_fit),
+                       data = data,
+                       weights = weights)
     }
   } else {
     if(is.null(weights)){
-      out <- stats::glm(formula = stats::formula(mod_fit), data = data, family = stats::family(mod_fit))
+      out <- stats::glm(formula = stats::formula(mod_fit),
+                        data = data,
+                        family = stats::family(mod_fit))
     } else{
-      out <- stats::glm(formula = stats::formula(mod_fit), data = data, family = stats::family(mod_fit), weights = weights)
+      out <- stats::glm(formula = stats::formula(mod_fit),
+                        data = data,
+                        family = stats::family(mod_fit),
+                        weights = weights)
     }
   }
-  out <- tibble::tibble(term = names(stats::coef(out)), estimate = stats::coef(out))
+
+  out <- tibble::tibble(term = names(stats::coef(out)),
+                        estimate = stats::coef(out))
   return(out)
 }
 
@@ -111,6 +125,8 @@ comp_cond_model <- function(mod_fit, data, weights=NULL){
 #'
 #' @return A tibble of the model's coefficients estimated on the bootstrapped data sets
 #' @export
+#'
+#' @importFrom rlang .data
 #'
 #' @examples
 #' \dontrun{
@@ -174,6 +190,8 @@ comp_empirical_bootstrap <- function(mod_fit, B = 100, m = NULL) {
 #'
 #' @export
 #'
+#' @importFrom rlang .data
+#'
 #' @examples
 #' \dontrun{
 #' # Get confidence interval for OLS estimates via bootstrap
@@ -211,6 +229,8 @@ comp_conf_int_bootstrap <- function(boot_out, probs = c(0.025, 0.975), group_var
 #'
 #' @export
 #'
+#' @importFrom rlang .data
+#'
 #' @examples
 #' \dontrun{
 #' # Obtain normal QQ plot of the
@@ -233,7 +253,8 @@ qqnorm_bootstrap <- function(boot_out) {
                     ggplot2::aes(sample = .data$estimate)) +
     ggplot2::stat_qq() + ggplot2::stat_qq_line() +
     ggplot2::facet_wrap(~ term, ncol = 3, scales = 'free_y') +
-    ggplot2::labs(x = 'Theoretical quantiles', y = 'Sample quantiles') +
+    ggplot2::labs(x = 'Theoretical quantiles',
+                  y = 'Sample quantiles') +
     ggplot2::theme_bw()
   return(out)
 }

@@ -30,6 +30,7 @@
 #' @export
 #'
 #' @importFrom Rdpack reprompt
+#' @importFrom rlang .data
 #'
 #' @references \insertAllCited
 #'
@@ -107,6 +108,8 @@ gen_multiplier_bootstrap_weights <- function(n, weights_type) {
 #'
 #' @export
 #'
+#' @importFrom rlang .data
+#'
 #' @examples
 #' \dontrun{
 #' # Run an linear model (OLS) fit
@@ -161,7 +164,10 @@ comp_multiplier_single_bootstrap_var <- function(n, J_inv_X_res, e) {
 #' \code{\link[maar]{gen_multiplier_bootstrap_weights}}.
 #'
 #' @return A tibble of the bootstrap calculations
+#'
 #' @export
+#'
+#' @importFrom rlang .data
 #'
 #' @examples
 #' \dontrun{

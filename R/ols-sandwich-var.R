@@ -12,6 +12,7 @@
 #' @export
 #'
 #' @importFrom Rdpack reprompt
+#' @importFrom rlang .data
 #'
 #' @references \insertAllCited{}
 #'

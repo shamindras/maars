@@ -18,6 +18,8 @@
 #'
 #' @export
 #'
+#' @importFrom rlang .data
+#'
 #' @examples
 #' \dontrun{
 #' # Simulate data from a linear model
