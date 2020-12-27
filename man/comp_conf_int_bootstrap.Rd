@@ -8,19 +8,27 @@ via percentile bootstrap}
 comp_conf_int_bootstrap(boot_out, probs = c(0.025, 0.975), group_vars = "term")
 }
 \arguments{
-\item{boot_out}{A tibble of the model's coefficients estimated on the bootstrapped data sets}
+\item{boot_out}{A tibble of the model's coefficients estimated (\code{term} and \code{estimate})
+on the bootstrapped data sets, the size of each bootstrapped data set (\code{m}),
+the size of the original data set (\code{n}),
+and the number of the bootstrap repetition (\code{b}).}
 
-\item{probs}{Numeric vector containing the probabilities of the corresponding quantiles}
+\item{probs}{Numeric vector containing the probabilities of the quantiles to be computed.}
 
-\item{group_vars}{A vector of characters with the variables used to form the groups}
+\item{group_vars}{A vector of characters including the variables used to form the groups.}
 }
 \value{
-A tibble containing the quantiles (x) and the probabilities (q) for  group_vars
+A tibble containing the quantiles (\code{x}) and the probabilities (\code{q})
+for each group as specified by \code{group_vars}.
 }
 \description{
 Confidence intervals for regression models estimates on bootstrapped data sets
-via percentile bootstrap. The functions takes in set of bootstrap estimates,
-a series of probabilities for the quantiles, and some "grouping" terms.
+via percentile bootstrap.
+}
+\details{
+\code{comp_conf_int_bootstrap} takes in a set of bootstrap estimates (\code{boot_out}),
+a series of probabilities for the quantiles (\code{probs}),
+and optionally some "grouping" terms (\code{group_vars}).
 It returns the corresponding quantiles.
 }
 \examples{
@@ -29,12 +37,12 @@ It returns the corresponding quantiles.
 n <- 1e3
 X1 <- stats::rnorm(n, 0, 1)
 X2 <- stats::rnorm(n, 0, 3)
-y <- 2 + X1 + X2*0.3 + stats::rnorm(n, 0, 1)
+y <- 2 + X1 + X2 * 0.3 + stats::rnorm(n, 0, 1)
 df <- tibble::tibble(y = y, X1 = X1, X2 = X2, n_obs = 1:length(X1))
-mod_fit <- stats::lm(y ~ X1+X2, df)
+mod_fit <- stats::lm(y ~ X1 + X2, df)
 boot_out <- comp_empirical_bootstrap(mod_fit)
-conf_int <- comp_conf_int_boot(boot_out, c(0.05,0.95)) \%>\%
-tidyr::pivot_wider(names_from = q, values_from = x)
+conf_int <- comp_conf_int_bootstrap(boot_out, c(0.05, 0.95)) \%>\%
+  tidyr::pivot_wider(names_from = q, values_from = x)
 
 # Display the output
 print(conf_int)

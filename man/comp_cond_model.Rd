@@ -2,13 +2,13 @@
 % Please edit documentation in R/boot-empirical-var.R
 \name{comp_cond_model}
 \alias{comp_cond_model}
-\title{Fit OLS or GLM on the data}
+\title{Fit OLS or GLM on the data.}
 \usage{
 comp_cond_model(mod_fit, data, weights = NULL)
 }
 \arguments{
-\item{mod_fit}{An object of class "lm" or "glm" to fit on the data. This object
-should contain the formula, the data, and, in case of "glm", the family}
+\item{mod_fit}{An object of class \code{stats::lm} or \code{stats::glm} to fit on the data. This object
+should contain the formula, the data, and, in case of \code{stats::glm}, the family}
 
 \item{data}{A tibble or data frame containing the data set on which the model
 will be trained}
@@ -17,14 +17,20 @@ will be trained}
 feature name in the data}
 }
 \value{
-A tibble containing the estimated coefficients of the model
+A tibble containing the estimated coefficients (\code{term})
+of the regressors (\code{term}).
 }
 \description{
-Fit OLS or GLM on the data
+Fit OLS or GLM on the data.
+}
+\details{
+The model specification obtained from \code{mod_fit}, of class \code{stats::lm} or \code{stats::glm},
+is fitted on \code{data}. The user can choose to fit a weighted regression using the argument
+\code{weights}.
 }
 \examples{
 \dontrun{
-# Estimate OLS from a bootstraped data set
+# Estimate ols from a bootstraped data set
 n <- 1e3
 X <- stats::rnorm(n, 0, 1)
 y <- 2 + X * 1 + stats::rnorm(n, 0, 1)
@@ -39,9 +45,9 @@ print(mod)
 n <- 1e3
 X <- stats::rnorm(n, 0, 1)
 y <- 2 + X * 1 + stats::rnorm(n, 0, 1)
-mod_fit <- stats::lm(y ~ X)
+mod_fit <- lm(y ~ X)
 df <- tibble::tibble(y = y, X = X, weights = 1:length(X))
-mod <- comp_cond_model(mod_fit, df, 'weights')
+mod <- comp_cond_model(mod_fit, df, "weights")
 
 # Display the output
 print(mod)

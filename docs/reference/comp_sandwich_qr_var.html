@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Compute the White sandwich estimator of standard errors for OLS — comp_sandwich_qr_var • maar</title>
+<title>Compute the sandwich estimator of standard errors for OLS — comp_sandwich_qr_var • maar</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Compute the White sandwich estimator of standard errors for OLS — comp_sandwich_qr_var" />
-<meta property="og:description" content="Compute the White sandwich estimator of standard errors for
+<meta property="og:title" content="Compute the sandwich estimator of standard errors for OLS — comp_sandwich_qr_var" />
+<meta property="og:description" content="Compute the sandwich estimator of standard errors for
 ordinary least squares (OLS) regression, see White (1980) and White (1980)
 . For
 more details
@@ -123,13 +123,13 @@ see also Buja et al. (2019) and Buja et al. (2019)
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Compute the White sandwich estimator of standard errors for OLS</h1>
+    <h1>Compute the sandwich estimator of standard errors for OLS</h1>
     
     <div class="hidden name"><code>comp_sandwich_qr_var.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Compute the White sandwich estimator of standard errors for
+    <p>Compute the sandwich estimator of standard errors for
 ordinary least squares (OLS) regression, see White (1980) and White (1980)
 . For
 more details
@@ -144,13 +144,18 @@ see also Buja et al. (2019) and Buja et al. (2019)
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>mod_fit</th>
-      <td><p>An lm (OLS) object</p></td>
+      <td><p>A <code><a href='https://rdrr.io/r/stats/lm.html'>stats::lm</a></code> (OLS) object.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>(tibble) White sandwich estimator of variance for OLS regression</p>
+    <p>A tibble containing the sandwich estimator of variance for OLS regression.</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>The function computes the sandwich estimator for the OLS regression passed in <code>mod_fit</code> and
+returns a tibble with summary information about the components of the model
+based on the sandiwch standard errors.</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Buja A, Brown L, Berk R, George E, Pitkin E, Traskin M, Zhang K, Zhao L (2019).

@@ -2,21 +2,26 @@
 % Please edit documentation in R/ols-sandwich-var.R
 \name{comp_sandwich_qr_var}
 \alias{comp_sandwich_qr_var}
-\title{Compute the White sandwich estimator of standard errors for OLS}
+\title{Compute the sandwich estimator of standard errors for OLS}
 \usage{
 comp_sandwich_qr_var(mod_fit)
 }
 \arguments{
-\item{mod_fit}{An lm (OLS) object}
+\item{mod_fit}{A \code{stats::lm} (OLS) object.}
 }
 \value{
-(tibble) White sandwich estimator of variance for OLS regression
+A tibble containing the sandwich estimator of variance for OLS regression.
 }
 \description{
-Compute the White sandwich estimator of standard errors for
+Compute the sandwich estimator of standard errors for
 ordinary least squares (OLS) regression, \insertCite{@see @white1980usinglsapproxunknownregfuncs and @white1980heteroskedasticconsistentcovest;textual}{maar}. For
 more details
 \insertCite{@see also @buja2019modelsasapproximationspart1 and @buja2019modelsasapproximationspart2;textual}{maar}.
+}
+\details{
+The function computes the sandwich estimator for the OLS regression passed in \code{mod_fit} and
+returns a tibble with summary information about the components of the model
+based on the sandiwch standard errors.
 }
 \examples{
 \dontrun{

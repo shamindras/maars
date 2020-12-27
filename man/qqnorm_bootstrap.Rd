@@ -7,15 +7,19 @@
 qqnorm_bootstrap(boot_out)
 }
 \arguments{
-\item{boot_out}{A tibble of the model's coefficients estimated on the bootstrapped data sets}
+\item{boot_out}{A tibble of the model's coefficients estimated (\code{term} and \code{estimate})
+on the bootstrapped data sets, the size of each bootstrapped data set (\code{m}),
+the size of the original data set (\code{n}),
+and the number of the bootstrap repetition (\code{b}).}
 }
 \value{
-A ggplot2 object containing normal QQ plot for each term
+A ggplot2 object containing normal QQ plot for each regressor in \code{boot_out}.
+Each panel corresponds to a different coefficient, whose name appears in the panel's titles.
 }
 \description{
-This function produces a normal QQPlot for each term
-in the output of the bootstrap function.
-This function is a wrapper for the ggplot2::stat_qq function.
+\code{qqnorm_bootstrap} produces a normal QQPlot for each regressors included in the
+estimates on the bootstrapped data sets.
+This function is a wrapper for the \code{ggplot2::stat_qq} function.
 }
 \examples{
 \dontrun{
@@ -23,9 +27,9 @@ This function is a wrapper for the ggplot2::stat_qq function.
 n <- 1e3
 X1 <- stats::rnorm(n, 0, 1)
 X2 <- stats::rnorm(n, 0, 3)
-y <- 2 + X1 + X2*0.3 + stats::rnorm(n, 0, 1)
+y <- 2 + X1 + X2 * 0.3 + stats::rnorm(n, 0, 1)
 df <- tibble::tibble(y = y, X1 = X1, X2 = X2, n_obs = 1:length(X1))
-mod_fit <- stats::lm(y ~ X1+X2, df)
+mod_fit <- stats::lm(y ~ X1 + X2, df)
 boot_out <- comp_empirical_bootstrap(mod_fit)
 
 # Display the output
