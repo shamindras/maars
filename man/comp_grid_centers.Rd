@@ -2,22 +2,24 @@
 % Please edit documentation in R/model-diagnostics.R
 \name{comp_grid_centers}
 \alias{comp_grid_centers}
-\title{Create grid of centers for reweighting the distribution of the regressor}
+\title{Create grid of centers for the reweighting of the the distribution of the regressor}
 \usage{
 comp_grid_centers(x, grid_method, n_grid)
 }
 \arguments{
-\item{x}{Vector of values of the regressor}
+\item{x}{Vector of values taken by the regressor.}
 
-\item{grid_method}{Method to construct the grid ("regular" or "quantiles")}
+\item{grid_method}{Method to construct the grid of reweighting centers
+that are either evenly spaced values between the maximum and the minimum ("regular")
+or based on the quantiles between the second and the tenth deciles ("quantiles").}
 
-\item{n_grid}{Number of centers present in the grid}
+\item{n_grid}{Number of centers present in the grid.}
 }
 \value{
 A vector of values corresponding to the centers for the reweighting
 }
 \description{
-Create grid of centers for reweighting the distribution of the regressor.
+Create grid of centers for the reweighting of the distribution of the regressor.
 The function creates either a grid of evenly spaced values between the
 minimum and the maximum of the regressor's values or based on the quantiles.
 If based on the quantiles, then the values of the grid consists

@@ -2,7 +2,7 @@
 % Please edit documentation in R/model-diagnostics.R
 \name{comp_coef_rwgt}
 \alias{comp_coef_rwgt}
-\title{Obtain estimates of a GLM or OLS estimates under reweighting of one or multiple regressors}
+\title{Obtain estimates of a GLM or OLS estimates under reweighting of one or multiple regressors.}
 \usage{
 comp_coef_rwgt(
   mod_fit,
@@ -15,34 +15,43 @@ comp_coef_rwgt(
 )
 }
 \arguments{
-\item{mod_fit}{An object of class "lm" or "glm" to fit on the data. This object
-should contain the formula, the data, and, in case of "glm", the family}
+\item{mod_fit}{An object of class \code{lm} or \code{glm} to fit on the data. This object
+should contain the formula, the data, and, in case of \code{glm}, the family.}
 
-\item{terms_to_rwgt}{A vector of characters corresponding to the regressors
-used in the reweighting}
+\item{terms_to_rwgt}{A vector of characters corresponding to the names of the regressors
+to be reweighted.}
 
-\item{B}{an integer corresponding to the number of bootstrap repetitions or number of bootstrap samples to be drawn}
+\item{B}{an integer corresponding to the number of bootstrap repetitions or number of bootstrap samples to be drawn.}
 
-\item{m}{an integer corresponding to the number of observations to be sampled with replacement from the dataset
-for each bootstrap repetition}
+\item{m}{an integer corresponding to the number of observations to be sampled
+with replacement from the data set in each bootstrap repetition.}
 
-\item{grid_centers}{Dataframe containing the regressors and reweighting centers.
+\item{grid_centers}{Data frame containing the names of the regressors as columns
+and the corresponding reweighting centers.
 Each column corresponds to a different regressor (specified in the column's name).}
 
-\item{grid_method}{Method to construct the grid ("regular" or "quantiles")}
+\item{grid_method}{Method to construct the grid of reweighting centers
+that are either evenly spaced values between the maximum and the minimum ("regular")
+or based on the quantiles between the second and the tenth deciles ("quantiles").}
 
-\item{n_grid}{Number of centers present in the grid}
+\item{n_grid}{Number of centers present in the grid.}
 }
 \value{
-A tibble containing the number of the bootstrapped data set (b),
-the size of each bootstrapped data set (m),
-the names of the regressors under reweighting,
-and the sets of model estimates
+A tibble containing the number of the bootstrapped data set (\code{b}),
+the size of each bootstrapped data set (\code{m}),
+the value of the reweighting centers (\code{term_rwgt_center}) and the name of the regressor under reweighting (\code{term_rwgt}),
+and the estimates of the regression coefficients (\code{term} and \code{estimate}).
 }
 \description{
-Obtain estimates of a GLM or OLS estimates under reweighting of one or multiple regressor.
+\code{comp_coef_rwgt} provides estimate for GLM and OLS under reweighting of multiple regressors.
 The function returns a set of estimates for each regressor that is reweighted,
 for each bootstrapped data set, and for each center of reweighting.
+}
+\details{
+The model extracted from \code{mod_fit} is fitted on \code{B} bootstrapped data
+sets via \code{m}-out-of-n empirical bootstrap using weighted regressions where
+the coefficients to be reweighted are specified in \code{terms_to_rwgt} and
+and have reweighting centers given by \code{grid_centers}.
 }
 \examples{
 \dontrun{

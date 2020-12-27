@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Create grid of centers for reweighting the distribution of the regressor — comp_grid_centers • maar</title>
+<title>Create grid of centers for the reweighting of the the distribution of the regressor — comp_grid_centers • maar</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Create grid of centers for reweighting the distribution of the regressor — comp_grid_centers" />
-<meta property="og:description" content="Create grid of centers for reweighting the distribution of the regressor.
+<meta property="og:title" content="Create grid of centers for the reweighting of the the distribution of the regressor — comp_grid_centers" />
+<meta property="og:description" content="Create grid of centers for the reweighting of the distribution of the regressor.
 The function creates either a grid of evenly spaced values between the
 minimum and the maximum of the regressor's values or based on the quantiles.
 If based on the quantiles, then the values of the grid consists
@@ -123,13 +123,13 @@ to seq(0.1,0.9,length=n_grid)." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Create grid of centers for reweighting the distribution of the regressor</h1>
+    <h1>Create grid of centers for the reweighting of the the distribution of the regressor</h1>
     
     <div class="hidden name"><code>comp_grid_centers.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Create grid of centers for reweighting the distribution of the regressor.
+    <p>Create grid of centers for the reweighting of the distribution of the regressor.
 The function creates either a grid of evenly spaced values between the
 minimum and the maximum of the regressor's values or based on the quantiles.
 If based on the quantiles, then the values of the grid consists
@@ -144,15 +144,17 @@ to seq(0.1,0.9,length=n_grid).</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>Vector of values of the regressor</p></td>
+      <td><p>Vector of values taken by the regressor.</p></td>
     </tr>
     <tr>
       <th>grid_method</th>
-      <td><p>Method to construct the grid ("regular" or "quantiles")</p></td>
+      <td><p>Method to construct the grid of reweighting centers
+that are either evenly spaced values between the maximum and the minimum ("regular")
+or based on the quantiles between the second and the tenth deciles ("quantiles").</p></td>
     </tr>
     <tr>
       <th>n_grid</th>
-      <td><p>Number of centers present in the grid</p></td>
+      <td><p>Number of centers present in the grid.</p></td>
     </tr>
     </table>
 

@@ -1,19 +1,22 @@
-#' Create grid of centers for reweighting the distribution of the regressor
+#' Create grid of centers for the reweighting of the the distribution of the regressor
 #'
-#' Create grid of centers for reweighting the distribution of the regressor.
+#' Create grid of centers for the reweighting of the distribution of the regressor.
 #' The function creates either a grid of evenly spaced values between the
 #' minimum and the maximum of the regressor's values or based on the quantiles.
 #' If based on the quantiles, then the values of the grid consists
 #' of the quantiles corresponding
 #' to seq(0.1,0.9,length=n_grid).
 #'
-#' @param x Vector of values of the regressor
-#' @param grid_method Method to construct the grid ("regular" or "quantiles")
-#' @param n_grid Number of centers present in the grid
+#' @param x Vector of values taken by the regressor.
+#' @param grid_method Method to construct the grid of reweighting centers
+#' that are either evenly spaced values between the maximum and the minimum ("regular")
+#' or based on the quantiles between the second and the tenth deciles ("quantiles").
+#' @param n_grid Number of centers present in the grid.
 #'
 #' @return A vector of values corresponding to the centers for the reweighting
 #'
 #' @export
+#'
 #'
 #' @importFrom rlang .data
 #'
@@ -44,23 +47,27 @@ comp_grid_centers <- function(x, grid_method, n_grid) {
 }
 
 
-#' Obtain estimates of a GLM or OLS estimates under reweighting of one regressor
+#' Obtain estimates for GLM of OLS under reweighting of one regressor.
 #'
-#' Obtain estimates of a GLM or OLS estimates under reweighting of one regressor.
+#' `comp_coef_rwgt_single` provides estimate for GLM and OLS under reweighting of one regressor.
 #' The function returns a set of estimates for each bootstrapped data set and
 #' each center of reweighting.
+#' @details The GLM or OLS model extracted from `mod_fit` is fitted on each
+#' `boot_samples` under reweighting of every reweighting center ` term_to_rwgt_centers` of the
+#' regressor `term_to_rwgt`.
 #'
-#' @param mod_fit An object of class "lm" or "glm" to fit on the data. This object
-#' should contain the formula, the data, and, in case of "glm", the family
-#' @param term_to_rwgt A character corresponding to the regressor to be reweighted
-#' @param boot_samples A list of data sets that have been bootstrapped from the
-#' original data set. Each data set needs to contain a column "n_obs" which indicates
-#' the order of each observation in the original data
+#' @param mod_fit An object of class `lm` or `glm` to fit on the data. This object
+#' should contain the formula, the data, and, in case of `glm`, the family.
+#' @param term_to_rwgt A character corresponding to the regressor to be reweighted.
+#' @param boot_samples A list of bootstrapped data sets.
+#' Each data set must include a column "n_obs" which contains
+#' the order of each observation as in the original data.
 #' @param term_to_rwgt_centers A vector of numeric values corresponding to the
-#' centers for the reweighting procedure
+#' centers used for the reweighting.
 #'
-#' @return A tibble containing the number of the bootstrapped data set (b),
-#' the names of the regressor under reweighting, and the sets of model estimates
+#' @return A tibble containing the number of the bootstrapped data set (`b`),
+#' the value of the reweighting centers (`term_rwgt_center`),
+#' and estimates of the regression coefficients (`term` and `estimate`).
 #'
 #' @export
 #'
@@ -75,7 +82,7 @@ comp_grid_centers <- function(x, grid_method, n_grid) {
 #' y <- 2 + X1 + X2 * 0.3 + stats::rnorm(n, 0, 1)
 #' df <- tibble::tibble(y = y, X1 = X1, X2 = X2, n_obs = 1:length(X1))
 #' mod_fit <- stats::lm(y ~ X1 + X2, df)
-#' boot_samples <- comp_empirical_bootstrap_samples(df, B = 100)
+#' boot_samples <- maar::comp_empirical_bootstrap_samples(df, B = 100)
 #' ols_rwgt_X1 <- comp_coef_rwgt_single(mod_fit, "X1", boot_samples, c(-1, 0, 1, 2))
 #'
 #' # Display the output
@@ -94,7 +101,7 @@ comp_coef_rwgt_single <- function(mod_fit, term_to_rwgt, boot_samples, term_to_r
 
   out <- as.list(1:length(weights_assigned$center)) %>%
     purrr::map_df(~ purrr::map(boot_samples$data,
-      ~ comp_cond_model(
+      ~ maar::comp_cond_model(
         mod_fit = mod_fit,
         data = .x %>% dplyr::mutate(weights = weights_assigned$weights[[.y]][n_obs]) %>%
           dplyr::mutate(weights = weights / sum(weights)),
@@ -109,29 +116,36 @@ comp_coef_rwgt_single <- function(mod_fit, term_to_rwgt, boot_samples, term_to_r
   return(out)
 }
 
-#' Obtain estimates of a GLM or OLS estimates under reweighting of one or multiple regressors
+#' Obtain estimates of a GLM or OLS estimates under reweighting of one or multiple regressors.
 #'
-#' Obtain estimates of a GLM or OLS estimates under reweighting of one or multiple regressor.
+#' `comp_coef_rwgt` provides estimate for GLM and OLS under reweighting of multiple regressors.
 #' The function returns a set of estimates for each regressor that is reweighted,
 #' for each bootstrapped data set, and for each center of reweighting.
+#' @details The model extracted from `mod_fit` is fitted on `B` bootstrapped data
+#' sets via `m`-out-of-n empirical bootstrap using weighted regressions where
+#' the coefficients to be reweighted are specified in `terms_to_rwgt` and
+#' and have reweighting centers given by `grid_centers`.
 #'
-#' @param mod_fit An object of class "lm" or "glm" to fit on the data. This object
-#' should contain the formula, the data, and, in case of "glm", the family
-#' @param terms_to_rwgt A vector of characters corresponding to the regressors
-#' used in the reweighting
-#' @param B an integer corresponding to the number of bootstrap repetitions or number of bootstrap samples to be drawn
-#' @param m an integer corresponding to the number of observations to be sampled with replacement from the dataset
-#' for each bootstrap repetition
-#' @param grid_centers Dataframe containing the regressors and reweighting centers.
+#' @param mod_fit An object of class `lm` or `glm` to fit on the data. This object
+#' should contain the formula, the data, and, in case of `glm`, the family.
+#' @param terms_to_rwgt A vector of characters corresponding to the names of the regressors
+#' to be reweighted.
+#' @param B an integer corresponding to the number of bootstrap repetitions or number of bootstrap samples to be drawn.
+#' @param m an integer corresponding to the number of observations to be sampled
+#' with replacement from the data set in each bootstrap repetition.
+#' @param grid_centers Data frame containing the names of the regressors as columns
+#' and the corresponding reweighting centers.
 #' Each column corresponds to a different regressor (specified in the column's name).
-#' @param grid_method Method to construct the grid ("regular" or "quantiles")
-#' @param n_grid Number of centers present in the grid
+#' @param grid_method Method to construct the grid of reweighting centers
+#' that are either evenly spaced values between the maximum and the minimum ("regular")
+#' or based on the quantiles between the second and the tenth deciles ("quantiles").
+#' @param n_grid Number of centers present in the grid.
 #'
 #'
-#' @return A tibble containing the number of the bootstrapped data set (b),
-#' the size of each bootstrapped data set (m),
-#' the names of the regressors under reweighting,
-#' and the sets of model estimates
+#' @return A tibble containing the number of the bootstrapped data set (`b`),
+#' the size of each bootstrapped data set (`m`),
+#' the value of the reweighting centers (`term_rwgt_center`) and the name of the regressor under reweighting (`term_rwgt`),
+#' and the estimates of the regression coefficients (`term` and `estimate`).
 #'
 #' @export
 #'
@@ -170,17 +184,13 @@ comp_coef_rwgt <- function(mod_fit,
                           msg = glue::glue("mod_fit must only be of class lm or glm"))
   assertthat::assert_that((n_grid > 1) & (n_grid == as.integer(n_grid)),
                           msg = glue::glue('The number of points in the grid needs to be an integer larger than 1. It is currently {n_grid}.'))
-  assertthat::assert_that(B == as.integer(B),
+  assertthat::assert_that(B == as.integer(B) & B  > 0,
                           msg = glue::glue("B must be an integer e.g. 100, it is currently {B}"))
-  assertthat::assert_that(B > 0,
-                          msg = glue::glue("B must be positive e.g. 100, it is currently {B}"))
   assertthat::assert_that(all(terms_to_rwgt %in% names(model.frame(mod_fit))),
                           msg = glue::glue("All terms used in the reweighting procedure must be included in the variables present in the data on which the model was fitted."))
   if(!is.null(m)){
-    assertthat::assert_that(m == as.integer(m),
+    assertthat::assert_that(m == as.integer(m) &m > 0,
                             msg = glue::glue("m must be an integer e.g. 100, it is currently {m}"))
-    assertthat::assert_that(m > 0,
-                            msg = glue::glue("m must be positive e.g. 100, it is currently {m}"))
   }
   if(!is.null(grid_centers)){
     assertthat::assert_that(is.data.frame(grid_centers),
@@ -209,7 +219,7 @@ comp_coef_rwgt <- function(mod_fit,
   }
 
   out <- terms_to_rwgt %>%
-    purrr::map(~ comp_coef_rwgt_single(
+    purrr::map(~ maar::comp_coef_rwgt_single(
       mod_fit = mod_fit,
       term_to_rwgt = .x[[1]],
       boot_samples = boot_samples,
@@ -226,28 +236,35 @@ comp_coef_rwgt <- function(mod_fit,
 
 
 
-#' Obtain the "focal slope" model diagnostic
+#' Obtain the `focal slope` model diagnostic.
 #'
-#' Obtain the "focal slope" model diagnostic as described in
+#' Obtain the `focal slope` model diagnostic as described in
 #' \insertCite{@see @buja2019modelsasapproximationspart2;textual}{maar}.
-#' The diagnostic is useful to investigate interaction terms that have not been included
-#' in the model in the first place.
+#' @details Through this tool, one can investigate the presence of interaction terms
+#' that have not been included in the regression model in the first place.
+#' The function shows how the estimates of `term_chosen` vary under reweighting of all other
+#' regressors as in `coef_rwgt` and compares them with the original estimates
+#' from `mod_fit`.
 #'
-#' @param mod_fit An object of class "lm" or "glm" to fit on the data. This object
-#' should contain the formula, the data, and, in case of "glm", the family
-#' @param coef_rwgt A tibble containing the number of the bootstrapped data set (b),
-#' the names of the regressors under reweighting, and the sets of model estimates
-#' @param term_chosen Character corresponding to the coefficient to be analysed
+#' @param mod_fit An object of class `lm` or `glm` to fit on the data. This object
+#' should contain the formula, the data, and, in case of `glm`, the family.
+#' @param coef_rwgt A tibble containing the number of the bootstrapped data set (`b`),
+#' the size of each bootstrapped data set (`m`),
+#' the value of the reweighting centers (`term_rwgt_center`) and of the reweighted term (`term_rwgt`),
+#' and the estimates of the regression coefficients (`term` and `estimate`).
+#' @param term_chosen Character corresponding to the coefficient to be analysed.
 #'
-#' @return A ggplot2 object which shows how the coefficient of one regressor of interest (term_chosen)
+#' @return A ggplot2 object which shows how the coefficient of one regressor of interest (`term_chosen`)
 #' varies under reweighting of the regressors.
-#' Vertical axes = estimates of the regression coefficient of interest.
-#' Horizontal axes and panels titles = values and names of the regressors respectively.
+#' The vertical axes indicate the magnitude of the estimates of the coefficient of the regressor of interest.
+#' Horizontal axes and panels titles show the values and names of the regressors respectively.
 #' Grey lines correspond to the traces of bootstrapped estimates forming the "spaghetti plot".
-#' The black vertical lines indicate 95% confidence intervals for the estimates on the
+#' The black vertical lines indicate 95% confidence intervals computed via the percentile method
+#' for the estimates on the
 #' bootstrapped data sets for each of the centers of reweighting (term_rwgt_center).
 #' The black line in the middle corresponds to the mean of the estimates (which is
-#' approximately equal to the OLS estimates on the original data).
+#' approximately equal to the estimates on the original reweighted data).
+#' The blue dashed lines correspond exactly to the original estimate of the coefficients from `mod_fit`.
 #'
 #' @export
 #'
@@ -271,7 +288,7 @@ comp_coef_rwgt <- function(mod_fit,
 #' focal_slope(mod_fit, ols_rwgt, "X1")
 #' }
 focal_slope <- function(mod_fit, coef_rwgt, term_chosen) {
-  coef_rwgt_conf_int <- comp_conf_int_bootstrap(
+  coef_rwgt_conf_int <- maar::comp_conf_int_bootstrap(
     boot_out = coef_rwgt,
     probs = c(0.025, 0.975),
     group_vars = c("term", "term_rwgt", "term_rwgt_center")
@@ -280,13 +297,13 @@ focal_slope <- function(mod_fit, coef_rwgt, term_chosen) {
                        names_from = .data$q,
                        values_from = .data$x) %>%
     dplyr::filter(.data = .,
-                  term == .data$term_chosen)
+                  .data$term == term_chosen)
 
   coef_rwgt <- coef_rwgt %>%
     tidyr::unnest(data = .,
                   .data$boot_out) %>%
     dplyr::filter(.data = .,
-                  term == .data$term_chosen)
+                  .data$term == term_chosen)
 
   coef_rwgt_means <- coef_rwgt %>%
     dplyr::group_by(.data = .,
@@ -323,7 +340,7 @@ focal_slope <- function(mod_fit, coef_rwgt, term_chosen) {
     ) +
     ggplot2::geom_hline(data = broom::tidy(mod_fit) %>%
                           dplyr::filter(.data = .,
-                                        term == .data$term_chosen),
+                                        .data$term == term_chosen),
                         mapping = ggplot2::aes(yintercept = .data$estimate,
                                                group = NULL),
                         linetype = 'dashed',
@@ -332,27 +349,37 @@ focal_slope <- function(mod_fit, coef_rwgt, term_chosen) {
 }
 
 
-#' Obtain the "nonlinearity detection" model diagnostic
+#' Obtain the `nonlinearity_detection` model diagnostic.
 #'
-#' Obtain the "nonlinearity detection" model diagnostic described in
+#' Obtain the `nonlinearity_detection` model diagnostic as described in
 #' \insertCite{@see @buja2019modelsasapproximationspart2;textual}{maar}.
 #' This tool provides insights into marginal nonlinear behavior of response surfaces.
+#' @details Through this tool, one can investigate the presence of interaction terms
+#' that have not been included in the regression model in the first place.
+#' The function shows how the estimates of each regression coefficient vary
+#' under reweighting of their own regressors and compares them with the original estimates
+#' from `mod_fit`.
+#'
+#' @param mod_fit An object of class `lm` or `glm` to fit on the data. This object
+#' should contain the formula, the data, and, in case of `glm`, the family.
+#' @param coef_rwgt A tibble containing the number of the bootstrapped data set (`b`),
+#' the size of each bootstrapped data set (`m`),
+#' the value of the reweighting centers (`term_rwgt_center`) and of the reweighted term (`term_rwgt`),
+#' and the estimates of the regression coefficients (`term` and `estimate`).
 #'
 #'
-#' @param mod_fit An object of class "lm" or "glm" to fit on the data. This object
-#' should contain the formula, the data, and, in case of "glm", the family
-#' @param coef_rwgt A tibble containing the number of the bootstrapped data set (b),
-#' the names of the regressors under reweighting, and the sets of model estimates
-#'
-#' @return A ggplot2 object which shows how the coefficients estimates
-#' vary under reweighting of their own regressors.
-#' Vertical axes = estimates of the regression coefficients.
-#' Horizontal axes and panels titles = regressors.
+#' #' @return A ggplot2 object which shows how coefficients estimates vary
+#' under reweighting of their own regressors.
+#' The vertical axes represent the the estimates of the coefficient of the regressors reweighted,
+#' whose names appear in the panels titles.
+#' Horizontal axes shows the values and names of the regressors.
 #' Grey lines correspond to the traces of bootstrapped estimates forming the "spaghetti plot".
-#' The black vertical lines indicate 95% confidence intervals for the estimates on the
-#' bootstrapped data sets for each of the centers of reweighting (term_rwgt_center).
+#' The black vertical lines indicate 95% confidence intervals computed via the percentile method
+#' for the estimates on the
+#' bootstrapped data sets for each of the centers of reweighting (`term_rwgt_center`).
 #' The black line in the middle corresponds to the mean of the estimates (which is
-#' approximately equal to the OLS estimates on the original data).
+#' approximately equal to the estimates on the original reweighted data).
+#' The blue dashed lines correspond exactly to the original estimate of the coefficients from `mod_fit`.
 #'
 #' @export
 #'
@@ -441,29 +468,34 @@ nonlinearity_detection <- function(mod_fit, coef_rwgt) {
   return(out)
 }
 
-
-#' Obtain the "focal reweighting variable" model diagnostic
+#' Obtain the "focal reweighting variable" model diagnostic.
 #'
-#' Obtain the "focal reweighting variable" model diagnostic described in
+#' Obtain the "focal reweighting variable"  model diagnostic as described in
 #' \insertCite{@see @buja2019modelsasapproximationspart2;textual}{maar}.
+#' @details The function shows how the estimates of all regressors vary under reweighting
+#' of one regressor, specified in `term_chosen`, and compare with the original
+#' estimates from `mod_fit`.
 #'
-#' @param mod_fit An object of class "lm" or "glm" to fit on the data. This object
-#' should contain the formula, the data, and, in case of "glm", the family
-#' @param coef_rwgt A tibble containing the number of the bootstrapped data set (b),
-#' the names of the regressors under reweighting, and the sets of model estimates
-#' @param term_chosen Character corresponding to the coefficient to be analysed
+#' @param mod_fit An object of class `lm` or `glm` to fit on the data. This object
+#' should contain the formula, the data, and, in case of `glm`, the family.
+#' @param coef_rwgt A tibble containing the number of the bootstrapped data set (`b`),
+#' the size of each bootstrapped data set (`m`),
+#' the value of the reweighting centers (`term_rwgt_center`) and of the reweighted term (`term_rwgt`),
+#' and the estimates of the regression coefficients (`term` and `estimate`).
+#' @param term_chosen Character corresponding to the coefficient to be analysed.
 #'
-#' @return A ggplot2 object which shows how the coefficients estimates (vertical axes)
-#' of the different regressors (title of each panel) vary under
-#' reweighting of one regressor (horizontal axis).
-#' Vertical axes and panels titles = estimates of the regression coefficients and
-#' names of the corresponding regressors.
-#' Horizontal axes = value of the regressor of interest.
+#' @return A ggplot2 object which shows how the coefficients estimates
+#' vary under reweighting of the regressor `term_chosen`.
+#' The vertical axes represent the estimates of the coefficient of the regressors,
+#' whose names appear in the panels titles, under reweighting of `term_chosen`.
+#' Horizontal axes shows the values of the regressors.
 #' Grey lines correspond to the traces of bootstrapped estimates forming the "spaghetti plot".
-#' The black vertical lines indicate 95% confidence intervals for the estimates on the
-#' bootstrapped data sets for each of the centers of reweighting (term_rwgt_center).
+#' The black vertical lines indicate 95% confidence intervals computed via the percentile method
+#' for the estimates on the
+#' bootstrapped data sets for each of the centers of reweighting (`term_rwgt_center`).
 #' The black line in the middle corresponds to the mean of the estimates (which is
-#' approximately equal to the OLS estimates on the original data).
+#' approximately equal to the estimates on the original reweighted data).
+#' The blue dashed lines correspond exactly to the original estimate of the coefficients from `mod_fit`.
 #'
 #' @export
 #'
@@ -495,13 +527,13 @@ focal_rwgt_var <- function(mod_fit, coef_rwgt, term_chosen) {
     tidyr::pivot_wider(data = .,
                        names_from = .data$q,
                        values_from = .data$x) %>%
-    dplyr::filter(term_rwgt == .data$term_chosen)
+    dplyr::filter(.data$term_rwgt == term_chosen)
 
   coef_rwgt <- coef_rwgt %>%
     tidyr::unnest(data = .,
                   .data$boot_out) %>%
     dplyr::filter(.data = .,
-                  term_rwgt == .data$term_chosen)
+                  .data$term_rwgt == term_chosen)
 
   coef_rwgt_means <- coef_rwgt %>%
     dplyr::group_by(.data = .,

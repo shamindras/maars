@@ -2,35 +2,44 @@
 % Please edit documentation in R/model-diagnostics.R
 \name{focal_slope}
 \alias{focal_slope}
-\title{Obtain the "focal slope" model diagnostic}
+\title{Obtain the \verb{focal slope} model diagnostic.}
 \usage{
 focal_slope(mod_fit, coef_rwgt, term_chosen)
 }
 \arguments{
-\item{mod_fit}{An object of class "lm" or "glm" to fit on the data. This object
-should contain the formula, the data, and, in case of "glm", the family}
+\item{mod_fit}{An object of class \code{lm} or \code{glm} to fit on the data. This object
+should contain the formula, the data, and, in case of \code{glm}, the family.}
 
-\item{coef_rwgt}{A tibble containing the number of the bootstrapped data set (b),
-the names of the regressors under reweighting, and the sets of model estimates}
+\item{coef_rwgt}{A tibble containing the number of the bootstrapped data set (\code{b}),
+the size of each bootstrapped data set (\code{m}),
+the value of the reweighting centers (\code{term_rwgt_center}) and of the reweighted term (\code{term_rwgt}),
+and the estimates of the regression coefficients (\code{term} and \code{estimate}).}
 
-\item{term_chosen}{Character corresponding to the coefficient to be analysed}
+\item{term_chosen}{Character corresponding to the coefficient to be analysed.}
 }
 \value{
-A ggplot2 object which shows how the coefficient of one regressor of interest (term_chosen)
+A ggplot2 object which shows how the coefficient of one regressor of interest (\code{term_chosen})
 varies under reweighting of the regressors.
-Vertical axes = estimates of the regression coefficient of interest.
-Horizontal axes and panels titles = values and names of the regressors respectively.
+The vertical axes indicate the magnitude of the estimates of the coefficient of the regressor of interest.
+Horizontal axes and panels titles show the values and names of the regressors respectively.
 Grey lines correspond to the traces of bootstrapped estimates forming the "spaghetti plot".
-The black vertical lines indicate 95\% confidence intervals for the estimates on the
+The black vertical lines indicate 95\% confidence intervals computed via the percentile method
+for the estimates on the
 bootstrapped data sets for each of the centers of reweighting (term_rwgt_center).
 The black line in the middle corresponds to the mean of the estimates (which is
-approximately equal to the OLS estimates on the original data).
+approximately equal to the estimates on the original reweighted data).
+The blue dashed lines correspond exactly to the original estimate of the coefficients from \code{mod_fit}.
 }
 \description{
-Obtain the "focal slope" model diagnostic as described in
+Obtain the \verb{focal slope} model diagnostic as described in
 \insertCite{@see @buja2019modelsasapproximationspart2;textual}{maar}.
-The diagnostic is useful to investigate interaction terms that have not been included
-in the model in the first place.
+}
+\details{
+Through this tool, one can investigate the presence of interaction terms
+that have not been included in the regression model in the first place.
+The function shows how the estimates of \code{term_chosen} vary under reweighting of all other
+regressors as in \code{coef_rwgt} and compares them with the original estimates
+from \code{mod_fit}.
 }
 \examples{
 \dontrun{
