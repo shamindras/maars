@@ -15,7 +15,7 @@
 #'   the original dataset for each bootstrap repetition.
 #'
 #' @return A tibble containing the bootstrap samples (\code{data})
-#' and their corresponding number (\code{b}).
+#'   and their corresponding number (\code{b}).
 #'
 #' @export
 #'
@@ -287,8 +287,9 @@ comp_conf_int_bootstrap <- function(boot_out, probs = c(0.025, 0.975),
 #'   bootstrapped dataset (\code{m}), the size of the original dataset
 #'   (\code{n}), and the number of the bootstrap repetition (\code{b}).
 #'
-#' @return A ggplot2 object containing normal QQ plot for each regressor in \code{boot_out}.
-#' Each panel corresponds to a different coefficient, whose name appears in the panel's titles.
+#' @return A ggplot2 object containing normal QQ plot for each regressor in
+#'   \code{boot_out}. Each panel corresponds to a different coefficient,
+#'   whose name appears in the panel's titles.
 #'
 #' @export
 #'

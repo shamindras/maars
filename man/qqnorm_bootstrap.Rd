@@ -13,8 +13,9 @@ bootstrapped dataset (\code{m}), the size of the original dataset
 (\code{n}), and the number of the bootstrap repetition (\code{b}).}
 }
 \value{
-A ggplot2 object containing normal QQ plot for each regressor in \code{boot_out}.
-Each panel corresponds to a different coefficient, whose name appears in the panel's titles.
+A ggplot2 object containing normal QQ plot for each regressor in
+\code{boot_out}. Each panel corresponds to a different coefficient,
+whose name appears in the panel's titles.
 }
 \description{
 \code{qqnorm_bootstrap} produces a normal QQPlot for each regressors included
