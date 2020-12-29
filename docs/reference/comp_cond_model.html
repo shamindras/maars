@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Fit OLS or GLM on the data. — comp_cond_model • maar</title>
+<title>Fit OLS or GLM on the data — comp_cond_model • maar</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Fit OLS or GLM on the data. — comp_cond_model" />
-<meta property="og:description" content="Fit OLS or GLM on the data." />
+<meta property="og:title" content="Fit OLS or GLM on the data — comp_cond_model" />
+<meta property="og:description" content="comp_cond_model fits an OLS or GLM on the input dataset." />
 
 
 
@@ -118,13 +118,13 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Fit OLS or GLM on the data.</h1>
+    <h1>Fit OLS or GLM on the data</h1>
     
     <div class="hidden name"><code>comp_cond_model.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Fit OLS or GLM on the data.</p>
+    <p><code>comp_cond_model</code> fits an OLS or GLM on the input dataset.</p>
     </div>
 
     <pre class="usage"><span class='fu'>comp_cond_model</span><span class='op'>(</span><span class='va'>mod_fit</span>, <span class='va'>data</span>, weights <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
@@ -134,34 +134,38 @@
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>mod_fit</th>
-      <td><p>An object of class <code><a href='https://rdrr.io/r/stats/lm.html'>stats::lm</a></code> or <code><a href='https://rdrr.io/r/stats/glm.html'>stats::glm</a></code> to fit on the data. This object
-should contain the formula, the data, and, in case of <code><a href='https://rdrr.io/r/stats/glm.html'>stats::glm</a></code>, the family</p></td>
+      <td><p>An object of class <code><a href='https://rdrr.io/r/stats/lm.html'>lm</a></code> or
+<code><a href='https://rdrr.io/r/stats/glm.html'>glm</a></code> to fit on the data. This object should contain
+the formula, the data, and, in case of <code><a href='https://rdrr.io/r/stats/glm.html'>glm</a></code>, the
+glm family</p></td>
     </tr>
     <tr>
       <th>data</th>
-      <td><p>A tibble or data frame containing the data set on which the model
-will be trained</p></td>
+      <td><p>A tibble or data frame containing the dataset on which the
+model will be trained</p></td>
     </tr>
     <tr>
       <th>weights</th>
-      <td><p>A character corresponding to the name of the weights
-feature name in the data</p></td>
+      <td><p>A character corresponding to the name of the weights feature
+name in the data</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A tibble containing the estimated coefficients (<code>term</code>)
-of the regressors (<code>term</code>).</p>
+    <p>A tibble containing the estimated coefficients (<code>term</code>) of
+the regressors (<code>term</code>).</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>The model specification obtained from <code>mod_fit</code>, of class <code><a href='https://rdrr.io/r/stats/lm.html'>stats::lm</a></code> or <code><a href='https://rdrr.io/r/stats/glm.html'>stats::glm</a></code>,
-is fitted on <code>data</code>. The user can choose to fit a weighted regression using the argument
-<code>weights</code>.</p>
+    <p>The model specification obtained from <code>mod_fit</code>, of
+class <code><a href='https://rdrr.io/r/stats/lm.html'>lm</a></code> or <code><a href='https://rdrr.io/r/stats/glm.html'>glm</a></code>, is
+fitted on <code>data</code>. The user can choose to fit a weighted
+regression using the argument <code>weights</code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='co'># Estimate ols from a bootstraped data set</span>
+<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>457468</span><span class='op'>)</span>
+<span class='co'># Estimate ols from a bootstraped dataset</span>
 <span class='va'>n</span> <span class='op'>&lt;-</span> <span class='fl'>1e3</span>
 <span class='va'>X</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>
 <span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fl'>2</span> <span class='op'>+</span> <span class='va'>X</span> <span class='op'>*</span> <span class='fl'>1</span> <span class='op'>+</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>
@@ -172,7 +176,7 @@ is fitted on <code>data</code>. The user can choose to fit a weighted regression
 <span class='co'># Display the output</span>
 <span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>mod</span><span class='op'>)</span>
 
-<span class='co'>#' # Estimate OLS from a data set with weights</span>
+<span class='co'>#' # Estimate OLS from a dataset with weights</span>
 <span class='va'>n</span> <span class='op'>&lt;-</span> <span class='fl'>1e3</span>
 <span class='va'>X</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>
 <span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fl'>2</span> <span class='op'>+</span> <span class='va'>X</span> <span class='op'>*</span> <span class='fl'>1</span> <span class='op'>+</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>

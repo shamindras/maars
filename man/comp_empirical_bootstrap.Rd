@@ -2,35 +2,39 @@
 % Please edit documentation in R/boot-empirical-var.R
 \name{comp_empirical_bootstrap}
 \alias{comp_empirical_bootstrap}
-\title{A wrapper for the empirical bootstrap of a fitted \code{ols} or \code{stats::glm} model.}
+\title{A wrapper for the empirical bootstrap of a fitted OLS regression model}
 \usage{
 comp_empirical_bootstrap(mod_fit, B = 100, m = NULL)
 }
 \arguments{
-\item{mod_fit}{An object of class \code{stats::lm} or \code{stats::glm} to fit on the data. This object
-should contain the formula, the data, and, in case of \code{stats::glm}, the family.}
+\item{mod_fit}{An object of class \code{\link[stats]{lm}} or
+\code{\link[stats]{glm}} to fit on the data. This object should contain
+the formula, the data, and, in case of \code{\link[stats]{glm}},
+the family.}
 
 \item{B}{Bootstrap repetitions or number of bootstrap samples to be drawn.}
 
-\item{m}{Number of observations to be sampled with replacement from the dataset
-for each bootstrap repetition.}
+\item{m}{Number of observations to be sampled with replacement from the
+dataset for each bootstrap repetition.}
 }
 \value{
-A tibble of the model's coefficients estimated (\code{term} and \code{estimate})
-on the bootstrapped data sets, the size of each bootstrapped data set (\code{m}),
-the size of the original data set (\code{n}),
-and the number of the bootstrap repetition (\code{b}).
+A tibble of the model's coefficients estimated (\code{term} and
+\code{estimate}) on the bootstrapped datasets, the size of each
+bootstrapped dataset (\code{m}), the size of the original dataset
+(\code{n}), and the number of the bootstrap repetition (\code{b}).
 }
 \description{
-A wrapper for the empirical bootstrap of a fitted \code{ols} or \code{stats::glm} model.
+\code{comp_empirical_bootstrap} is a wrapper for the empirical bootstrap of
+a fitted \code{\link[stats]{lm}} or \code{\link[stats]{glm}} model.
 }
 \details{
-The empirical bootstrap consists of fitting the chosen statistical model (\code{mod_fit})
-onto \code{B} bootstrap versions of size \code{m} of the data set.
+The empirical bootstrap consists of fitting the chosen statistical
+model (\code{mod_fit}) onto \code{B} bootstrap versions of size \code{m}
+of the dataset.
 }
 \examples{
 \dontrun{
-# Obtain estimates of the coefficients on bootstrapped versions of the data set
+# Obtain estimates of the coefficients on bootstrapped versions of the dataset
 set.seed(35542)
 n <- 1e3
 X <- stats::rnorm(n, 0, 1)

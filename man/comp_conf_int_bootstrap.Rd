@@ -2,33 +2,34 @@
 % Please edit documentation in R/boot-empirical-var.R
 \name{comp_conf_int_bootstrap}
 \alias{comp_conf_int_bootstrap}
-\title{Confidence intervals for regression models estimates on bootstrapped data sets
-via percentile bootstrap}
+\title{Confidence intervals for on bootstrapped datasets via percentile bootstrap}
 \usage{
 comp_conf_int_bootstrap(boot_out, probs = c(0.025, 0.975), group_vars = "term")
 }
 \arguments{
-\item{boot_out}{A tibble of the model's coefficients estimated (\code{term} and \code{estimate})
-on the bootstrapped data sets, the size of each bootstrapped data set (\code{m}),
-the size of the original data set (\code{n}),
-and the number of the bootstrap repetition (\code{b}).}
+\item{boot_out}{A tibble of the model's coefficients estimated (\code{term}
+and \code{estimate}) on the bootstrapped datasets, the size of each
+bootstrapped dataset (\code{m}), the size of the original dataset
+(\code{n}), and the number of the bootstrap repetition (\code{b}).}
 
-\item{probs}{Numeric vector containing the probabilities of the quantiles to be computed.}
+\item{probs}{Numeric vector containing the probabilities of the quantiles
+to be computed.}
 
-\item{group_vars}{A vector of characters including the variables used to form the groups.}
+\item{group_vars}{A vector of characters including the variables used
+to form the groups.}
 }
 \value{
-A tibble containing the quantiles (\code{x}) and the probabilities (\code{q})
-for each group as specified by \code{group_vars}.
+A tibble containing the quantiles (\code{x}) and the
+probabilities (\code{q}) for each group as specified by \code{group_vars}.
 }
 \description{
-Confidence intervals for regression models estimates on bootstrapped data sets
-via percentile bootstrap.
+\code{comp_conf_int_bootstrap} produces confidence intervals for regression
+models estimates on bootstrapped datasets, via percentile bootstrap.
 }
 \details{
-\code{comp_conf_int_bootstrap} takes in a set of bootstrap estimates (\code{boot_out}),
-a series of probabilities for the quantiles (\code{probs}),
-and optionally some "grouping" terms (\code{group_vars}).
+\code{comp_conf_int_bootstrap} takes in a set of bootstrap estimates
+(\code{boot_out}), a series of probabilities for the quantiles
+(\code{probs}), and optionally some "grouping" terms (\code{group_vars}).
 It returns the corresponding quantiles.
 }
 \examples{

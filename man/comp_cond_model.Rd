@@ -2,35 +2,39 @@
 % Please edit documentation in R/boot-empirical-var.R
 \name{comp_cond_model}
 \alias{comp_cond_model}
-\title{Fit OLS or GLM on the data.}
+\title{Fit OLS or GLM on the data}
 \usage{
 comp_cond_model(mod_fit, data, weights = NULL)
 }
 \arguments{
-\item{mod_fit}{An object of class \code{stats::lm} or \code{stats::glm} to fit on the data. This object
-should contain the formula, the data, and, in case of \code{stats::glm}, the family}
+\item{mod_fit}{An object of class \code{\link[stats]{lm}} or
+\code{\link[stats]{glm}} to fit on the data. This object should contain
+the formula, the data, and, in case of \code{\link[stats]{glm}}, the
+glm family}
 
-\item{data}{A tibble or data frame containing the data set on which the model
-will be trained}
+\item{data}{A tibble or data frame containing the dataset on which the
+model will be trained}
 
-\item{weights}{A character corresponding to the name of the weights
-feature name in the data}
+\item{weights}{A character corresponding to the name of the weights feature
+name in the data}
 }
 \value{
-A tibble containing the estimated coefficients (\code{term})
-of the regressors (\code{term}).
+A tibble containing the estimated coefficients (\code{term}) of
+the regressors (\code{term}).
 }
 \description{
-Fit OLS or GLM on the data.
+\code{comp_cond_model} fits an OLS or GLM on the input dataset.
 }
 \details{
-The model specification obtained from \code{mod_fit}, of class \code{stats::lm} or \code{stats::glm},
-is fitted on \code{data}. The user can choose to fit a weighted regression using the argument
-\code{weights}.
+The model specification obtained from \code{mod_fit}, of
+class \code{\link[stats]{lm}} or \code{\link[stats]{glm}}, is
+fitted on \code{data}. The user can choose to fit a weighted
+regression using the argument \code{weights}.
 }
 \examples{
 \dontrun{
-# Estimate ols from a bootstraped data set
+set.seed(457468)
+# Estimate ols from a bootstraped dataset
 n <- 1e3
 X <- stats::rnorm(n, 0, 1)
 y <- 2 + X * 1 + stats::rnorm(n, 0, 1)
@@ -41,7 +45,7 @@ mod <- comp_cond_model(lm_fit, boot)
 # Display the output
 print(mod)
 
-#' # Estimate OLS from a data set with weights
+#' # Estimate OLS from a dataset with weights
 n <- 1e3
 X <- stats::rnorm(n, 0, 1)
 y <- 2 + X * 1 + stats::rnorm(n, 0, 1)

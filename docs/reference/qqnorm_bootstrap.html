@@ -40,9 +40,9 @@
 
 
 <meta property="og:title" content="Normal QQ plot of the terms in an output of the bootstrap function — qqnorm_bootstrap" />
-<meta property="og:description" content="qqnorm_bootstrap produces a normal QQPlot for each regressors included in the
-estimates on the bootstrapped data sets.
-This function is a wrapper for the ggplot2::stat_qq function." />
+<meta property="og:description" content="qqnorm_bootstrap produces a normal QQPlot for each regressors included
+in the estimates on the bootstrapped datasets. This function is a wrapper
+for the stat_qq function." />
 
 
 
@@ -126,9 +126,9 @@ This function is a wrapper for the ggplot2::stat_qq function." />
     </div>
 
     <div class="ref-description">
-    <p><code>qqnorm_bootstrap</code> produces a normal QQPlot for each regressors included in the
-estimates on the bootstrapped data sets.
-This function is a wrapper for the <code><a href='https://ggplot2.tidyverse.org/reference/geom_qq.html'>ggplot2::stat_qq</a></code> function.</p>
+    <p><code>qqnorm_bootstrap</code> produces a normal QQPlot for each regressors included
+in the estimates on the bootstrapped datasets. This function is a wrapper
+for the <code><a href='https://ggplot2.tidyverse.org/reference/geom_qq.html'>stat_qq</a></code> function.</p>
     </div>
 
     <pre class="usage"><span class='fu'>qqnorm_bootstrap</span><span class='op'>(</span><span class='va'>boot_out</span><span class='op'>)</span></pre>
@@ -138,10 +138,10 @@ This function is a wrapper for the <code><a href='https://ggplot2.tidyverse.org/
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>boot_out</th>
-      <td><p>A tibble of the model's coefficients estimated (<code>term</code> and <code>estimate</code>)
-on the bootstrapped data sets, the size of each bootstrapped data set (<code>m</code>),
-the size of the original data set (<code>n</code>),
-and the number of the bootstrap repetition (<code>b</code>).</p></td>
+      <td><p>A tibble of the model's coefficients estimated (<code>term</code>
+and <code>estimate</code>) on the bootstrapped datasets, the size of each
+bootstrapped dataset (<code>m</code>), the size of the original dataset
+(<code>n</code>), and the number of the bootstrap repetition (<code>b</code>).</p></td>
     </tr>
     </table>
 
@@ -158,6 +158,8 @@ Each panel corresponds to a different coefficient, whose name appears in the pan
 <span class='va'>X2</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>3</span><span class='op'>)</span>
 <span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fl'>2</span> <span class='op'>+</span> <span class='va'>X1</span> <span class='op'>+</span> <span class='va'>X2</span> <span class='op'>*</span> <span class='fl'>0.3</span> <span class='op'>+</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>
 <span class='va'>df</span> <span class='op'>&lt;-</span> <span class='fu'>tibble</span><span class='fu'>::</span><span class='fu'><a href='https://tibble.tidyverse.org/reference/tibble.html'>tibble</a></span><span class='op'>(</span>y <span class='op'>=</span> <span class='va'>y</span>, X1 <span class='op'>=</span> <span class='va'>X1</span>, X2 <span class='op'>=</span> <span class='va'>X2</span>, n_obs <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>X1</span><span class='op'>)</span><span class='op'>)</span>
+
+<span class='co'># Fit a linear model (OLS) to the data</span>
 <span class='va'>mod_fit</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>y</span> <span class='op'>~</span> <span class='va'>X1</span> <span class='op'>+</span> <span class='va'>X2</span>, <span class='va'>df</span><span class='op'>)</span>
 <span class='va'>boot_out</span> <span class='op'>&lt;-</span> <span class='fu'><a href='comp_empirical_bootstrap.html'>comp_empirical_bootstrap</a></span><span class='op'>(</span><span class='va'>mod_fit</span><span class='op'>)</span>
 
