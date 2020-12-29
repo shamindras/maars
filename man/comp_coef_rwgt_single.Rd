@@ -2,7 +2,7 @@
 % Please edit documentation in R/model-diagnostics.R
 \name{comp_coef_rwgt_single}
 \alias{comp_coef_rwgt_single}
-\title{Obtain estimates for GLM of OLS under reweighting of one regressor.}
+\title{Obtain estimates for GLM of OLS under reweighting of one regressor}
 \usage{
 comp_coef_rwgt_single(
   mod_fit,
@@ -12,35 +12,43 @@ comp_coef_rwgt_single(
 )
 }
 \arguments{
-\item{mod_fit}{An object of class \code{lm} or \code{glm} to fit on the data. This object
-should contain the formula, the data, and, in case of \code{glm}, the family.}
+\item{mod_fit}{An object of class \code{lm} or \code{glm} to fit on the data.
+This object should contain the formula, the data, and, in case of
+\code{glm}, the family.}
 
-\item{term_to_rwgt}{A character corresponding to the regressor to be reweighted.}
+\item{term_to_rwgt}{A character corresponding to the regressor to be
+reweighted.}
 
-\item{boot_samples}{A list of bootstrapped data sets.
-Each data set must include a column "n_obs" which contains
-the order of each observation as in the original data.}
+\item{boot_samples}{A list of bootstrapped data sets. Each data set in the
+column "data" must
+include a column "n_obs" which contains the order of each observation as
+in the original data.}
 
 \item{term_to_rwgt_centers}{A vector of numeric values corresponding to the
 centers used for the reweighting.}
 }
 \value{
-A tibble containing the number of the bootstrapped data set (\code{b}),
-the value of the reweighting centers (\code{term_rwgt_center}),
-and estimates of the regression coefficients (\code{term} and \code{estimate}).
+A tibble containing the number of the bootstrapped data set
+(\code{b}), the value of the reweighting centers (\code{term_rwgt_center}),
+and estimates of the regression coefficients (\code{term} and
+\code{estimate}).
 }
 \description{
-\code{comp_coef_rwgt_single} provides estimate for GLM and OLS under reweighting of one regressor.
-The function returns a set of estimates for each bootstrapped data set and
-each center of reweighting.
+\code{comp_coef_rwgt_single} provides estimate for GLM and OLS under
+reweighting of one regressor. The function returns a set of estimates
+for each bootstrapped data set and each center of reweighting.
 }
 \details{
 The GLM or OLS model extracted from \code{mod_fit} is fitted on each
-\code{boot_samples} under reweighting of every reweighting center \code{ term_to_rwgt_centers} of the
-regressor \code{term_to_rwgt}.
+bootstrapped data set in \code{boot_samples} under the reweighting of every
+reweighting center in \code{term_to_rwgt_centers} of the regressor
+specified by \code{term_to_rwgt}. The weights for the j-th regressor
+with center \eqn{c_{k}(j)} are proportional to
+\eqn{\exp\{-(X(j)_i - X(j))^2 / (2 * \hat{\sigma}(X(j))))\}}.
 }
 \examples{
 \dontrun{
+set.seed(12323)
 # Get OLS estimates under reweighting of regressor X1
 n <- 1e3
 X1 <- stats::rnorm(n, 0, 1)

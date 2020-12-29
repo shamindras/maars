@@ -2,47 +2,55 @@
 % Please edit documentation in R/model-diagnostics.R
 \name{focal_slope}
 \alias{focal_slope}
-\title{Obtain the \verb{focal slope} model diagnostic.}
+\title{Obtain the "focal slope" model diagnostic}
 \usage{
 focal_slope(mod_fit, coef_rwgt, term_chosen)
 }
 \arguments{
-\item{mod_fit}{An object of class \code{lm} or \code{glm} to fit on the data. This object
-should contain the formula, the data, and, in case of \code{glm}, the family.}
+\item{mod_fit}{An object of class \code{lm} or \code{glm} to fit on the data.
+This object should contain the formula, the data, and, in case of
+\code{glm}, the family.}
 
-\item{coef_rwgt}{A tibble containing the number of the bootstrapped data set (\code{b}),
-the size of each bootstrapped data set (\code{m}),
-the value of the reweighting centers (\code{term_rwgt_center}) and of the reweighted term (\code{term_rwgt}),
-and the estimates of the regression coefficients (\code{term} and \code{estimate}).}
+\item{coef_rwgt}{A tibble containing the number of the bootstrapped data set
+(\code{b}), the size of each bootstrapped data set (\code{m}), the value of
+the reweighting centers (\code{term_rwgt_center}) and of the reweighted
+term (\code{term_rwgt}), and the estimates of the regression coefficients
+(\code{term} and \code{estimate}). This tibble can be created via the
+\code{comp_coef_rwgt} function.}
 
-\item{term_chosen}{Character corresponding to the coefficient to be analysed.}
+\item{term_chosen}{A character corresponding to the coefficient of interest
+to be analysed.}
 }
 \value{
-A ggplot2 object which shows how the coefficient of one regressor of interest (\code{term_chosen})
-varies under reweighting of the regressors.
-The vertical axes indicate the magnitude of the estimates of the coefficient of the regressor of interest.
-Horizontal axes and panels titles show the values and names of the regressors respectively.
-Grey lines correspond to the traces of bootstrapped estimates forming the "spaghetti plot".
-The black vertical lines indicate 95\% confidence intervals computed via the percentile method
-for the estimates on the
-bootstrapped data sets for each of the centers of reweighting (term_rwgt_center).
-The black line in the middle corresponds to the mean of the estimates (which is
-approximately equal to the estimates on the original reweighted data).
-The blue dashed lines correspond exactly to the original estimate of the coefficients from \code{mod_fit}.
+A ggplot2 object which shows how the coefficient of one regressor of
+interest (\code{term_chosen}) varies under reweighting of the regressors.
+The vertical axis indicates the magnitude of the estimates of the coefficient
+of the regressor of interest. The horizontal axis and panels titles show the
+values and names of the regressors respectively. The grey
+lines correspond to the traces of bootstrapped estimates forming the
+"spaghetti plot". The black vertical lines indicate 95\% confidence
+intervals computed via the percentile method for the estimates on the
+bootstrapped data sets for the estimates based on each of the centers of
+reweighting (\code{term_rwgt_center}). The black line in the middle
+corresponds to the mean of the estimates and is approximately equal to the
+estimates on the original data (under reweighting). The blue dashed lines
+correspond exactly to the original estimate of the coefficients from
+\code{mod_fit}.
 }
 \description{
-Obtain the \verb{focal slope} model diagnostic as described in
+\code{focal_slope} returns the "focal slope" model diagnostics described in
 \insertCite{@see @buja2019modelsasapproximationspart2;textual}{maar}.
-}
-\details{
-Through this tool, one can investigate the presence of interaction terms
-that have not been included in the regression model in the first place.
-The function shows how the estimates of \code{term_chosen} vary under reweighting of all other
-regressors as in \code{coef_rwgt} and compares them with the original estimates
-from \code{mod_fit}.
+This graphical tool provides insights into the interactions between the
+regressor specified in \code{term_chosen} and all other regressors.
+More specifically, based on the estimates under reweighting of the regressors
+returned by \code{comp_coef_rwgt} and specified in \code{coef_rwgt}, this
+function shows how the estimates of \code{term_chosen} vary under
+reweighting of all other regressors and compares them with the original
+estimates from \code{mod_fit}.
 }
 \examples{
 \dontrun{
+set.seed(13123412)
 # Get focal slope of X1
 n <- 1e3
 X1 <- stats::rnorm(n, 0, 1)

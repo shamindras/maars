@@ -7,41 +7,49 @@
 focal_rwgt_var(mod_fit, coef_rwgt, term_chosen)
 }
 \arguments{
-\item{mod_fit}{An object of class \code{lm} or \code{glm} to fit on the data. This object
-should contain the formula, the data, and, in case of \code{glm}, the family.}
+\item{mod_fit}{An object of class \code{lm} or \code{glm} to fit on the data.
+This object should contain the formula, the data, and, in case of
+\code{glm}, the family.}
 
-\item{coef_rwgt}{A tibble containing the number of the bootstrapped data set (\code{b}),
-the size of each bootstrapped data set (\code{m}),
-the value of the reweighting centers (\code{term_rwgt_center}) and of the reweighted term (\code{term_rwgt}),
-and the estimates of the regression coefficients (\code{term} and \code{estimate}).}
+\item{coef_rwgt}{A tibble containing the number of the bootstrapped data set
+(\code{b}), the size of each bootstrapped data set (\code{m}), the value of
+the reweighting centers (\code{term_rwgt_center}) and of the reweighted
+term (\code{term_rwgt}), and the estimates of the regression coefficients
+(\code{term} and \code{estimate}). This tibble can be created via the
+\code{comp_coef_rwgt} function.}
 
-\item{term_chosen}{Character corresponding to the coefficient to be analysed.}
+\item{term_chosen}{A character corresponding to the coefficient of interest
+to be analysed.}
 }
 \value{
-A ggplot2 object which shows how the coefficients estimates
-vary under reweighting of the regressor \code{term_chosen}.
-The vertical axes represent the estimates of the coefficient of the regressors,
-whose names appear in the panels titles, under reweighting of \code{term_chosen}.
-Horizontal axes shows the values of the regressors.
-Grey lines correspond to the traces of bootstrapped estimates forming the "spaghetti plot".
-The black vertical lines indicate 95\% confidence intervals computed via the percentile method
-for the estimates on the
-bootstrapped data sets for each of the centers of reweighting (\code{term_rwgt_center}).
-The black line in the middle corresponds to the mean of the estimates (which is
-approximately equal to the estimates on the original reweighted data).
-The blue dashed lines correspond exactly to the original estimate of the coefficients from \code{mod_fit}.
+A ggplot2 object which shows how coefficients estimates vary
+under reweighting of only one regressor (\code{term_chosen}).
+The vertical axis represents the estimates of the coefficient under
+reweighting of their own regressors, whose names appear in the panels
+titles. The horizontal axis shows the values of the regressors. The grey
+lines correspond to the traces of bootstrapped estimates forming the
+"spaghetti plot". The black vertical lines indicate 95\% confidence
+intervals computed via the percentile method for the estimates on the
+bootstrapped data sets for the estimates based on each of the centers of
+reweighting (\code{term_rwgt_center}). The black line in the middle
+corresponds to the mean of the estimates and is approximately equal to the
+estimates on the original data (under reweighting). The blue dashed lines
+correspond exactly to the original estimate of the coefficients from
+\code{mod_fit}.
 }
 \description{
-Obtain the "focal reweighting variable"  model diagnostic as described in
+\code{focal_rwgt_var} returns the "focal reweighting variable" model
+diagnostic described in
 \insertCite{@see @buja2019modelsasapproximationspart2;textual}{maar}.
-}
-\details{
-The function shows how the estimates of all regressors vary under reweighting
-of one regressor, specified in \code{term_chosen}, and compare with the original
-estimates from \code{mod_fit}.
+More specifically, based on the estimates under reweighting of the regressors
+returned by \code{comp_coef_rwgt} and specified in \code{coef_rwgt}, this
+function shows how the estimates of all coefficients vary under
+reweighting of only one regressor specified in \code{term_chosen} and
+compares them with the original estimates from \code{mod_fit}.
 }
 \examples{
 \dontrun{
+set.seed(1232312)
 # Get focal reweighting variable plot of X1
 n <- 1e3
 X1 <- stats::rnorm(n, 0, 1)

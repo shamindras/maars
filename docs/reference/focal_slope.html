@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Obtain the focal slope model diagnostic. — focal_slope • maar</title>
+<title>Obtain the "focal slope" model diagnostic — focal_slope • maar</title>
 
 
 <!-- jquery -->
@@ -39,10 +39,17 @@
 
 
 
-<meta property="og:title" content="Obtain the focal slope model diagnostic. — focal_slope" />
-<meta property="og:description" content="Obtain the focal slope model diagnostic as described in
+<meta property="og:title" content="Obtain the "focal slope" model diagnostic — focal_slope" />
+<meta property="og:description" content="focal_slope returns the &quot;focal slope&quot; model diagnostics described in
 see Buja et al. (2019)
-." />
+.
+This graphical tool provides insights into the interactions between the
+regressor specified in term_chosen and all other regressors.
+More specifically, based on the estimates under reweighting of the regressors
+returned by comp_coef_rwgt and specified in coef_rwgt, this
+function shows how the estimates of term_chosen vary under
+reweighting of all other regressors and compares them with the original
+estimates from mod_fit." />
 
 
 
@@ -120,15 +127,22 @@ see Buja et al. (2019)
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Obtain the <code>focal slope</code> model diagnostic.</h1>
+    <h1>Obtain the "focal slope" model diagnostic</h1>
     
     <div class="hidden name"><code>focal_slope.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Obtain the <code>focal slope</code> model diagnostic as described in
+    <p><code>focal_slope</code> returns the "focal slope" model diagnostics described in
 see Buja et al. (2019)
-.</p>
+.
+This graphical tool provides insights into the interactions between the
+regressor specified in <code>term_chosen</code> and all other regressors.
+More specifically, based on the estimates under reweighting of the regressors
+returned by <code>comp_coef_rwgt</code> and specified in <code>coef_rwgt</code>, this
+function shows how the estimates of <code>term_chosen</code> vary under
+reweighting of all other regressors and compares them with the original
+estimates from <code>mod_fit</code>.</p>
     </div>
 
     <pre class="usage"><span class='fu'>focal_slope</span><span class='op'>(</span><span class='va'>mod_fit</span>, <span class='va'>coef_rwgt</span>, <span class='va'>term_chosen</span><span class='op'>)</span></pre>
@@ -138,42 +152,42 @@ see Buja et al. (2019)
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>mod_fit</th>
-      <td><p>An object of class <code>lm</code> or <code>glm</code> to fit on the data. This object
-should contain the formula, the data, and, in case of <code>glm</code>, the family.</p></td>
+      <td><p>An object of class <code>lm</code> or <code>glm</code> to fit on the data.
+This object should contain the formula, the data, and, in case of
+<code>glm</code>, the family.</p></td>
     </tr>
     <tr>
       <th>coef_rwgt</th>
-      <td><p>A tibble containing the number of the bootstrapped data set (<code>b</code>),
-the size of each bootstrapped data set (<code>m</code>),
-the value of the reweighting centers (<code>term_rwgt_center</code>) and of the reweighted term (<code>term_rwgt</code>),
-and the estimates of the regression coefficients (<code>term</code> and <code>estimate</code>).</p></td>
+      <td><p>A tibble containing the number of the bootstrapped data set
+(<code>b</code>), the size of each bootstrapped data set (<code>m</code>), the value of
+the reweighting centers (<code>term_rwgt_center</code>) and of the reweighted
+term (<code>term_rwgt</code>), and the estimates of the regression coefficients
+(<code>term</code> and <code>estimate</code>). This tibble can be created via the
+<code>comp_coef_rwgt</code> function.</p></td>
     </tr>
     <tr>
       <th>term_chosen</th>
-      <td><p>Character corresponding to the coefficient to be analysed.</p></td>
+      <td><p>A character corresponding to the coefficient of interest
+to be analysed.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A ggplot2 object which shows how the coefficient of one regressor of interest (<code>term_chosen</code>)
-varies under reweighting of the regressors.
-The vertical axes indicate the magnitude of the estimates of the coefficient of the regressor of interest.
-Horizontal axes and panels titles show the values and names of the regressors respectively.
-Grey lines correspond to the traces of bootstrapped estimates forming the "spaghetti plot".
-The black vertical lines indicate 95% confidence intervals computed via the percentile method
-for the estimates on the
-bootstrapped data sets for each of the centers of reweighting (term_rwgt_center).
-The black line in the middle corresponds to the mean of the estimates (which is
-approximately equal to the estimates on the original reweighted data).
-The blue dashed lines correspond exactly to the original estimate of the coefficients from <code>mod_fit</code>.</p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>Through this tool, one can investigate the presence of interaction terms
-that have not been included in the regression model in the first place.
-The function shows how the estimates of <code>term_chosen</code> vary under reweighting of all other
-regressors as in <code>coef_rwgt</code> and compares them with the original estimates
-from <code>mod_fit</code>.</p>
+    <p>A ggplot2 object which shows how the coefficient of one regressor of
+interest (<code>term_chosen</code>) varies under reweighting of the regressors.
+The vertical axis indicates the magnitude of the estimates of the coefficient
+of the regressor of interest. The horizontal axis and panels titles show the
+values and names of the regressors respectively. The grey
+lines correspond to the traces of bootstrapped estimates forming the
+"spaghetti plot". The black vertical lines indicate 95% confidence
+intervals computed via the percentile method for the estimates on the
+bootstrapped data sets for the estimates based on each of the centers of
+reweighting (<code>term_rwgt_center</code>). The black line in the middle
+corresponds to the mean of the estimates and is approximately equal to the
+estimates on the original data (under reweighting). The blue dashed lines
+correspond exactly to the original estimate of the coefficients from
+<code>mod_fit</code>.</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Buja A, Brown L, Kuchibhotla AK, Berk R, George E, Zhao L (2019).
@@ -184,6 +198,7 @@ ISSN 0883-4237, doi: <a href='https://doi.org/10.1214/18-STS694'>10.1214/18-STS6
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>13123412</span><span class='op'>)</span>
 <span class='co'># Get focal slope of X1</span>
 <span class='va'>n</span> <span class='op'>&lt;-</span> <span class='fl'>1e3</span>
 <span class='va'>X1</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>

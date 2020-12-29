@@ -2,29 +2,35 @@
 % Please edit documentation in R/model-diagnostics.R
 \name{comp_grid_centers}
 \alias{comp_grid_centers}
-\title{Create grid of centers for the reweighting of the the distribution of the regressor}
+\title{Create grid of centers for the reweighting of the regressor's distribution}
 \usage{
 comp_grid_centers(x, grid_method, n_grid)
 }
 \arguments{
-\item{x}{Vector of values taken by the regressor.}
+\item{x}{A vector of values taken by the regressor.}
 
-\item{grid_method}{Method to construct the grid of reweighting centers
-that are either evenly spaced values between the maximum and the minimum ("regular")
-or based on the quantiles between the second and the tenth deciles ("quantiles").}
+\item{grid_method}{A character indicating the method to use for the
+construction of the grid of reweighting centers.
+The grid consists either of evenly spaced values between the maximum and
+the minimum (\code{grid_method='regular'}) or based on the quantiles
+between the second and the tenth deciles (\code{grid_method='quantiles'}).}
 
-\item{n_grid}{Number of centers present in the grid.}
+\item{n_grid}{An integer indicating the number of reweighting centers
+present in the grid.}
 }
 \value{
-A vector of values corresponding to the centers for the reweighting
+A vector of values corresponding to the centers for the reweighting.
 }
 \description{
-Create grid of centers for the reweighting of the distribution of the regressor.
-The function creates either a grid of evenly spaced values between the
-minimum and the maximum of the regressor's values or based on the quantiles.
-If based on the quantiles, then the values of the grid consists
-of the quantiles corresponding
-to seq(0.1,0.9,length=n_grid).
+\code{comp_grid_centers} returns a grid of values based on the empirical
+distribution of the regressor in the data.
+}
+\details{
+The function creates either a grid of evenly spaced values between
+the minimum and the maximum of the regressor's values or based on the
+quantiles. If the construction of the grid is based on the quantiles,
+then the values of the grid consists of the quantiles corresponding
+to the probabilities \code{seq(0.1,0.9,length=n_grid)}.
 }
 \examples{
 \dontrun{

@@ -10,7 +10,8 @@ comp_sandwich_qr_var(mod_fit)
 \item{mod_fit}{A \code{stats::lm} (OLS) object.}
 }
 \value{
-A tibble containing the sandwich estimator of variance for OLS regression.
+A tibble containing the sandwich estimator of variance for OLS
+regression.
 }
 \description{
 Compute the sandwich estimator of standard errors for
@@ -19,9 +20,9 @@ more details
 \insertCite{@see also @buja2019modelsasapproximationspart1 and @buja2019modelsasapproximationspart2;textual}{maar}.
 }
 \details{
-The function computes the sandwich estimator for the OLS regression passed in \code{mod_fit} and
-returns a tibble with summary information about the components of the model
-based on the sandiwch standard errors.
+The function computes the sandwich estimator for the OLS regression
+passed in \code{mod_fit} and returns a tibble with summary information about
+the components of the model based on the sandiwch standard errors.
 }
 \examples{
 \dontrun{

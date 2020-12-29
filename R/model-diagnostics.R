@@ -1,19 +1,24 @@
-#' Create grid of centers for the reweighting of the the distribution of the regressor
+#' Create grid of centers for the reweighting of the regressor's distribution
 #'
-#' Create grid of centers for the reweighting of the distribution of the regressor.
-#' The function creates either a grid of evenly spaced values between the
-#' minimum and the maximum of the regressor's values or based on the quantiles.
-#' If based on the quantiles, then the values of the grid consists
-#' of the quantiles corresponding
-#' to seq(0.1,0.9,length=n_grid).
+#' \code{comp_grid_centers} returns a grid of values based on the empirical
+#' distribution of the regressor in the data.
 #'
-#' @param x Vector of values taken by the regressor.
-#' @param grid_method Method to construct the grid of reweighting centers
-#' that are either evenly spaced values between the maximum and the minimum ("regular")
-#' or based on the quantiles between the second and the tenth deciles ("quantiles").
-#' @param n_grid Number of centers present in the grid.
+#' @details The function creates either a grid of evenly spaced values between
+#'   the minimum and the maximum of the regressor's values or based on the
+#'   quantiles. If the construction of the grid is based on the quantiles,
+#'   then the values of the grid consists of the quantiles corresponding
+#'   to the probabilities \code{seq(0.1,0.9,length=n_grid)}.
 #'
-#' @return A vector of values corresponding to the centers for the reweighting
+#' @param x A vector of values taken by the regressor.
+#' @param grid_method A character indicating the method to use for the
+#'   construction of the grid of reweighting centers.
+#'   The grid consists either of evenly spaced values between the maximum and
+#'   the minimum (\code{grid_method='regular'}) or based on the quantiles
+#'   between the second and the tenth deciles (\code{grid_method='quantiles'}).
+#' @param n_grid An integer indicating the number of reweighting centers
+#'   present in the grid.
+#'
+#' @return A vector of values corresponding to the centers for the reweighting.
 #'
 #' @export
 #'
@@ -49,27 +54,35 @@ comp_grid_centers <- function(x, grid_method, n_grid) {
 }
 
 
-#' Obtain estimates for GLM of OLS under reweighting of one regressor.
+#' Obtain estimates for GLM of OLS under reweighting of one regressor
 #'
-#' `comp_coef_rwgt_single` provides estimate for GLM and OLS under reweighting of one regressor.
-#' The function returns a set of estimates for each bootstrapped data set and
-#' each center of reweighting.
-#' @details The GLM or OLS model extracted from `mod_fit` is fitted on each
-#' `boot_samples` under reweighting of every reweighting center ` term_to_rwgt_centers` of the
-#' regressor `term_to_rwgt`.
+#' \code{comp_coef_rwgt_single} provides estimate for GLM and OLS under
+#' reweighting of one regressor. The function returns a set of estimates
+#' for each bootstrapped data set and each center of reweighting.
 #'
-#' @param mod_fit An object of class `lm` or `glm` to fit on the data. This object
-#' should contain the formula, the data, and, in case of `glm`, the family.
-#' @param term_to_rwgt A character corresponding to the regressor to be reweighted.
-#' @param boot_samples A list of bootstrapped data sets.
-#' Each data set must include a column "n_obs" which contains
-#' the order of each observation as in the original data.
+#' @details The GLM or OLS model extracted from \code{mod_fit} is fitted on each
+#'   bootstrapped data set in \code{boot_samples} under the reweighting of every
+#'   reweighting center in \code{term_to_rwgt_centers} of the regressor
+#'   specified by \code{term_to_rwgt}. The weights for the j-th regressor
+#'   with center \eqn{c_{k}(j)} are proportional to
+#'   \eqn{\exp\{-(X(j)_i - X(j))^2 / (2 * \hat{\sigma}(X(j))))\}}.
+#'
+#' @param mod_fit An object of class \code{lm} or \code{glm} to fit on the data.
+#'   This object should contain the formula, the data, and, in case of
+#'   \code{glm}, the family.
+#' @param term_to_rwgt A character corresponding to the regressor to be
+#'   reweighted.
+#' @param boot_samples A list of bootstrapped data sets. Each data set in the
+#'   column "data" must
+#'   include a column "n_obs" which contains the order of each observation as
+#'   in the original data.
 #' @param term_to_rwgt_centers A vector of numeric values corresponding to the
-#' centers used for the reweighting.
+#'   centers used for the reweighting.
 #'
-#' @return A tibble containing the number of the bootstrapped data set (`b`),
-#' the value of the reweighting centers (`term_rwgt_center`),
-#' and estimates of the regression coefficients (`term` and `estimate`).
+#' @return A tibble containing the number of the bootstrapped data set
+#'   (\code{b}), the value of the reweighting centers (\code{term_rwgt_center}),
+#'   and estimates of the regression coefficients (\code{term} and
+#'   \code{estimate}).
 #'
 #' @export
 #'
@@ -77,6 +90,7 @@ comp_grid_centers <- function(x, grid_method, n_grid) {
 #'
 #' @examples
 #' \dontrun{
+#' set.seed(12323)
 #' # Get OLS estimates under reweighting of regressor X1
 #' n <- 1e3
 #' X1 <- stats::rnorm(n, 0, 1)
@@ -118,36 +132,50 @@ comp_coef_rwgt_single <- function(mod_fit, term_to_rwgt, boot_samples, term_to_r
   return(out)
 }
 
-#' Obtain estimates of a GLM or OLS estimates under reweighting of one or multiple regressors.
+#' Obtain estimates of GLM or OLS under reweighting of one or
+#' multiple regressors
 #'
-#' `comp_coef_rwgt` provides estimate for GLM and OLS under reweighting of multiple regressors.
-#' The function returns a set of estimates for each regressor that is reweighted,
-#' for each bootstrapped data set, and for each center of reweighting.
-#' @details The model extracted from `mod_fit` is fitted on `B` bootstrapped data
-#' sets via `m`-out-of-n empirical bootstrap using weighted regressions where
-#' the coefficients to be reweighted are specified in `terms_to_rwgt` and
-#' and have reweighting centers given by `grid_centers`.
+#' \code{comp_coef_rwgt} returns estimates for GLM and OLS under reweighting of
+#' multiple regressors. The function estimates a set of coefficients for several
+#' configurations of the reweighting of the reweighting of each regressor.
 #'
-#' @param mod_fit An object of class `lm` or `glm` to fit on the data. This object
-#' should contain the formula, the data, and, in case of `glm`, the family.
-#' @param terms_to_rwgt A vector of characters corresponding to the names of the regressors
-#' to be reweighted.
-#' @param B an integer corresponding to the number of bootstrap repetitions or number of bootstrap samples to be drawn.
-#' @param m an integer corresponding to the number of observations to be sampled
-#' with replacement from the data set in each bootstrap repetition.
-#' @param grid_centers Data frame containing the names of the regressors as columns
-#' and the corresponding reweighting centers.
-#' Each column corresponds to a different regressor (specified in the column's name).
-#' @param grid_method Method to construct the grid of reweighting centers
-#' that are either evenly spaced values between the maximum and the minimum ("regular")
-#' or based on the quantiles between the second and the tenth deciles ("quantiles").
-#' @param n_grid Number of centers present in the grid.
+#' @details The model extracted from \code{mod_fit} is fitted on \code{B}
+#'   data sets sampled via \code{m}-out-of-n empirical bootstrap
+#'   using weighted regression where the predictors to be reweighted are
+#'   specified in \code{terms_to_rwgt} and have reweighting centers given by
+#'   \code{grid_centers}.
+#'   Using the default parameters, the function will compute the estimates for
+#'   a grid based on the second to first to the ninth deciles of each regressor.
+#'
+#' @param mod_fit An object of class \code{lm} or \code{glm} to fit on the data.
+#'   This object should contain the formula, the data, and, in case of
+#'   \code{glm}, the family.
+#' @param terms_to_rwgt A vector of characters corresponding to the names of the
+#'   regressors to be reweighted.
+#' @param B An integer corresponding to the number of bootstrap repetitions or
+#'   number of bootstrap samples to be drawn. Default is set to \code{100}.
+#' @param m An integer corresponding to the number of observations to be sampled
+#'   with replacement from the data set in each bootstrap repetition.
+#'   Default is set to the size of the data set.
+#' @param grid_centers A data frame containing the names of the regressors as
+#'   columns and the corresponding reweighting centers.
+#'   Each column corresponds to a different regressor, whose name is specified
+#'   in the name of the column. Default is set to \code{NULL}.
+#' @param grid_method A chracter which specifies the method used to construct
+#'   the grid of reweighting centers. The grid can consist either of evenly
+#'   spaced values between the maximum and the minimum
+#'   (\code{grid_method='regular'}) or based on the quantiles between the first
+#'   and the ninth deciles (\code{grid_method='quantiles'}). Default is set
+#'   to \code{'quantile'}.
+#' @param n_grid An integer corresponding to the number of reweighting centers
+#'   for the grid. Default is set to \code{9}.
 #'
 #'
-#' @return A tibble containing the number of the bootstrapped data set (`b`),
-#' the size of each bootstrapped data set (`m`),
-#' the value of the reweighting centers (`term_rwgt_center`) and the name of the regressor under reweighting (`term_rwgt`),
-#' and the estimates of the regression coefficients (`term` and `estimate`).
+#' @return A tibble containing the number of the bootstrapped data set (\code{b}),
+#'   the size of each bootstrapped data set (\code{m}),
+#'   the value of the reweighting centers (\code{term_rwgt_center}) and the name of
+#'   the regressor under reweighting (\code{term_rwgt}), and the estimates of the
+#'   regression coefficients (\code{term} and \code{estimate}).
 #'
 #' @export
 #'
@@ -155,6 +183,7 @@ comp_coef_rwgt_single <- function(mod_fit, term_to_rwgt, boot_samples, term_to_r
 #'
 #' @examples
 #' \dontrun{
+#' set.seed(1321312)
 #' # Get OLS estimates under reweighting of all regressors with default grid
 #' n <- 1e3
 #' X1 <- stats::rnorm(n, 0, 1)
@@ -250,35 +279,44 @@ comp_coef_rwgt <- function(mod_fit,
 
 
 
-#' Obtain the `focal slope` model diagnostic.
+#' Obtain the "focal slope" model diagnostic
 #'
-#' Obtain the `focal slope` model diagnostic as described in
+#' \code{focal_slope} returns the "focal slope" model diagnostics described in
 #' \insertCite{@see @buja2019modelsasapproximationspart2;textual}{maar}.
-#' @details Through this tool, one can investigate the presence of interaction terms
-#' that have not been included in the regression model in the first place.
-#' The function shows how the estimates of `term_chosen` vary under reweighting of all other
-#' regressors as in `coef_rwgt` and compares them with the original estimates
-#' from `mod_fit`.
+#' This graphical tool provides insights into the interactions between the
+#' regressor specified in \code{term_chosen} and all other regressors.
+#' More specifically, based on the estimates under reweighting of the regressors
+#' returned by \code{comp_coef_rwgt} and specified in \code{coef_rwgt}, this
+#' function shows how the estimates of \code{term_chosen} vary under
+#' reweighting of all other regressors and compares them with the original
+#' estimates from \code{mod_fit}.
 #'
-#' @param mod_fit An object of class `lm` or `glm` to fit on the data. This object
-#' should contain the formula, the data, and, in case of `glm`, the family.
-#' @param coef_rwgt A tibble containing the number of the bootstrapped data set (`b`),
-#' the size of each bootstrapped data set (`m`),
-#' the value of the reweighting centers (`term_rwgt_center`) and of the reweighted term (`term_rwgt`),
-#' and the estimates of the regression coefficients (`term` and `estimate`).
-#' @param term_chosen Character corresponding to the coefficient to be analysed.
+#' @param mod_fit An object of class \code{lm} or \code{glm} to fit on the data.
+#'   This object should contain the formula, the data, and, in case of
+#'   \code{glm}, the family.
+#' @param coef_rwgt A tibble containing the number of the bootstrapped data set
+#'   (\code{b}), the size of each bootstrapped data set (\code{m}), the value of
+#'   the reweighting centers (\code{term_rwgt_center}) and of the reweighted
+#'   term (\code{term_rwgt}), and the estimates of the regression coefficients
+#'   (\code{term} and \code{estimate}). This tibble can be created via the
+#'   \code{comp_coef_rwgt} function.
+#' @param term_chosen A character corresponding to the coefficient of interest
+#'   to be analysed.
 #'
-#' @return A ggplot2 object which shows how the coefficient of one regressor of interest (`term_chosen`)
-#' varies under reweighting of the regressors.
-#' The vertical axes indicate the magnitude of the estimates of the coefficient of the regressor of interest.
-#' Horizontal axes and panels titles show the values and names of the regressors respectively.
-#' Grey lines correspond to the traces of bootstrapped estimates forming the "spaghetti plot".
-#' The black vertical lines indicate 95% confidence intervals computed via the percentile method
-#' for the estimates on the
-#' bootstrapped data sets for each of the centers of reweighting (term_rwgt_center).
-#' The black line in the middle corresponds to the mean of the estimates (which is
-#' approximately equal to the estimates on the original reweighted data).
-#' The blue dashed lines correspond exactly to the original estimate of the coefficients from `mod_fit`.
+#' @return A ggplot2 object which shows how the coefficient of one regressor of
+#'   interest (\code{term_chosen}) varies under reweighting of the regressors.
+#'   The vertical axis indicates the magnitude of the estimates of the coefficient
+#'   of the regressor of interest. The horizontal axis and panels titles show the
+#'   values and names of the regressors respectively. The grey
+#'   lines correspond to the traces of bootstrapped estimates forming the
+#'   "spaghetti plot". The black vertical lines indicate 95% confidence
+#'   intervals computed via the percentile method for the estimates on the
+#'   bootstrapped data sets for the estimates based on each of the centers of
+#'   reweighting (\code{term_rwgt_center}). The black line in the middle
+#'   corresponds to the mean of the estimates and is approximately equal to the
+#'   estimates on the original data (under reweighting). The blue dashed lines
+#'   correspond exactly to the original estimate of the coefficients from
+#'   \code{mod_fit}.
 #'
 #' @export
 #'
@@ -289,6 +327,7 @@ comp_coef_rwgt <- function(mod_fit,
 #'
 #' @examples
 #' \dontrun{
+#' set.seed(13123412)
 #' # Get focal slope of X1
 #' n <- 1e3
 #' X1 <- stats::rnorm(n, 0, 1)
@@ -395,37 +434,44 @@ focal_slope <- function(mod_fit, coef_rwgt, term_chosen) {
 }
 
 
-#' Obtain the `nonlinearity_detection` model diagnostic.
+#' Obtain the "nonlinearity detection" model diagnostic
 #'
-#' Obtain the `nonlinearity_detection` model diagnostic as described in
+#' \code{nonlinearity_detection} returns the "nonlinearity detection" model
+#' diagnostic as described in
 #' \insertCite{@see @buja2019modelsasapproximationspart2;textual}{maar}.
-#' This tool provides insights into marginal nonlinear behavior of response surfaces.
-#' @details Through this tool, one can investigate the presence of interaction terms
-#' that have not been included in the regression model in the first place.
-#' The function shows how the estimates of each regression coefficient vary
-#' under reweighting of their own regressors and compares them with the original estimates
-#' from `mod_fit`.
+#' This graphical tool provides insights into the marginal nonlinear behavior
+#' of response surfaces for each of the regressors.
+#' More specifically, based on the estimates under reweighting of the regressors
+#' returned by \code{comp_coef_rwgt} and specified in \code{coef_rwgt}, this
+#' function shows how the estimate of each coefficient varies under
+#' reweighting of its own regressor and compares it with the original
+#' estimates from \code{mod_fit}.
 #'
-#' @param mod_fit An object of class `lm` or `glm` to fit on the data. This object
-#' should contain the formula, the data, and, in case of `glm`, the family.
-#' @param coef_rwgt A tibble containing the number of the bootstrapped data set (`b`),
-#' the size of each bootstrapped data set (`m`),
-#' the value of the reweighting centers (`term_rwgt_center`) and of the reweighted term (`term_rwgt`),
-#' and the estimates of the regression coefficients (`term` and `estimate`).
+#' @param mod_fit An object of class \code{lm} or \code{glm} to fit on the data.
+#'   This object should contain the formula, the data, and, in case of
+#'   \code{glm}, the family.
+#' @param coef_rwgt A tibble containing the number of the bootstrapped data set
+#'   (\code{b}), the size of each bootstrapped data set (\code{m}), the value of
+#'   the reweighting centers (\code{term_rwgt_center}) and of the reweighted
+#'   term (\code{term_rwgt}), and the estimates of the regression coefficients
+#'   (\code{term} and \code{estimate}). This tibble can be created via the
+#'   \code{comp_coef_rwgt} function.
 #'
 #'
-#' #' @return A ggplot2 object which shows how coefficients estimates vary
-#' under reweighting of their own regressors.
-#' The vertical axes represent the the estimates of the coefficient of the regressors reweighted,
-#' whose names appear in the panels titles.
-#' Horizontal axes shows the values and names of the regressors.
-#' Grey lines correspond to the traces of bootstrapped estimates forming the "spaghetti plot".
-#' The black vertical lines indicate 95% confidence intervals computed via the percentile method
-#' for the estimates on the
-#' bootstrapped data sets for each of the centers of reweighting (`term_rwgt_center`).
-#' The black line in the middle corresponds to the mean of the estimates (which is
-#' approximately equal to the estimates on the original reweighted data).
-#' The blue dashed lines correspond exactly to the original estimate of the coefficients from `mod_fit`.
+#' @return A ggplot2 object which shows how the estimates of all coefficients
+#'   vary under reweighting of their own regressors.
+#'   The vertical axis represents the estimates of the coefficients under
+#'   reweighting of tthe one regressor, whose names appear in the panels
+#'   titles. The horizontal axis shows the values of the regressors. The grey
+#'   lines correspond to the traces of bootstrapped estimates forming the
+#'   "spaghetti plot". The black vertical lines indicate 95% confidence
+#'   intervals computed via the percentile method for the estimates on the
+#'   bootstrapped data sets for the estimates based on each of the centers of
+#'   reweighting (\code{term_rwgt_center}). The black line in the middle
+#'   corresponds to the mean of the estimates and is approximately equal to the
+#'   estimates on the original data (under reweighting). The blue dashed lines
+#'   correspond exactly to the original estimate of the coefficients from
+#'   \code{mod_fit}.
 #'
 #' @export
 #'
@@ -436,6 +482,7 @@ focal_slope <- function(mod_fit, coef_rwgt, term_chosen) {
 #'
 #' @examples
 #' \dontrun{
+#' set.seed(1332423)
 #' # Get nonlinearity detection plot
 #' n <- 1e3
 #' X1 <- stats::rnorm(n, 0, 1)
@@ -549,32 +596,41 @@ nonlinearity_detection <- function(mod_fit, coef_rwgt) {
 
 #' Obtain the "focal reweighting variable" model diagnostic.
 #'
-#' Obtain the "focal reweighting variable"  model diagnostic as described in
+#' \code{focal_rwgt_var} returns the "focal reweighting variable" model
+#' diagnostic described in
 #' \insertCite{@see @buja2019modelsasapproximationspart2;textual}{maar}.
-#' @details The function shows how the estimates of all regressors vary under reweighting
-#' of one regressor, specified in `term_chosen`, and compare with the original
-#' estimates from `mod_fit`.
+#' More specifically, based on the estimates under reweighting of the regressors
+#' returned by \code{comp_coef_rwgt} and specified in \code{coef_rwgt}, this
+#' function shows how the estimates of all coefficients vary under
+#' reweighting of only one regressor specified in \code{term_chosen} and
+#' compares them with the original estimates from \code{mod_fit}.
 #'
-#' @param mod_fit An object of class `lm` or `glm` to fit on the data. This object
-#' should contain the formula, the data, and, in case of `glm`, the family.
-#' @param coef_rwgt A tibble containing the number of the bootstrapped data set (`b`),
-#' the size of each bootstrapped data set (`m`),
-#' the value of the reweighting centers (`term_rwgt_center`) and of the reweighted term (`term_rwgt`),
-#' and the estimates of the regression coefficients (`term` and `estimate`).
-#' @param term_chosen Character corresponding to the coefficient to be analysed.
+#' @param mod_fit An object of class \code{lm} or \code{glm} to fit on the data.
+#'   This object should contain the formula, the data, and, in case of
+#'   \code{glm}, the family.
+#' @param coef_rwgt A tibble containing the number of the bootstrapped data set
+#'   (\code{b}), the size of each bootstrapped data set (\code{m}), the value of
+#'   the reweighting centers (\code{term_rwgt_center}) and of the reweighted
+#'   term (\code{term_rwgt}), and the estimates of the regression coefficients
+#'   (\code{term} and \code{estimate}). This tibble can be created via the
+#'   \code{comp_coef_rwgt} function.
+#' @param term_chosen A character corresponding to the coefficient of interest
+#'   to be analysed.
 #'
-#' @return A ggplot2 object which shows how the coefficients estimates
-#' vary under reweighting of the regressor `term_chosen`.
-#' The vertical axes represent the estimates of the coefficient of the regressors,
-#' whose names appear in the panels titles, under reweighting of `term_chosen`.
-#' Horizontal axes shows the values of the regressors.
-#' Grey lines correspond to the traces of bootstrapped estimates forming the "spaghetti plot".
-#' The black vertical lines indicate 95% confidence intervals computed via the percentile method
-#' for the estimates on the
-#' bootstrapped data sets for each of the centers of reweighting (`term_rwgt_center`).
-#' The black line in the middle corresponds to the mean of the estimates (which is
-#' approximately equal to the estimates on the original reweighted data).
-#' The blue dashed lines correspond exactly to the original estimate of the coefficients from `mod_fit`.
+#' @return A ggplot2 object which shows how coefficients estimates vary
+#'   under reweighting of only one regressor (\code{term_chosen}).
+#'   The vertical axis represents the estimates of the coefficient under
+#'   reweighting of their own regressors, whose names appear in the panels
+#'   titles. The horizontal axis shows the values of the regressors. The grey
+#'   lines correspond to the traces of bootstrapped estimates forming the
+#'   "spaghetti plot". The black vertical lines indicate 95% confidence
+#'   intervals computed via the percentile method for the estimates on the
+#'   bootstrapped data sets for the estimates based on each of the centers of
+#'   reweighting (\code{term_rwgt_center}). The black line in the middle
+#'   corresponds to the mean of the estimates and is approximately equal to the
+#'   estimates on the original data (under reweighting). The blue dashed lines
+#'   correspond exactly to the original estimate of the coefficients from
+#'   \code{mod_fit}.
 #'
 #' @export
 #'
@@ -584,6 +640,7 @@ nonlinearity_detection <- function(mod_fit, coef_rwgt) {
 #'
 #' @examples
 #' \dontrun{
+#' set.seed(1232312)
 #' # Get focal reweighting variable plot of X1
 #' n <- 1e3
 #' X1 <- stats::rnorm(n, 0, 1)

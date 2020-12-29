@@ -6,7 +6,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Obtain estimates of a GLM or OLS estimates under reweighting of one or multiple regressors. — comp_coef_rwgt • maar</title>
+<title>Obtain estimates of GLM or OLS under reweighting of one or
+multiple regressors — comp_coef_rwgt • maar</title>
 
 
 <!-- jquery -->
@@ -39,10 +40,11 @@
 
 
 
-<meta property="og:title" content="Obtain estimates of a GLM or OLS estimates under reweighting of one or multiple regressors. — comp_coef_rwgt" />
-<meta property="og:description" content="comp_coef_rwgt provides estimate for GLM and OLS under reweighting of multiple regressors.
-The function returns a set of estimates for each regressor that is reweighted,
-for each bootstrapped data set, and for each center of reweighting." />
+<meta property="og:title" content="Obtain estimates of GLM or OLS under reweighting of one or
+multiple regressors — comp_coef_rwgt" />
+<meta property="og:description" content="comp_coef_rwgt returns estimates for GLM and OLS under reweighting of
+multiple regressors. The function estimates a set of coefficients for several
+configurations of the reweighting of the reweighting of each regressor." />
 
 
 
@@ -120,15 +122,16 @@ for each bootstrapped data set, and for each center of reweighting." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Obtain estimates of a GLM or OLS estimates under reweighting of one or multiple regressors.</h1>
+    <h1>Obtain estimates of GLM or OLS under reweighting of one or
+multiple regressors</h1>
     
     <div class="hidden name"><code>comp_coef_rwgt.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p><code>comp_coef_rwgt</code> provides estimate for GLM and OLS under reweighting of multiple regressors.
-The function returns a set of estimates for each regressor that is reweighted,
-for each bootstrapped data set, and for each center of reweighting.</p>
+    <p><code>comp_coef_rwgt</code> returns estimates for GLM and OLS under reweighting of
+multiple regressors. The function estimates a set of coefficients for several
+configurations of the reweighting of the reweighting of each regressor.</p>
     </div>
 
     <pre class="usage"><span class='fu'>comp_coef_rwgt</span><span class='op'>(</span>
@@ -146,38 +149,46 @@ for each bootstrapped data set, and for each center of reweighting.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>mod_fit</th>
-      <td><p>An object of class <code>lm</code> or <code>glm</code> to fit on the data. This object
-should contain the formula, the data, and, in case of <code>glm</code>, the family.</p></td>
+      <td><p>An object of class <code>lm</code> or <code>glm</code> to fit on the data.
+This object should contain the formula, the data, and, in case of
+<code>glm</code>, the family.</p></td>
     </tr>
     <tr>
       <th>terms_to_rwgt</th>
-      <td><p>A vector of characters corresponding to the names of the regressors
-to be reweighted.</p></td>
+      <td><p>A vector of characters corresponding to the names of the
+regressors to be reweighted.</p></td>
     </tr>
     <tr>
       <th>B</th>
-      <td><p>an integer corresponding to the number of bootstrap repetitions or number of bootstrap samples to be drawn.</p></td>
+      <td><p>An integer corresponding to the number of bootstrap repetitions or
+number of bootstrap samples to be drawn. Default is set to <code>100</code>.</p></td>
     </tr>
     <tr>
       <th>m</th>
-      <td><p>an integer corresponding to the number of observations to be sampled
-with replacement from the data set in each bootstrap repetition.</p></td>
+      <td><p>An integer corresponding to the number of observations to be sampled
+with replacement from the data set in each bootstrap repetition.
+Default is set to the size of the data set.</p></td>
     </tr>
     <tr>
       <th>grid_centers</th>
-      <td><p>Data frame containing the names of the regressors as columns
-and the corresponding reweighting centers.
-Each column corresponds to a different regressor (specified in the column's name).</p></td>
+      <td><p>A data frame containing the names of the regressors as
+columns and the corresponding reweighting centers.
+Each column corresponds to a different regressor, whose name is specified
+in the name of the column. Default is set to <code>NULL</code>.</p></td>
     </tr>
     <tr>
       <th>grid_method</th>
-      <td><p>Method to construct the grid of reweighting centers
-that are either evenly spaced values between the maximum and the minimum ("regular")
-or based on the quantiles between the second and the tenth deciles ("quantiles").</p></td>
+      <td><p>A chracter which specifies the method used to construct
+the grid of reweighting centers. The grid can consist either of evenly
+spaced values between the maximum and the minimum
+(<code>grid_method='regular'</code>) or based on the quantiles between the first
+and the ninth deciles (<code>grid_method='quantiles'</code>). Default is set
+to <code>'quantile'</code>.</p></td>
     </tr>
     <tr>
       <th>n_grid</th>
-      <td><p>Number of centers present in the grid.</p></td>
+      <td><p>An integer corresponding to the number of reweighting centers
+for the grid. Default is set to <code>9</code>.</p></td>
     </tr>
     </table>
 
@@ -185,17 +196,22 @@ or based on the quantiles between the second and the tenth deciles ("quantiles")
 
     <p>A tibble containing the number of the bootstrapped data set (<code>b</code>),
 the size of each bootstrapped data set (<code>m</code>),
-the value of the reweighting centers (<code>term_rwgt_center</code>) and the name of the regressor under reweighting (<code>term_rwgt</code>),
-and the estimates of the regression coefficients (<code>term</code> and <code>estimate</code>).</p>
+the value of the reweighting centers (<code>term_rwgt_center</code>) and the name of
+the regressor under reweighting (<code>term_rwgt</code>), and the estimates of the
+regression coefficients (<code>term</code> and <code>estimate</code>).</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>The model extracted from <code>mod_fit</code> is fitted on <code>B</code> bootstrapped data
-sets via <code>m</code>-out-of-n empirical bootstrap using weighted regressions where
-the coefficients to be reweighted are specified in <code>terms_to_rwgt</code> and
-and have reweighting centers given by <code>grid_centers</code>.</p>
+    <p>The model extracted from <code>mod_fit</code> is fitted on <code>B</code>
+data sets sampled via <code>m</code>-out-of-n empirical bootstrap
+using weighted regression where the predictors to be reweighted are
+specified in <code>terms_to_rwgt</code> and have reweighting centers given by
+<code>grid_centers</code>.
+Using the default parameters, the function will compute the estimates for
+a grid based on the second to first to the ninth deciles of each regressor.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>1321312</span><span class='op'>)</span>
 <span class='co'># Get OLS estimates under reweighting of all regressors with default grid</span>
 <span class='va'>n</span> <span class='op'>&lt;-</span> <span class='fl'>1e3</span>
 <span class='va'>X1</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>

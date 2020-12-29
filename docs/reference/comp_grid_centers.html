@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Create grid of centers for the reweighting of the the distribution of the regressor — comp_grid_centers • maar</title>
+<title>Create grid of centers for the reweighting of the regressor's distribution — comp_grid_centers • maar</title>
 
 
 <!-- jquery -->
@@ -39,13 +39,9 @@
 
 
 
-<meta property="og:title" content="Create grid of centers for the reweighting of the the distribution of the regressor — comp_grid_centers" />
-<meta property="og:description" content="Create grid of centers for the reweighting of the distribution of the regressor.
-The function creates either a grid of evenly spaced values between the
-minimum and the maximum of the regressor's values or based on the quantiles.
-If based on the quantiles, then the values of the grid consists
-of the quantiles corresponding
-to seq(0.1,0.9,length=n_grid)." />
+<meta property="og:title" content="Create grid of centers for the reweighting of the regressor's distribution — comp_grid_centers" />
+<meta property="og:description" content="comp_grid_centers returns a grid of values based on the empirical
+distribution of the regressor in the data." />
 
 
 
@@ -123,18 +119,14 @@ to seq(0.1,0.9,length=n_grid)." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Create grid of centers for the reweighting of the the distribution of the regressor</h1>
+    <h1>Create grid of centers for the reweighting of the regressor's distribution</h1>
     
     <div class="hidden name"><code>comp_grid_centers.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Create grid of centers for the reweighting of the distribution of the regressor.
-The function creates either a grid of evenly spaced values between the
-minimum and the maximum of the regressor's values or based on the quantiles.
-If based on the quantiles, then the values of the grid consists
-of the quantiles corresponding
-to seq(0.1,0.9,length=n_grid).</p>
+    <p><code>comp_grid_centers</code> returns a grid of values based on the empirical
+distribution of the regressor in the data.</p>
     </div>
 
     <pre class="usage"><span class='fu'>comp_grid_centers</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>grid_method</span>, <span class='va'>n_grid</span><span class='op'>)</span></pre>
@@ -144,23 +136,33 @@ to seq(0.1,0.9,length=n_grid).</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>x</th>
-      <td><p>Vector of values taken by the regressor.</p></td>
+      <td><p>A vector of values taken by the regressor.</p></td>
     </tr>
     <tr>
       <th>grid_method</th>
-      <td><p>Method to construct the grid of reweighting centers
-that are either evenly spaced values between the maximum and the minimum ("regular")
-or based on the quantiles between the second and the tenth deciles ("quantiles").</p></td>
+      <td><p>A character indicating the method to use for the
+construction of the grid of reweighting centers.
+The grid consists either of evenly spaced values between the maximum and
+the minimum (<code>grid_method='regular'</code>) or based on the quantiles
+between the second and the tenth deciles (<code>grid_method='quantiles'</code>).</p></td>
     </tr>
     <tr>
       <th>n_grid</th>
-      <td><p>Number of centers present in the grid.</p></td>
+      <td><p>An integer indicating the number of reweighting centers
+present in the grid.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A vector of values corresponding to the centers for the reweighting</p>
+    <p>A vector of values corresponding to the centers for the reweighting.</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>The function creates either a grid of evenly spaced values between
+the minimum and the maximum of the regressor's values or based on the
+quantiles. If the construction of the grid is based on the quantiles,
+then the values of the grid consists of the quantiles corresponding
+to the probabilities <code><a href='https://rdrr.io/r/base/seq.html'>seq(0.1,0.9,length=n_grid)</a></code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>

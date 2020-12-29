@@ -4,13 +4,15 @@
 #' ordinary least squares (OLS) regression, \insertCite{@see @white1980usinglsapproxunknownregfuncs and @white1980heteroskedasticconsistentcovest;textual}{maar}. For
 #' more details
 #' \insertCite{@see also @buja2019modelsasapproximationspart1 and @buja2019modelsasapproximationspart2;textual}{maar}.
-#' @details The function computes the sandwich estimator for the OLS regression passed in `mod_fit` and
-#' returns a tibble with summary information about the components of the model
-#' based on the sandiwch standard errors.
+#'
+#' @details The function computes the sandwich estimator for the OLS regression
+#'   passed in `mod_fit` and returns a tibble with summary information about
+#'   the components of the model based on the sandiwch standard errors.
 #'
 #' @param mod_fit A `stats::lm` (OLS) object.
 #'
-#' @return A tibble containing the sandwich estimator of variance for OLS regression.
+#' @return A tibble containing the sandwich estimator of variance for OLS
+#'   regression.
 #'
 #' @export
 #'
