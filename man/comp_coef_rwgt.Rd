@@ -68,7 +68,7 @@ ols_rwgt <- comp_coef_rwgt(mod_fit, c("X1", "X2"))
 print(ols_rwgt)
 
 # Get OLS estimates under reweighting of all regressors by feeding grid of centers into the function
-ols_rwgt_grid_fixed <- comp_coef_rwgt(mod_fit, "X1", grid_centers = data.frame(X1 = c(0,1)))
+ols_rwgt_grid_fixed <- comp_coef_rwgt(mod_fit, "X1", grid_centers = data.frame(X1 = c(0, 1)))
 
 #' # Display the output
 print(ols_rwgt_grid_fixed)

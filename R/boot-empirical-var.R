@@ -327,7 +327,7 @@ qqnorm_bootstrap <- function(boot_out) {
     ggplot2::labs(
       x = "Theoretical quantiles",
       y = "Sample quantiles"
-    ) +
-    ggplot2::theme_bw()
+    ) %>%
+    set_ggplot2_theme(ggplot_obj = .)
   return(out)
 }
