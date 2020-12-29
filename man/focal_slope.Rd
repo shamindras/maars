@@ -43,7 +43,7 @@ correspond exactly to the original estimate of the coefficients from
 This graphical tool provides insights into the interactions between the
 regressor specified in \code{term_chosen} and all other regressors.
 More specifically, based on the estimates under reweighting of the regressors
-returned by \code{comp_coef_rwgt} and specified in \code{coef_rwgt}, this
+returned by \code{\link{comp_coef_rwgt}} and specified in \code{coef_rwgt}, this
 function shows how the estimates of \code{term_chosen} vary under
 reweighting of all other regressors and compares them with the original
 estimates from \code{mod_fit}.

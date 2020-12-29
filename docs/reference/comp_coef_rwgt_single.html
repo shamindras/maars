@@ -177,9 +177,10 @@ and estimates of the regression coefficients (<code>term</code> and
     <p>The GLM or OLS model extracted from <code>mod_fit</code> is fitted on each
 bootstrapped data set in <code>boot_samples</code> under the reweighting of every
 reweighting center in <code>term_to_rwgt_centers</code> of the regressor
-specified by <code>term_to_rwgt</code>. The weights for the j-th regressor
-with center \(c_{k}(j)\) are proportional to
-\(\exp\{-(X(j)_i - X(j))^2 / (2 * \hat{\sigma}(X(j))))\}\).</p>
+specified by <code>term_to_rwgt</code>. The weight for the j-th regressor
+with center \(c_{k}(j)\) and the i-th observation is proportional to
+\(\exp\{-(X(j)_i - X(j))^2 / (2 * \hat{\sigma}(X(j))))\}\) where
+\(\hat{\sigma}\) is the standard deviation of \(X(j)\).</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>

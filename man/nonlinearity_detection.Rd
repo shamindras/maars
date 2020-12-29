@@ -16,7 +16,7 @@ This object should contain the formula, the data, and, in case of
 the reweighting centers (\code{term_rwgt_center}) and of the reweighted
 term (\code{term_rwgt}), and the estimates of the regression coefficients
 (\code{term} and \code{estimate}). This tibble can be created via the
-\code{comp_coef_rwgt} function.}
+\code{\link{comp_coef_rwgt}} function.}
 }
 \value{
 A ggplot2 object which shows how the estimates of all coefficients
@@ -41,7 +41,7 @@ diagnostic as described in
 This graphical tool provides insights into the marginal nonlinear behavior
 of response surfaces for each of the regressors.
 More specifically, based on the estimates under reweighting of the regressors
-returned by \code{comp_coef_rwgt} and specified in \code{coef_rwgt}, this
+returned by \code{\link{comp_coef_rwgt}} and specified in \code{coef_rwgt}, this
 function shows how the estimate of each coefficient varies under
 reweighting of its own regressor and compares it with the original
 estimates from \code{mod_fit}.

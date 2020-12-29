@@ -8,11 +8,11 @@
 #'
 #' @param mod_fit An lm (OLS) object
 #' @param boot_out A tibble of the bootstrap calculations from either
-#' \code{\link{comp_empirical_bootstrap}} or
-#' \code{\link{comp_multiplier_bootstrap_var}}, respectively
+#'   \code{\link{comp_empirical_bootstrap}} or
+#'   \code{\link{comp_multiplier_bootstrap_var}}, respectively
 #' @param boot_type A character specifying the bootstrap type. Must be "emp"
-#' for output from \code{\link{comp_empirical_bootstrap}} or "mult" for output
-#' from \code{\link{comp_multiplier_bootstrap_var}}, respectively
+#'   for output from \code{\link{comp_empirical_bootstrap}} or "mult" for output
+#'   from \code{\link{comp_multiplier_bootstrap_var}}, respectively
 #'
 #' @return A summary statistics tibble for the bootstrap input
 #'

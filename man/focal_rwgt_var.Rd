@@ -16,7 +16,7 @@ This object should contain the formula, the data, and, in case of
 the reweighting centers (\code{term_rwgt_center}) and of the reweighted
 term (\code{term_rwgt}), and the estimates of the regression coefficients
 (\code{term} and \code{estimate}). This tibble can be created via the
-\code{comp_coef_rwgt} function.}
+\code{\link{comp_coef_rwgt}} function.}
 
 \item{term_chosen}{A character corresponding to the coefficient of interest
 to be analysed.}

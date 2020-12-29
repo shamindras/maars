@@ -42,9 +42,10 @@ for each bootstrapped data set and each center of reweighting.
 The GLM or OLS model extracted from \code{mod_fit} is fitted on each
 bootstrapped data set in \code{boot_samples} under the reweighting of every
 reweighting center in \code{term_to_rwgt_centers} of the regressor
-specified by \code{term_to_rwgt}. The weights for the j-th regressor
-with center \eqn{c_{k}(j)} are proportional to
-\eqn{\exp\{-(X(j)_i - X(j))^2 / (2 * \hat{\sigma}(X(j))))\}}.
+specified by \code{term_to_rwgt}. The weight for the j-th regressor
+with center \eqn{c_{k}(j)} and the i-th observation is proportional to
+\eqn{\exp\{-(X(j)_i - X(j))^2 / (2 * \hat{\sigma}(X(j))))\}} where
+\eqn{\hat{\sigma}} is the standard deviation of \eqn{X(j)}.
 }
 \examples{
 \dontrun{

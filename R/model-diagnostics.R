@@ -63,13 +63,14 @@ comp_grid_centers <- function(x, grid_method, n_grid) {
 #' @details The GLM or OLS model extracted from \code{mod_fit} is fitted on each
 #'   bootstrapped data set in \code{boot_samples} under the reweighting of every
 #'   reweighting center in \code{term_to_rwgt_centers} of the regressor
-#'   specified by \code{term_to_rwgt}. The weights for the j-th regressor
-#'   with center \eqn{c_{k}(j)} are proportional to
-#'   \eqn{\exp\{-(X(j)_i - X(j))^2 / (2 * \hat{\sigma}(X(j))))\}}.
+#'   specified by \code{term_to_rwgt}. The weight for the j-th regressor
+#'   with center \eqn{c_{k}(j)} and the i-th observation is proportional to
+#'   \eqn{\exp\{-(X(j)_i - X(j))^2 / (2 * \hat{\sigma}(X(j))))\}} where
+#'   \eqn{\hat{\sigma}} is the standard deviation of \eqn{X(j)}.
 #'
-#' @param mod_fit An object of class \code{lm} or \code{glm} to fit on the data.
+#' @param mod_fit An object of class \code{\link[stats]{lm}} or \code{\link[stats]{glm}} to fit on the data.
 #'   This object should contain the formula, the data, and, in case of
-#'   \code{glm}, the family.
+#'   \code{\link[stats]{glm}}, the family.
 #' @param term_to_rwgt A character corresponding to the regressor to be
 #'   reweighted.
 #' @param boot_samples A list of bootstrapped data sets. Each data set in the
@@ -147,9 +148,9 @@ comp_coef_rwgt_single <- function(mod_fit, term_to_rwgt, boot_samples, term_to_r
 #'   Using the default parameters, the function will compute the estimates for
 #'   a grid based on the second to first to the ninth deciles of each regressor.
 #'
-#' @param mod_fit An object of class \code{lm} or \code{glm} to fit on the data.
+#' @param mod_fit An object of class \code{\link[stats]{lm}} or \code{\link[stats]{glm}} to fit on the data.
 #'   This object should contain the formula, the data, and, in case of
-#'   \code{glm}, the family.
+#'   \code{\link[stats]{glm}}, the family.
 #' @param terms_to_rwgt A vector of characters corresponding to the names of the
 #'   regressors to be reweighted.
 #' @param B An integer corresponding to the number of bootstrap repetitions or
@@ -286,14 +287,14 @@ comp_coef_rwgt <- function(mod_fit,
 #' This graphical tool provides insights into the interactions between the
 #' regressor specified in \code{term_chosen} and all other regressors.
 #' More specifically, based on the estimates under reweighting of the regressors
-#' returned by \code{comp_coef_rwgt} and specified in \code{coef_rwgt}, this
+#' returned by \code{\link{comp_coef_rwgt}} and specified in \code{coef_rwgt}, this
 #' function shows how the estimates of \code{term_chosen} vary under
 #' reweighting of all other regressors and compares them with the original
 #' estimates from \code{mod_fit}.
 #'
-#' @param mod_fit An object of class \code{lm} or \code{glm} to fit on the data.
+#' @param mod_fit An object of class \code{\link[stats]{lm}} or \code{\link[stats]{glm}} to fit on the data.
 #'   This object should contain the formula, the data, and, in case of
-#'   \code{glm}, the family.
+#'   \code{\link[stats]{glm}}, the family.
 #' @param coef_rwgt A tibble containing the number of the bootstrapped data set
 #'   (\code{b}), the size of each bootstrapped data set (\code{m}), the value of
 #'   the reweighting centers (\code{term_rwgt_center}) and of the reweighted
@@ -442,20 +443,20 @@ focal_slope <- function(mod_fit, coef_rwgt, term_chosen) {
 #' This graphical tool provides insights into the marginal nonlinear behavior
 #' of response surfaces for each of the regressors.
 #' More specifically, based on the estimates under reweighting of the regressors
-#' returned by \code{comp_coef_rwgt} and specified in \code{coef_rwgt}, this
+#' returned by \code{\link{comp_coef_rwgt}} and specified in \code{coef_rwgt}, this
 #' function shows how the estimate of each coefficient varies under
 #' reweighting of its own regressor and compares it with the original
 #' estimates from \code{mod_fit}.
 #'
-#' @param mod_fit An object of class \code{lm} or \code{glm} to fit on the data.
+#' @param mod_fit An object of class \code{\link[stats]{lm}} or \code{\link[stats]{glm}} to fit on the data.
 #'   This object should contain the formula, the data, and, in case of
-#'   \code{glm}, the family.
+#'   \code{\link[stats]{glm}}, the family.
 #' @param coef_rwgt A tibble containing the number of the bootstrapped data set
 #'   (\code{b}), the size of each bootstrapped data set (\code{m}), the value of
 #'   the reweighting centers (\code{term_rwgt_center}) and of the reweighted
 #'   term (\code{term_rwgt}), and the estimates of the regression coefficients
 #'   (\code{term} and \code{estimate}). This tibble can be created via the
-#'   \code{comp_coef_rwgt} function.
+#'   \code{\link{comp_coef_rwgt}} function.
 #'
 #'
 #' @return A ggplot2 object which shows how the estimates of all coefficients
@@ -605,15 +606,15 @@ nonlinearity_detection <- function(mod_fit, coef_rwgt) {
 #' reweighting of only one regressor specified in \code{term_chosen} and
 #' compares them with the original estimates from \code{mod_fit}.
 #'
-#' @param mod_fit An object of class \code{lm} or \code{glm} to fit on the data.
+#' @param mod_fit An object of class \code{\link[stats]{lm}} or \code{\link[stats]{glm}} to fit on the data.
 #'   This object should contain the formula, the data, and, in case of
-#'   \code{glm}, the family.
+#'   \code{\link[stats]{glm}}, the family.
 #' @param coef_rwgt A tibble containing the number of the bootstrapped data set
 #'   (\code{b}), the size of each bootstrapped data set (\code{m}), the value of
 #'   the reweighting centers (\code{term_rwgt_center}) and of the reweighted
 #'   term (\code{term_rwgt}), and the estimates of the regression coefficients
 #'   (\code{term} and \code{estimate}). This tibble can be created via the
-#'   \code{comp_coef_rwgt} function.
+#'   \code{\link{comp_coef_rwgt}} function.
 #' @param term_chosen A character corresponding to the coefficient of interest
 #'   to be analysed.
 #'

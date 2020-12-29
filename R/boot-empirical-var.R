@@ -65,11 +65,11 @@ comp_empirical_bootstrap_samples <- function(data,
 #' @param mod_fit An object of class \code{\link[stats]{lm}} or
 #'   \code{\link[stats]{glm}} to fit on the data. This object should contain
 #'   the formula, the data, and, in case of \code{\link[stats]{glm}}, the
-#'   glm family
+#'   glm family.
 #' @param data A tibble or data frame containing the dataset on which the
-#'   model will be trained
+#'   model will be trained.
 #' @param weights A character corresponding to the name of the weights feature
-#'   name in the data
+#'   name in the data.
 #'
 #' @return A tibble containing the estimated coefficients (\code{term}) of
 #'   the regressors (\code{term}).
@@ -235,7 +235,7 @@ comp_empirical_bootstrap <- function(mod_fit, B = 100, m = NULL) {
 #'   and \code{estimate}) on the bootstrapped datasets, the size of each
 #'   bootstrapped dataset (\code{m}), the size of the original dataset
 #'   (\code{n}), and the number of the bootstrap repetition (\code{b}).
-#' @param probs Numeric vector containing the probabilities of the quantiles
+#' @param probs A numeric vector containing the probabilities of the quantiles
 #'   to be computed.
 #' @param group_vars A vector of characters including the variables used
 #'   to form the groups.
@@ -267,7 +267,7 @@ comp_conf_int_bootstrap <- function(boot_out, probs = c(0.025, 0.975),
                                     group_vars = "term") {
   out <- boot_out %>%
     tidyr::unnest(boot_out) %>%
-    dplyr::group_by_at(group_vars) %>%
+    dplyr::group_by(dplyr::across(dplyr::all_of(group_vars))) %>%
     dplyr::summarise(x = stats::quantile(sqrt(m / n) * estimate,
                                          probs = probs),
                      q = probs,

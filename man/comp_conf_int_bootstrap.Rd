@@ -12,7 +12,7 @@ and \code{estimate}) on the bootstrapped datasets, the size of each
 bootstrapped dataset (\code{m}), the size of the original dataset
 (\code{n}), and the number of the bootstrap repetition (\code{b}).}
 
-\item{probs}{Numeric vector containing the probabilities of the quantiles
+\item{probs}{A numeric vector containing the probabilities of the quantiles
 to be computed.}
 
 \item{group_vars}{A vector of characters including the variables used

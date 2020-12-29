@@ -10,13 +10,13 @@ comp_cond_model(mod_fit, data, weights = NULL)
 \item{mod_fit}{An object of class \code{\link[stats]{lm}} or
 \code{\link[stats]{glm}} to fit on the data. This object should contain
 the formula, the data, and, in case of \code{\link[stats]{glm}}, the
-glm family}
+glm family.}
 
 \item{data}{A tibble or data frame containing the dataset on which the
-model will be trained}
+model will be trained.}
 
 \item{weights}{A character corresponding to the name of the weights feature
-name in the data}
+name in the data.}
 }
 \value{
 A tibble containing the estimated coefficients (\code{term}) of
