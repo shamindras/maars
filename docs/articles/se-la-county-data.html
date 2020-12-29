@@ -393,15 +393,15 @@ PercIndustrial
 <a href="#computing-standard-errors-from-ols-using-empirical-bootstrap" class="anchor"></a>Computing standard errors from OLS using Empirical Bootstrap</h2>
 <p>We now compute the standard errors via <span class="math inline">\(B = 10^{3}\)</span> bootstrap replications of the dataset of the same size as the original dataset i.e. of the <span class="math inline">\(B\)</span> replications samples with replacement <span class="math inline">\(n = 505\)</span> observations from the entire data (which contains <span class="math inline">\(n = 505\)</span> observations).</p>
 <p>Let’s first get the OLS estimates.</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>coef_emp_boot <span class="ot">&lt;-</span> maar<span class="sc">::</span><span class="fu">comp_empirical_bootstrap</span>(<span class="at">mod_fit =</span> mod_fit, <span class="at">B =</span> <span class="dv">1000</span>)</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>dplyr<span class="sc">::</span><span class="fu">glimpse</span>(coef_emp_boot)</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Rows: 1,000</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Columns: 4</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ b &lt;int&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 1…</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ m &lt;int&gt; 505, 505, 505, 505, 505, 505, 505, 505, 505, 505, 505, 505, …</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ n &lt;int&gt; 505, 505, 505, 505, 505, 505, 505, 505, 505, 505, 505, 505, …</span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ boot_out &lt;list&gt; [&lt;tbl_df[7 x 2]&gt;, &lt;tbl_df[7 x 2]&gt;, &lt;tbl_df[7 x 2]&gt;,</span></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="sc">&lt;</span>tbl_df…</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true"></a>coef_emp_boot &lt;-<span class="st"> </span>maar<span class="op">::</span><span class="kw">comp_empirical_bootstrap</span>(<span class="dt">mod_fit =</span> mod_fit, <span class="dt">B =</span> <span class="dv">1000</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true"></a>dplyr<span class="op">::</span><span class="kw">glimpse</span>(coef_emp_boot)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true"></a><span class="co">#&gt; Rows: 1,000</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true"></a><span class="co">#&gt; Columns: 4</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true"></a><span class="co">#&gt; $ b &lt;int&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 1…</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true"></a><span class="co">#&gt; $ m &lt;int&gt; 505, 505, 505, 505, 505, 505, 505, 505, 505, 505, 505, 505, …</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true"></a><span class="co">#&gt; $ n &lt;int&gt; 505, 505, 505, 505, 505, 505, 505, 505, 505, 505, 505, 505, …</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true"></a><span class="co">#&gt; $ boot_out &lt;list&gt; [&lt;tbl_df[7 x 2]&gt;, &lt;tbl_df[7 x 2]&gt;, &lt;tbl_df[7 x 2]&gt;,</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true"></a><span class="op">&lt;</span>tbl_df…</span></code></pre></div>
 <p>We can visualize the distribution of the variance to check whether it well approximates the normal distribution.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">qnorm_boot</span> <span class="op">&lt;-</span> <span class="fu">maar</span><span class="fu">::</span><span class="fu"><a href="../reference/qqnorm_bootstrap.html">qqnorm_bootstrap</a></span><span class="op">(</span><span class="va">coef_emp_boot</span><span class="op">)</span>
@@ -451,7 +451,7 @@ Term
 0.76
 </td>
 <td style="text-align:center;">
-16.17
+16.21
 </td>
 <td style="text-align:center;">
 0.05
@@ -471,10 +471,10 @@ Term
 0.11
 </td>
 <td style="text-align:center;">
--1.64
+-1.67
 </td>
 <td style="text-align:center;">
-0.91
+0.90
 </td>
 </tr>
 <tr>
@@ -485,10 +485,10 @@ PercCommercial
 0.74
 </td>
 <td style="text-align:center;">
-0.39
+0.37
 </td>
 <td style="text-align:center;">
-1.91
+2.00
 </td>
 <td style="text-align:center;">
 0.95
@@ -502,13 +502,13 @@ PercIndustrial
 0.91
 </td>
 <td style="text-align:center;">
-0.56
+0.54
 </td>
 <td style="text-align:center;">
-1.63
+1.67
 </td>
 <td style="text-align:center;">
-0.89
+0.91
 </td>
 </tr>
 <tr>
@@ -522,7 +522,7 @@ PercMinority
 0.16
 </td>
 <td style="text-align:center;">
-0.76
+0.77
 </td>
 <td style="text-align:center;">
 0.54
@@ -539,10 +539,10 @@ PercResidential
 0.11
 </td>
 <td style="text-align:center;">
--0.44
+-0.45
 </td>
 <td style="text-align:center;">
-0.34
+0.36
 </td>
 </tr>
 <tr>
@@ -553,10 +553,10 @@ PercVacant
 4.63
 </td>
 <td style="text-align:center;">
-1.41
+1.40
 </td>
 <td style="text-align:center;">
-3.28
+3.31
 </td>
 <td style="text-align:center;">
 1.00
@@ -572,30 +572,30 @@ PercVacant
   <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">pivot_wider</a></span><span class="op">(</span>names_from <span class="op">=</span> <span class="va">q</span>, values_from <span class="op">=</span> <span class="va">x</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 7 x 3</span>
 <span class="co">#&gt; # Groups:   term [7]</span>
-<span class="co">#&gt;   term                 `0.025` `0.975`</span>
-<span class="co">#&gt;   &lt;chr&gt;                  &lt;dbl&gt;   &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 (Intercept)         -31.9    32.0   </span>
-<span class="co">#&gt; 2 `MedianInc ($1000)`  -0.445   0.0200</span>
-<span class="co">#&gt; 3 PercCommercial        0.0251  1.51  </span>
-<span class="co">#&gt; 4 PercIndustrial       -0.117   2.01  </span>
-<span class="co">#&gt; 5 PercMinority         -0.187   0.449 </span>
-<span class="co">#&gt; 6 PercResidential      -0.275   0.173 </span>
-<span class="co">#&gt; 7 PercVacant            2.70    8.14</span></code></pre></div>
+<span class="co">#&gt;   term                  `0.025` `0.975`</span>
+<span class="co">#&gt;   &lt;chr&gt;                   &lt;dbl&gt;   &lt;dbl&gt;</span>
+<span class="co">#&gt; 1 (Intercept)         -31.5     32.8   </span>
+<span class="co">#&gt; 2 `MedianInc ($1000)`  -0.433    0.0140</span>
+<span class="co">#&gt; 3 PercCommercial        0.00390  1.48  </span>
+<span class="co">#&gt; 4 PercIndustrial       -0.131    1.98  </span>
+<span class="co">#&gt; 5 PercMinority         -0.165    0.468 </span>
+<span class="co">#&gt; 6 PercResidential      -0.273    0.178 </span>
+<span class="co">#&gt; 7 PercVacant            2.53     7.97</span></code></pre></div>
 </div>
 <div id="computing-standard-errors-from-ols-using-multiplier-bootstrap" class="section level2">
 <h2 class="hasAnchor">
 <a href="#computing-standard-errors-from-ols-using-multiplier-bootstrap" class="anchor"></a>Computing standard errors from OLS using Multiplier Bootstrap</h2>
 <p>We now compute the standard errors via <span class="math inline">\(B = 10^{3}\)</span> multiplier bootstrap replications. This can be done through the following function.</p>
 <p>Let’s first get the OLS estimates.</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>coef_mult_boot <span class="ot">&lt;-</span> maar<span class="sc">::</span><span class="fu">comp_multiplier_bootstrap_var</span>(<span class="at">mod_fit =</span> mod_fit, </span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>                                                      <span class="at">B =</span> <span class="dv">1000</span>, </span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>                                                      <span class="at">weights_type =</span> <span class="st">"std_gaussian"</span>)</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>dplyr<span class="sc">::</span><span class="fu">glimpse</span>(coef_mult_boot)</span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Rows: 1,000</span></span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Columns: 2</span></span>
-<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ B &lt;int&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 1…</span></span>
-<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; $ boot_out &lt;list&gt; [&lt;tbl_df[7 x 2]&gt;, &lt;tbl_df[7 x 2]&gt;, &lt;tbl_df[7 x 2]&gt;,</span></span>
-<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="sc">&lt;</span>tbl_df…</span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true"></a>coef_mult_boot &lt;-<span class="st"> </span>maar<span class="op">::</span><span class="kw">comp_multiplier_bootstrap_var</span>(<span class="dt">mod_fit =</span> mod_fit, </span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true"></a>                                                      <span class="dt">B =</span> <span class="dv">1000</span>, </span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true"></a>                                                      <span class="dt">weights_type =</span> <span class="st">"std_gaussian"</span>)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true"></a>dplyr<span class="op">::</span><span class="kw">glimpse</span>(coef_mult_boot)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true"></a><span class="co">#&gt; Rows: 1,000</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true"></a><span class="co">#&gt; Columns: 2</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true"></a><span class="co">#&gt; $ B &lt;int&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 1…</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true"></a><span class="co">#&gt; $ boot_out &lt;list&gt; [&lt;tbl_df[7 x 2]&gt;, &lt;tbl_df[7 x 2]&gt;, &lt;tbl_df[7 x 2]&gt;,</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true"></a><span class="op">&lt;</span>tbl_df…</span></code></pre></div>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># se_mult &lt;- maar::comp_bootstrap_summary(mod_fit = mod_fit, </span>
 <span class="co">#                                        boot_out = coef_mult_boot, </span>
@@ -605,7 +605,7 @@ PercVacant
 <div id="computing-standard-errors-from-ols-using-sandwich-estimator" class="section level2">
 <h2 class="hasAnchor">
 <a href="#computing-standard-errors-from-ols-using-sandwich-estimator" class="anchor"></a>Computing standard errors from OLS using Sandwich Estimator</h2>
-<p>Then we obtain the standard errors using the White sandwich estimator see <span class="citation">White (1980b)</span>.</p>
+<p>Then we obtain the standard errors using the White sandwich estimator see <span class="citation">(White 1980a, @white1980usinglsapproxunknownregfuncs)</span>.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">se_sand</span> <span class="op">&lt;-</span> <span class="fu">maar</span><span class="fu">::</span><span class="fu"><a href="../reference/comp_sandwich_qr_var.html">comp_sandwich_qr_var</a></span><span class="op">(</span>mod_fit <span class="op">=</span> <span class="va">mod_fit</span><span class="op">)</span>
 <span class="va">se_sand</span>
@@ -642,8 +642,12 @@ PercVacant
   <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span>position<span class="op">=</span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/position_dodge.html">position_dodge</a></span><span class="op">(</span>width<span class="op">=</span><span class="fl">0.5</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
   <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">'Regressor'</span>, y <span class="op">=</span> <span class="st">'Estimate'</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">0</span>, linetype <span class="op">=</span> <span class="st">'dashed'</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_linerange.html">geom_errorbar</a></span><span class="op">(</span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>ymin <span class="op">=</span> <span class="va">estimate</span><span class="op">-</span><span class="fl">1.96</span><span class="op">*</span><span class="va">std.error</span>, 
-                                      ymax <span class="op">=</span> <span class="va">estimate</span><span class="op">+</span><span class="fl">1.96</span><span class="op">*</span><span class="va">std.error</span><span class="op">)</span>,
+  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_linerange.html">geom_errorbar</a></span><span class="op">(</span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>ymin <span class="op">=</span> <span class="va">estimate</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">qnorm</a></span><span class="op">(</span>p <span class="op">=</span> <span class="fl">0.975</span>, 
+                                                              mean <span class="op">=</span> <span class="fl">0</span>, 
+                                                              sd <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">*</span><span class="va">std.error</span>, 
+                                      ymax <span class="op">=</span> <span class="va">estimate</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">qnorm</a></span><span class="op">(</span>p <span class="op">=</span> <span class="fl">0.975</span>, 
+                                                              mean <span class="op">=</span> <span class="fl">0</span>, 
+                                                              sd <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">*</span><span class="va">std.error</span><span class="op">)</span>,
                          position <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/position_dodge.html">position_dodge</a></span><span class="op">(</span>width<span class="op">=</span><span class="fl">0.5</span><span class="op">)</span>, 
                          width <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span> <span class="op">+</span> 
   <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>axis.text.x <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>angle <span class="op">=</span> <span class="fl">30</span>, hjust <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
@@ -739,7 +743,7 @@ Term
 0.96
 </td>
 <td style="text-align:center;">
-16.17
+16.21
 </td>
 <td style="text-align:center;">
 0.05
@@ -777,10 +781,10 @@ Term
 0.11
 </td>
 <td style="text-align:center;">
--1.64
+-1.67
 </td>
 <td style="text-align:center;">
-0.91
+0.90
 </td>
 </tr>
 <tr>
@@ -809,10 +813,10 @@ PercVacant
 0.00
 </td>
 <td style="text-align:center;">
-1.41
+1.40
 </td>
 <td style="text-align:center;">
-3.28
+3.31
 </td>
 <td style="text-align:center;">
 1.00
@@ -847,7 +851,7 @@ PercMinority
 0.16
 </td>
 <td style="text-align:center;">
-0.76
+0.77
 </td>
 <td style="text-align:center;">
 0.54
@@ -882,10 +886,10 @@ PercResidential
 0.11
 </td>
 <td style="text-align:center;">
--0.44
+-0.45
 </td>
 <td style="text-align:center;">
-0.34
+0.36
 </td>
 </tr>
 <tr>
@@ -914,10 +918,10 @@ PercCommercial
 0.06
 </td>
 <td style="text-align:center;">
-0.39
+0.37
 </td>
 <td style="text-align:center;">
-1.91
+2.00
 </td>
 <td style="text-align:center;">
 0.95
@@ -949,13 +953,13 @@ PercIndustrial
 0.12
 </td>
 <td style="text-align:center;">
-0.56
+0.54
 </td>
 <td style="text-align:center;">
-1.63
+1.67
 </td>
 <td style="text-align:center;">
-0.89
+0.91
 </td>
 </tr>
 </tbody>
@@ -1002,7 +1006,7 @@ PercIndustrial
                  terms_to_rwgt <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">la_county_df</span><span class="op">)</span><span class="op">[</span><span class="op">-</span><span class="fl">1</span><span class="op">]</span>,
                  B <span class="op">=</span> <span class="fl">300</span><span class="op">)</span>
 <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/glimpse.html">glimpse</a></span><span class="op">(</span><span class="va">coef_rwgt</span><span class="op">)</span></code></pre></div>
-<p>To facilitate the interpretation of the results, we rely on graphical model diagnostics. Here, we show the “focal slope” model diagnostics. The <code>focal_slope</code> plot shows how one coefficient of interests varies under reweighting of each of the regressors. In the plot below we consider the case of “PercVacant.”</p>
+<p>To facilitate the interpretation of the results, we rely on graphical model diagnostics. Here, we show the “focal slope” model diagnostics. The <code>focal_slope</code> plot shows how one coefficient of interests varies under reweighting of each of the regressors. In the plot below we consider the case of “PercVacant”.</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">fs</span> <span class="op">&lt;-</span> <span class="fu">maar</span><span class="fu">::</span><span class="fu"><a href="../reference/focal_slope.html">focal_slope</a></span><span class="op">(</span><span class="va">mod_fit</span>, <span class="va">coef_rwgt</span>, <span class="st">'PercVacant'</span><span class="op">)</span>
 <span class="va">fs</span></code></pre></div>
@@ -1010,18 +1014,18 @@ PercIndustrial
 <div id="references" class="section level2 unnumbered">
 <h2 class="hasAnchor">
 <a href="#references" class="anchor"></a>References</h2>
-<div id="refs" class="references csl-bib-body hanging-indent">
-<div id="ref-buja2019modelsasapproximationspart1" class="csl-entry">
-Buja, Andreas, Lawrence Brown, Richard Berk, Edward George, Emil Pitkin, Mikhail Traskin, Kai Zhang, and Linda Zhao. 2019. <span>“Models as Approximations <span>I</span>: Consequences Illustrated with Linear Regression.”</span> <em>Statist. Sci.</em> 34 (4): 523–44. <a href="https://doi.org/10.1214/18-STS693">https://doi.org/10.1214/18-STS693</a>.
+<div id="refs" class="references hanging-indent">
+<div id="ref-buja2019modelsasapproximationspart1">
+<p>Buja, Andreas, Lawrence Brown, Richard Berk, Edward George, Emil Pitkin, Mikhail Traskin, Kai Zhang, and Linda Zhao. 2019. “Models as Approximations I: Consequences Illustrated with Linear Regression.” <em>Statist. Sci.</em> 34 (4): 523–44. <a href="https://doi.org/10.1214/18-STS693">https://doi.org/10.1214/18-STS693</a>.</p>
 </div>
-<div id="ref-white1980heteroskedasticconsistentcovest" class="csl-entry">
-White, Halbert. 1980a. <span>“A Heteroskedasticity-Consistent Covariance Matrix Estimator and a Direct Test for Heteroskedasticity.”</span> <em>Econometrica</em> 48 (4): 817–38. <a href="https://doi.org/10.2307/1912934">https://doi.org/10.2307/1912934</a>.
+<div id="ref-white1980heteroskedasticconsistentcovest">
+<p>White, Halbert. 1980a. “A Heteroskedasticity-Consistent Covariance Matrix Estimator and a Direct Test for Heteroskedasticity.” <em>Econometrica</em> 48 (4): 817–38. <a href="https://doi.org/10.2307/1912934">https://doi.org/10.2307/1912934</a>.</p>
 </div>
-<div id="ref-white1980usinglsapproxunknownregfuncs" class="csl-entry">
-———. 1980b. <span>“Using Least Squares to Approximate Unknown Regression Functions.”</span> <em>Internat. Econom. Rev.</em> 21 (1): 149–70. <a href="https://doi.org/10.2307/2526245">https://doi.org/10.2307/2526245</a>.
+<div id="ref-white1980usinglsapproxunknownregfuncs">
+<p>———. 1980b. “Using Least Squares to Approximate Unknown Regression Functions.” <em>Internat. Econom. Rev.</em> 21 (1): 149–70. <a href="https://doi.org/10.2307/2526245">https://doi.org/10.2307/2526245</a>.</p>
 </div>
-<div id="ref-wickham2014tidydata" class="csl-entry">
-Wickham, Hadley. 2014. <span>“Tidy Data.”</span> <em>Journal of Statistical Software</em> 59 (10). <a href="https://doi.org/10.18637/jss.v059.i10">https://doi.org/10.18637/jss.v059.i10</a>.
+<div id="ref-wickham2014tidydata">
+<p>Wickham, Hadley. 2014. “Tidy Data.” <em>Journal of Statistical Software</em> 59 (10). <a href="https://doi.org/10.18637/jss.v059.i10">https://doi.org/10.18637/jss.v059.i10</a>.</p>
 </div>
 </div>
 </div>

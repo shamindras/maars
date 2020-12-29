@@ -7,9 +7,9 @@
 focal_rwgt_var(mod_fit, coef_rwgt, term_chosen)
 }
 \arguments{
-\item{mod_fit}{An object of class \code{lm} or \code{glm} to fit on the data.
+\item{mod_fit}{An object of class \code{\link[stats]{lm}} or \code{\link[stats]{glm}} to fit on the data.
 This object should contain the formula, the data, and, in case of
-\code{glm}, the family.}
+\code{\link[stats]{glm}}, the family.}
 
 \item{coef_rwgt}{A tibble containing the number of the bootstrapped data set
 (\code{b}), the size of each bootstrapped data set (\code{m}), the value of

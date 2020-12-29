@@ -291,8 +291,12 @@ comp_se <- se_sand %>%
   ggplot2::geom_point(position=ggplot2::position_dodge(width=0.5)) + 
   ggplot2::labs(x = 'Regressor', y = 'Estimate') +
   ggplot2::geom_hline(yintercept = 0, linetype = 'dashed') +
-  ggplot2::geom_errorbar(ggplot2::aes(ymin = estimate-1.96*std.error, 
-                                      ymax = estimate+1.96*std.error),
+  ggplot2::geom_errorbar(ggplot2::aes(ymin = estimate - qnorm(p = 0.975, 
+                                                              mean = 0, 
+                                                              sd = 1)*std.error, 
+                                      ymax = estimate + qnorm(p = 0.975, 
+                                                              mean = 0, 
+                                                              sd = 1)*std.error),
                          position = ggplot2::position_dodge(width=0.5), 
                          width = 0.1) + 
   ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 30, hjust = 1)) +

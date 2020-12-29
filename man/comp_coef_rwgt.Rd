@@ -16,9 +16,9 @@ comp_coef_rwgt(
 )
 }
 \arguments{
-\item{mod_fit}{An object of class \code{lm} or \code{glm} to fit on the data.
+\item{mod_fit}{An object of class \code{\link[stats]{lm}} or \code{\link[stats]{glm}} to fit on the data.
 This object should contain the formula, the data, and, in case of
-\code{glm}, the family.}
+\code{\link[stats]{glm}}, the family.}
 
 \item{terms_to_rwgt}{A vector of characters corresponding to the names of the
 regressors to be reweighted.}
