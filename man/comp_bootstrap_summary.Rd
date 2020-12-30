@@ -2,7 +2,7 @@
 % Please edit documentation in R/ols-boot-summary.R
 \name{comp_bootstrap_summary}
 \alias{comp_bootstrap_summary}
-\title{Create a bootstrap summary table}
+\title{Create an empirical or multiplier bootstrap summary table}
 \usage{
 comp_bootstrap_summary(mod_fit, boot_out, boot_type)
 }
@@ -11,20 +11,20 @@ comp_bootstrap_summary(mod_fit, boot_out, boot_type)
 
 \item{boot_out}{A tibble of the bootstrap calculations from either
 \code{\link{comp_empirical_bootstrap}} or
-\code{\link{comp_multiplier_bootstrap_var}}, respectively}
+\code{\link{comp_multiplier_bootstrap_var}}, respectively.}
 
 \item{boot_type}{A character specifying the bootstrap type. Must be "emp"
-for output from \code{\link{comp_empirical_bootstrap}} or "mult" for output
-from \code{\link{comp_multiplier_bootstrap_var}}, respectively}
+for output from \code{\link{comp_empirical_bootstrap}} or "mult"
+for output from \code{\link{comp_multiplier_bootstrap_var}}, respectively.}
 }
 \value{
-A summary statistics tibble for the bootstrap input
+A summary statistics tibble for the bootstrap input.
 }
 \description{
-Create an OLS bootstrap summary table for empirical bootstrap output or
-multiplier bootstrap output as generated from
+\code{comp_bootstrap_summary} creates an OLS bootstrap summary table for
+empirical bootstrap output or multiplier bootstrap output as generated from
 \code{\link{comp_empirical_bootstrap}} or
-\code{\link{comp_multiplier_bootstrap_var}}, respectively
+\code{\link{comp_multiplier_bootstrap_var}}, respectively.
 }
 \examples{
 \dontrun{

@@ -7,7 +7,7 @@
 comp_sandwich_qr_var(mod_fit)
 }
 \arguments{
-\item{mod_fit}{A \code{stats::lm} (OLS) object.}
+\item{mod_fit}{A \code{\link[stats]{lm}} (OLS) object.}
 }
 \value{
 A tibble containing the sandwich estimator of variance for OLS
@@ -15,17 +15,17 @@ regression.
 }
 \description{
 Compute the sandwich estimator of standard errors for
-ordinary least squares (OLS) regression, \insertCite{@see @white1980usinglsapproxunknownregfuncs and @white1980heteroskedasticconsistentcovest;textual}{maar}. For
-more details
+ordinary least squares (OLS) regression, \insertCite{@see @white1980usinglsapproxunknownregfuncs and @white1980heteroskedasticconsistentcovest;textual}{maar}. For more details
 \insertCite{@see also @buja2019modelsasapproximationspart1 and @buja2019modelsasapproximationspart2;textual}{maar}.
 }
 \details{
 The function computes the sandwich estimator for the OLS regression
-passed in \code{mod_fit} and returns a tibble with summary information about
-the components of the model based on the sandiwch standard errors.
+passed in \code{mod_fit} and returns a tibble with summary information
+about the components of the model based on the sandwich standard errors.
 }
 \examples{
 \dontrun{
+set.seed(674748)
 n <- 1e5
 X <- stats::rnorm(n, 0, 1)
 y <- 2 + X * 1 + stats::rnorm(n, 0, 10)

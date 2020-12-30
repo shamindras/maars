@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Create a bootstrap summary table — comp_bootstrap_summary • maar</title>
+<title>Create an empirical or multiplier bootstrap summary table — comp_bootstrap_summary • maar</title>
 
 
 <!-- jquery -->
@@ -39,11 +39,11 @@
 
 
 
-<meta property="og:title" content="Create a bootstrap summary table — comp_bootstrap_summary" />
-<meta property="og:description" content="Create an OLS bootstrap summary table for empirical bootstrap output or
-multiplier bootstrap output as generated from
+<meta property="og:title" content="Create an empirical or multiplier bootstrap summary table — comp_bootstrap_summary" />
+<meta property="og:description" content="comp_bootstrap_summary creates an OLS bootstrap summary table for
+empirical bootstrap output or multiplier bootstrap output as generated from
 comp_empirical_bootstrap or
-comp_multiplier_bootstrap_var, respectively" />
+comp_multiplier_bootstrap_var, respectively." />
 
 
 
@@ -121,16 +121,16 @@ comp_multiplier_bootstrap_var, respectively" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Create a bootstrap summary table</h1>
+    <h1>Create an empirical or multiplier bootstrap summary table</h1>
     
     <div class="hidden name"><code>comp_bootstrap_summary.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Create an OLS bootstrap summary table for empirical bootstrap output or
-multiplier bootstrap output as generated from
+    <p><code>comp_bootstrap_summary</code> creates an OLS bootstrap summary table for
+empirical bootstrap output or multiplier bootstrap output as generated from
 <code><a href='comp_empirical_bootstrap.html'>comp_empirical_bootstrap</a></code> or
-<code><a href='comp_multiplier_bootstrap_var.html'>comp_multiplier_bootstrap_var</a></code>, respectively</p>
+<code><a href='comp_multiplier_bootstrap_var.html'>comp_multiplier_bootstrap_var</a></code>, respectively.</p>
     </div>
 
     <pre class="usage"><span class='fu'>comp_bootstrap_summary</span><span class='op'>(</span><span class='va'>mod_fit</span>, <span class='va'>boot_out</span>, <span class='va'>boot_type</span><span class='op'>)</span></pre>
@@ -146,19 +146,19 @@ multiplier bootstrap output as generated from
       <th>boot_out</th>
       <td><p>A tibble of the bootstrap calculations from either
 <code><a href='comp_empirical_bootstrap.html'>comp_empirical_bootstrap</a></code> or
-<code><a href='comp_multiplier_bootstrap_var.html'>comp_multiplier_bootstrap_var</a></code>, respectively</p></td>
+<code><a href='comp_multiplier_bootstrap_var.html'>comp_multiplier_bootstrap_var</a></code>, respectively.</p></td>
     </tr>
     <tr>
       <th>boot_type</th>
       <td><p>A character specifying the bootstrap type. Must be "emp"
-for output from <code><a href='comp_empirical_bootstrap.html'>comp_empirical_bootstrap</a></code> or "mult" for output
-from <code><a href='comp_multiplier_bootstrap_var.html'>comp_multiplier_bootstrap_var</a></code>, respectively</p></td>
+for output from <code><a href='comp_empirical_bootstrap.html'>comp_empirical_bootstrap</a></code> or "mult"
+for output from <code><a href='comp_multiplier_bootstrap_var.html'>comp_multiplier_bootstrap_var</a></code>, respectively.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A summary statistics tibble for the bootstrap input</p>
+    <p>A summary statistics tibble for the bootstrap input.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Generate Different Types of Multiplier Bootstrap Weights — gen_multiplier_bootstrap_weights • maar</title>
+<title>Generate Different Types of multiplier bootstrap weights — gen_multiplier_bootstrap_weights • maar</title>
 
 
 <!-- jquery -->
@@ -39,11 +39,11 @@
 
 
 
-<meta property="og:title" content="Generate Different Types of Multiplier Bootstrap Weights — gen_multiplier_bootstrap_weights" />
-<meta property="og:description" content="A Helper function for comp_multiplier_bootstrap_var
-to generate different types of Multiplier Bootstrap
-Weights. This section is inspired by the weighttype option in the
-Stata boottest package." />
+<meta property="og:title" content="Generate Different Types of multiplier bootstrap weights — gen_multiplier_bootstrap_weights" />
+<meta property="og:description" content="gen_multiplier_bootstrap_weights is a Helper function for
+comp_multiplier_bootstrap_var to generate different types
+of multiplier bootstrap weights. This section is inspired by the
+weighttype option in the Stata boottest package." />
 
 
 
@@ -121,16 +121,16 @@ Stata boottest package." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Generate Different Types of Multiplier Bootstrap Weights</h1>
+    <h1>Generate Different Types of multiplier bootstrap weights</h1>
     
     <div class="hidden name"><code>gen_multiplier_bootstrap_weights.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>A Helper function for <code><a href='comp_multiplier_bootstrap_var.html'>comp_multiplier_bootstrap_var</a></code>
-to generate different types of Multiplier Bootstrap
-Weights. This section is inspired by the <code>weighttype</code> option in the
-<code>Stata boottest</code> package.</p>
+    <p><code>gen_multiplier_bootstrap_weights</code> is a Helper function for
+<code><a href='comp_multiplier_bootstrap_var.html'>comp_multiplier_bootstrap_var</a></code> to generate different types
+of multiplier bootstrap weights. This section is inspired by the
+<code>weighttype</code> option in the Stata <code>boottest</code> package.</p>
     </div>
 
     <pre class="usage"><span class='fu'>gen_multiplier_bootstrap_weights</span><span class='op'>(</span><span class='va'>n</span>, <span class='va'>weights_type</span><span class='op'>)</span></pre>
@@ -140,35 +140,37 @@ Weights. This section is inspired by the <code>weighttype</code> option in the
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>n</th>
-      <td><p>The number of random Multiplier bootstrap weights to generate</p></td>
+      <td><p>The number of random multiplier bootstrap weights to generate.</p></td>
     </tr>
     <tr>
       <th>weights_type</th>
-      <td><p>The type of Multiplier bootstrap weights to generate.
+      <td><p>The type of multiplier bootstrap weights to generate.
 Based on the <code>weighttype</code> option in the <code>Stata boottest</code> package,
-this can only take the following five prespecified values
-<code>"rademacher", "mammen", "webb", "std_gaussian", "gamma"</code>. A brief
-description of each type is noted as below. The <code>"rademacher"</code> weights
-are sampled from the two point Rademacher distribution which has takes values
-\(\{1, 1\}\), with equal probability. The <code>"mammen"</code> weights
-are sampled from the two point Mammen distribution which has takes values
-\(\{\phi, 1 - \phi\}\), with probabilities
-\(\{\frac{\phi}{\sqrt{5}}, 1 - \frac{\phi}{\sqrt{5}}\}\), respectively. The
-<code>"webb"</code> weights are sampled from the six point Webb distribution
-which has takes values \(\{\pm \sqrt{\frac{3}{2}}, \pm \sqrt{\frac{1}{2}}, \pm 1 \}\),
+this can only take the following five pre-specified values
+<code>"rademacher", "mammen", "webb", "std_gaussian", "gamma"</code>.
+A brief description of each type is as follows. The <code>"rademacher"</code>
+weights are sampled from the two point Rademacher distribution which
+takes values \(\{1, 1\}\), with equal probability. The <code>"mammen"</code>
+weights are sampled from the two point Mammen distribution which has takes
+values \(\{\phi, 1 - \phi\}\), with probabilities
+\(\{\frac{\phi}{\sqrt{5}}, 1 - \frac{\phi}{\sqrt{5}}\}\), respectively.
+The <code>"webb"</code> weights are sampled from the six point Webb distribution
+which has takes values
+\(\{\pm \sqrt{\frac{3}{2}}, \pm \sqrt{\frac{1}{2}}, \pm 1 \}\),
 with equal probability. The <code>"std_gaussian"</code> weights are sampled from
 the standard Gaussian (normal) distribution with mean = \(0\),
-and variance = \(1\). Finally, the <code>"gamma"</code> weights are sampled from
-the Gamma distribution with shape parameter = \(4\), and scale parameter = \(1\).
-For more details on these weight types see see Roodman et al. (2019)
- for more details.</p></td>
+and variance = \(1\). Finally, the <code>"gamma"</code> weights are sampled
+from the Gamma distribution with shape parameter = \(4\), and
+scale parameter = \(1\). For more details on these weight types see
+see Roodman et al. (2019)
+.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A numeric vector of n (sampled with replacement) random Multiplier
-bootstrap weights based on the specified Multiplier weights type</p>
+    <p>A numeric vector of n (sampled with replacement) random multiplier
+bootstrap weights based on the specified multiplier weights type.</p>
     <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
 
     <p>Roodman D, Nielsen MØ, MacKinnon JG, Webb MD (2019).
@@ -177,10 +179,11 @@ bootstrap weights based on the specified Multiplier weights type</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='co'># Number of Multiplier weights to generate</span>
+<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>824908</span><span class='op'>)</span>
+<span class='co'># Number of multiplier weights to generate</span>
 <span class='va'>n</span> <span class='op'>&lt;-</span> <span class='fl'>1000</span>
 
-<span class='co'># Generate the different type of Multiplier Weights</span>
+<span class='co'># Generate the different type of multiplier weights</span>
 <span class='va'>rademacher_w</span> <span class='op'>&lt;-</span> <span class='fu'>gen_multiplier_bootstrap_weights</span><span class='op'>(</span>n <span class='op'>=</span> <span class='va'>n</span>,
                                                  weights_type <span class='op'>=</span> <span class='st'>"rademacher"</span><span class='op'>)</span>
 <span class='va'>mammen_w</span> <span class='op'>&lt;-</span> <span class='fu'>gen_multiplier_bootstrap_weights</span><span class='op'>(</span>n <span class='op'>=</span> <span class='va'>n</span>, weights_type <span class='op'>=</span> <span class='st'>"mammen"</span><span class='op'>)</span>

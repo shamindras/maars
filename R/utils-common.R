@@ -7,16 +7,16 @@
 #' as the default values.
 #'
 #' @param ggplot_obj A \code{\link[ggplot2]{ggplot2}} object
-#' @param axis_text_size A positive integer to define the the size of the x and
-#'   y axis text in our \code{\link[ggplot2]{ggplot2}} object
-#' @param axis_title_size A positive integer to define the the size of the x and
-#'   y axis text in our \code{\link[ggplot2]{ggplot2}} object
-#' @param strip_text_x_size A positive integer to define the the size of the x and
-#'   y axis text in our \code{\link[ggplot2]{ggplot2}} object
-#' @param legend_text_size A positive integer to define the the size of the x and
-#'   y axis text in our \code{\link[ggplot2]{ggplot2}} object
-#' @param legend_title_size A positive integer to define the the size of the x and
-#'   y axis text in our \code{\link[ggplot2]{ggplot2}} object
+#' @param axis_text_size A positive integer to define the the size of the
+#'   x and y axis text in the \code{\link[ggplot2]{ggplot2}} object.
+#' @param axis_title_size A positive integer to define the the size of the
+#'   x and y axis title text in the \code{\link[ggplot2]{ggplot2}} object.
+#' @param strip_text_x_size A positive integer to define the the size of the
+#'   facet labels text in the \code{\link[ggplot2]{ggplot2}} object.
+#' @param legend_text_size A positive integer to define the the size of the
+#'   legend text in the \code{\link[ggplot2]{ggplot2}} object.
+#' @param legend_title_size A positive integer to define the the size of the
+#'   legend title text in the \code{\link[ggplot2]{ggplot2}} object.
 #' @param legend_position A character value the position of legends
 #' ("none", "left", "right", "bottom", "top", or two-element numeric vector)
 #'

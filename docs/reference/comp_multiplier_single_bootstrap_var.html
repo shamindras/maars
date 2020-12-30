@@ -6,7 +6,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Calculate a single replication of the multiplier bootstrap for an OLS fitted dataset — comp_multiplier_single_bootstrap_var • maar</title>
+<title>Calculate a single replication of the multiplier bootstrap for an OLS
+fitted dataset — comp_multiplier_single_bootstrap_var • maar</title>
 
 
 <!-- jquery -->
@@ -39,10 +40,13 @@
 
 
 
-<meta property="og:title" content="Calculate a single replication of the multiplier bootstrap for an OLS fitted dataset — comp_multiplier_single_bootstrap_var" />
-<meta property="og:description" content="Calculate a single replication of the multiplier bootstrap for an OLS fitted dataset based on an lm fitted object in R.
+<meta property="og:title" content="Calculate a single replication of the multiplier bootstrap for an OLS
+fitted dataset — comp_multiplier_single_bootstrap_var" />
+<meta property="og:description" content="comp_multiplier_single_bootstrap_var calculates a single
+replication of the multiplier bootstrap for an OLS fitted dataset
+based on an lm fitted object in R.
 This is given by the following expression:
-$$\frac{1}{n}\sum_{i=1}^{n} e_{i}\widehat{J}^{-1}X_{i}(Y_{i}-X_{i}^{T} \widehat{\beta})$$" />
+$$\frac{1}{n}\sum_{i=1}^{n} e_{i}\widehat{J}^{-1}X_{i}(Y_{i}-X_{i}^{T} \widehat{\beta})$$." />
 
 
 
@@ -120,15 +124,18 @@ $$\frac{1}{n}\sum_{i=1}^{n} e_{i}\widehat{J}^{-1}X_{i}(Y_{i}-X_{i}^{T} \widehat{
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Calculate a single replication of the multiplier bootstrap for an OLS fitted dataset</h1>
+    <h1>Calculate a single replication of the multiplier bootstrap for an OLS
+fitted dataset</h1>
     
     <div class="hidden name"><code>comp_multiplier_single_bootstrap_var.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Calculate a single replication of the multiplier bootstrap for an OLS fitted dataset based on an <code>lm</code> fitted object in <code>R</code>.
+    <p><code>comp_multiplier_single_bootstrap_var</code> calculates a single
+replication of the multiplier bootstrap for an OLS fitted dataset
+based on an <code><a href='https://rdrr.io/r/stats/lm.html'>lm</a></code> fitted object in <code>R</code>.
 This is given by the following expression:
-$$\frac{1}{n}\sum_{i=1}^{n} e_{i}\widehat{J}^{-1}X_{i}(Y_{i}-X_{i}^{T} \widehat{\beta})$$</p>
+$$\frac{1}{n}\sum_{i=1}^{n} e_{i}\widehat{J}^{-1}X_{i}(Y_{i}-X_{i}^{T} \widehat{\beta})$$.</p>
     </div>
 
     <pre class="usage"><span class='fu'>comp_multiplier_single_bootstrap_var</span><span class='op'>(</span><span class='va'>n</span>, <span class='va'>J_inv_X_res</span>, <span class='va'>e</span><span class='op'>)</span></pre>
@@ -145,18 +152,19 @@ observations and \(d\) features (including an intercept)</p></td>
     <tr>
       <th>J_inv_X_res</th>
       <td><p>A \(d \times \d\) matrix given by the
-expression \(\sum_{i=1}^{n}\widehat{J}^{-1}X_{i}(Y_{i}-X_{i}^{T} \widehat{\beta})\)</p></td>
+expression
+\(\sum_{i=1}^{n}\widehat{J}^{-1}X_{i}(Y_{i}-X_{i}^{T} \widehat{\beta})\).</p></td>
     </tr>
     <tr>
       <th>e</th>
-      <td><p>Multiplier bootstrap weights. This is an \(n \times 1\)
-vector of mean zero, variance 1 random variables</p></td>
+      <td><p>multiplier bootstrap weights. This is an \(n \times 1\)
+vector of mean zero, variance 1 random variables.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A tibble of the bootstrap standard errors</p>
+    <p>A tibble of the bootstrap standard errors.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
