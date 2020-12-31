@@ -43,6 +43,7 @@ We will explicitly load the `tidyverse` set of packages to get access to the
 
 ``` {r load_pkgs}
 library(magrittr)
+set.seed(25422267)
 ```
 
 For all other functions we will refer to them explicitly using the
