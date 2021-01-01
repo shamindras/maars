@@ -18,7 +18,7 @@ comp_multiplier_single_bootstrap_purrr_var <- function(n, J_inv_X_res, e) {
 #' This is the wrapper for the purrr implementation of the equivalent
 #' \code{\link{multiplier_single_bootstrap}} function. It should be slower
 #' than the matrix implementation \code{\link{comp_multiplier_bootstrap_var}}
-comp_multiplier_bootstrap_purrr_var <- function(mod_fit, B = 100) {
+comp_multiplier_bootstrap_purrr_var <- function(mod_fit, B = 100, weights_type) {
     # Get OLS related output
     betas <- stats::coef(mod_fit)
     J_inv <- stats::summary.lm(mod_fit)$cov.unscaled
@@ -29,7 +29,12 @@ comp_multiplier_bootstrap_purrr_var <- function(mod_fit, B = 100) {
         purrr::map(~ t(J_inv %*% X[.x, ] * res[.x]))
 
     # Multiplier weights (mean 0, variance = 1)
-    e <- matrix(data = rnorm(n = B * n, mean = 0, sd = 1), nrow = B, ncol = n)
+    e <- matrix(data =
+                    maar::gen_multiplier_bootstrap_weights(n = B * n,
+                                                           weights_type = weights_type),
+                nrow = B,
+                ncol = n)
+    # e <- matrix(data = rnorm(n = B * n, mean = 0, sd = 1), nrow = B, ncol = n)
 
     # Multiplier Bootstrap replications, B times
     boot_out <- 1:B %>%

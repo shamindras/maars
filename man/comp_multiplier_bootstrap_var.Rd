@@ -4,21 +4,28 @@
 \alias{comp_multiplier_bootstrap_var}
 \title{A wrapper to replicate the multiplier bootstrap calculation for an OLS fitted dataset}
 \usage{
-comp_multiplier_bootstrap_var(mod_fit, B = 100)
+comp_multiplier_bootstrap_var(mod_fit, B, weights_type)
 }
 \arguments{
-\item{mod_fit}{An lm (OLS) object}
+\item{mod_fit}{An \code{\link[stats]{lm}} (OLS) object.}
 
-\item{B}{The number of bootstrap replications}
+\item{B}{The number of bootstrap replications.}
+
+\item{weights_type}{The type of multiplier bootstrap weights to generate.
+Based on the \code{weighttype} option in the Stata \code{boottest} package,
+this can only take the following five prespecified values
+\code{"rademacher", "mammen", "webb", "std_gaussian", "gamma"}.
+For more details see the documentation for
+\code{\link{gen_multiplier_bootstrap_weights}}.}
 }
 \value{
-A tibble of the bootstrap calculations
+A tibble of the bootstrap calculations.
 }
 \description{
 The multiplier bootstrap calculated for a single replication
 for an OLS fitted dataset is given by the following expression:
 \deqn{\frac{1}{n}\sum_{i=1}^{n} e_{i}\widehat{J}^{-1}X_{i}(Y_{i}-X_{i}^{T} \widehat{\beta})}
-This wrapper function calls on the helper function \code{\link{comp_multiplier_single_bootstrap_var}}. See it's documentation
+This wrapper function calls on the helper function \code{\link{comp_multiplier_single_bootstrap_var}}. See its documentation
 for how a single instance is run.
 }
 \examples{

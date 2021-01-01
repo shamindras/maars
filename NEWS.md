@@ -1,3 +1,50 @@
+# maar 0.4.0
+
+* Include `.gitattributes` file
+* We need to `set.seed` in all our vignette chunks. This is for 
+reproducibility, but to also avoid merge conflicts every time we rebuild the 
+package using `make build_package`
+* **roxygen2:** Rewrite documentation of the functions making the style more 
+consistent across functions. For example, we could adopt the style used for 
+the [quantile function](https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/quantile)
+* **roxygen2:** insert dots at end of sentences in Roxygen. 
+[See below](https://github.com/shamindras/maar/issues/24?fbclid=IwAR0JsSrXZGUpYyuizsTFIL8Q0dUvOy_WVbUWBuvZlygg4rmjuo0rU5xNGvM#issuecomment-751913442)
+* **roxygen2:** use `@details` responsibly. 
+[See below](https://github.com/shamindras/maar/issues/24?fbclid=IwAR0JsSrXZGUpYyuizsTFIL8Q0dUvOy_WVbUWBuvZlygg4rmjuo0rU5xNGvM#issuecomment-751913442)
+* **roxygen2:** replace `var_name` with `\code{var_name}`. 
+[See below](https://github.com/shamindras/maar/issues/24?fbclid=IwAR0JsSrXZGUpYyuizsTFIL8Q0dUvOy_WVbUWBuvZlygg4rmjuo0rU5xNGvM#issuecomment-751913442)
+* **ggplot2:** Replace hardcoded values `1.96` with appropriate outputs 
+from statistics functions, in `vignettes`
+* Check the order in which we have our functions written in each file
+* **ggplot2:** We should break up our `ggplot2` code into separate plots 
+and then combine them using `+`. This will make it much easier to manage the 
+code and make it readable
+* **ggplot2:** Need to be consistent with our `ggplot2` themes used in 
+our plots. 
+[See ggplot2 theme wrapper below](https://github.com/shamindras/maar/issues/24?fbclid=IwAR0JsSrXZGUpYyuizsTFIL8Q0dUvOy_WVbUWBuvZlygg4rmjuo0rU5xNGvM#issuecomment-751917061)
+* **ggplot2:** Need to be consistent with the `ggplot2` font and 
+other settings used in our plots. As a preference we should only 
+use `labs` for example. 
+[See ggplot2 theme wrapper below](https://github.com/shamindras/maar/issues/24?fbclid=IwAR0JsSrXZGUpYyuizsTFIL8Q0dUvOy_WVbUWBuvZlygg4rmjuo0rU5xNGvM#issuecomment-751917061)
+* **ggplot2:** Add `names_prefix = "q"` to `pivot_wider` for 
+the `ggplot2` code i.e. to avoid **.data$`0.275`** issue. Note 
+the `"q"` here stands for `quantile`.
+* Create a `utils-common.R` similar to the 
+[selectiveInference package](https://github.com/selective-inference/R-software/blob/master/selectiveInference/R/funs.common.R#L87-L123), ensure that common functions are put in this file
+* clean up the `tests` directory i.e. delete unused `R` test files
+* clean up the `R` directory i.e. delete unused `R` files
+* We should add `#' @importFrom rlang .data` in all our functions under `#' @export`
+* Fix `R CMD CHECK` error caused in `vignette`, namely [this one](https://github.com/shamindras/maar/pull/21/checks?check_run_id=1555124560)
+* Add `stringr` to `DESCRIPTION`
+* Change `multiplier` bootstrap weights to be applied inside `purrr` e.g using `purrr::map2` rather than generating the `e` matrix up front. Conduct benchmarks of this to test speed, so that current version still has it's place in benchmarking
+* For `vignette` should `knitr::kable` package instead of `DT` package and just need to ensure Table 1 is correctly populated
+* For `vignette` we just need to ensure Table 1 is correctly formatted i.e. use `LaTeX` for headings, consistent width, and captions. See [here](https://bookdown.org/yihui/rmarkdown-cookbook/kable.html#escape-special-characters) for the use of LaTeX in `knitr::kable` heading rows
+* Add `Rmd` line wrap hooks similar to [Yihui Xie's approach](https://github.com/yihui/knitr-examples/blob/master/077-wrap-output.Rmd#L14-L27) and the [oxforddown approach](https://github.com/ulyngs/oxforddown/blob/master/index.Rmd#L69-L72)
+* Add doc for `weight_type` in `multiplier` bootstrap
+* Remove default value of `B` in `multiplier` variance
+* Allow for 5 types of weights for multiplier bootstrap i.e. `std_gaussian`, `rademacher`, and `mammen`, `webb`, `gamma`
+* Update credits in [Licence](https://github.com/shamindras/maar/blob/main/LICENSE) and [License.md](https://github.com/shamindras/maar/blob/main/LICENSE.md)
+
 # maar 0.3.0
 
 * Implement an efficient `multiplier` bootstrap for `lm` standard errors

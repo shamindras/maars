@@ -1,20 +1,121 @@
-#' Calculate a single replication of the multiplier bootstrap for an OLS fitted dataset
+#' Generate Different Types of multiplier bootstrap weights
 #'
-#' Calculate a single replication of the multiplier bootstrap for an OLS fitted dataset based on an \code{lm} fitted object in \code{R}.
-#' This is given by the following expression:
-#' \deqn{\frac{1}{n}\sum_{i=1}^{n} e_{i}\widehat{J}^{-1}X_{i}(Y_{i}-X_{i}^{T} \widehat{\beta})}
+#' \code{gen_multiplier_bootstrap_weights} is a Helper function for
+#' \code{\link{comp_multiplier_bootstrap_var}} to generate different types
+#' of multiplier bootstrap weights. This section is inspired by the
+#' \code{weighttype} option in the Stata \code{boottest} package.
 #'
-#' @param n Number of observations (rows) of the underlying dataset.
-#' In the given notation we assume our dataset has \eqn{n}
-#' observations and \eqn{d} features (including an intercept)
-#' @param J_inv_X_res A \eqn{d \times \d} matrix given by the
-#' expression \eqn{\sum_{i=1}^{n}\widehat{J}^{-1}X_{i}(Y_{i}-X_{i}^{T} \widehat{\beta})}
-#' @param e Multiplier bootstrap weights. This is an \eqn{n \times 1}
-#' vector of mean zero, variance 1 random variables
+#' @param n The number of random multiplier bootstrap weights to generate.
+#' @param weights_type The type of multiplier bootstrap weights to generate.
+#'   Based on the \code{weighttype} option in the \code{Stata boottest} package,
+#'   this can only take the following five pre-specified values
+#'   \code{"rademacher", "mammen", "webb", "std_gaussian", "gamma"}.
+#'   A brief description of each type is as follows. The \code{"rademacher"}
+#'   weights are sampled from the two point Rademacher distribution which
+#'   takes values \eqn{\{1, 1\}}, with equal probability. The \code{"mammen"}
+#'   weights are sampled from the two point Mammen distribution which has takes
+#'   values \eqn{\{\phi, 1 - \phi\}}, with probabilities
+#'   \eqn{\{\frac{\phi}{\sqrt{5}}, 1 - \frac{\phi}{\sqrt{5}}\}}, respectively.
+#'   The \code{"webb"} weights are sampled from the six point Webb distribution
+#'   which has takes values
+#'   \eqn{\{\pm \sqrt{\frac{3}{2}}, \pm \sqrt{\frac{1}{2}}, \pm 1 \}},
+#'   with equal probability. The \code{"std_gaussian"} weights are sampled from
+#'   the standard Gaussian (normal) distribution with mean = \eqn{0},
+#'   and variance = \eqn{1}. Finally, the \code{"gamma"} weights are sampled
+#'   from the Gamma distribution with shape parameter = \eqn{4}, and
+#'   scale parameter = \eqn{1}. For more details on these weight types see
+#'   \insertCite{@see @roodman2019fastwildinferencestataboottest;textual}{maar}.
 #'
-#' @return A tibble of the bootstrap standard errors
+#' @return A numeric vector of n (sampled with replacement) random multiplier
+#'   bootstrap weights based on the specified multiplier weights type.
 #'
 #' @export
+#'
+#' @importFrom Rdpack reprompt
+#' @importFrom rlang .data
+#'
+#' @references \insertAllCited
+#'
+#' @examples
+#' \dontrun{
+#' set.seed(824908)
+#' # Number of multiplier weights to generate
+#' n <- 1000
+#'
+#' # Generate the different type of multiplier weights
+#' rademacher_w <- gen_multiplier_bootstrap_weights(n = n,
+#'                                                  weights_type = "rademacher")
+#' mammen_w <- gen_multiplier_bootstrap_weights(n = n, weights_type = "mammen")
+#' webb_w <- gen_multiplier_bootstrap_weights(n = n, weights_type = "webb")
+#' std_gaussian_w <- gen_multiplier_bootstrap_weights(n = n,
+#'                                                    weights_type = "std_gaussian")
+#' gamma_w <- gen_multiplier_bootstrap_weights(n = n, weights_type = "gamma")
+#' }
+gen_multiplier_bootstrap_weights <- function(n, weights_type) {
+  assertthat::assert_that(n == as.integer(n),
+                          msg = glue::glue("n must be an integer"))
+  assertthat::assert_that(n > 0,
+                          msg = glue::glue("n must be positive"))
+  assertthat::assert_that(length(weights_type) == 1,
+                          msg = glue::glue("weights_type must only be a single value"))
+  assertthat::assert_that(weights_type %in% c("rademacher", "mammen",
+                                              "webb", "std_gaussian", "gamma"),
+                          msg = glue::glue("weights_type must only be one of the following types c('rademacher', 'mammen', 'webb', 'std_gaussian', 'gamma')"))
+
+  if (weights_type == "rademacher") {
+    out <- sample(
+      x = c(-1, 1),
+      size = n,
+      replace = TRUE,
+      prob = rep(x = 1 / 2, times = 2)
+    )
+  } else if (weights_type == "mammen") {
+    phi <- (1 + sqrt(5)) / 2 # Golden ratio
+    out <- sample(
+      x = c(1 - phi, phi),
+      size = n,
+      replace = TRUE,
+      prob = c(phi / sqrt(5), 1 - phi / sqrt(5))
+    )
+  } else if (weights_type == "webb") {
+    webb_neg_supp <- c(-sqrt(3 / 2), -1, -sqrt(1 / 2)) # Negative Webb weights
+    out <- sample(
+      x = c(webb_neg_supp, -webb_neg_supp),
+      size = n,
+      replace = TRUE,
+      prob = rep(x = 1 / 6, times = 6)
+    )
+  } else if (weights_type == "std_gaussian") {
+    out <- stats::rnorm(n = n, mean = 0, sd = 1)
+  } else if (weights_type == "gamma") {
+    out <- stats::rgamma(n = n, shape = 4, scale = 1 / 2)
+  }
+  return(out)
+}
+
+#' Calculate a single replication of the multiplier bootstrap for an OLS
+#' fitted dataset
+#'
+#' \code{comp_multiplier_single_bootstrap_var} calculates a single
+#' replication of the multiplier bootstrap for an OLS fitted dataset
+#' based on an \code{\link[stats]{lm}} fitted object in \code{R}.
+#' This is given by the following expression:
+#' \deqn{\frac{1}{n}\sum_{i=1}^{n} e_{i}\widehat{J}^{-1}X_{i}(Y_{i}-X_{i}^{T} \widehat{\beta})}.
+#'
+#' @param n Number of observations (rows) of the underlying dataset.
+#'   In the given notation we assume our dataset has \eqn{n}
+#'   observations and \eqn{d} features (including an intercept)
+#' @param J_inv_X_res A \eqn{d \times \d} matrix given by the
+#'   expression
+#'   \eqn{\sum_{i=1}^{n}\widehat{J}^{-1}X_{i}(Y_{i}-X_{i}^{T} \widehat{\beta})}.
+#' @param e multiplier bootstrap weights. This is an \eqn{n \times 1}
+#'   vector of mean zero, variance 1 random variables.
+#'
+#' @return A tibble of the bootstrap standard errors.
+#'
+#' @export
+#'
+#' @importFrom rlang .data
 #'
 #' @examples
 #' \dontrun{
@@ -57,14 +158,23 @@ comp_multiplier_single_bootstrap_var <- function(n, J_inv_X_res, e) {
 #' The multiplier bootstrap calculated for a single replication
 #' for an OLS fitted dataset is given by the following expression:
 #' \deqn{\frac{1}{n}\sum_{i=1}^{n} e_{i}\widehat{J}^{-1}X_{i}(Y_{i}-X_{i}^{T} \widehat{\beta})}
-#' This wrapper function calls on the helper function \code{\link{comp_multiplier_single_bootstrap_var}}. See it's documentation
+#' This wrapper function calls on the helper function \code{\link{comp_multiplier_single_bootstrap_var}}. See its documentation
 #' for how a single instance is run.
 #'
-#' @param mod_fit An lm (OLS) object
-#' @param B The number of bootstrap replications
+#' @param mod_fit An \code{\link[stats]{lm}} (OLS) object.
+#' @param B The number of bootstrap replications.
+#' @param weights_type The type of multiplier bootstrap weights to generate.
+#'   Based on the \code{weighttype} option in the Stata \code{boottest} package,
+#'   this can only take the following five prespecified values
+#'   \code{"rademacher", "mammen", "webb", "std_gaussian", "gamma"}.
+#'   For more details see the documentation for
+#'   \code{\link{gen_multiplier_bootstrap_weights}}.
 #'
-#' @return A tibble of the bootstrap calculations
+#' @return A tibble of the bootstrap calculations.
+#'
 #' @export
+#'
+#' @importFrom rlang .data
 #'
 #' @examples
 #' \dontrun{
@@ -81,7 +191,7 @@ comp_multiplier_single_bootstrap_var <- function(n, J_inv_X_res, e) {
 #' set.seed(162632)
 #' comp_multiplier_bootstrap_var(lm_fit, B = 15)
 #' }
-comp_multiplier_bootstrap_var <- function(mod_fit, B = 100) {
+comp_multiplier_bootstrap_var <- function(mod_fit, B, weights_type) {
   assertthat::assert_that(all("lm" == class(mod_fit)),
                           msg = glue::glue("mod_fit must only be of class lm"))
   assertthat::assert_that(B == as.integer(B),
@@ -98,10 +208,14 @@ comp_multiplier_bootstrap_var <- function(mod_fit, B = 100) {
                   purrr::map(~ t(J_inv %*% X[.x, ] * res[.x])) %>%
                   do.call(rbind, .)
 
-  # Multiplier weights (mean 0, variance = 1)
-  e <- matrix(data = rnorm(n = B * n, mean = 0, sd = 1), nrow = B, ncol = n)
+  # multiplier weights (mean 0, variance = 1)
+  e <- matrix(data =
+                maar::gen_multiplier_bootstrap_weights(n = B * n,
+                                                       weights_type = weights_type),
+              nrow = B,
+              ncol = n)
 
-  # Multiplier Bootstrap replications, B times
+  # multiplier bootstrap replications, B times
   boot_out <- 1:B %>%
                 purrr::map(~ betas +
                              comp_multiplier_single_bootstrap_var(n, J_inv_X_res,

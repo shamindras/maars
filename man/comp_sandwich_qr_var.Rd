@@ -2,29 +2,35 @@
 % Please edit documentation in R/ols-sandwich-var.R
 \name{comp_sandwich_qr_var}
 \alias{comp_sandwich_qr_var}
-\title{Compute the White sandwich estimator of standard errors for OLS}
+\title{Compute the sandwich estimator of standard errors for OLS}
 \usage{
 comp_sandwich_qr_var(mod_fit)
 }
 \arguments{
-\item{mod_fit}{An lm (OLS) object}
+\item{mod_fit}{A \code{\link[stats]{lm}} (OLS) object.}
 }
 \value{
-(matrix) White sandwich estimator of variance for OLS regression
+A tibble containing the sandwich estimator of variance for OLS
+regression.
 }
 \description{
-Compute the White sandwich estimator of standard errors for
-ordinary least squares (OLS) regression, \insertCite{@see @white1980usinglsapproxunknownregfuncs and @white1980heteroskedasticconsistentcovest;textual}{maar}. For
-more details
+Compute the sandwich estimator of standard errors for
+ordinary least squares (OLS) regression, \insertCite{@see @white1980usinglsapproxunknownregfuncs and @white1980heteroskedasticconsistentcovest;textual}{maar}. For more details
 \insertCite{@see also @buja2019modelsasapproximationspart1 and @buja2019modelsasapproximationspart2;textual}{maar}.
+}
+\details{
+The function computes the sandwich estimator for the OLS regression
+passed in \code{mod_fit} and returns a tibble with summary information
+about the components of the model based on the sandwich standard errors.
 }
 \examples{
 \dontrun{
+set.seed(674748)
 n <- 1e5
 X <- stats::rnorm(n, 0, 1)
 y <- 2 + X * 1 + stats::rnorm(n, 0, 10)
 lm_fit <- stats::lm(y ~ X)
-sandwich_qr_var <- comp_sandwich_qr_var(lm_fit)
+sandwich_qr_std_err <- comp_sandwich_qr_var(lm_fit)
 }
 }
 \references{

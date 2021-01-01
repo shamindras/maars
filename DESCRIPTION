@@ -1,7 +1,7 @@
 Package: maar
 Title: An implementation of the Models As Approximations series
     of statistics papers
-Version: 0.3.0
+Version: 0.4.0
 Authors@R: 
     c(person(given = "Shamindra",
              family = "Shrotriya",
@@ -11,7 +11,7 @@ Authors@R:
              family = "Fogliato",
              role = c("aut"),
              email = "rfogliat@andrew.cmu.edu"))
-Description: What the package does (one paragraph).
+Description: An implementation of the Models As Approximations series of statistics papers
 License: MIT + file LICENSE
 Imports: 
     magrittr,
@@ -29,13 +29,18 @@ Imports:
     tidyr,
     purrr,
     vroom,
-    DT
+    DT,
+    knitr,
+    kableExtra,
+    xtable,
+    forcats,
+    ggplot2,
+    stringr
 Suggests: 
     spelling,
     testthat,
     roxygen2,
     covr,
-    knitr,
     rmarkdown
 RdMacros: Rdpack
 Encoding: UTF-8

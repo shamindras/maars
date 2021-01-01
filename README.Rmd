@@ -29,7 +29,9 @@ remotes::install_github("shamindras/maar")
 ```
 
 More detailed instructions and user guides can be found at
-the [official package website](https://shamindras.github.io/maar/).
+the [official package website](https://shamindras.github.io/maar/). The source
+code for the `maar` package can be 
+[found on github](https://github.com/shamindras/maar).
 
 ## Code of Conduct
 

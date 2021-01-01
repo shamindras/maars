@@ -32,11 +32,11 @@ test_that("sample mean of bootstraped data sets equals asymptotic mean", {
 
 test_that("lm and glm fitted with conditional_model return the same outputs as the original models", {
   # ols
-  mod_fit <- comp_empirical_bootstrap_cond_model(lm_fit, stats::model.frame(lm_fit))
+  mod_fit <- comp_cond_model(lm_fit, stats::model.frame(lm_fit))
   expect_equal(mod_fit %>% dplyr::pull(estimate) %>% unname(), broom::tidy(lm_fit) %>% dplyr::pull(estimate))
 
   # glm
-  mod_fit <- comp_empirical_bootstrap_cond_model(glm_fit, stats::model.frame(glm_fit))
+  mod_fit <- comp_cond_model(glm_fit, stats::model.frame(glm_fit))
   expect_equal(mod_fit %>% dplyr::pull(estimate) %>% unname(), broom::tidy(glm_fit) %>% dplyr::pull(estimate))
 })
 

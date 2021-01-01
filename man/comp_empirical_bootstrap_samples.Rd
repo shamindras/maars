@@ -7,25 +7,38 @@
 comp_empirical_bootstrap_samples(data, B = 100, m = NULL)
 }
 \arguments{
-\item{data}{Tibble or data frame containing the dataset to be sampled from}
+\item{data}{A tibble or data frame containing the dataset to be
+sampled from.}
 
-\item{B}{Bootstrap repetitions or number of bootstrap samples to be drawn}
+\item{B}{Bootstrap repetitions or number of bootstrap samples to
+be drawn.}
 
-\item{m}{Number of observations to be sampled with replacement from the dataset
-for each bootstrap repetition}
+\item{m}{Number of observations to be sampled with replacement from
+the original dataset for each bootstrap repetition.}
 }
 \value{
-A tibble of the bootstrap samples
+A tibble containing the bootstrap samples (\code{data})
+and their corresponding number (\code{b}).
 }
 \description{
-Draw bootstrap samples from the data.
+\code{comp_empirical_bootstrap_samples} draws bootstrap samples
+(i.e. sampling observations with replacement) from the input
+\code{data}.
+}
+\details{
+More specifically, \code{B} bootstraped datasets of size
+\code{m} are drawn from the \code{data}.
 }
 \examples{
 \dontrun{
 # Draw B=100 bootstrap samples of size m=5
 set.seed(162632)
 n <- 100
-boot <- bootstrap_samples(data.frame(y = rnorm(n,0,1), x = rnorm(n,0,1)), B = 100, m = 5)
+boot <- comp_empirical_bootstrap_samples(
+  data.frame(y = stats::rnorm(n, 0, 1),
+             x = stats::rnorm(n, 0, 1)),
+  B = 100,
+  m = 5)
 
 # Display the output
 print(boot)
