@@ -1,3 +1,5 @@
+# maar 0.4.0
+
 # maar 0.3.0
 
 * Implement an efficient `multiplier` bootstrap for `lm` standard errors
