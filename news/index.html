@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Changelog • maar</title>
+<title>Changelog • maars</title>
 
 
 <!-- jquery -->
@@ -70,7 +70,7 @@
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="../index.html">maar</a>
+        <a class="navbar-link" href="../index.html">maars</a>
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
       </span>
     </div>
@@ -121,9 +121,9 @@
       
     </div>
 
-    <div id="maar-040" class="section level1">
+    <div id="maars-040" class="section level1">
 <h1 class="page-header" data-toc-text="0.4.0">
-<a href="#maar-040" class="anchor"></a>maar 0.4.0</h1>
+<a href="#maars-040" class="anchor"></a>maars 0.4.0</h1>
 <ul>
 <li>Include <code>.gitattributes</code> file</li>
 <li>We need to <code>set.seed</code> in all our vignette chunks. This is for reproducibility, but to also avoid merge conflicts every time we rebuild the package using <code>make build_package</code>
@@ -132,13 +132,13 @@
 <strong>roxygen2:</strong> Rewrite documentation of the functions making the style more consistent across functions. For example, we could adopt the style used for the <a href="https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/quantile">quantile function</a>
 </li>
 <li>
-<strong>roxygen2:</strong> insert dots at end of sentences in Roxygen. <a href="https://github.com/shamindras/maar/issues/24?fbclid=IwAR0JsSrXZGUpYyuizsTFIL8Q0dUvOy_WVbUWBuvZlygg4rmjuo0rU5xNGvM#issuecomment-751913442">See below</a>
+<strong>roxygen2:</strong> insert dots at end of sentences in Roxygen. <a href="https://github.com/shamindras/maars/issues/24?fbclid=IwAR0JsSrXZGUpYyuizsTFIL8Q0dUvOy_WVbUWBuvZlygg4rmjuo0rU5xNGvM#issuecomment-751913442">See below</a>
 </li>
 <li>
-<strong>roxygen2:</strong> use <code>@details</code> responsibly. <a href="https://github.com/shamindras/maar/issues/24?fbclid=IwAR0JsSrXZGUpYyuizsTFIL8Q0dUvOy_WVbUWBuvZlygg4rmjuo0rU5xNGvM#issuecomment-751913442">See below</a>
+<strong>roxygen2:</strong> use <code>@details</code> responsibly. <a href="https://github.com/shamindras/maars/issues/24?fbclid=IwAR0JsSrXZGUpYyuizsTFIL8Q0dUvOy_WVbUWBuvZlygg4rmjuo0rU5xNGvM#issuecomment-751913442">See below</a>
 </li>
 <li>
-<strong>roxygen2:</strong> replace <code>var_name</code> with <code>\code{var_name}</code>. <a href="https://github.com/shamindras/maar/issues/24?fbclid=IwAR0JsSrXZGUpYyuizsTFIL8Q0dUvOy_WVbUWBuvZlygg4rmjuo0rU5xNGvM#issuecomment-751913442">See below</a>
+<strong>roxygen2:</strong> replace <code>var_name</code> with <code>\code{var_name}</code>. <a href="https://github.com/shamindras/maars/issues/24?fbclid=IwAR0JsSrXZGUpYyuizsTFIL8Q0dUvOy_WVbUWBuvZlygg4rmjuo0rU5xNGvM#issuecomment-751913442">See below</a>
 </li>
 <li>
 <strong>ggplot2:</strong> Replace hardcoded values <code>1.96</code> with appropriate outputs from statistics functions, in <code>vignettes</code>
@@ -147,10 +147,10 @@
 <li>
 <strong>ggplot2:</strong> We should break up our <code>ggplot2</code> code into separate plots and then combine them using <code><a href="https://rdrr.io/r/base/Arithmetic.html">+</a></code>. This will make it much easier to manage the code and make it readable</li>
 <li>
-<strong>ggplot2:</strong> Need to be consistent with our <code>ggplot2</code> themes used in our plots. <a href="https://github.com/shamindras/maar/issues/24?fbclid=IwAR0JsSrXZGUpYyuizsTFIL8Q0dUvOy_WVbUWBuvZlygg4rmjuo0rU5xNGvM#issuecomment-751917061">See ggplot2 theme wrapper below</a>
+<strong>ggplot2:</strong> Need to be consistent with our <code>ggplot2</code> themes used in our plots. <a href="https://github.com/shamindras/maars/issues/24?fbclid=IwAR0JsSrXZGUpYyuizsTFIL8Q0dUvOy_WVbUWBuvZlygg4rmjuo0rU5xNGvM#issuecomment-751917061">See ggplot2 theme wrapper below</a>
 </li>
 <li>
-<strong>ggplot2:</strong> Need to be consistent with the <code>ggplot2</code> font and other settings used in our plots. As a preference we should only use <code>labs</code> for example. <a href="https://github.com/shamindras/maar/issues/24?fbclid=IwAR0JsSrXZGUpYyuizsTFIL8Q0dUvOy_WVbUWBuvZlygg4rmjuo0rU5xNGvM#issuecomment-751917061">See ggplot2 theme wrapper below</a>
+<strong>ggplot2:</strong> Need to be consistent with the <code>ggplot2</code> font and other settings used in our plots. As a preference we should only use <code>labs</code> for example. <a href="https://github.com/shamindras/maars/issues/24?fbclid=IwAR0JsSrXZGUpYyuizsTFIL8Q0dUvOy_WVbUWBuvZlygg4rmjuo0rU5xNGvM#issuecomment-751917061">See ggplot2 theme wrapper below</a>
 </li>
 <li>
 <strong>ggplot2:</strong> Add <code>names_prefix = "q"</code> to <code>pivot_wider</code> for the <code>ggplot2</code> code i.e. to avoid <strong>.data$<code>0.275</code></strong> issue. Note the <code>"q"</code> here stands for <code>quantile</code>.</li>
@@ -159,7 +159,7 @@
 <li>clean up the <code>R</code> directory i.e. delete unused <code>R</code> files</li>
 <li>We should add <code>#' @importFrom rlang .data</code> in all our functions under <code>#' @export</code>
 </li>
-<li>Fix <code>R CMD CHECK</code> error caused in <code>vignette</code>, namely <a href="https://github.com/shamindras/maar/pull/21/checks?check_run_id=1555124560">this one</a>
+<li>Fix <code>R CMD CHECK</code> error caused in <code>vignette</code>, namely <a href="https://github.com/shamindras/maars/pull/21/checks?check_run_id=1555124560">this one</a>
 </li>
 <li>Add <code>stringr</code> to <code>DESCRIPTION</code>
 </li>
@@ -172,13 +172,13 @@
 <li>Remove default value of <code>B</code> in <code>multiplier</code> variance</li>
 <li>Allow for 5 types of weights for multiplier bootstrap i.e. <code>std_gaussian</code>, <code>rademacher</code>, and <code>mammen</code>, <code>webb</code>, <code>gamma</code>
 </li>
-<li>Update credits in <a href="https://github.com/shamindras/maar/blob/main/LICENSE">Licence</a> and <a href="https://github.com/shamindras/maar/blob/main/LICENSE.md">License.md</a>
+<li>Update credits in <a href="https://github.com/shamindras/maars/blob/main/LICENSE">Licence</a> and <a href="https://github.com/shamindras/maars/blob/main/LICENSE.md">License.md</a>
 </li>
 </ul>
 </div>
-    <div id="maar-030" class="section level1">
+    <div id="maars-030" class="section level1">
 <h1 class="page-header" data-toc-text="0.3.0">
-<a href="#maar-030" class="anchor"></a>maar 0.3.0</h1>
+<a href="#maars-030" class="anchor"></a>maars 0.3.0</h1>
 <ul>
 <li>Implement an efficient <code>multiplier</code> bootstrap for <code>lm</code> standard errors</li>
 <li>Implement the <code>empirical</code> bootstrap for <code>lm</code> standard errors</li>
@@ -191,20 +191,20 @@
 <li>Update <code>Readme.Rmd</code> to add installation instructions and link to official package</li>
 </ul>
 </div>
-    <div id="maar-020" class="section level1">
+    <div id="maars-020" class="section level1">
 <h1 class="page-header" data-toc-text="0.2.0">
-<a href="#maar-020" class="anchor"></a>maar 0.2.0</h1>
+<a href="#maars-020" class="anchor"></a>maars 0.2.0</h1>
 <ul>
 <li>Create the <code>comp_sandwich_qr_var</code> function with documentation, tests, benchmarking</li>
 </ul>
 </div>
-    <div id="maar-010" class="section level1">
+    <div id="maars-010" class="section level1">
 <h1 class="page-header" data-toc-text="0.1.0">
-<a href="#maar-010" class="anchor"></a>maar 0.1.0</h1>
+<a href="#maars-010" class="anchor"></a>maars 0.1.0</h1>
 </div>
-    <div id="maar-0009000" class="section level1">
+    <div id="maars-0009000" class="section level1">
 <h1 class="page-header" data-toc-text="0.0.0.9000">
-<a href="#maar-0009000" class="anchor"></a>maar 0.0.0.9000</h1>
+<a href="#maars-0009000" class="anchor"></a>maars 0.0.0.9000</h1>
 <ul>
 <li>Added a <code>NEWS.md</code> file to track changes to the package.</li>
 </ul>
