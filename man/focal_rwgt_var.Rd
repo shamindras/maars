@@ -40,7 +40,7 @@ correspond exactly to the original estimate of the coefficients from
 \description{
 \code{focal_rwgt_var} returns the "focal reweighting variable" model
 diagnostic described in
-\insertCite{@see @buja2019modelsasapproximationspart2;textual}{maar}.
+\insertCite{@see @buja2019modelsasapproximationspart2;textual}{maars}.
 More specifically, based on the estimates under reweighting of the regressors
 returned by \code{comp_coef_rwgt} and specified in \code{coef_rwgt}, this
 function shows how the estimates of all coefficients vary under

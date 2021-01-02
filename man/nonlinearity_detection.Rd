@@ -37,7 +37,7 @@ correspond exactly to the original estimate of the coefficients from
 \description{
 \code{nonlinearity_detection} returns the "nonlinearity detection" model
 diagnostic as described in
-\insertCite{@see @buja2019modelsasapproximationspart2;textual}{maar}.
+\insertCite{@see @buja2019modelsasapproximationspart2;textual}{maars}.
 This graphical tool provides insights into the marginal nonlinear behavior
 of response surfaces for each of the regressors.
 More specifically, based on the estimates under reweighting of the regressors

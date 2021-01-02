@@ -27,7 +27,7 @@ the standard Gaussian (normal) distribution with mean = \eqn{0},
 and variance = \eqn{1}. Finally, the \code{"gamma"} weights are sampled
 from the Gamma distribution with shape parameter = \eqn{4}, and
 scale parameter = \eqn{1}. For more details on these weight types see
-\insertCite{@see @roodman2019fastwildinferencestataboottest;textual}{maar}.}
+\insertCite{@see @roodman2019fastwildinferencestataboottest;textual}{maars}.}
 }
 \value{
 A numeric vector of n (sampled with replacement) random multiplier

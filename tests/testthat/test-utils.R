@@ -30,7 +30,7 @@ comp_multiplier_bootstrap_purrr_var <- function(mod_fit, B = 100, weights_type) 
 
     # Multiplier weights (mean 0, variance = 1)
     e <- matrix(data =
-                    maar::gen_multiplier_bootstrap_weights(n = B * n,
+                    maars::gen_multiplier_bootstrap_weights(n = B * n,
                                                            weights_type = weights_type),
                 nrow = B,
                 ncol = n)

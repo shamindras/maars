@@ -99,7 +99,7 @@ comp_grid_centers <- function(x, grid_method, n_grid) {
 #' y <- 2 + X1 + X2 * 0.3 + stats::rnorm(n, 0, 1)
 #' df <- tibble::tibble(y = y, X1 = X1, X2 = X2, n_obs = 1:length(X1))
 #' mod_fit <- stats::lm(y ~ X1 + X2, df)
-#' boot_samples <- maar::comp_empirical_bootstrap_samples(df, B = 100)
+#' boot_samples <- maars::comp_empirical_bootstrap_samples(df, B = 100)
 #' ols_rwgt_X1 <- comp_coef_rwgt_single(mod_fit, "X1", boot_samples, c(-1, 0, 1, 2))
 #'
 #' # Display the output
@@ -118,7 +118,7 @@ comp_coef_rwgt_single <- function(mod_fit, term_to_rwgt, boot_samples, term_to_r
 
   out <- as.list(1:length(weights_assigned$center)) %>%
     purrr::map_df(~ purrr::map(boot_samples$data,
-      ~ maar::comp_cond_model(
+      ~ maars::comp_cond_model(
         mod_fit = mod_fit,
         data = .x %>% dplyr::mutate(weights = weights_assigned$weights[[.y]][n_obs]) %>%
           dplyr::mutate(weights = weights / sum(weights)),
@@ -244,7 +244,7 @@ comp_coef_rwgt <- function(mod_fit,
     m <- nrow(data)
   }
 
-  boot_samples <- maar::comp_empirical_bootstrap_samples(
+  boot_samples <- maars::comp_empirical_bootstrap_samples(
     data = data %>% tibble::add_column(n_obs = 1:nrow(data)),
     B = B,
     m = m
@@ -261,7 +261,7 @@ comp_coef_rwgt <- function(mod_fit,
   }
 
   out <- terms_to_rwgt %>%
-    purrr::map(~ maar::comp_coef_rwgt_single(
+    purrr::map(~ maars::comp_coef_rwgt_single(
       mod_fit = mod_fit,
       term_to_rwgt = .x[[1]],
       boot_samples = boot_samples,
@@ -283,7 +283,7 @@ comp_coef_rwgt <- function(mod_fit,
 #' Obtain the "focal slope" model diagnostic
 #'
 #' \code{focal_slope} returns the "focal slope" model diagnostics described in
-#' \insertCite{@see @buja2019modelsasapproximationspart2;textual}{maar}.
+#' \insertCite{@see @buja2019modelsasapproximationspart2;textual}{maars}.
 #' This graphical tool provides insights into the interactions between the
 #' regressor specified in \code{term_chosen} and all other regressors.
 #' More specifically, based on the estimates under reweighting of the regressors
@@ -439,7 +439,7 @@ focal_slope <- function(mod_fit, coef_rwgt, term_chosen) {
 #'
 #' \code{nonlinearity_detection} returns the "nonlinearity detection" model
 #' diagnostic as described in
-#' \insertCite{@see @buja2019modelsasapproximationspart2;textual}{maar}.
+#' \insertCite{@see @buja2019modelsasapproximationspart2;textual}{maars}.
 #' This graphical tool provides insights into the marginal nonlinear behavior
 #' of response surfaces for each of the regressors.
 #' More specifically, based on the estimates under reweighting of the regressors
@@ -599,7 +599,7 @@ nonlinearity_detection <- function(mod_fit, coef_rwgt) {
 #'
 #' \code{focal_rwgt_var} returns the "focal reweighting variable" model
 #' diagnostic described in
-#' \insertCite{@see @buja2019modelsasapproximationspart2;textual}{maar}.
+#' \insertCite{@see @buja2019modelsasapproximationspart2;textual}{maars}.
 #' More specifically, based on the estimates under reweighting of the regressors
 #' returned by \code{comp_coef_rwgt} and specified in \code{coef_rwgt}, this
 #' function shows how the estimates of all coefficients vary under
