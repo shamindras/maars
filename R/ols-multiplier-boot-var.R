@@ -24,7 +24,7 @@
 #'   and variance = \eqn{1}. Finally, the \code{"gamma"} weights are sampled
 #'   from the Gamma distribution with shape parameter = \eqn{4}, and
 #'   scale parameter = \eqn{1}. For more details on these weight types see
-#'   \insertCite{@see @roodman2019fastwildinferencestataboottest;textual}{maar}.
+#'   \insertCite{@see @roodman2019fastwildinferencestataboottest;textual}{maars}.
 #'
 #' @return A numeric vector of n (sampled with replacement) random multiplier
 #'   bootstrap weights based on the specified multiplier weights type.
@@ -210,7 +210,7 @@ comp_multiplier_bootstrap_var <- function(mod_fit, B, weights_type) {
 
   # multiplier weights (mean 0, variance = 1)
   e <- matrix(data =
-                maar::gen_multiplier_bootstrap_weights(n = B * n,
+                maars::gen_multiplier_bootstrap_weights(n = B * n,
                                                        weights_type = weights_type),
               nrow = B,
               ncol = n)

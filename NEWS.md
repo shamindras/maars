@@ -1,4 +1,4 @@
-# maar 0.4.0
+# maars 0.4.0
 
 * Include `.gitattributes` file
 * We need to `set.seed` in all our vignette chunks. This is for 
@@ -8,11 +8,11 @@ package using `make build_package`
 consistent across functions. For example, we could adopt the style used for 
 the [quantile function](https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/quantile)
 * **roxygen2:** insert dots at end of sentences in Roxygen. 
-[See below](https://github.com/shamindras/maar/issues/24?fbclid=IwAR0JsSrXZGUpYyuizsTFIL8Q0dUvOy_WVbUWBuvZlygg4rmjuo0rU5xNGvM#issuecomment-751913442)
+[See below](https://github.com/shamindras/maars/issues/24?fbclid=IwAR0JsSrXZGUpYyuizsTFIL8Q0dUvOy_WVbUWBuvZlygg4rmjuo0rU5xNGvM#issuecomment-751913442)
 * **roxygen2:** use `@details` responsibly. 
-[See below](https://github.com/shamindras/maar/issues/24?fbclid=IwAR0JsSrXZGUpYyuizsTFIL8Q0dUvOy_WVbUWBuvZlygg4rmjuo0rU5xNGvM#issuecomment-751913442)
+[See below](https://github.com/shamindras/maars/issues/24?fbclid=IwAR0JsSrXZGUpYyuizsTFIL8Q0dUvOy_WVbUWBuvZlygg4rmjuo0rU5xNGvM#issuecomment-751913442)
 * **roxygen2:** replace `var_name` with `\code{var_name}`. 
-[See below](https://github.com/shamindras/maar/issues/24?fbclid=IwAR0JsSrXZGUpYyuizsTFIL8Q0dUvOy_WVbUWBuvZlygg4rmjuo0rU5xNGvM#issuecomment-751913442)
+[See below](https://github.com/shamindras/maars/issues/24?fbclid=IwAR0JsSrXZGUpYyuizsTFIL8Q0dUvOy_WVbUWBuvZlygg4rmjuo0rU5xNGvM#issuecomment-751913442)
 * **ggplot2:** Replace hardcoded values `1.96` with appropriate outputs 
 from statistics functions, in `vignettes`
 * Check the order in which we have our functions written in each file
@@ -21,11 +21,11 @@ and then combine them using `+`. This will make it much easier to manage the
 code and make it readable
 * **ggplot2:** Need to be consistent with our `ggplot2` themes used in 
 our plots. 
-[See ggplot2 theme wrapper below](https://github.com/shamindras/maar/issues/24?fbclid=IwAR0JsSrXZGUpYyuizsTFIL8Q0dUvOy_WVbUWBuvZlygg4rmjuo0rU5xNGvM#issuecomment-751917061)
+[See ggplot2 theme wrapper below](https://github.com/shamindras/maars/issues/24?fbclid=IwAR0JsSrXZGUpYyuizsTFIL8Q0dUvOy_WVbUWBuvZlygg4rmjuo0rU5xNGvM#issuecomment-751917061)
 * **ggplot2:** Need to be consistent with the `ggplot2` font and 
 other settings used in our plots. As a preference we should only 
 use `labs` for example. 
-[See ggplot2 theme wrapper below](https://github.com/shamindras/maar/issues/24?fbclid=IwAR0JsSrXZGUpYyuizsTFIL8Q0dUvOy_WVbUWBuvZlygg4rmjuo0rU5xNGvM#issuecomment-751917061)
+[See ggplot2 theme wrapper below](https://github.com/shamindras/maars/issues/24?fbclid=IwAR0JsSrXZGUpYyuizsTFIL8Q0dUvOy_WVbUWBuvZlygg4rmjuo0rU5xNGvM#issuecomment-751917061)
 * **ggplot2:** Add `names_prefix = "q"` to `pivot_wider` for 
 the `ggplot2` code i.e. to avoid **.data$`0.275`** issue. Note 
 the `"q"` here stands for `quantile`.
@@ -34,7 +34,7 @@ the `"q"` here stands for `quantile`.
 * clean up the `tests` directory i.e. delete unused `R` test files
 * clean up the `R` directory i.e. delete unused `R` files
 * We should add `#' @importFrom rlang .data` in all our functions under `#' @export`
-* Fix `R CMD CHECK` error caused in `vignette`, namely [this one](https://github.com/shamindras/maar/pull/21/checks?check_run_id=1555124560)
+* Fix `R CMD CHECK` error caused in `vignette`, namely [this one](https://github.com/shamindras/maars/pull/21/checks?check_run_id=1555124560)
 * Add `stringr` to `DESCRIPTION`
 * Change `multiplier` bootstrap weights to be applied inside `purrr` e.g using `purrr::map2` rather than generating the `e` matrix up front. Conduct benchmarks of this to test speed, so that current version still has it's place in benchmarking
 * For `vignette` should `knitr::kable` package instead of `DT` package and just need to ensure Table 1 is correctly populated
@@ -43,9 +43,9 @@ the `"q"` here stands for `quantile`.
 * Add doc for `weight_type` in `multiplier` bootstrap
 * Remove default value of `B` in `multiplier` variance
 * Allow for 5 types of weights for multiplier bootstrap i.e. `std_gaussian`, `rademacher`, and `mammen`, `webb`, `gamma`
-* Update credits in [Licence](https://github.com/shamindras/maar/blob/main/LICENSE) and [License.md](https://github.com/shamindras/maar/blob/main/LICENSE.md)
+* Update credits in [Licence](https://github.com/shamindras/maars/blob/main/LICENSE) and [License.md](https://github.com/shamindras/maars/blob/main/LICENSE.md)
 
-# maar 0.3.0
+# maars 0.3.0
 
 * Implement an efficient `multiplier` bootstrap for `lm` standard errors
 * Implement the `empirical` bootstrap for `lm` standard errors
@@ -58,12 +58,12 @@ e.g. `B` must be a positive integer
 * Set a seed for the unit tests
 * Update `Readme.Rmd` to add installation instructions and link to official package
 
-# maar 0.2.0
+# maars 0.2.0
 
 * Create the `comp_sandwich_qr_var` function with documentation, tests, benchmarking
 
-# maar 0.1.0
+# maars 0.1.0
 
-# maar 0.0.0.9000
+# maars 0.0.0.9000
 
 * Added a `NEWS.md` file to track changes to the package.

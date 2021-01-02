@@ -39,7 +39,7 @@ correspond exactly to the original estimate of the coefficients from
 }
 \description{
 \code{focal_slope} returns the "focal slope" model diagnostics described in
-\insertCite{@see @buja2019modelsasapproximationspart2;textual}{maar}.
+\insertCite{@see @buja2019modelsasapproximationspart2;textual}{maars}.
 This graphical tool provides insights into the interactions between the
 regressor specified in \code{term_chosen} and all other regressors.
 More specifically, based on the estimates under reweighting of the regressors
