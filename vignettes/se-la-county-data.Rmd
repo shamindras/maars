@@ -4,6 +4,8 @@ title: "Reproducing LA County Standard Errors from [@buja2019modelsasapproximati
 output: rmarkdown::html_vignette
 package: maar    
 bibliography: ../inst/REFERENCES.bib
+resource_files:
+  - figures/buja1_table1.png
 vignette: >
   %\VignetteIndexEntry{Reproducing LA County Standard Errors from [@buja2019modelsasapproximationspart1]}
   %\VignetteEngine{knitr::rmarkdown}
@@ -39,7 +41,8 @@ remotes::install_github('shamindras/maar', force = TRUE)
 ```
 
 We will explicitly load the `tidyverse` set of packages to get access to the
-`magrittr` pipe (`%>%`) operator.
+`magrittr` pipe (`%>%`) operator. We will also set a global random seed for
+reproducibility purposes.
 
 ``` {r load_pkgs}
 library(magrittr)
@@ -56,7 +59,8 @@ We try to replicate the results of Table 1 in
 [@buja2019modelsasapproximationspart1], as shown below:
 
 ``` {r table1_img, echo=FALSE, fig.cap="Table 1 from [@buja2019modelsasapproximationspart1]", out.width = '90%'}
-knitr::include_graphics(here::here("vignettes", "figures", "buja1_table1.png"))
+# knitr::include_graphics(here::here("vignettes", "figures", "buja1_table1.png"))
+knitr::include_graphics(path = "figures/buja1_table1.png")
 ```
 
 ## Loading the data
