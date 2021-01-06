@@ -29,7 +29,6 @@ Imports:
     tidyr,
     purrr,
     vroom,
-    DT,
     knitr,
     kableExtra,
     xtable,
