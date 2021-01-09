@@ -1,0 +1,59 @@
+* Grammar Philosophy
+ 1. noun %>% {computation_verb}_{summary_stat}_{method_stat}
+ 2. computation_verb in {comp, gen, get, set}
+* Statistical Utilities
+** Public
+*** comp_conf_int_bootstrap()
+    1. comp_ci_boot()
+    2. comp_mms_ci_boot()
+    3. comp_rob_ci_boot()
+*** comp_var(emp = NULL, mul = NULL)
+    1. Needs to be created
+    2. comp_mms_var(emp = NULL, mul = NULL)
+    3. comp_rob_var(emp = NULL, mul = NULL)
+*** comp_coef_rwgt()
+    1. fit_reg_rwgt()
+** Private
+*** create_maars_obj()
+    1. Accept only one of lm, glm, cox, maarslm, maarsglm, maarscox
+    2. Output always maarslm, maarsglm, maarscox depending on the input
+*** comp_sandwich_qr_var()
+    1. comp_mms_var_sand()
+    2. comp_var_sand()
+*** comp_multiplier_bootstrap_var()
+    1. comp_mms_var_boot_mul() 
+    2. comp_var_boot_mul()
+*** comp_multiplier_single_bootstrap_var()
+    1. comp_mms_var_boot_mul_ind()
+    2. cmms_var_boot_mul_ind()
+*** comp_empirical_bootstrap_samples()
+    1. comp_mms_boot_emp_smp()
+*** comp_empirical_bootstrap()
+    1. comp_mms_boot_emp()
+*** gen_multiplier_bootstrap_weights()
+    1. comp_mms_mul_boot_wgt()
+*** comp_cond_model()
+    1. fit_reg()
+*** comp_grid_centers()
+    1. comp_mms_grid_cent_rwgt()
+*** comp_coef_rwgt_single()
+    1. fit_reg_rwgt_ind()
+* Diagnostic Utilities
+** Public
+*** focal_rwgt_var()
+    1. diag_mms_frwgt()
+*** focal_slope()
+    1. diag_mms_fslope()
+*** nonlinearity_detection()
+    1. diag_mms_nldetect()
+*** qqnorm_bootstrap()
+    1. diag_mms_boot_emp_qqn()
+*** comp_plot_summary(focal_rwgt_var = FALSE, focal_slope = TRUE, nonlinearity_detection = TRUE)
+** Private
+* Supporting Utilities
+** Public
+*** set_ggplot2_theme()
+* Follow up [0/3]
+  1. [ ] Figure out how to make functions private in R packages
+  2. [ ] Change filenames
+  3. [ ] Change mod_fit to reg_fit
