@@ -27,10 +27,10 @@ Imports:
     tidyr,
     purrr,
     vroom,
+    Rdpack,
     ggplot2,
     stringr
 Suggests: 
-    Rdpack,
     bench,
     kableExtra,
     knitr,
