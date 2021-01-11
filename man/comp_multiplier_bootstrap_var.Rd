@@ -41,6 +41,6 @@ lm_fit <- stats::lm(y ~ X)
 
 # Run the multiplier bootstrap on the fitted (OLS) linear model
 set.seed(162632)
-comp_multiplier_bootstrap_var(lm_fit, B = 15)
+comp_multiplier_bootstrap_var(lm_fit, B = 15, weights_type = 'std_gaussian')
 }
 }

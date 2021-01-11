@@ -39,7 +39,7 @@ comp_empirical_bootstrap_samples <- function(data,
                                              B = 100,
                                              m = NULL) {
   n <- nrow(data)
-  if (missing(m)) {
+  if (is.null(m)) {
     m <- n
   }
 
@@ -187,7 +187,7 @@ comp_empirical_bootstrap <- function(mod_fit, B = 100, m = NULL) {
   checkargs(B=B,m=m)
 
   data <- stats::model.frame(mod_fit)
-  if (is.null(m) | missing(m)) {
+  if (is.null(m)) {
     m <- nrow(data)
   }
 

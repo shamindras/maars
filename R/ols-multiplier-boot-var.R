@@ -186,15 +186,12 @@ comp_multiplier_single_bootstrap_var <- function(n, J_inv_X_res, e) {
 #'
 #' # Run the multiplier bootstrap on the fitted (OLS) linear model
 #' set.seed(162632)
-#' comp_multiplier_bootstrap_var(lm_fit, B = 15)
+#' comp_multiplier_bootstrap_var(lm_fit, B = 15, weights_type = 'std_gaussian')
 #' }
 comp_multiplier_bootstrap_var <- function(mod_fit, B, weights_type) {
   assertthat::assert_that(all("lm" == class(mod_fit)),
                           msg = glue::glue("mod_fit must only be of class lm"))
-  assertthat::assert_that(B == as.integer(B),
-                          msg = glue::glue("B must be an integer e.g. 100, it is currently {B}"))
-  assertthat::assert_that(B > 0,
-                          msg = glue::glue("B must be positive e.g. 100, it is currently {B}"))
+  checkargs(B=B)
   # Get OLS related output
   betas <- stats::coef(mod_fit)
   J_inv <- stats::summary.lm(mod_fit)$cov.unscaled

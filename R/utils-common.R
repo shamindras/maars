@@ -58,7 +58,7 @@ set_ggplot2_theme <- function(ggplot_obj,
 
 checkargs <- function(n = NULL, B = NULL, m = NULL) {
   if (!is.null(B)) {
-    assertthat::assert_that(B == as.integer(B) | B > 0,
+    assertthat::assert_that(B == as.integer(B),
       msg = glue::glue("B must be an integer e.g. 100, it is currently {B}")
     )
     assertthat::assert_that(B > 0,
