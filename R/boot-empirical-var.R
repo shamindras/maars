@@ -142,7 +142,7 @@ comp_cond_model <- function(mod_fit, data, weights = NULL) {
 }
 
 
-#' A wrapper for the empirical bootstrap of a fitted OLS regression model
+#' A wrapper for the empirical bootstrap of a fitted OLS or GLM regression model
 #'
 #' \code{comp_empirical_bootstrap} is a wrapper for the empirical bootstrap of
 #' a fitted \code{\link[stats]{lm}} or \code{\link[stats]{glm}} model.

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>A wrapper for the empirical bootstrap of a fitted OLS or GLM regression model — comp_empirical_bootstrap • maars</title>
+<title>A wrapper for the residual bootstrap of a fitted OLS regression model — comp_boot_res • maars</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,9 @@
 
 
 
-<meta property="og:title" content="A wrapper for the empirical bootstrap of a fitted OLS or GLM regression model — comp_empirical_bootstrap" />
-<meta property="og:description" content="comp_empirical_bootstrap is a wrapper for the empirical bootstrap of
-a fitted lm or glm model." />
+<meta property="og:title" content="A wrapper for the residual bootstrap of a fitted OLS regression model — comp_boot_res" />
+<meta property="og:description" content="comp_boot_res is a wrapper for the empirical bootstrap of
+a fitted lm model." />
 
 
 
@@ -119,50 +119,45 @@ a fitted lm or glm model." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>A wrapper for the empirical bootstrap of a fitted OLS or GLM regression model</h1>
+    <h1>A wrapper for the residual bootstrap of a fitted OLS regression model</h1>
     
-    <div class="hidden name"><code>comp_empirical_bootstrap.Rd</code></div>
+    <div class="hidden name"><code>comp_boot_res.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p><code>comp_empirical_bootstrap</code> is a wrapper for the empirical bootstrap of
-a fitted <code><a href='https://rdrr.io/r/stats/lm.html'>lm</a></code> or <code><a href='https://rdrr.io/r/stats/glm.html'>glm</a></code> model.</p>
+    <p><code>comp_boot_res</code> is a wrapper for the empirical bootstrap of
+a fitted <code><a href='https://rdrr.io/r/stats/lm.html'>lm</a></code> model.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>comp_empirical_bootstrap</span><span class='op'>(</span><span class='va'>mod_fit</span>, B <span class='op'>=</span> <span class='fl'>100</span>, m <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>comp_boot_res</span><span class='op'>(</span><span class='va'>mod_fit</span>, B <span class='op'>=</span> <span class='fl'>100</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>mod_fit</th>
-      <td><p>An object of class <code><a href='https://rdrr.io/r/stats/lm.html'>lm</a></code> or
-<code><a href='https://rdrr.io/r/stats/glm.html'>glm</a></code> to fit on the data. This object should contain
-the formula, the data, and, in case of <code><a href='https://rdrr.io/r/stats/glm.html'>glm</a></code>,
-the family.</p></td>
+      <td><p>An object of class <code><a href='https://rdrr.io/r/stats/lm.html'>lm</a></code> to fit on the data.
+This object should contain the formula and the data.</p></td>
     </tr>
     <tr>
       <th>B</th>
       <td><p>Bootstrap repetitions or number of bootstrap samples to be drawn.</p></td>
-    </tr>
-    <tr>
-      <th>m</th>
-      <td><p>Number of observations to be sampled with replacement from the
-dataset for each bootstrap repetition.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A tibble of the model's coefficients estimated (<code>term</code> and
-<code>estimate</code>) on the bootstrapped datasets, the size of each
-bootstrapped dataset (<code>m</code>), the size of the original dataset
-(<code>n</code>), and the number of the bootstrap repetition (<code>b</code>).</p>
+<code>estimate</code>) on the bootstrapped datasets,
+the size of the original dataset (<code>n</code>), and the number of the
+bootstrap repetition (<code>b</code>).</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>The empirical bootstrap consists of fitting the chosen statistical
-model (<code>mod_fit</code>) onto <code>B</code> bootstrap versions of size <code>m</code>
-of the dataset.</p>
+    <p>The rsidual bootstrap consists of fitting the chosen statistical
+model (<code>mod_fit</code>) <code>B</code> times. Each of the <code>B</code> datasets
+consists of the original independent variables and of dependent variable
+given by the sum of the estimates of the original model and a
+bootstrap versions of the residuals.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
@@ -172,7 +167,7 @@ of the dataset.</p>
 <span class='va'>X</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>
 <span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fl'>2</span> <span class='op'>+</span> <span class='va'>X</span> <span class='op'>*</span> <span class='fl'>1</span> <span class='op'>+</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>
 <span class='va'>lm_fit</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>y</span> <span class='op'>~</span> <span class='va'>X</span><span class='op'>)</span>
-<span class='va'>out</span> <span class='op'>&lt;-</span> <span class='fu'>comp_empirical_bootstrap</span><span class='op'>(</span><span class='va'>lm_fit</span>, B <span class='op'>=</span> <span class='fl'>100</span>, m <span class='op'>=</span> <span class='fl'>300</span><span class='op'>)</span>
+<span class='va'>out</span> <span class='op'>&lt;-</span> <span class='fu'>comp_boot_res</span><span class='op'>(</span><span class='va'>lm_fit</span>, B <span class='op'>=</span> <span class='fl'>100</span><span class='op'>)</span>
 
 <span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>out</span><span class='op'>)</span>
 <span class='op'>}</span>
