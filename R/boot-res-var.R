@@ -3,7 +3,7 @@
 #' \code{comp_boot_res} is a wrapper for the empirical bootstrap of
 #' a fitted \code{\link[stats]{lm}} model.
 #'
-#' @details The rsidual bootstrap consists of fitting the chosen statistical
+#' @details The residual bootstrap consists of fitting the chosen statistical
 #'   model (\code{mod_fit}) \code{B} times. Each of the \code{B} datasets
 #'   consists of the original independent variables and of dependent variable
 #'   given by the sum of the estimates of the original model and a
@@ -38,12 +38,7 @@ comp_boot_res <- function(mod_fit, B = 100) {
   assertthat::assert_that(all("lm" == class(mod_fit)),
     msg = glue::glue("mod_fit must only be of class lm")
   )
-  assertthat::assert_that(B == as.integer(B),
-    msg = glue::glue("B must be an integer e.g. 100, it is currently {B}")
-  )
-  assertthat::assert_that(B > 0,
-    msg = glue::glue("B must be positive e.g. 100, it is currently {B}")
-  )
+ checkargs(B=B)
 
   mod_res <- mod_fit$res
   mod_pred <- mod_fit$fitted.values

@@ -52,10 +52,7 @@
 #' gamma_w <- gen_multiplier_bootstrap_weights(n = n, weights_type = "gamma")
 #' }
 gen_multiplier_bootstrap_weights <- function(n, weights_type) {
-  assertthat::assert_that(n == as.integer(n),
-                          msg = glue::glue("n must be an integer"))
-  assertthat::assert_that(n > 0,
-                          msg = glue::glue("n must be positive"))
+  checkargs(n=n)
   assertthat::assert_that(length(weights_type) == 1,
                           msg = glue::glue("weights_type must only be a single value"))
   assertthat::assert_that(weights_type %in% c("rademacher", "mammen",

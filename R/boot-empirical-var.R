@@ -184,20 +184,7 @@ comp_empirical_bootstrap <- function(mod_fit, B = 100, m = NULL) {
   assertthat::assert_that(all("lm" == class(mod_fit)) | any("glm" == class(mod_fit)),
     msg = glue::glue("mod_fit must only be of class lm or glm")
   )
-  assertthat::assert_that(B == as.integer(B),
-    msg = glue::glue("B must be an integer e.g. 100, it is currently {B}")
-  )
-  assertthat::assert_that(B > 0,
-    msg = glue::glue("B must be positive e.g. 100, it is currently {B}")
-  )
-  if (!is.null(m)) {
-    assertthat::assert_that(m == as.integer(m),
-      msg = glue::glue("m must be an integer e.g. 100, it is currently {m}")
-    )
-    assertthat::assert_that(m > 0,
-      msg = glue::glue("m must be positive e.g. 100, it is currently {m}")
-    )
-  }
+  checkargs(B=B,m=m)
 
   data <- stats::model.frame(mod_fit)
   if (is.null(m) | missing(m)) {

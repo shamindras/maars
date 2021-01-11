@@ -52,3 +52,35 @@ set_ggplot2_theme <- function(ggplot_obj,
 
     return(out)
 }
+
+
+
+
+checkargs <- function(n = NULL, B = NULL, m = NULL) {
+  if (!is.null(B)) {
+    assertthat::assert_that(B == as.integer(B) | B > 0,
+      msg = glue::glue("B must be an integer e.g. 100, it is currently {B}")
+    )
+    assertthat::assert_that(B > 0,
+      msg = glue::glue("B must be positive e.g. 100, it is currently {B}")
+    )
+  }
+
+  if (!is.null(m)) {
+    assertthat::assert_that(m == as.integer(m),
+      msg = glue::glue("m must be an integer e.g. 100, it is currently {m}")
+    )
+    assertthat::assert_that(m > 0,
+      msg = glue::glue("m must be positive e.g. 100, it is currently {m}")
+    )
+  }
+
+  if (!is.null(n)) {
+    assertthat::assert_that(n == as.integer(n),
+      msg = glue::glue("n must be an integer")
+    )
+    assertthat::assert_that(n > 0,
+      msg = glue::glue("n must be positive")
+    )
+  }
+}

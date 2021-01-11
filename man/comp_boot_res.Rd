@@ -23,7 +23,7 @@ bootstrap repetition (\code{b}).
 a fitted \code{\link[stats]{lm}} model.
 }
 \details{
-The rsidual bootstrap consists of fitting the chosen statistical
+The residual bootstrap consists of fitting the chosen statistical
 model (\code{mod_fit}) \code{B} times. Each of the \code{B} datasets
 consists of the original independent variables and of dependent variable
 given by the sum of the estimates of the original model and a
