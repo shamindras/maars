@@ -36,8 +36,8 @@
 #' coef_emp_boot <- comp_empirical_bootstrap(mod_fit = mod_fit, B = 1000)
 #' }
 comp_bootstrap_summary <- function(mod_fit, boot_out, boot_type) {
-    assertthat::assert_that(all("lm" == class(mod_fit)),
-                            msg = glue::glue("mod_fit must only be of class lm"))
+    assertthat::assert_that(all("lm" == class(mod_fit)) | any("glm" == class(mod_fit)),
+                            msg = glue::glue("mod_fit must only be of class lm or glm"))
     assertthat::assert_that("tbl_df" %in% class(boot_out),
                             msg = glue::glue("boot_out must only be of class tibble"))
     assertthat::assert_that(boot_type %in% c("emp", "mult"),
