@@ -10,7 +10,8 @@ comp_multiplier_single_bootstrap_purrr_var <- function(n, J_inv_X_res, e) {
         ~ .x * .y
     ) %>%
         do.call(rbind, .) %>%
-        apply(., 2, mean) %>%
+        #apply(., 2, mean) %>%
+        apply(., 2, sum) %>%
         as.matrix(x = .)
     return(out)
 }

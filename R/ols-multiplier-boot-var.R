@@ -53,11 +53,11 @@
 #' }
 gen_multiplier_bootstrap_weights <- function(n, weights_type) {
   checkargs(n=n)
-  assertthat::assert_that(length(weights_type) == 1,
-                          msg = glue::glue("weights_type must only be a single value"))
   assertthat::assert_that(weights_type %in% c("rademacher", "mammen",
                                               "webb", "std_gaussian", "gamma"),
                           msg = glue::glue("weights_type must only be one of the following types c('rademacher', 'mammen', 'webb', 'std_gaussian', 'gamma')"))
+  assertthat::assert_that(length(weights_type) == 1,
+                          msg = glue::glue("weights_type must only be a single value"))
 
   if (weights_type == "rademacher") {
     out <- sample(
@@ -146,7 +146,7 @@ gen_multiplier_bootstrap_weights <- function(n, weights_type) {
 #' print(mult_boot)
 #' }
 comp_multiplier_single_bootstrap_var <- function(n, J_inv_X_res, e) {
-  out <- t(J_inv_X_res) %*% e / n
+  out <- t(J_inv_X_res) %*% e #/ n
   return(out)
 }
 

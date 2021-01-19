@@ -13,7 +13,6 @@ glm_fit <- stats::glm(y ~ X, family = binomial())
 
 test_that("draw from dataset with one observation works returns that observation", {
   boot <- comp_empirical_bootstrap_samples(data = data.frame(y = 1, x = 2), B = 100, m = 10) %>% tidyr::unnest(cols = data)
-
   expect_equal(boot$y, rep(1, 100 * 10))
   expect_equal(boot$x, rep(2, 100 * 10))
 })
@@ -41,7 +40,6 @@ test_that("lm and glm fitted with conditional_model return the same outputs as t
 })
 
 
-
 test_that("test sample mean of coefficients estimated via bootstrap matches the original coefficients", {
   # ols
   boot_out <- comp_empirical_bootstrap(lm_fit, B = 1e3) %>% tidyr::unnest(cols = boot_out)
@@ -51,6 +49,26 @@ test_that("test sample mean of coefficients estimated via bootstrap matches the 
   boot_out <- comp_empirical_bootstrap(glm_fit, B = 1e3) %>% tidyr::unnest(cols = boot_out)
   expect_equal(boot_out %>% dplyr::group_by(term) %>% dplyr::summarise(mean = mean(estimate)) %>% dplyr::pull(mean) %>% unname(), unname(stats::coef(glm_fit)), tol = 1e-2)
 })
+
+
+
+test_that("test bootstrap confidence intervals via percentile method for different values of m matches for stats::lm", {
+  # ols
+  boot_out <- comp_empirical_bootstrap(lm_fit, B = 1e3)
+  ci <- comp_conf_int_bootstrap(comp_empirical_bootstrap(lm_fit, B = 1e3))
+  boot_50 <- comp_empirical_bootstrap(lm_fit, B = 1e4, m = 50)
+  ci_50 <- comp_conf_int_bootstrap(boot_50)
+  expect_equal(ci, ci_50, tol = 1e-2)
+#
+#   # glm
+#   boot_out <- comp_empirical_bootstrap(glm_fit, B = 1e3)
+#   ci <- comp_conf_int_bootstrap(comp_empirical_bootstrap(glm_fit, B = 1e3))
+#   boot_50 <- comp_empirical_bootstrap(glm_fit, B = 1e3, m = 50)
+#   ci_50 <- comp_conf_int_bootstrap(boot_50)
+#   expect_equal(ci, ci_50, tol = 1e-2)
+})
+
+
 
 
 

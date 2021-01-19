@@ -40,5 +40,9 @@ mod_fit <- stats::lm(y ~ X)
 # Run the multiplier bootstrap on the fitted (OLS) linear model
 set.seed(162632)
 coef_emp_boot <- comp_empirical_bootstrap(mod_fit = mod_fit, B = 1000)
+out <- comp_bootstrap_summary(mod_fit, coef_emp_boot, 'emp')
+
+# print output
+print(out)
 }
 }

@@ -186,7 +186,7 @@ This can be done through the following function.
 se_emp <- maars::comp_bootstrap_summary(mod_fit = mod_fit, 
                                        boot_out = coef_emp_boot, 
                                        boot_type = 'emp') %>%
-            dplyr::select(-std.error, -t.stat, -p.val)
+            dplyr::select(-std.error, -statistic, -p.value)
 ```
 
 
@@ -246,7 +246,7 @@ dplyr::glimpse(coef_mult_boot)
 # se_mult <- maars::comp_bootstrap_summary(mod_fit = mod_fit, 
 #                                        boot_out = coef_mult_boot, 
 #                                        boot_type = 'mult') %>%
-#             dplyr::select(-std.error, -t.stat, -p.val)
+#             dplyr::select(-std.error, -statistic, -p.value)
 ```
 
 ## Computing standard errors from OLS using Sandwich Estimator
@@ -262,7 +262,7 @@ se_sand
 
 ```{r se_sand_save_table, include=FALSE, eval=TRUE}
 se_sand %>%
-  dplyr::select(-t.stat, -p.val) %>%
+  dplyr::select(-statistic, -p.value) %>%
   purrr::set_names(x = .,
                    nm = c('Term', '$\\widehat{\\beta}_{j}$',
                           '$SE_{\\text{lin}}$', 
@@ -366,7 +366,7 @@ se_comb %>%
 
 ```{r se_comb_save_table, include=FALSE, eval=TRUE}
 se_comb %>%
-  dplyr::select(-t.stat, -p.val) %>% 
+  dplyr::select(-statistic, -p.value) %>% 
   purrr::set_names(x = ., 
                    nm = c('Term', '$\\widehat{\\beta}_{j}$', 
                           '$SE_{\\text{lin}}$',

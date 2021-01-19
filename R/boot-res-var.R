@@ -50,7 +50,7 @@ comp_boot_res <- function(mod_fit, B = 100) {
     purrr::map_df(
       ~ comp_cond_model(
         mod_fit = mod_fit,
-        data = data %>% dplyr::mutate(!!sym(response_name) := mod_pred + sample(mod_res, n, replace = T))
+        data = data %>% dplyr::mutate({{response_name}} := mod_pred + sample(mod_res, n, replace = T))
       ),
       .id = "b"
     ) %>%

@@ -48,8 +48,8 @@ out <- mod_fit %>%
   broom::tidy(x = .) %>%
   dplyr::rename(
     .data = .,
-    t.stat = .data$statistic,
-    p.val = .data$p.value
+    statistic = .data$statistic,
+    p.value = .data$p.value
   ) %>%
   dplyr::left_join(
     x = .,
@@ -58,9 +58,9 @@ out <- mod_fit %>%
   ) %>%
   dplyr::mutate(
     .data = .,
-    t.stat.sand = .data$estimate / .data$std.error.sand,
+    statistic.sand = .data$estimate / .data$std.error.sand,
     p.value.sand = 2 * (1 - sapply(
-      abs(.data$t.stat.sand),
+      abs(.data$statistic.sand),
       stats::pnorm
     ))
   )

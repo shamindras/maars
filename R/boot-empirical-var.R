@@ -255,7 +255,7 @@ comp_conf_int_bootstrap <- function(boot_out, probs = c(0.025, 0.975),
   out <- boot_out %>%
     tidyr::unnest(boot_out) %>%
     dplyr::group_by(dplyr::across(dplyr::all_of(group_vars))) %>%
-    dplyr::summarise(x = stats::quantile(sqrt(m / n) * estimate,
+    dplyr::summarise(x = stats::quantile(sqrt(m / n) * (estimate-mean(estimate)) + mean(estimate),
                                          probs = probs),
                      q = probs,
                      .groups = "keep")

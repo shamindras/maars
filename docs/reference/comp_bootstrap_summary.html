@@ -174,6 +174,10 @@ for output from <code><a href='comp_multiplier_bootstrap_var.html'>comp_multipli
 <span class='co'># Run the multiplier bootstrap on the fitted (OLS) linear model</span>
 <span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>162632</span><span class='op'>)</span>
 <span class='va'>coef_emp_boot</span> <span class='op'>&lt;-</span> <span class='fu'><a href='comp_empirical_bootstrap.html'>comp_empirical_bootstrap</a></span><span class='op'>(</span>mod_fit <span class='op'>=</span> <span class='va'>mod_fit</span>, B <span class='op'>=</span> <span class='fl'>1000</span><span class='op'>)</span>
+<span class='va'>out</span> <span class='op'>&lt;-</span> <span class='fu'>comp_bootstrap_summary</span><span class='op'>(</span><span class='va'>mod_fit</span>, <span class='va'>coef_emp_boot</span>, <span class='st'>'emp'</span><span class='op'>)</span>
+
+<span class='co'># print output</span>
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>out</span><span class='op'>)</span>
 <span class='op'>}</span>
 </div></pre>
   </div>
