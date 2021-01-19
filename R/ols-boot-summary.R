@@ -75,7 +75,7 @@ comp_bootstrap_summary <- function(mod_fit, boot_out, boot_type) {
         dplyr::summarise(
               .data = .,
               std.error.boot = stats::sd(sqrt(.data$m / .data$n) * (.data$estimate.boot - mean(.data$estimate.boot))),
-              p.val.boot = mean(abs(.data$estimate - .data$estimate.boot) < abs(.data$estimate))
+              p.val.boot = mean(abs(.data$estimate - .data$estimate.boot) > abs(.data$estimate))
             ) %>%
         dplyr::mutate(.data = .,
                       t.stat.boot = .data$estimate / .data$std.error.boot)  %>%
