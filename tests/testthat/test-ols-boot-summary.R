@@ -32,7 +32,7 @@ test_that("test estimate variance from empirical bootstrap for different values 
 })
 
 
-test_that("test estimate variance from empirical bootstrap matches estimate of variance from stats::glm", {
+test_that("test estimate of variance from empirical bootstrap matches estimate of variance from stats::glm", {
     boot_out <- comp_empirical_bootstrap(glm_fit, B = 1e3)
     boot_summary <- comp_bootstrap_summary(mod_fit = glm_fit, boot_out = boot_out, boot_type = 'emp')
     expect_equal(boot_summary$std.error.boot.emp, boot_summary$std.error, tol = 1e-2)
@@ -42,7 +42,7 @@ test_that("test estimate variance from empirical bootstrap matches estimate of v
 
 
 
-test_that("test estimate variance from multiplier bootstrap matches estimate of variance from stats::lm", {
+test_that("test estimate of variance from multiplier bootstrap matches estimate of variance from stats::lm", {
     boot_out <- comp_multiplier_bootstrap_var(lm_fit, B = 1e4, weights_type = 'std_gaussian')
     boot_summary <- comp_bootstrap_summary(mod_fit = lm_fit, boot_out = boot_out, boot_type = 'mult')
     expect_equal(boot_summary$std.error.boot.mult, boot_summary$std.error, tol = 1e-2)
