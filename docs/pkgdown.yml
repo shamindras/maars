@@ -1,7 +1,7 @@
-pandoc: 2.11.1.1
+pandoc: '2.10'
 pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
   se-la-county-data: se-la-county-data.html
-last_built: 2021-01-23T23:14Z
+last_built: 2021-01-23T23:20Z
 
