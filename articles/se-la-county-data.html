@@ -414,7 +414,7 @@ PercIndustrial
 <code class="sourceCode R"><span class="va">se_emp</span> <span class="op">&lt;-</span> <span class="fu">maars</span><span class="fu">::</span><span class="fu"><a href="../reference/comp_bootstrap_summary.html">comp_bootstrap_summary</a></span><span class="op">(</span>mod_fit <span class="op">=</span> <span class="va">mod_fit</span>, 
                                        boot_out <span class="op">=</span> <span class="va">coef_emp_boot</span>, 
                                        boot_type <span class="op">=</span> <span class="st">'emp'</span><span class="op">)</span> <span class="op">%&gt;%</span>
-            <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">std.error</span>, <span class="op">-</span><span class="va">t.stat</span>, <span class="op">-</span><span class="va">p.val</span><span class="op">)</span></code></pre></div>
+            <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">std.error</span>, <span class="op">-</span><span class="va">statistic</span>, <span class="op">-</span><span class="va">p.value</span><span class="op">)</span></code></pre></div>
 <p>This now fits, the <span class="math inline">\(B = 10^{3}\)</span> replications. let’s view the output.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">se_emp</span> <span class="op">%&gt;%</span> 
@@ -458,7 +458,7 @@ Term
 0.05
 </td>
 <td style="text-align:center;">
-0.04
+0.96
 </td>
 </tr>
 <tr>
@@ -475,7 +475,7 @@ Term
 -1.61
 </td>
 <td style="text-align:center;">
-0.90
+0.10
 </td>
 </tr>
 <tr>
@@ -492,7 +492,7 @@ PercCommercial
 1.86
 </td>
 <td style="text-align:center;">
-0.94
+0.06
 </td>
 </tr>
 <tr>
@@ -509,7 +509,7 @@ PercIndustrial
 1.55
 </td>
 <td style="text-align:center;">
-0.88
+0.12
 </td>
 </tr>
 <tr>
@@ -526,7 +526,7 @@ PercMinority
 0.76
 </td>
 <td style="text-align:center;">
-0.54
+0.47
 </td>
 </tr>
 <tr>
@@ -543,7 +543,7 @@ PercResidential
 -0.45
 </td>
 <td style="text-align:center;">
-0.37
+0.63
 </td>
 </tr>
 <tr>
@@ -560,7 +560,7 @@ PercVacant
 3.29
 </td>
 <td style="text-align:center;">
-0.99
+0.01
 </td>
 </tr>
 </tbody>
@@ -601,7 +601,7 @@ PercVacant
 <code class="sourceCode R"><span class="co"># se_mult &lt;- maars::comp_bootstrap_summary(mod_fit = mod_fit, </span>
 <span class="co">#                                        boot_out = coef_mult_boot, </span>
 <span class="co">#                                        boot_type = 'mult') %&gt;%</span>
-<span class="co">#             dplyr::select(-std.error, -t.stat, -p.val)</span></code></pre></div>
+<span class="co">#             dplyr::select(-std.error, -statistic, -p.value)</span></code></pre></div>
 </div>
 <div id="computing-standard-errors-from-ols-using-sandwich-estimator" class="section level2">
 <h2 class="hasAnchor">
@@ -611,15 +611,15 @@ PercVacant
 <code class="sourceCode R"><span class="va">se_sand</span> <span class="op">&lt;-</span> <span class="fu">maars</span><span class="fu">::</span><span class="fu"><a href="../reference/comp_sandwich_qr_var.html">comp_sandwich_qr_var</a></span><span class="op">(</span>mod_fit <span class="op">=</span> <span class="va">mod_fit</span><span class="op">)</span>
 <span class="va">se_sand</span>
 <span class="co">#&gt; # A tibble: 7 x 8</span>
-<span class="co">#&gt;   term  estimate std.error  t.stat   p.val std.error.sand t.stat.sand</span>
-<span class="co">#&gt;   &lt;chr&gt;    &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;          &lt;dbl&gt;       &lt;dbl&gt;</span>
-<span class="co">#&gt; 1 (Int…   0.760     22.8    0.0334 9.73e-1         15.9        0.0478</span>
-<span class="co">#&gt; 2 `Med…  -0.183      0.187 -0.977  3.29e-1          0.105     -1.75  </span>
-<span class="co">#&gt; 3 Perc…   4.63       0.901  5.14   3.96e-7          1.29       3.60  </span>
-<span class="co">#&gt; 4 Perc…   0.123      0.176  0.701  4.84e-1          0.162      0.761 </span>
-<span class="co">#&gt; 5 Perc…  -0.0501     0.171 -0.292  7.70e-1          0.108     -0.462 </span>
-<span class="co">#&gt; 6 Perc…   0.737      0.273  2.70   7.18e-3          0.388      1.90  </span>
-<span class="co">#&gt; 7 Perc…   0.905      0.321  2.82   5.03e-3          0.579      1.56  </span>
+<span class="co">#&gt;   term  estimate std.error statistic p.value std.error.sand statistic.sand</span>
+<span class="co">#&gt;   &lt;chr&gt;    &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;          &lt;dbl&gt;          &lt;dbl&gt;</span>
+<span class="co">#&gt; 1 (Int…   0.760     22.8      0.0334 9.73e-1         15.9           0.0478</span>
+<span class="co">#&gt; 2 `Med…  -0.183      0.187   -0.977  3.29e-1          0.105        -1.75  </span>
+<span class="co">#&gt; 3 Perc…   4.63       0.901    5.14   3.96e-7          1.29          3.60  </span>
+<span class="co">#&gt; 4 Perc…   0.123      0.176    0.701  4.84e-1          0.162         0.761 </span>
+<span class="co">#&gt; 5 Perc…  -0.0501     0.171   -0.292  7.70e-1          0.108        -0.462 </span>
+<span class="co">#&gt; 6 Perc…   0.737      0.273    2.70   7.18e-3          0.388         1.90  </span>
+<span class="co">#&gt; 7 Perc…   0.905      0.321    2.82   5.03e-3          0.579         1.56  </span>
 <span class="co">#&gt; # … with 1 more variable: p.value.sand &lt;dbl&gt;</span></code></pre></div>
 <p>We can also visually compare the two types of confidence intervals.</p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
@@ -750,7 +750,7 @@ Term
 0.05
 </td>
 <td style="text-align:center;">
-0.04
+0.96
 </td>
 </tr>
 <tr>
@@ -785,7 +785,7 @@ Term
 -1.61
 </td>
 <td style="text-align:center;">
-0.90
+0.10
 </td>
 </tr>
 <tr>
@@ -820,7 +820,7 @@ PercVacant
 3.29
 </td>
 <td style="text-align:center;">
-0.99
+0.01
 </td>
 </tr>
 <tr>
@@ -855,7 +855,7 @@ PercMinority
 0.76
 </td>
 <td style="text-align:center;">
-0.54
+0.47
 </td>
 </tr>
 <tr>
@@ -890,7 +890,7 @@ PercResidential
 -0.45
 </td>
 <td style="text-align:center;">
-0.37
+0.63
 </td>
 </tr>
 <tr>
@@ -925,7 +925,7 @@ PercCommercial
 1.86
 </td>
 <td style="text-align:center;">
-0.94
+0.06
 </td>
 </tr>
 <tr>
@@ -960,7 +960,7 @@ PercIndustrial
 1.55
 </td>
 <td style="text-align:center;">
-0.88
+0.12
 </td>
 </tr>
 </tbody>
