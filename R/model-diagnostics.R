@@ -219,17 +219,8 @@ comp_coef_rwgt <- function(mod_fit,
   assertthat::assert_that((n_grid > 1) & (n_grid == as.integer(n_grid)),
     msg = glue::glue("The number of points in the grid needs to be an integer larger than 1. It is currently {n_grid}.")
   )
-  assertthat::assert_that(B == as.integer(B) & B > 0,
-    msg = glue::glue("B must be an integer e.g. 100, it is currently {B}")
-  )
-  assertthat::assert_that(all(terms_to_rwgt %in% names(model.frame(mod_fit))),
-    msg = glue::glue("All terms used in the reweighting procedure must be included in the variables present in the data on which the model was fitted.")
-  )
-  if (!is.null(m)) {
-    assertthat::assert_that(m == as.integer(m) & m > 0,
-      msg = glue::glue("m must be an integer e.g. 100, it is currently {m}")
-    )
-  }
+  checkargs(B=B, m=m)
+
   if (!is.null(grid_centers)) {
     assertthat::assert_that(is.data.frame(grid_centers),
       msg = glue::glue("grid_centers must be a data frame where column names correspond to the names of the regressors and the centers values")

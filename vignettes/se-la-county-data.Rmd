@@ -131,7 +131,8 @@ broom::tidy(mod_fit) %>%
                  caption = 'Summary output from lm()') %>%
   print(include.rownames = FALSE, sanitize.text.function=function(x){x},
         file = here::here("vignettes","figures",
-                          "output", "r00_mod_lm_fit.tex"))
+                          "output", "r00_mod_lm_fit.tex"),
+        comment = FALSE)
 ```
 
 
@@ -185,7 +186,7 @@ This can be done through the following function.
 se_emp <- maars::comp_bootstrap_summary(mod_fit = mod_fit, 
                                        boot_out = coef_emp_boot, 
                                        boot_type = 'emp') %>%
-            dplyr::select(-std.error, -t.stat, -p.val)
+            dplyr::select(-std.error, -statistic, -p.value)
 ```
 
 
@@ -212,7 +213,8 @@ se_emp %>%
                  caption = 'Empirical Bootstrap Standard Errors') %>% 
   print(include.rownames = FALSE, sanitize.text.function=function(x){x},
         file = here::here("vignettes","figures",
-                          "output", "r02b_se_emp.tex"))
+                          "output", "r02b_se_emp.tex"),
+        comment = FALSE)
 ```
 
 As we can see, the output is in tidy format as a `tibble` object. This makes it
@@ -244,7 +246,7 @@ dplyr::glimpse(coef_mult_boot)
 # se_mult <- maars::comp_bootstrap_summary(mod_fit = mod_fit, 
 #                                        boot_out = coef_mult_boot, 
 #                                        boot_type = 'mult') %>%
-#             dplyr::select(-std.error, -t.stat, -p.val)
+#             dplyr::select(-std.error, -statistic, -p.value)
 ```
 
 ## Computing standard errors from OLS using Sandwich Estimator
@@ -260,7 +262,7 @@ se_sand
 
 ```{r se_sand_save_table, include=FALSE, eval=TRUE}
 se_sand %>%
-  dplyr::select(-t.stat, -p.val) %>%
+  dplyr::select(-statistic, -p.value) %>%
   purrr::set_names(x = .,
                    nm = c('Term', '$\\widehat{\\beta}_{j}$',
                           '$SE_{\\text{lin}}$', 
@@ -270,7 +272,8 @@ se_sand %>%
                  caption = 'Sandwich Estimator Standard Errors') %>% 
   print(include.rownames = FALSE, sanitize.text.function=function(x){x},
         file = here::here("vignettes","figures",
-                          "output", "r01_se_sand.tex"))
+                          "output", "r01_se_sand.tex"),
+        comment = FALSE)
 ```
 
 
@@ -363,7 +366,7 @@ se_comb %>%
 
 ```{r se_comb_save_table, include=FALSE, eval=TRUE}
 se_comb %>%
-  dplyr::select(-t.stat, -p.val) %>% 
+  dplyr::select(-statistic, -p.value) %>% 
   purrr::set_names(x = ., 
                    nm = c('Term', '$\\widehat{\\beta}_{j}$', 
                           '$SE_{\\text{lin}}$',
@@ -379,7 +382,8 @@ se_comb %>%
                  caption = 'Summary - Sandwich Estimator and Empirical Bootstrap') %>% 
   print(include.rownames = FALSE, sanitize.text.function=function(x){x},
         file = here::here("vignettes","figures",
-                          "output", "r05_se_comb.tex"))
+                          "output", "r05_se_comb.tex"),
+        comment = FALSE)
 ```
 
 ## Reproduce Table 1 from [@buja2019modelsasapproximationspart1]

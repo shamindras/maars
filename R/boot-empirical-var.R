@@ -39,7 +39,7 @@ comp_empirical_bootstrap_samples <- function(data,
                                              B = 100,
                                              m = NULL) {
   n <- nrow(data)
-  if (missing(m)) {
+  if (is.null(m)) {
     m <- n
   }
 
@@ -142,7 +142,7 @@ comp_cond_model <- function(mod_fit, data, weights = NULL) {
 }
 
 
-#' A wrapper for the empirical bootstrap of a fitted OLS regression model
+#' A wrapper for the empirical bootstrap of a fitted OLS or GLM regression model
 #'
 #' \code{comp_empirical_bootstrap} is a wrapper for the empirical bootstrap of
 #' a fitted \code{\link[stats]{lm}} or \code{\link[stats]{glm}} model.
@@ -184,23 +184,10 @@ comp_empirical_bootstrap <- function(mod_fit, B = 100, m = NULL) {
   assertthat::assert_that(all("lm" == class(mod_fit)) | any("glm" == class(mod_fit)),
     msg = glue::glue("mod_fit must only be of class lm or glm")
   )
-  assertthat::assert_that(B == as.integer(B),
-    msg = glue::glue("B must be an integer e.g. 100, it is currently {B}")
-  )
-  assertthat::assert_that(B > 0,
-    msg = glue::glue("B must be positive e.g. 100, it is currently {B}")
-  )
-  if (!is.null(m)) {
-    assertthat::assert_that(m == as.integer(m),
-      msg = glue::glue("m must be an integer e.g. 100, it is currently {m}")
-    )
-    assertthat::assert_that(m > 0,
-      msg = glue::glue("m must be positive e.g. 100, it is currently {m}")
-    )
-  }
+  checkargs(B=B,m=m)
 
   data <- stats::model.frame(mod_fit)
-  if (is.null(m) | missing(m)) {
+  if (is.null(m)) {
     m <- nrow(data)
   }
 
@@ -268,7 +255,7 @@ comp_conf_int_bootstrap <- function(boot_out, probs = c(0.025, 0.975),
   out <- boot_out %>%
     tidyr::unnest(boot_out) %>%
     dplyr::group_by(dplyr::across(dplyr::all_of(group_vars))) %>%
-    dplyr::summarise(x = stats::quantile(sqrt(m / n) * estimate,
+    dplyr::summarise(x = stats::quantile(sqrt(m / n) * (estimate-mean(estimate)) + mean(estimate),
                                          probs = probs),
                      q = probs,
                      .groups = "keep")

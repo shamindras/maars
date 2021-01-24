@@ -34,21 +34,29 @@
 #' # Run the multiplier bootstrap on the fitted (OLS) linear model
 #' set.seed(162632)
 #' coef_emp_boot <- comp_empirical_bootstrap(mod_fit = mod_fit, B = 1000)
+#' out <- comp_bootstrap_summary(mod_fit, coef_emp_boot, 'emp')
+#'
+#' # print output
+#' print(out)
 #' }
 comp_bootstrap_summary <- function(mod_fit, boot_out, boot_type) {
-    assertthat::assert_that(all("lm" == class(mod_fit)),
-                            msg = glue::glue("mod_fit must only be of class lm"))
+    assertthat::assert_that(all("lm" == class(mod_fit)) | any("glm" == class(mod_fit)),
+                            msg = glue::glue("mod_fit must only be of class lm or glm"))
     assertthat::assert_that("tbl_df" %in% class(boot_out),
                             msg = glue::glue("boot_out must only be of class tibble"))
-    assertthat::assert_that(boot_type %in% c("emp", "mult"),
+    assertthat::assert_that(boot_type %in% c("emp", "mult", "res"),
                             msg = glue::glue("boot_out must only be a character taking values either 'emp' or 'mult'"))
 
-    # Get OLS estimate
-    lm_out <- broom::tidy(x = mod_fit) %>%
+    if(boot_type %in% c("mult", "res")){
+        boot_out <- boot_out %>% dplyr::mutate(m = nrow(model.frame(mod_fit)), n = m)
+        }
+
+    # Get model's estimate
+    mod_out <- broom::tidy(x = mod_fit) %>%
         dplyr::rename(.data = .,
-                      t.stat = .data$statistic,
-                      p.val = .data$p.value)
-    lm_out_sel <- lm_out %>%
+                      statistic = .data$statistic,
+                      p.value = .data$p.value)
+    mod_out_sel <- mod_out %>%
                     dplyr::select(.data = .,
                                   .data$term,
                                   .data$estimate)
@@ -56,8 +64,8 @@ comp_bootstrap_summary <- function(mod_fit, boot_out, boot_type) {
     # Define colnames into separate variables, dplyr::rename does not like
     # this to be defined on the fly. TODO: Investigate a more elegant approach
     std.error.boot.colname <- stringr::str_c("std.error.boot", boot_type, sep = ".")
-    p.val.boot.colname <- stringr::str_c("p.val.boot", boot_type, sep = ".")
-    t.stat.boot.colname <-  stringr::str_c("t.stat.boot", boot_type, sep = ".")
+    p.value.boot.colname <- stringr::str_c("p.value.boot", boot_type, sep = ".")
+    statistic.boot.colname <-  stringr::str_c("statistic.boot", boot_type, sep = ".")
 
     out <- boot_out %>%
         tidyr::unnest(data = .,
@@ -65,8 +73,8 @@ comp_bootstrap_summary <- function(mod_fit, boot_out, boot_type) {
         dplyr::rename(.data = .,
                       estimate.boot = .data$estimate) %>%
         dplyr::left_join(x = .,
-                         y = lm_out %>%
-                                 dplyr::select(.data = ,
+                         y = mod_out %>%
+                                 dplyr::select(.data = .,
                                                .data$term, .data$estimate),
                          by = "term") %>%
         dplyr::group_by(.data = .,
@@ -75,30 +83,30 @@ comp_bootstrap_summary <- function(mod_fit, boot_out, boot_type) {
         dplyr::summarise(
               .data = .,
               std.error.boot = stats::sd(sqrt(.data$m / .data$n) * (.data$estimate.boot - mean(.data$estimate.boot))),
-              p.val.boot = mean(abs(.data$estimate - .data$estimate.boot) < abs(.data$estimate))
+              p.value.boot = mean(abs(.data$estimate - .data$estimate.boot) > abs(.data$estimate))
             ) %>%
         dplyr::mutate(.data = .,
-                      t.stat.boot = .data$estimate / .data$std.error.boot)  %>%
+                      statistic.boot = .data$estimate / .data$std.error.boot)  %>%
         dplyr::left_join(x = .,
-                         y = lm_out %>% dplyr::select(.data = .,
+                         y = mod_out %>% dplyr::select(.data = .,
                                                       -.data$estimate),
                          by = "term") %>%
-        # dplyr::left_join(lm_out, by = "term") %>%
+        # dplyr::left_join(mod_out, by = "term") %>%
         dplyr::select(.data = .,
                       .data$term,
                       .data$estimate,
                       .data$std.error,
-                      .data$t.stat,
-                      .data$p.val,
+                      .data$statistic,
+                      .data$p.value,
                       .data$std.error.boot,
-                      .data$t.stat.boot,
-                      .data$p.val.boot) %>%
+                      .data$statistic.boot,
+                      .data$p.value.boot) %>%
         purrr::set_names(x = .,
                          nm = c("term", "estimate",
-                                "std.error", "t.stat", "p.val",
+                                "std.error", "statistic", "p.value",
                                 std.error.boot.colname,
-                                t.stat.boot.colname,
-                                p.val.boot.colname)) %>%
+                                statistic.boot.colname,
+                                p.value.boot.colname)) %>%
         dplyr::arrange(.data = ., .data$term)
     return(out)
 }

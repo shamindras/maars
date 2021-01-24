@@ -37,21 +37,33 @@ J_inv <- stats::summary.lm(mod_fit)$cov.unscaled
 X <- qr.X(mod_fit$qr)
 V <- t(X) %*% Matrix::Diagonal(x = stats::residuals(mod_fit)^2) %*% X
 
-out <- tibble::tibble(
-  term = names(mod_fit$coefficients),
-  estimate = mod_fit$coefficients,
-  std.error = summary(mod_fit)[["coefficients"]][, "Std. Error"],
-  t.stat = summary(mod_fit)[["coefficients"]][, "t value"],
-  p.val = summary(mod_fit)[["coefficients"]][, "Pr(>|t|)"],
-  std.error.sand = sqrt(diag(as.matrix(J_inv %*% V %*% J_inv)))
-) %>%
+std_error_sand <- sqrt(diag(as.matrix(J_inv %*% V %*% J_inv))) %>%
+  tibble::enframe(
+    x = .,
+    name = "term",
+    value = "std.error.sand"
+  )
+
+out <- mod_fit %>%
+  broom::tidy(x = .) %>%
+  dplyr::rename(
+    .data = .,
+    statistic = .data$statistic,
+    p.value = .data$p.value
+  ) %>%
+  dplyr::left_join(
+    x = .,
+    y = std_error_sand,
+    by = "term"
+  ) %>%
   dplyr::mutate(
     .data = .,
-    t.stat.sand = .data$estimate / .data$std.error.sand,
+    statistic.sand = .data$estimate / .data$std.error.sand,
     p.value.sand = 2 * (1 - sapply(
-      abs(.data$t.stat.sand),
+      abs(.data$statistic.sand),
       stats::pnorm
     ))
   )
+
 return(out)
 }

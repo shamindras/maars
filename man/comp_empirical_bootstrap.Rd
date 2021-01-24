@@ -2,7 +2,7 @@
 % Please edit documentation in R/boot-empirical-var.R
 \name{comp_empirical_bootstrap}
 \alias{comp_empirical_bootstrap}
-\title{A wrapper for the empirical bootstrap of a fitted OLS regression model}
+\title{A wrapper for the empirical bootstrap of a fitted OLS or GLM regression model}
 \usage{
 comp_empirical_bootstrap(mod_fit, B = 100, m = NULL)
 }

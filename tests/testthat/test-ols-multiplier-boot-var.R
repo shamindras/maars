@@ -45,3 +45,5 @@ testthat::test_that("Check assertions are handled correctly", {
     expect_error(comp_multiplier_bootstrap_var(mod_fit = mtcars, B = -1,
                                                weights_type = WEIGHTS_TYPE))
 })
+
+
