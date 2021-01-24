@@ -74,7 +74,7 @@ comp_bootstrap_summary <- function(mod_fit, boot_out, boot_type) {
                       estimate.boot = .data$estimate) %>%
         dplyr::left_join(x = .,
                          y = mod_out %>%
-                                 dplyr::select(.data = ,
+                                 dplyr::select(.data = .,
                                                .data$term, .data$estimate),
                          by = "term") %>%
         dplyr::group_by(.data = .,
