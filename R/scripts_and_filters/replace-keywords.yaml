@@ -15,4 +15,4 @@
 "gen_multiplier_bootstrap_weights": "comp_mul_boot_wgt"
 "comp_cond_model": "fit_reg"
 "comp_boot_res": "comp_boot_res"
-"checkargs" : "check_fn_args"
+"checkargs": "check_fn_args"
