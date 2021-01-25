@@ -13,7 +13,7 @@
 #' @return A tibble containing the sandwich estimator of variance for OLS
 #'   regression.
 #'
-#' @export
+#' @keywords internal
 #'
 #' @importFrom Rdpack reprompt
 #' @importFrom rlang .data

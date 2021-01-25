@@ -29,7 +29,7 @@
 #' @return A numeric vector of n (sampled with replacement) random multiplier
 #'   bootstrap weights based on the specified multiplier weights type.
 #'
-#' @export
+#' @keywords internal
 #'
 #' @importFrom Rdpack reprompt
 #' @importFrom rlang .data
@@ -110,7 +110,7 @@ gen_multiplier_bootstrap_weights <- function(n, weights_type) {
 #'
 #' @return A tibble of the bootstrap standard errors.
 #'
-#' @export
+#' @keywords internal
 #'
 #' @importFrom rlang .data
 #'
@@ -169,7 +169,7 @@ comp_multiplier_single_bootstrap_var <- function(n, J_inv_X_res, e) {
 #'
 #' @return A tibble of the bootstrap calculations.
 #'
-#' @export
+#' @keywords internal
 #'
 #' @importFrom rlang .data
 #'

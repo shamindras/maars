@@ -21,7 +21,7 @@
 #' ("none", "left", "right", "bottom", "top", or two-element numeric vector)
 #'
 #' @return
-#' @export
+#' @keywords internal
 #'
 #' @examples
 #' \dontrun{
@@ -52,7 +52,6 @@ set_ggplot2_theme <- function(ggplot_obj,
 
     return(out)
 }
-
 
 
 

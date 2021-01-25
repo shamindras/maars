@@ -20,8 +20,7 @@
 #'
 #' @return A vector of values corresponding to the centers for the reweighting.
 #'
-#' @export
-#'
+#' @keywords internal
 #'
 #' @importFrom rlang .data
 #'
@@ -85,7 +84,7 @@ comp_grid_centers <- function(x, grid_method, n_grid) {
 #'   and estimates of the regression coefficients (\code{term} and
 #'   \code{estimate}).
 #'
-#' @export
+#' @keywords internal
 #'
 #' @importFrom rlang .data
 #'
