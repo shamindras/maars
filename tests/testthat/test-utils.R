@@ -2,7 +2,8 @@
 
 # Manually read in required functions from our scripts
 # base::source(here::here("R", "ols-multiplier-boot-var.R"))
-devtools::load_all()
+# devtools::load_all()
+base::source("../../R/ols-multiplier-boot-var.R")
 
 #' This is the \code{purrr} implementation of
 #' \code{\link{multiplier_single_bootstrap}}. It should be slower
