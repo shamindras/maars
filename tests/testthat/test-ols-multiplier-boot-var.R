@@ -1,4 +1,7 @@
 # Multiplier Bootstrap Utilities -----------------------------------------------
+base::source(here::here("R", "ols-multiplier-boot-var.R"))
+# devtools::load_all()
+# base::source("../../R/ols-multiplier-boot-var.R")
 base::source(here::here("tests", "testthat", "test-utils.R"))
 
 # Create OLS linear regression simulated data
