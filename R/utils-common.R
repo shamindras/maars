@@ -54,7 +54,19 @@ set_ggplot2_theme <- function(ggplot_obj,
 }
 
 
-
+#' Check whether the arguments in the function are correctly specified
+#'
+#' \code{checkargs} is used to assess whether the arguments
+#' are correctly specified and returns an error message if
+#' they do not match the correct specification
+#'
+#' @param n Sample size.
+#' @param B Bootstrap repetitions or number of bootstrap samples to be drawn.
+#' @param m Number of observations to be sampled with replacement from the
+#'   dataset for each bootstrap repetition.
+#'
+#' @return
+#' @keywords internal
 checkargs <- function(n = NULL, B = NULL, m = NULL) {
   if (!is.null(B)) {
     assertthat::assert_that(B == as.integer(B),
