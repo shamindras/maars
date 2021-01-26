@@ -44,3 +44,4 @@ boot <- comp_empirical_bootstrap_samples(
 print(boot)
 }
 }
+\keyword{internal}

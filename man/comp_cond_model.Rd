@@ -57,3 +57,4 @@ mod <- comp_cond_model(mod_fit, df, "weights")
 print(mod)
 }
 }
+\keyword{internal}

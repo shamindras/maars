@@ -44,3 +44,4 @@ set.seed(162632)
 comp_multiplier_bootstrap_var(lm_fit, B = 15, weights_type = 'std_gaussian')
 }
 }
+\keyword{internal}

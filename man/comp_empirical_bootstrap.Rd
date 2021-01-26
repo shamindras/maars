@@ -45,3 +45,4 @@ out <- comp_empirical_bootstrap(lm_fit, B = 100, m = 300)
 print(out)
 }
 }
+\keyword{internal}

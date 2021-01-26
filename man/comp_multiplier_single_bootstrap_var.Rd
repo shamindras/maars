@@ -61,3 +61,4 @@ comp_multiplier_single_bootstrap_var(n = n,
 print(mult_boot)
 }
 }
+\keyword{internal}

@@ -64,3 +64,4 @@ ols_rwgt_X1 <- comp_coef_rwgt_single(mod_fit, "X1", boot_samples, c(-1, 0, 1, 2)
 print(ols_rwgt_X1)
 }
 }
+\keyword{internal}

@@ -36,3 +36,4 @@ sandwich_qr_std_err <- comp_sandwich_qr_var(lm_fit)
 \references{
 \insertAllCited{}
 }
+\keyword{internal}
