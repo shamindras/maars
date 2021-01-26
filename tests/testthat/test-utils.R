@@ -1,5 +1,8 @@
 # Multiplier Bootstrap ---------------------------------------------------------
 
+# Manually read in required functions from our scripts
+source(here::here("R", "ols-multiplier-boot-var.R"))
+
 #' This is the \code{purrr} implementation of
 #' \code{\link{multiplier_single_bootstrap}}. It should be slower
 #' than the matrix implementation \code{\link{multiplier_single_bootstrap}}
