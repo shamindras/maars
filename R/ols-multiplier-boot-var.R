@@ -204,8 +204,8 @@ comp_multiplier_bootstrap_var <- function(mod_fit, B, weights_type) {
 
   # multiplier weights (mean 0, variance = 1)
   e <- matrix(data =
-                maars::gen_multiplier_bootstrap_weights(n = B * n,
-                                                       weights_type = weights_type),
+                gen_multiplier_bootstrap_weights(n = B * n,
+                                                 weights_type = weights_type),
               nrow = B,
               ncol = n)
 
