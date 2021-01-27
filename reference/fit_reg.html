@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>A wrapper for the residual bootstrap of a fitted OLS regression model — comp_boot_res • maars</title>
+<title>Fit OLS or GLM on the data — fit_reg • maars</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,8 @@
 
 
 
-<meta property="og:title" content="A wrapper for the residual bootstrap of a fitted OLS regression model — comp_boot_res" />
-<meta property="og:description" content="comp_boot_res is a wrapper for the empirical bootstrap of
-a fitted lm model." />
+<meta property="og:title" content="Fit OLS or GLM on the data — fit_reg" />
+<meta property="og:description" content="fit_reg fits an OLS or GLM on the input dataset." />
 
 
 
@@ -128,57 +127,74 @@ a fitted lm model." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>A wrapper for the residual bootstrap of a fitted OLS regression model</h1>
+    <h1>Fit OLS or GLM on the data</h1>
     
-    <div class="hidden name"><code>comp_boot_res.Rd</code></div>
+    <div class="hidden name"><code>fit_reg.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p><code>comp_boot_res</code> is a wrapper for the empirical bootstrap of
-a fitted <code><a href='https://rdrr.io/r/stats/lm.html'>lm</a></code> model.</p>
+    <p><code>fit_reg</code> fits an OLS or GLM on the input dataset.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>comp_boot_res</span><span class='op'>(</span><span class='va'>mod_fit</span>, B <span class='op'>=</span> <span class='fl'>100</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>fit_reg</span><span class='op'>(</span><span class='va'>mod_fit</span>, <span class='va'>data</span>, weights <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>mod_fit</th>
-      <td><p>An object of class <code><a href='https://rdrr.io/r/stats/lm.html'>lm</a></code> to fit on the data.
-This object should contain the formula and the data.</p></td>
+      <td><p>An object of class <code><a href='https://rdrr.io/r/stats/lm.html'>lm</a></code> or
+<code><a href='https://rdrr.io/r/stats/glm.html'>glm</a></code> to fit on the data. This object should contain
+the formula, the data, and, in case of <code><a href='https://rdrr.io/r/stats/glm.html'>glm</a></code>, the
+glm family.</p></td>
     </tr>
     <tr>
-      <th>B</th>
-      <td><p>Bootstrap repetitions or number of bootstrap samples to be drawn.</p></td>
+      <th>data</th>
+      <td><p>A tibble or data frame containing the dataset on which the
+model will be trained.</p></td>
+    </tr>
+    <tr>
+      <th>weights</th>
+      <td><p>A character corresponding to the name of the weights feature
+name in the data.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A tibble of the model's coefficients estimated (<code>term</code> and
-<code>estimate</code>) on the bootstrapped datasets,
-the size of the original dataset (<code>n</code>), and the number of the
-bootstrap repetition (<code>b</code>).</p>
+    <p>A tibble containing the estimated coefficients (<code>term</code>) of
+the regressors (<code>term</code>).</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>The residual bootstrap consists of fitting the chosen statistical
-model (<code>mod_fit</code>) <code>B</code> times. Each of the <code>B</code> datasets
-consists of the original independent variables and of dependent variable
-given by the sum of the estimates of the original model and a
-bootstrap versions of the residuals.</p>
+    <p>The model specification obtained from <code>mod_fit</code>, of
+class <code><a href='https://rdrr.io/r/stats/lm.html'>lm</a></code> or <code><a href='https://rdrr.io/r/stats/glm.html'>glm</a></code>, is
+fitted on <code>data</code>. The user can choose to fit a weighted
+regression using the argument <code>weights</code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='co'># Obtain estimates of the coefficients on bootstrapped versions of the dataset</span>
-<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>35542</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>457468</span><span class='op'>)</span>
+<span class='co'># Estimate ols from a bootstraped dataset</span>
 <span class='va'>n</span> <span class='op'>&lt;-</span> <span class='fl'>1e3</span>
 <span class='va'>X</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>
 <span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fl'>2</span> <span class='op'>+</span> <span class='va'>X</span> <span class='op'>*</span> <span class='fl'>1</span> <span class='op'>+</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>
 <span class='va'>lm_fit</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>y</span> <span class='op'>~</span> <span class='va'>X</span><span class='op'>)</span>
-<span class='va'>out</span> <span class='op'>&lt;-</span> <span class='fu'>comp_boot_res</span><span class='op'>(</span><span class='va'>lm_fit</span>, B <span class='op'>=</span> <span class='fl'>100</span><span class='op'>)</span>
+<span class='va'>boot</span> <span class='op'>&lt;-</span> <span class='fu'><a href='comp_boot_emp_samples.html'>comp_boot_emp_samples</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/model.frame.html'>model.frame</a></span><span class='op'>(</span><span class='va'>lm_fit</span><span class='op'>)</span><span class='op'>)</span><span class='op'>$</span><span class='va'>data</span><span class='op'>[[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>]</span>
+<span class='va'>mod</span> <span class='op'>&lt;-</span> <span class='fu'>fit_reg</span><span class='op'>(</span><span class='va'>lm_fit</span>, <span class='va'>boot</span><span class='op'>)</span>
 
-<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>out</span><span class='op'>)</span>
+<span class='co'># Display the output</span>
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>mod</span><span class='op'>)</span>
+
+<span class='co'>#' # Estimate OLS from a dataset with weights</span>
+<span class='va'>n</span> <span class='op'>&lt;-</span> <span class='fl'>1e3</span>
+<span class='va'>X</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>
+<span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fl'>2</span> <span class='op'>+</span> <span class='va'>X</span> <span class='op'>*</span> <span class='fl'>1</span> <span class='op'>+</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>
+<span class='va'>mod_fit</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>y</span> <span class='op'>~</span> <span class='va'>X</span><span class='op'>)</span>
+<span class='va'>df</span> <span class='op'>&lt;-</span> <span class='fu'>tibble</span><span class='fu'>::</span><span class='fu'><a href='https://tibble.tidyverse.org/reference/tibble.html'>tibble</a></span><span class='op'>(</span>y <span class='op'>=</span> <span class='va'>y</span>, X <span class='op'>=</span> <span class='va'>X</span>, weights <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>X</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>mod</span> <span class='op'>&lt;-</span> <span class='fu'>fit_reg</span><span class='op'>(</span><span class='va'>mod_fit</span>, <span class='va'>df</span>, <span class='st'>"weights"</span><span class='op'>)</span>
+
+<span class='co'># Display the output</span>
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>mod</span><span class='op'>)</span>
 <span class='op'>}</span>
 </div></pre>
   </div>

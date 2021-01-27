@@ -6,7 +6,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>A wrapper for the residual bootstrap of a fitted OLS regression model — comp_boot_res • maars</title>
+<title>Calculate a single replication of the multiplier bootstrap for an OLS
+fitted dataset — comp_boot_mul_ind • maars</title>
 
 
 <!-- jquery -->
@@ -39,9 +40,13 @@
 
 
 
-<meta property="og:title" content="A wrapper for the residual bootstrap of a fitted OLS regression model — comp_boot_res" />
-<meta property="og:description" content="comp_boot_res is a wrapper for the empirical bootstrap of
-a fitted lm model." />
+<meta property="og:title" content="Calculate a single replication of the multiplier bootstrap for an OLS
+fitted dataset — comp_boot_mul_ind" />
+<meta property="og:description" content="comp_boot_mul_ind calculates a single
+replication of the multiplier bootstrap for an OLS fitted dataset
+based on an lm fitted object in R.
+This is given by the following expression:
+$$\frac{1}{n}\sum_{i=1}^{n} e_{i}\widehat{J}^{-1}X_{i}(Y_{i}-X_{i}^{T} \widehat{\beta})$$." />
 
 
 
@@ -128,57 +133,78 @@ a fitted lm model." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>A wrapper for the residual bootstrap of a fitted OLS regression model</h1>
+    <h1>Calculate a single replication of the multiplier bootstrap for an OLS
+fitted dataset</h1>
     
-    <div class="hidden name"><code>comp_boot_res.Rd</code></div>
+    <div class="hidden name"><code>comp_boot_mul_ind.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p><code>comp_boot_res</code> is a wrapper for the empirical bootstrap of
-a fitted <code><a href='https://rdrr.io/r/stats/lm.html'>lm</a></code> model.</p>
+    <p><code>comp_boot_mul_ind</code> calculates a single
+replication of the multiplier bootstrap for an OLS fitted dataset
+based on an <code><a href='https://rdrr.io/r/stats/lm.html'>lm</a></code> fitted object in <code>R</code>.
+This is given by the following expression:
+$$\frac{1}{n}\sum_{i=1}^{n} e_{i}\widehat{J}^{-1}X_{i}(Y_{i}-X_{i}^{T} \widehat{\beta})$$.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>comp_boot_res</span><span class='op'>(</span><span class='va'>mod_fit</span>, B <span class='op'>=</span> <span class='fl'>100</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>comp_boot_mul_ind</span><span class='op'>(</span><span class='va'>n</span>, <span class='va'>J_inv_X_res</span>, <span class='va'>e</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>mod_fit</th>
-      <td><p>An object of class <code><a href='https://rdrr.io/r/stats/lm.html'>lm</a></code> to fit on the data.
-This object should contain the formula and the data.</p></td>
+      <th>n</th>
+      <td><p>Number of observations (rows) of the underlying dataset.
+In the given notation we assume our dataset has \(n\)
+observations and \(d\) features (including an intercept)</p></td>
     </tr>
     <tr>
-      <th>B</th>
-      <td><p>Bootstrap repetitions or number of bootstrap samples to be drawn.</p></td>
+      <th>J_inv_X_res</th>
+      <td><p>A \(d \times \d\) matrix given by the
+expression
+\(\sum_{i=1}^{n}\widehat{J}^{-1}X_{i}(Y_{i}-X_{i}^{T} \widehat{\beta})\).</p></td>
+    </tr>
+    <tr>
+      <th>e</th>
+      <td><p>multiplier bootstrap weights. This is an \(n \times 1\)
+vector of mean zero, variance 1 random variables.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A tibble of the model's coefficients estimated (<code>term</code> and
-<code>estimate</code>) on the bootstrapped datasets,
-the size of the original dataset (<code>n</code>), and the number of the
-bootstrap repetition (<code>b</code>).</p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>The residual bootstrap consists of fitting the chosen statistical
-model (<code>mod_fit</code>) <code>B</code> times. Each of the <code>B</code> datasets
-consists of the original independent variables and of dependent variable
-given by the sum of the estimates of the original model and a
-bootstrap versions of the residuals.</p>
+    <p>A tibble of the bootstrap standard errors.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='co'># Obtain estimates of the coefficients on bootstrapped versions of the dataset</span>
-<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>35542</span><span class='op'>)</span>
-<span class='va'>n</span> <span class='op'>&lt;-</span> <span class='fl'>1e3</span>
+<span class='co'># Run an linear model (OLS) fit</span>
+<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>162632</span><span class='op'>)</span>
+<span class='va'>n</span> <span class='op'>&lt;-</span> <span class='fl'>1e2</span>
 <span class='va'>X</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>
 <span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fl'>2</span> <span class='op'>+</span> <span class='va'>X</span> <span class='op'>*</span> <span class='fl'>1</span> <span class='op'>+</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>
 <span class='va'>lm_fit</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>y</span> <span class='op'>~</span> <span class='va'>X</span><span class='op'>)</span>
-<span class='va'>out</span> <span class='op'>&lt;-</span> <span class='fu'>comp_boot_res</span><span class='op'>(</span><span class='va'>lm_fit</span>, B <span class='op'>=</span> <span class='fl'>100</span><span class='op'>)</span>
 
-<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>out</span><span class='op'>)</span>
+<span class='co'># Calculate the necessary required inputs for the bootstrap</span>
+<span class='va'>J_inv</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/summary.lm.html'>summary.lm</a></span><span class='op'>(</span><span class='va'>lm_fit</span><span class='op'>)</span><span class='op'>$</span><span class='va'>cov.unscaled</span>
+<span class='va'>X</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/qraux.html'>qr.X</a></span><span class='op'>(</span><span class='va'>lm_fit</span><span class='op'>$</span><span class='va'>qr</span><span class='op'>)</span>
+<span class='va'>res</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/residuals.html'>residuals</a></span><span class='op'>(</span><span class='va'>lm_fit</span><span class='op'>)</span>
+<span class='va'>n</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>res</span><span class='op'>)</span>
+<span class='va'>J_inv_X_res</span> <span class='op'>&lt;-</span>
+   <span class='fl'>1</span><span class='op'>:</span><span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>X</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+     <span class='fu'>purrr</span><span class='fu'>::</span><span class='fu'><a href='https://purrr.tidyverse.org/reference/map.html'>map</a></span><span class='op'>(</span><span class='op'>~</span> <span class='fu'><a href='https://rdrr.io/r/base/t.html'>t</a></span><span class='op'>(</span><span class='va'>J_inv</span> <span class='op'>%*%</span> <span class='va'>X</span><span class='op'>[</span><span class='va'>.x</span>, <span class='op'>]</span> <span class='op'>*</span> <span class='va'>res</span><span class='op'>[</span><span class='va'>.x</span><span class='op'>]</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+     <span class='fu'><a href='https://rdrr.io/r/base/do.call.html'>do.call</a></span><span class='op'>(</span><span class='va'>rbind</span>, <span class='va'>.</span><span class='op'>)</span>
+
+<span class='co'># Generate a single random vector of length n, containing</span>
+<span class='co'># mean 0, variance 1 random variables</span>
+<span class='va'>e</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>
+
+<span class='co'># Run a single replication of the multiplier bootstrap</span>
+<span class='va'>mult_boot_single_rep</span> <span class='op'>&lt;-</span>
+<span class='fu'>comp_boot_mul_ind</span><span class='op'>(</span>n <span class='op'>=</span> <span class='va'>n</span>,
+                                     J_inv_X_res <span class='op'>=</span> <span class='va'>J_inv_X_res</span>,
+                                     e <span class='op'>=</span> <span class='va'>e</span><span class='op'>)</span>
+<span class='co'># Display the output</span>
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>mult_boot</span><span class='op'>)</span>
 <span class='op'>}</span>
 </div></pre>
   </div>
