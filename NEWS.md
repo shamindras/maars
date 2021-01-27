@@ -1,5 +1,11 @@
 # maars 0.5.0
 
+* Rename function names to be more consistent e.g. remove `qr` from `empirical` bootstrap names
+* Ensure renamed function names are also correctly changed in the corresponding test files
+* Split our `pkgdown` references into suitable categories [like usethis](https://usethis.r-lib.org/reference/index.html), here is [an example](https://github.com/r-lib/usethis/blob/45d0fef414fd69ac7ed468d196e93db7f2008e27/_pkgdown.yml)
+* Change specific functions to be private by removing `#' @export` in `roxygen2` and replacing it with `#' @keywords internal`
+
+
 # maars 0.4.0
 
 * Include `.gitattributes` file

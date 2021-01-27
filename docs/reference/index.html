@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">maars</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
       </span>
     </div>
 
@@ -94,12 +94,21 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/se-la-county-data.html">Reproducing LA County Standard Errors from [@buja2019modelsasapproximationspart1]</a>
+      <a href="../articles/se-la-county-data.html">Reproducing Buja et. al. Tables</a>
     </li>
   </ul>
 </li>
-<li>
-  <a href="../news/index.html">Changelog</a>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    News
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../news/index.html">Changelog</a>
+    </li>
+  </ul>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -131,8 +140,8 @@
     <tbody>
       <tr>
         <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-          <p class="section-desc"></p>
+          <h2 id="section-statistical-utilities" class="hasAnchor"><a href="#section-statistical-utilities" class="anchor"></a>Statistical Utilities</h2>
+          <p class="section-desc"><p>Utilities for doing <em>statistical estimation and inference</em> under model misspecification</p></p>
         </th>
       </tr>
       
@@ -159,6 +168,26 @@
         </td>
         <td><p>Create an empirical or multiplier bootstrap summary table</p></td>
       </tr><tr>
+        
+        <td>
+          <p><code><a href="diag_fit_reg_rwgt.html">diag_fit_reg_rwgt()</a></code> </p>
+        </td>
+        <td><p>Obtain estimates of GLM or OLS under reweighting of one or
+multiple regressors</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-diagnostic-utilities" class="hasAnchor"><a href="#section-diagnostic-utilities" class="anchor"></a>Diagnostic Utilities</h2>
+          <p class="section-desc"><p>Utilities for performing <em>model fit diagnostics</em> under model misspecification</p></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
         
         <td>
           <p><code><a href="diag_boot_emp_qqn.html">diag_boot_emp_qqn()</a></code> </p>

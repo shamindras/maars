@@ -1,0 +1,31 @@
+url: https://shamindras.github.io/maars
+
+navbar:
+  type: default
+  left:
+  - icon: fa-home fa-lg
+    href: index.html
+  - text: Reference
+    href: reference/index.html
+  - text: Articles
+    menu:
+    - text: Reproducing Buja et. al. Tables
+      href: articles/se-la-county-data.html
+  - text: News
+    menu:
+    - text: "Changelog"
+      href: news/index.html
+
+reference:
+  - title: Statistical Utilities
+    desc: >
+      Utilities for doing *statistical estimation and inference* under model misspecification
+    contents:
+    - starts_with("comp_", internal = FALSE)
+    - starts_with("fit_", internal = FALSE)
+    - diag_fit_reg_rwgt
+  - title: Diagnostic Utilities
+    desc: >
+      Utilities for performing *model fit diagnostics* under model misspecification
+    contents:
+    - starts_with("diag_", internal = FALSE)
