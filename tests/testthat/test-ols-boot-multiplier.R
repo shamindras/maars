@@ -18,7 +18,7 @@ comp_multiplier_single_bootstrap_purrr_var <- function(n, J_inv_X_res, e) {
 
 #' This is the wrapper for the purrr implementation of the equivalent
 #' \code{\link{multiplier_single_bootstrap}} function. It should be slower
-#' than the matrix implementation \code{\link{comp_multiplier_bootstrap_var}}
+#' than the matrix implementation \code{\link{comp_boot_mul}}
 comp_multiplier_bootstrap_purrr_var <- function(mod_fit, B = 100, weights_type) {
     # Get OLS related output
     betas <- stats::coef(mod_fit)
@@ -31,7 +31,7 @@ comp_multiplier_bootstrap_purrr_var <- function(mod_fit, B = 100, weights_type) 
 
     # Multiplier weights (mean 0, variance = 1)
     e <- matrix(data =
-                    gen_multiplier_bootstrap_weights(n = B * n,
+                    comp_boot_mul_wgt(n = B * n,
                                                      weights_type = weights_type),
                 nrow = B,
                 ncol = n)
@@ -63,7 +63,7 @@ WEIGHTS_TYPE <- "std_gaussian"
 
 test_that("Check matrix and purrr multiplier bootstrap implmentations", {
     set.seed(5444243)
-    mult_boot_1 <- comp_multiplier_bootstrap_var(mod_fit = lm_fit, B = 3,
+    mult_boot_1 <- comp_boot_mul(mod_fit = lm_fit, B = 3,
                                                  weights_type = WEIGHTS_TYPE)
     set.seed(5444243)
     mult_boot_2 <- comp_multiplier_bootstrap_purrr_var(mod_fit = lm_fit, B = 3,
@@ -75,7 +75,7 @@ test_that("Check matrix and purrr multiplier bootstrap implmentations", {
 
 test_that("Check matrix and purrr multiplier bootstrap implmentations, 30 replications", {
     set.seed(1626323)
-    mult_boot_1 <- comp_multiplier_bootstrap_var(mod_fit = lm_fit, B = 30,
+    mult_boot_1 <- comp_boot_mul(mod_fit = lm_fit, B = 30,
                                                  weights_type = WEIGHTS_TYPE)
     set.seed(1626323)
     mult_boot_2 <- comp_multiplier_bootstrap_purrr_var(mod_fit = lm_fit, B = 30,
@@ -87,13 +87,13 @@ test_that("Check matrix and purrr multiplier bootstrap implmentations, 30 replic
 
 testthat::test_that("Check assertions are handled correctly", {
     # Check that B is an integer
-    expect_error(comp_multiplier_bootstrap_var(mod_fit = lm_fit, B = 3.5,
+    expect_error(comp_boot_mul(mod_fit = lm_fit, B = 3.5,
                                                weights_type = WEIGHTS_TYPE))
     # Check that B is positive
-    expect_error(comp_multiplier_bootstrap_var(mod_fit = lm_fit, B = -1,
+    expect_error(comp_boot_mul(mod_fit = lm_fit, B = -1,
                                                weights_type = WEIGHTS_TYPE))
     # Check that lm_fit is an object of class "lm"
-    expect_error(comp_multiplier_bootstrap_var(mod_fit = mtcars, B = -1,
+    expect_error(comp_boot_mul(mod_fit = mtcars, B = -1,
                                                weights_type = WEIGHTS_TYPE))
 })
 

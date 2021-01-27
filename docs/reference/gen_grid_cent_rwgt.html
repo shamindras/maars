@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>A wrapper for the residual bootstrap of a fitted OLS regression model — comp_boot_res • maars</title>
+<title>Create grid of centers for the reweighting of the regressor's distribution — gen_grid_cent_rwgt • maars</title>
 
 
 <!-- jquery -->
@@ -39,9 +39,9 @@
 
 
 
-<meta property="og:title" content="A wrapper for the residual bootstrap of a fitted OLS regression model — comp_boot_res" />
-<meta property="og:description" content="comp_boot_res is a wrapper for the empirical bootstrap of
-a fitted lm model." />
+<meta property="og:title" content="Create grid of centers for the reweighting of the regressor's distribution — gen_grid_cent_rwgt" />
+<meta property="og:description" content="gen_grid_cent_rwgt returns a grid of values based on the empirical
+distribution of the regressor in the data." />
 
 
 
@@ -128,57 +128,61 @@ a fitted lm model." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>A wrapper for the residual bootstrap of a fitted OLS regression model</h1>
+    <h1>Create grid of centers for the reweighting of the regressor's distribution</h1>
     
-    <div class="hidden name"><code>comp_boot_res.Rd</code></div>
+    <div class="hidden name"><code>gen_grid_cent_rwgt.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p><code>comp_boot_res</code> is a wrapper for the empirical bootstrap of
-a fitted <code><a href='https://rdrr.io/r/stats/lm.html'>lm</a></code> model.</p>
+    <p><code>gen_grid_cent_rwgt</code> returns a grid of values based on the empirical
+distribution of the regressor in the data.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>comp_boot_res</span><span class='op'>(</span><span class='va'>mod_fit</span>, B <span class='op'>=</span> <span class='fl'>100</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>gen_grid_cent_rwgt</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>grid_method</span>, <span class='va'>n_grid</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>mod_fit</th>
-      <td><p>An object of class <code><a href='https://rdrr.io/r/stats/lm.html'>lm</a></code> to fit on the data.
-This object should contain the formula and the data.</p></td>
+      <th>x</th>
+      <td><p>A vector of values taken by the regressor.</p></td>
     </tr>
     <tr>
-      <th>B</th>
-      <td><p>Bootstrap repetitions or number of bootstrap samples to be drawn.</p></td>
+      <th>grid_method</th>
+      <td><p>A character indicating the method to use for the
+construction of the grid of reweighting centers.
+The grid consists either of evenly spaced values between the maximum and
+the minimum (<code>grid_method='regular'</code>) or based on the quantiles
+between the second and the tenth deciles (<code>grid_method='quantiles'</code>).</p></td>
+    </tr>
+    <tr>
+      <th>n_grid</th>
+      <td><p>An integer indicating the number of reweighting centers
+present in the grid.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A tibble of the model's coefficients estimated (<code>term</code> and
-<code>estimate</code>) on the bootstrapped datasets,
-the size of the original dataset (<code>n</code>), and the number of the
-bootstrap repetition (<code>b</code>).</p>
+    <p>A vector of values corresponding to the centers for the reweighting.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>The residual bootstrap consists of fitting the chosen statistical
-model (<code>mod_fit</code>) <code>B</code> times. Each of the <code>B</code> datasets
-consists of the original independent variables and of dependent variable
-given by the sum of the estimates of the original model and a
-bootstrap versions of the residuals.</p>
+    <p>The function creates either a grid of evenly spaced values between
+the minimum and the maximum of the regressor's values or based on the
+quantiles. If the construction of the grid is based on the quantiles,
+then the values of the grid consists of the quantiles corresponding
+to the probabilities <code><a href='https://rdrr.io/r/base/seq.html'>seq(0.1,0.9,length=n_grid)</a></code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='co'># Obtain estimates of the coefficients on bootstrapped versions of the dataset</span>
-<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>35542</span><span class='op'>)</span>
-<span class='va'>n</span> <span class='op'>&lt;-</span> <span class='fl'>1e3</span>
-<span class='va'>X</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>
-<span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fl'>2</span> <span class='op'>+</span> <span class='va'>X</span> <span class='op'>*</span> <span class='fl'>1</span> <span class='op'>+</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>
-<span class='va'>lm_fit</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>y</span> <span class='op'>~</span> <span class='va'>X</span><span class='op'>)</span>
-<span class='va'>out</span> <span class='op'>&lt;-</span> <span class='fu'>comp_boot_res</span><span class='op'>(</span><span class='va'>lm_fit</span>, B <span class='op'>=</span> <span class='fl'>100</span><span class='op'>)</span>
+<span class='co'># Construct a grid of centers for the reweighting of the regressor</span>
+<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>162632</span><span class='op'>)</span>
+<span class='va'>n</span> <span class='op'>&lt;-</span> <span class='fl'>100</span>
+<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>
+<span class='va'>centers</span> <span class='op'>&lt;-</span> <span class='fu'>gen_grid_cent_rwgt</span><span class='op'>(</span><span class='va'>x</span>, <span class='st'>"quantiles"</span>, <span class='fl'>9</span><span class='op'>)</span>
 
-<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>out</span><span class='op'>)</span>
+<span class='co'># Display the output</span>
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>centers</span><span class='op'>)</span>
 <span class='op'>}</span>
 </div></pre>
   </div>

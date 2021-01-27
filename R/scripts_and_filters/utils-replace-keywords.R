@@ -54,9 +54,6 @@ file_keyword_rnm <- function(fpath, pattern, replacement){
 dir_files_keyword_rnm <- function(path,
                                   type = "file", glob,
                                   keyword_rnm_tbl){
-    path <- here::here()
-    type <- "file"
-    glob <- "*model-diagnostics.R"
     fs::dir_ls(path = path,
                type = type,
                glob = glob,
@@ -72,8 +69,8 @@ keyword_rnm_tbl <- read_keyword_rnm_tbl(fpath_yml =
                                        "replace-keywords.yaml"))
 
 # Rename all keywords in all our R files in the main/test directories
-# DIRS_TO_REPLACE <- c(here::here("R"), here::here("tests", "testthat"))
-DIRS_TO_REPLACE <- c(here::here("R"))
+DIRS_TO_REPLACE <- c(here::here("R"), here::here("tests", "testthat"))
+# DIRS_TO_REPLACE <- c(here::here("R"))
 
 DIRS_TO_REPLACE %>%
   purrr::walk(
@@ -81,7 +78,7 @@ DIRS_TO_REPLACE %>%
     .f = ~dir_files_keyword_rnm(
       path = .x,
       type = "file",
-      glob = "*model-diagnostics.R",
+      glob = "*.R",
       keyword_rnm_tbl = keyword_rnm_tbl
     )
   )

@@ -1,6 +1,6 @@
 #' Create grid of centers for the reweighting of the regressor's distribution
 #'
-#' \code{comp_grid_centers} returns a grid of values based on the empirical
+#' \code{gen_grid_cent_rwgt} returns a grid of values based on the empirical
 #' distribution of the regressor in the data.
 #'
 #' @details The function creates either a grid of evenly spaced values between
@@ -30,12 +30,12 @@
 #' set.seed(162632)
 #' n <- 100
 #' x <- rnorm(n, 0, 1)
-#' centers <- comp_grid_centers(x, "quantiles", 9)
+#' centers <- gen_grid_cent_rwgt(x, "quantiles", 9)
 #'
 #' # Display the output
 #' print(centers)
 #' }
-comp_grid_centers <- function(x, grid_method, n_grid) {
+gen_grid_cent_rwgt <- function(x, grid_method, n_grid) {
   assertthat::assert_that(grid_method == "regular" | grid_method == "quantiles",
     msg = glue::glue('The method to construct the grid needs to be either "regular" or "quantiles".')
   )
@@ -55,7 +55,7 @@ comp_grid_centers <- function(x, grid_method, n_grid) {
 
 #' Obtain estimates for GLM of OLS under reweighting of one regressor
 #'
-#' \code{comp_coef_rwgt_single} provides estimate for GLM and OLS under
+#' \code{diag_fit_reg_rwgt_single} provides estimate for GLM and OLS under
 #' reweighting of one regressor. The function returns a set of estimates
 #' for each bootstrapped data set and each center of reweighting.
 #'
@@ -98,13 +98,13 @@ comp_grid_centers <- function(x, grid_method, n_grid) {
 #' y <- 2 + X1 + X2 * 0.3 + stats::rnorm(n, 0, 1)
 #' df <- tibble::tibble(y = y, X1 = X1, X2 = X2, n_obs = 1:length(X1))
 #' mod_fit <- stats::lm(y ~ X1 + X2, df)
-#' boot_samples <- comp_empirical_bootstrap_samples(df, B = 100)
-#' ols_rwgt_X1 <- comp_coef_rwgt_single(mod_fit, "X1", boot_samples, c(-1, 0, 1, 2))
+#' boot_samples <- comp_boot_emp_samples(df, B = 100)
+#' ols_rwgt_X1 <- diag_fit_reg_rwgt_single(mod_fit, "X1", boot_samples, c(-1, 0, 1, 2))
 #'
 #' # Display the output
 #' print(ols_rwgt_X1)
 #' }
-comp_coef_rwgt_single <- function(mod_fit, term_to_rwgt, boot_samples, term_to_rwgt_centers) {
+diag_fit_reg_rwgt_single <- function(mod_fit, term_to_rwgt, boot_samples, term_to_rwgt_centers) {
   data <- stats::model.frame(mod_fit)
 
   alpha <- 1
@@ -117,7 +117,7 @@ comp_coef_rwgt_single <- function(mod_fit, term_to_rwgt, boot_samples, term_to_r
 
   out <- as.list(1:length(weights_assigned$center)) %>%
     purrr::map_df(~ purrr::map(boot_samples$data,
-      ~ comp_cond_model(
+      ~ fit_reg(
         mod_fit = mod_fit,
         data = .x %>% dplyr::mutate(weights = weights_assigned$weights[[.y]][n_obs]) %>%
           dplyr::mutate(weights = weights / sum(weights)),
@@ -135,7 +135,7 @@ comp_coef_rwgt_single <- function(mod_fit, term_to_rwgt, boot_samples, term_to_r
 #' Obtain estimates of GLM or OLS under reweighting of one or
 #' multiple regressors
 #'
-#' \code{comp_coef_rwgt} returns estimates for GLM and OLS under reweighting of
+#' \code{diag_fit_reg_rwgt} returns estimates for GLM and OLS under reweighting of
 #' multiple regressors. The function estimates a set of coefficients for several
 #' configurations of the reweighting of the reweighting of each regressor.
 #'
@@ -191,18 +191,18 @@ comp_coef_rwgt_single <- function(mod_fit, term_to_rwgt, boot_samples, term_to_r
 #' y <- 2 + X1 + X2 * 0.3 + stats::rnorm(n, 0, 1)
 #' df <- tibble::tibble(y = y, X1 = X1, X2 = X2, n_obs = 1:length(X1))
 #' mod_fit <- stats::lm(y ~ X1 + X2, df)
-#' ols_rwgt <- comp_coef_rwgt(mod_fit, c("X1", "X2"))
+#' ols_rwgt <- diag_fit_reg_rwgt(mod_fit, c("X1", "X2"))
 #'
 #' # Display the output
 #' print(ols_rwgt)
 #'
 #' # Get OLS estimates under reweighting of all regressors by feeding grid of centers into the function
-#' ols_rwgt_grid_fixed <- comp_coef_rwgt(mod_fit, "X1", grid_centers = data.frame(X1 = c(0, 1)))
+#' ols_rwgt_grid_fixed <- diag_fit_reg_rwgt(mod_fit, "X1", grid_centers = data.frame(X1 = c(0, 1)))
 #'
 #' #' # Display the output
 #' print(ols_rwgt_grid_fixed)
 #' }
-comp_coef_rwgt <- function(mod_fit,
+diag_fit_reg_rwgt <- function(mod_fit,
                            terms_to_rwgt,
                            B = 100,
                            m = NULL,
@@ -218,7 +218,7 @@ comp_coef_rwgt <- function(mod_fit,
   assertthat::assert_that((n_grid > 1) & (n_grid == as.integer(n_grid)),
     msg = glue::glue("The number of points in the grid needs to be an integer larger than 1. It is currently {n_grid}.")
   )
-  checkargs(B=B, m=m)
+  check_fn_args(B=B, m=m)
 
   if (!is.null(grid_centers)) {
     assertthat::assert_that(is.data.frame(grid_centers),
@@ -234,7 +234,7 @@ comp_coef_rwgt <- function(mod_fit,
     m <- nrow(data)
   }
 
-  boot_samples <- comp_empirical_bootstrap_samples(
+  boot_samples <- comp_boot_emp_samples(
     data = data %>% tibble::add_column(n_obs = 1:nrow(data)),
     B = B,
     m = m
@@ -243,7 +243,7 @@ comp_coef_rwgt <- function(mod_fit,
   if (is.null(grid_centers)) {
     grid_centers <- data %>%
       dplyr::summarise_all(function(x) {
-        comp_grid_centers(x,
+        gen_grid_cent_rwgt(x,
           grid_method = grid_method,
           n_grid = n_grid
         )
@@ -251,7 +251,7 @@ comp_coef_rwgt <- function(mod_fit,
   }
 
   out <- terms_to_rwgt %>%
-    purrr::map(~ comp_coef_rwgt_single(
+    purrr::map(~ diag_fit_reg_rwgt_single(
       mod_fit = mod_fit,
       term_to_rwgt = .x[[1]],
       boot_samples = boot_samples,
@@ -272,12 +272,12 @@ comp_coef_rwgt <- function(mod_fit,
 
 #' Obtain the "focal slope" model diagnostic
 #'
-#' \code{focal_slope} returns the "focal slope" model diagnostics described in
+#' \code{diag_foc_slope} returns the "focal slope" model diagnostics described in
 #' \insertCite{@see @buja2019modelsasapproximationspart2;textual}{maars}.
 #' This graphical tool provides insights into the interactions between the
 #' regressor specified in \code{term_chosen} and all other regressors.
 #' More specifically, based on the estimates under reweighting of the regressors
-#' returned by \code{\link{comp_coef_rwgt}} and specified in \code{coef_rwgt}, this
+#' returned by \code{\link{diag_fit_reg_rwgt}} and specified in \code{coef_rwgt}, this
 #' function shows how the estimates of \code{term_chosen} vary under
 #' reweighting of all other regressors and compares them with the original
 #' estimates from \code{mod_fit}.
@@ -290,7 +290,7 @@ comp_coef_rwgt <- function(mod_fit,
 #'   the reweighting centers (\code{term_rwgt_center}) and of the reweighted
 #'   term (\code{term_rwgt}), and the estimates of the regression coefficients
 #'   (\code{term} and \code{estimate}). This tibble can be created via the
-#'   \code{comp_coef_rwgt} function.
+#'   \code{diag_fit_reg_rwgt} function.
 #' @param term_chosen A character corresponding to the coefficient of interest
 #'   to be analysed.
 #'
@@ -326,13 +326,13 @@ comp_coef_rwgt <- function(mod_fit,
 #' y <- 2 + X1 + X2 * 0.3 + stats::rnorm(n, 0, 1)
 #' df <- tibble::tibble(y = y, X1 = X1, X2 = X2, n_obs = 1:length(X1))
 #' mod_fit <- stats::lm(y ~ X1 + X2, df)
-#' ols_rwgt <- comp_coef_rwgt(mod_fit, c("X1", "X2"), B = 300)
+#' ols_rwgt <- diag_fit_reg_rwgt(mod_fit, c("X1", "X2"), B = 300)
 #'
 #' # Display the output
-#' focal_slope(mod_fit, ols_rwgt, "X1")
+#' diag_foc_slope(mod_fit, ols_rwgt, "X1")
 #' }
-focal_slope <- function(mod_fit, coef_rwgt, term_chosen) {
-  coef_rwgt_conf_int <- comp_conf_int_bootstrap(
+diag_foc_slope <- function(mod_fit, coef_rwgt, term_chosen) {
+  coef_rwgt_conf_int <- comp_ci_boot(
     boot_out = coef_rwgt,
     probs = c(0.025, 0.975),
     group_vars = c("term", "term_rwgt", "term_rwgt_center")
@@ -427,13 +427,13 @@ focal_slope <- function(mod_fit, coef_rwgt, term_chosen) {
 
 #' Obtain the "nonlinearity detection" model diagnostic
 #'
-#' \code{nonlinearity_detection} returns the "nonlinearity detection" model
+#' \code{diag_nl_detect} returns the "nonlinearity detection" model
 #' diagnostic as described in
 #' \insertCite{@see @buja2019modelsasapproximationspart2;textual}{maars}.
 #' This graphical tool provides insights into the marginal nonlinear behavior
 #' of response surfaces for each of the regressors.
 #' More specifically, based on the estimates under reweighting of the regressors
-#' returned by \code{\link{comp_coef_rwgt}} and specified in \code{coef_rwgt}, this
+#' returned by \code{\link{diag_fit_reg_rwgt}} and specified in \code{coef_rwgt}, this
 #' function shows how the estimate of each coefficient varies under
 #' reweighting of its own regressor and compares it with the original
 #' estimates from \code{mod_fit}.
@@ -446,7 +446,7 @@ focal_slope <- function(mod_fit, coef_rwgt, term_chosen) {
 #'   the reweighting centers (\code{term_rwgt_center}) and of the reweighted
 #'   term (\code{term_rwgt}), and the estimates of the regression coefficients
 #'   (\code{term} and \code{estimate}). This tibble can be created via the
-#'   \code{\link{comp_coef_rwgt}} function.
+#'   \code{\link{diag_fit_reg_rwgt}} function.
 #'
 #'
 #' @return A ggplot2 object which shows how the estimates of all coefficients
@@ -481,13 +481,13 @@ focal_slope <- function(mod_fit, coef_rwgt, term_chosen) {
 #' y <- 2 + X1 + X2 * 0.3 + stats::rnorm(n, 0, 1)
 #' df <- tibble::tibble(y = y, X1 = X1, X2 = X2, n_obs = 1:length(X1))
 #' mod_fit <- stats::lm(y ~ X1 + X2, df)
-#' ols_rwgt <- comp_coef_rwgt(mod_fit, c("X1", "X2"), B = 300)
+#' ols_rwgt <- diag_fit_reg_rwgt(mod_fit, c("X1", "X2"), B = 300)
 #'
 #' # Display the output
-#' nonlinearity_detection(mod_fit, ols_rwgt)
+#' diag_nl_detect(mod_fit, ols_rwgt)
 #' }
-nonlinearity_detection <- function(mod_fit, coef_rwgt) {
-  coef_rwgt_conf_int <- comp_conf_int_bootstrap(
+diag_nl_detect <- function(mod_fit, coef_rwgt) {
+  coef_rwgt_conf_int <- comp_ci_boot(
     boot_out = coef_rwgt,
     probs = c(0.025, 0.975),
     group_vars = c("term", "term_rwgt", "term_rwgt_center")
@@ -587,11 +587,11 @@ nonlinearity_detection <- function(mod_fit, coef_rwgt) {
 
 #' Obtain the "focal reweighting variable" model diagnostic.
 #'
-#' \code{focal_rwgt_var} returns the "focal reweighting variable" model
+#' \code{diag_foc_rwgt} returns the "focal reweighting variable" model
 #' diagnostic described in
 #' \insertCite{@see @buja2019modelsasapproximationspart2;textual}{maars}.
 #' More specifically, based on the estimates under reweighting of the regressors
-#' returned by \code{comp_coef_rwgt} and specified in \code{coef_rwgt}, this
+#' returned by \code{diag_fit_reg_rwgt} and specified in \code{coef_rwgt}, this
 #' function shows how the estimates of all coefficients vary under
 #' reweighting of only one regressor specified in \code{term_chosen} and
 #' compares them with the original estimates from \code{mod_fit}.
@@ -604,7 +604,7 @@ nonlinearity_detection <- function(mod_fit, coef_rwgt) {
 #'   the reweighting centers (\code{term_rwgt_center}) and of the reweighted
 #'   term (\code{term_rwgt}), and the estimates of the regression coefficients
 #'   (\code{term} and \code{estimate}). This tibble can be created via the
-#'   \code{\link{comp_coef_rwgt}} function.
+#'   \code{\link{diag_fit_reg_rwgt}} function.
 #' @param term_chosen A character corresponding to the coefficient of interest
 #'   to be analysed.
 #'
@@ -639,14 +639,14 @@ nonlinearity_detection <- function(mod_fit, coef_rwgt) {
 #' y <- 2 + X1 + X2 * 0.3 + stats::rnorm(n, 0, 1)
 #' df <- tibble::tibble(y = y, X1 = X1, X2 = X2, n_obs = 1:length(X1))
 #' mod_fit <- stats::lm(y ~ X1 + X2, df)
-#' ols_rwgt <- comp_coef_rwgt(mod_fit, c("X1", "X2"), B = 300)
+#' ols_rwgt <- diag_fit_reg_rwgt(mod_fit, c("X1", "X2"), B = 300)
 #'
 #' # Display the output
-#' focal_rwgt_var(mod_fit, ols_rwgt, "X1")
+#' diag_foc_rwgt(mod_fit, ols_rwgt, "X1")
 #' }
 #'
-focal_rwgt_var <- function(mod_fit, coef_rwgt, term_chosen) {
-  coef_rwgt_conf_int <- comp_conf_int_bootstrap(
+diag_foc_rwgt <- function(mod_fit, coef_rwgt, term_chosen) {
+  coef_rwgt_conf_int <- comp_ci_boot(
     boot_out = coef_rwgt,
     probs = c(0.025, 0.975),
     group_vars = c("term", "term_rwgt", "term_rwgt_center")

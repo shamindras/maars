@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">maars</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
       </span>
     </div>
 
@@ -94,12 +94,21 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/se-la-county-data.html">Reproducing LA County Standard Errors from [@buja2019modelsasapproximationspart1]</a>
+      <a href="../articles/se-la-county-data.html">Reproducing Buja et. al. Tables</a>
     </li>
   </ul>
 </li>
-<li>
-  <a href="../news/index.html">Changelog</a>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    News
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="../news/index.html">Changelog</a>
+    </li>
+  </ul>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -121,6 +130,18 @@
       
     </div>
 
+    <div id="maars-050" class="section level1">
+<h1 class="page-header" data-toc-text="0.5.0">
+<a href="#maars-050" class="anchor"></a>maars 0.5.0</h1>
+<ul>
+<li>Rename function names to be more consistent e.g. remove <code>qr</code> from <code>empirical</code> bootstrap names</li>
+<li>Ensure renamed function names are also correctly changed in the corresponding test files</li>
+<li>Split our <code>pkgdown</code> references into suitable categories <a href="https://usethis.r-lib.org/reference/index.html">like usethis</a>, here is <a href="https://github.com/r-lib/usethis/blob/45d0fef414fd69ac7ed468d196e93db7f2008e27/_pkgdown.yml">an example</a>
+</li>
+<li>Change specific functions to be private by removing <code>#' @export</code> in <code>roxygen2</code> and replacing it with <code>#' @keywords internal</code>
+</li>
+</ul>
+</div>
     <div id="maars-040" class="section level1">
 <h1 class="page-header" data-toc-text="0.4.0">
 <a href="#maars-040" class="anchor"></a>maars 0.4.0</h1>
