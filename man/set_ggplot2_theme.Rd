@@ -55,3 +55,4 @@ p1 <- ggplot2::ggplot(mtcars, aes(x = wt, y = mpg, size = disp)) +
 out <- p1 \%>\% maars::set_ggplot2_theme(ggplot_obj = .)
 }
 }
+\keyword{internal}

@@ -20,8 +20,7 @@
 #'
 #' @return A vector of values corresponding to the centers for the reweighting.
 #'
-#' @export
-#'
+#' @keywords internal
 #'
 #' @importFrom rlang .data
 #'
@@ -85,7 +84,7 @@ comp_grid_centers <- function(x, grid_method, n_grid) {
 #'   and estimates of the regression coefficients (\code{term} and
 #'   \code{estimate}).
 #'
-#' @export
+#' @keywords internal
 #'
 #' @importFrom rlang .data
 #'
@@ -99,7 +98,7 @@ comp_grid_centers <- function(x, grid_method, n_grid) {
 #' y <- 2 + X1 + X2 * 0.3 + stats::rnorm(n, 0, 1)
 #' df <- tibble::tibble(y = y, X1 = X1, X2 = X2, n_obs = 1:length(X1))
 #' mod_fit <- stats::lm(y ~ X1 + X2, df)
-#' boot_samples <- maars::comp_empirical_bootstrap_samples(df, B = 100)
+#' boot_samples <- comp_empirical_bootstrap_samples(df, B = 100)
 #' ols_rwgt_X1 <- comp_coef_rwgt_single(mod_fit, "X1", boot_samples, c(-1, 0, 1, 2))
 #'
 #' # Display the output
@@ -118,7 +117,7 @@ comp_coef_rwgt_single <- function(mod_fit, term_to_rwgt, boot_samples, term_to_r
 
   out <- as.list(1:length(weights_assigned$center)) %>%
     purrr::map_df(~ purrr::map(boot_samples$data,
-      ~ maars::comp_cond_model(
+      ~ comp_cond_model(
         mod_fit = mod_fit,
         data = .x %>% dplyr::mutate(weights = weights_assigned$weights[[.y]][n_obs]) %>%
           dplyr::mutate(weights = weights / sum(weights)),
@@ -235,7 +234,7 @@ comp_coef_rwgt <- function(mod_fit,
     m <- nrow(data)
   }
 
-  boot_samples <- maars::comp_empirical_bootstrap_samples(
+  boot_samples <- comp_empirical_bootstrap_samples(
     data = data %>% tibble::add_column(n_obs = 1:nrow(data)),
     B = B,
     m = m
@@ -252,7 +251,7 @@ comp_coef_rwgt <- function(mod_fit,
   }
 
   out <- terms_to_rwgt %>%
-    purrr::map(~ maars::comp_coef_rwgt_single(
+    purrr::map(~ comp_coef_rwgt_single(
       mod_fit = mod_fit,
       term_to_rwgt = .x[[1]],
       boot_samples = boot_samples,

@@ -17,7 +17,7 @@
 #' @return A tibble containing the bootstrap samples (\code{data})
 #'   and their corresponding number (\code{b}).
 #'
-#' @export
+#' @keywords internal
 #'
 #' @importFrom rlang .data
 #'
@@ -74,7 +74,7 @@ comp_empirical_bootstrap_samples <- function(data,
 #' @return A tibble containing the estimated coefficients (\code{term}) of
 #'   the regressors (\code{term}).
 #'
-#' @export
+#' @keywords internal
 #'
 #' @importFrom rlang .data
 #'
@@ -164,7 +164,7 @@ comp_cond_model <- function(mod_fit, data, weights = NULL) {
 #'   bootstrapped dataset (\code{m}), the size of the original dataset
 #'   (\code{n}), and the number of the bootstrap repetition (\code{b}).
 #'
-#' @export
+#' @keywords internal
 #'
 #' @importFrom rlang .data
 #'

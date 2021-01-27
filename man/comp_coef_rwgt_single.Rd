@@ -57,10 +57,11 @@ X2 <- stats::rnorm(n, 0, 3)
 y <- 2 + X1 + X2 * 0.3 + stats::rnorm(n, 0, 1)
 df <- tibble::tibble(y = y, X1 = X1, X2 = X2, n_obs = 1:length(X1))
 mod_fit <- stats::lm(y ~ X1 + X2, df)
-boot_samples <- maars::comp_empirical_bootstrap_samples(df, B = 100)
+boot_samples <- comp_empirical_bootstrap_samples(df, B = 100)
 ols_rwgt_X1 <- comp_coef_rwgt_single(mod_fit, "X1", boot_samples, c(-1, 0, 1, 2))
 
 # Display the output
 print(ols_rwgt_X1)
 }
 }
+\keyword{internal}

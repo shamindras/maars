@@ -44,3 +44,4 @@ centers <- comp_grid_centers(x, "quantiles", 9)
 print(centers)
 }
 }
+\keyword{internal}
