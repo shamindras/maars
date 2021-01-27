@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • maars</title>
+<title>Draw bootstrap samples from the data — comp_boot_emp_samples • maars</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,10 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="Draw bootstrap samples from the data — comp_boot_emp_samples" />
+<meta property="og:description" content="comp_boot_emp_samples draws bootstrap samples
+(i.e. sampling observations with replacement) from the input
+data." />
 
 
 
@@ -58,7 +61,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -115,85 +118,66 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>Draw bootstrap samples from the data</h1>
+    
+    <div class="hidden name"><code>comp_boot_emp_samples.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    <p><code>comp_boot_emp_samples</code> draws bootstrap samples
+(i.e. sampling observations with replacement) from the input
+<code>data</code>.</p>
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
+    <pre class="usage"><span class='fu'>comp_boot_emp_samples</span><span class='op'>(</span><span class='va'>data</span>, B <span class='op'>=</span> <span class='fl'>100</span>, m <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="comp_boot_res.html">comp_boot_res()</a></code> </p>
-        </td>
-        <td><p>A wrapper for the residual bootstrap of a fitted OLS regression model</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="comp_ci_boot.html">comp_ci_boot()</a></code> </p>
-        </td>
-        <td><p>Confidence intervals for on bootstrapped datasets via percentile bootstrap</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="comp_var.html">comp_var()</a></code> </p>
-        </td>
-        <td><p>Create an empirical or multiplier bootstrap summary table</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="diag_boot_emp_qqn.html">diag_boot_emp_qqn()</a></code> </p>
-        </td>
-        <td><p>Normal QQ plot of the terms in an output of the bootstrap function</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="diag_fit_reg_rwgt.html">diag_fit_reg_rwgt()</a></code> </p>
-        </td>
-        <td><p>Obtain estimates of GLM or OLS under reweighting of one or
-multiple regressors</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="diag_foc_rwgt.html">diag_foc_rwgt()</a></code> </p>
-        </td>
-        <td><p>Obtain the "focal reweighting variable" model diagnostic.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="diag_foc_slope.html">diag_foc_slope()</a></code> </p>
-        </td>
-        <td><p>Obtain the "focal slope" model diagnostic</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="diag_nl_detect.html">diag_nl_detect()</a></code> </p>
-        </td>
-        <td><p>Obtain the "nonlinearity detection" model diagnostic</p></td>
-      </tr>
-    </tbody>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>data</th>
+      <td><p>A tibble or data frame containing the dataset to be
+sampled from.</p></td>
+    </tr>
+    <tr>
+      <th>B</th>
+      <td><p>Bootstrap repetitions or number of bootstrap samples to
+be drawn.</p></td>
+    </tr>
+    <tr>
+      <th>m</th>
+      <td><p>Number of observations to be sampled with replacement from
+the original dataset for each bootstrap repetition.</p></td>
+    </tr>
     </table>
-  </div>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>A tibble containing the bootstrap samples (<code>data</code>)
+and their corresponding number (<code>b</code>).</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>More specifically, <code>B</code> bootstraped datasets of size
+<code>m</code> are drawn from the <code>data</code>.</p>
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+<span class='co'># Draw B=100 bootstrap samples of size m=5</span>
+<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>162632</span><span class='op'>)</span>
+<span class='va'>n</span> <span class='op'>&lt;-</span> <span class='fl'>100</span>
+<span class='va'>boot</span> <span class='op'>&lt;-</span> <span class='fu'>comp_boot_emp_samples</span><span class='op'>(</span>
+  <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>y <span class='op'>=</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>,
+             x <span class='op'>=</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span>,
+  B <span class='op'>=</span> <span class='fl'>100</span>,
+  m <span class='op'>=</span> <span class='fl'>5</span><span class='op'>)</span>
+
+<span class='co'># Display the output</span>
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>boot</span><span class='op'>)</span>
+<span class='op'>}</span>
+</div></pre>
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
       <h2 data-toc-skip>Contents</h2>
