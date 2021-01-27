@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • maars</title>
+<title>Check whether the arguments in the function are correctly specified — checkargs • maars</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,10 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="Check whether the arguments in the function are correctly specified — checkargs" />
+<meta property="og:description" content="checkargs is used to assess whether the arguments
+are correctly specified and returns an error message if
+they do not match the correct specification" />
 
 
 
@@ -58,7 +61,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -115,85 +118,46 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>Check whether the arguments in the function are correctly specified</h1>
+    
+    <div class="hidden name"><code>checkargs.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    <p><code>checkargs</code> is used to assess whether the arguments
+are correctly specified and returns an error message if
+they do not match the correct specification</p>
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
+    <pre class="usage"><span class='fu'>checkargs</span><span class='op'>(</span>n <span class='op'>=</span> <span class='cn'>NULL</span>, B <span class='op'>=</span> <span class='cn'>NULL</span>, m <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-all-functions" class="hasAnchor"><a href="#section-all-functions" class="anchor"></a>All functions</h2>
-          <p class="section-desc"></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="comp_boot_res.html">comp_boot_res()</a></code> </p>
-        </td>
-        <td><p>A wrapper for the residual bootstrap of a fitted OLS regression model</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="comp_bootstrap_summary.html">comp_bootstrap_summary()</a></code> </p>
-        </td>
-        <td><p>Create an empirical or multiplier bootstrap summary table</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="comp_coef_rwgt.html">comp_coef_rwgt()</a></code> </p>
-        </td>
-        <td><p>Obtain estimates of GLM or OLS under reweighting of one or
-multiple regressors</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="comp_conf_int_bootstrap.html">comp_conf_int_bootstrap()</a></code> </p>
-        </td>
-        <td><p>Confidence intervals for on bootstrapped datasets via percentile bootstrap</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="focal_rwgt_var.html">focal_rwgt_var()</a></code> </p>
-        </td>
-        <td><p>Obtain the "focal reweighting variable" model diagnostic.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="focal_slope.html">focal_slope()</a></code> </p>
-        </td>
-        <td><p>Obtain the "focal slope" model diagnostic</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="nonlinearity_detection.html">nonlinearity_detection()</a></code> </p>
-        </td>
-        <td><p>Obtain the "nonlinearity detection" model diagnostic</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="qqnorm_bootstrap.html">qqnorm_bootstrap()</a></code> </p>
-        </td>
-        <td><p>Normal QQ plot of the terms in an output of the bootstrap function</p></td>
-      </tr>
-    </tbody>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>n</th>
+      <td><p>Sample size.</p></td>
+    </tr>
+    <tr>
+      <th>B</th>
+      <td><p>Bootstrap repetitions or number of bootstrap samples to be drawn.</p></td>
+    </tr>
+    <tr>
+      <th>m</th>
+      <td><p>Number of observations to be sampled with replacement from the
+dataset for each bootstrap repetition.</p></td>
+    </tr>
     </table>
-  </div>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    
+
+
+
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
       <h2 data-toc-skip>Contents</h2>
