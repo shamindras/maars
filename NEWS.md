@@ -1,3 +1,5 @@
+# maars 0.5.0
+
 # maars 0.4.0
 
 * Include `.gitattributes` file
