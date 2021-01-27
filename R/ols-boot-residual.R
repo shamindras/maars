@@ -38,7 +38,7 @@ comp_boot_res <- function(mod_fit, B = 100) {
   assertthat::assert_that(all("lm" == class(mod_fit)),
     msg = glue::glue("mod_fit must only be of class lm")
   )
- checkargs(B=B)
+ check_fn_args(B=B)
 
   mod_res <- mod_fit$res
   mod_pred <- mod_fit$fitted.values
@@ -48,7 +48,7 @@ comp_boot_res <- function(mod_fit, B = 100) {
 
   out <- as.list(1:B) %>%
     purrr::map_df(
-      ~ comp_cond_model(
+      ~ fit_reg(
         mod_fit = mod_fit,
         data = data %>% dplyr::mutate({{response_name}} := mod_pred + sample(mod_res, n, replace = T))
       ),

@@ -56,7 +56,7 @@ set_ggplot2_theme <- function(ggplot_obj,
 
 #' Check whether the arguments in the function are correctly specified
 #'
-#' \code{checkargs} is used to assess whether the arguments
+#' \code{check_fn_args} is used to assess whether the arguments
 #' are correctly specified and returns an error message if
 #' they do not match the correct specification
 #'
@@ -67,7 +67,7 @@ set_ggplot2_theme <- function(ggplot_obj,
 #'
 #' @return
 #' @keywords internal
-checkargs <- function(n = NULL, B = NULL, m = NULL) {
+check_fn_args <- function(n = NULL, B = NULL, m = NULL) {
   if (!is.null(B)) {
     assertthat::assert_that(B == as.integer(B),
       msg = glue::glue("B must be an integer e.g. 100, it is currently {B}")

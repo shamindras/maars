@@ -1,7 +1,7 @@
 #' Generate Different Types of multiplier bootstrap weights
 #'
-#' \code{gen_multiplier_bootstrap_weights} is a Helper function for
-#' \code{\link{comp_multiplier_bootstrap_var}} to generate different types
+#' \code{comp_boot_mul_wgt} is a Helper function for
+#' \code{\link{comp_boot_mul}} to generate different types
 #' of multiplier bootstrap weights. This section is inspired by the
 #' \code{weighttype} option in the Stata \code{boottest} package.
 #'
@@ -43,16 +43,16 @@
 #' n <- 1000
 #'
 #' # Generate the different type of multiplier weights
-#' rademacher_w <- gen_multiplier_bootstrap_weights(n = n,
+#' rademacher_w <- comp_boot_mul_wgt(n = n,
 #'                                                  weights_type = "rademacher")
-#' mammen_w <- gen_multiplier_bootstrap_weights(n = n, weights_type = "mammen")
-#' webb_w <- gen_multiplier_bootstrap_weights(n = n, weights_type = "webb")
-#' std_gaussian_w <- gen_multiplier_bootstrap_weights(n = n,
+#' mammen_w <- comp_boot_mul_wgt(n = n, weights_type = "mammen")
+#' webb_w <- comp_boot_mul_wgt(n = n, weights_type = "webb")
+#' std_gaussian_w <- comp_boot_mul_wgt(n = n,
 #'                                                    weights_type = "std_gaussian")
-#' gamma_w <- gen_multiplier_bootstrap_weights(n = n, weights_type = "gamma")
+#' gamma_w <- comp_boot_mul_wgt(n = n, weights_type = "gamma")
 #' }
-gen_multiplier_bootstrap_weights <- function(n, weights_type) {
-  checkargs(n=n)
+comp_boot_mul_wgt <- function(n, weights_type) {
+  check_fn_args(n=n)
   assertthat::assert_that(weights_type %in% c("rademacher", "mammen",
                                               "webb", "std_gaussian", "gamma"),
                           msg = glue::glue("weights_type must only be one of the following types c('rademacher', 'mammen', 'webb', 'std_gaussian', 'gamma')"))
@@ -93,7 +93,7 @@ gen_multiplier_bootstrap_weights <- function(n, weights_type) {
 #' Calculate a single replication of the multiplier bootstrap for an OLS
 #' fitted dataset
 #'
-#' \code{comp_multiplier_single_bootstrap_var} calculates a single
+#' \code{comp_boot_mul_ind} calculates a single
 #' replication of the multiplier bootstrap for an OLS fitted dataset
 #' based on an \code{\link[stats]{lm}} fitted object in \code{R}.
 #' This is given by the following expression:
@@ -139,13 +139,13 @@ gen_multiplier_bootstrap_weights <- function(n, weights_type) {
 #'
 #' # Run a single replication of the multiplier bootstrap
 #' mult_boot_single_rep <-
-#' comp_multiplier_single_bootstrap_var(n = n,
+#' comp_boot_mul_ind(n = n,
 #'                                      J_inv_X_res = J_inv_X_res,
 #'                                      e = e)
 #' # Display the output
 #' print(mult_boot)
 #' }
-comp_multiplier_single_bootstrap_var <- function(n, J_inv_X_res, e) {
+comp_boot_mul_ind <- function(n, J_inv_X_res, e) {
   out <- t(J_inv_X_res) %*% e #/ n
   return(out)
 }
@@ -155,7 +155,7 @@ comp_multiplier_single_bootstrap_var <- function(n, J_inv_X_res, e) {
 #' The multiplier bootstrap calculated for a single replication
 #' for an OLS fitted dataset is given by the following expression:
 #' \deqn{\frac{1}{n}\sum_{i=1}^{n} e_{i}\widehat{J}^{-1}X_{i}(Y_{i}-X_{i}^{T} \widehat{\beta})}
-#' This wrapper function calls on the helper function \code{\link{comp_multiplier_single_bootstrap_var}}. See its documentation
+#' This wrapper function calls on the helper function \code{\link{comp_boot_mul_ind}}. See its documentation
 #' for how a single instance is run.
 #'
 #' @param mod_fit An \code{\link[stats]{lm}} (OLS) object.
@@ -165,7 +165,7 @@ comp_multiplier_single_bootstrap_var <- function(n, J_inv_X_res, e) {
 #'   this can only take the following five prespecified values
 #'   \code{"rademacher", "mammen", "webb", "std_gaussian", "gamma"}.
 #'   For more details see the documentation for
-#'   \code{\link{gen_multiplier_bootstrap_weights}}.
+#'   \code{\link{comp_boot_mul_wgt}}.
 #'
 #' @return A tibble of the bootstrap calculations.
 #'
@@ -186,12 +186,12 @@ comp_multiplier_single_bootstrap_var <- function(n, J_inv_X_res, e) {
 #'
 #' # Run the multiplier bootstrap on the fitted (OLS) linear model
 #' set.seed(162632)
-#' comp_multiplier_bootstrap_var(lm_fit, B = 15, weights_type = 'std_gaussian')
+#' comp_boot_mul(lm_fit, B = 15, weights_type = 'std_gaussian')
 #' }
-comp_multiplier_bootstrap_var <- function(mod_fit, B, weights_type) {
+comp_boot_mul <- function(mod_fit, B, weights_type) {
   assertthat::assert_that(all("lm" == class(mod_fit)),
                           msg = glue::glue("mod_fit must only be of class lm"))
-  checkargs(B=B)
+  check_fn_args(B=B)
   # Get OLS related output
   betas <- stats::coef(mod_fit)
   J_inv <- stats::summary.lm(mod_fit)$cov.unscaled
@@ -204,7 +204,7 @@ comp_multiplier_bootstrap_var <- function(mod_fit, B, weights_type) {
 
   # multiplier weights (mean 0, variance = 1)
   e <- matrix(data =
-                gen_multiplier_bootstrap_weights(n = B * n,
+                comp_boot_mul_wgt(n = B * n,
                                                  weights_type = weights_type),
               nrow = B,
               ncol = n)
@@ -212,7 +212,7 @@ comp_multiplier_bootstrap_var <- function(mod_fit, B, weights_type) {
   # multiplier bootstrap replications, B times
   boot_out <- 1:B %>%
                 purrr::map(~ betas +
-                             comp_multiplier_single_bootstrap_var(n, J_inv_X_res,
+                             comp_boot_mul_ind(n, J_inv_X_res,
                                                          e[.x, ])) %>%
                 purrr::map(~ tibble::tibble(term = rownames(.x),
                                             estimate = .x[, 1]))

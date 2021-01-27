@@ -1,6 +1,6 @@
 #' Draw bootstrap samples from the data
 #'
-#' \code{comp_empirical_bootstrap_samples} draws bootstrap samples
+#' \code{comp_boot_emp_samples} draws bootstrap samples
 #' (i.e. sampling observations with replacement) from the input
 #' \code{data}.
 #'
@@ -26,7 +26,7 @@
 #' # Draw B=100 bootstrap samples of size m=5
 #' set.seed(162632)
 #' n <- 100
-#' boot <- comp_empirical_bootstrap_samples(
+#' boot <- comp_boot_emp_samples(
 #'   data.frame(y = stats::rnorm(n, 0, 1),
 #'              x = stats::rnorm(n, 0, 1)),
 #'   B = 100,
@@ -35,7 +35,7 @@
 #' # Display the output
 #' print(boot)
 #' }
-comp_empirical_bootstrap_samples <- function(data,
+comp_boot_emp_samples <- function(data,
                                              B = 100,
                                              m = NULL) {
   n <- nrow(data)
@@ -55,7 +55,7 @@ comp_empirical_bootstrap_samples <- function(data,
 
 #' Fit OLS or GLM on the data
 #'
-#' \code{comp_cond_model} fits an OLS or GLM on the input dataset.
+#' \code{fit_reg} fits an OLS or GLM on the input dataset.
 #'
 #' @details The model specification obtained from \code{mod_fit}, of
 #'   class \code{\link[stats]{lm}} or \code{\link[stats]{glm}}, is
@@ -86,8 +86,8 @@ comp_empirical_bootstrap_samples <- function(data,
 #' X <- stats::rnorm(n, 0, 1)
 #' y <- 2 + X * 1 + stats::rnorm(n, 0, 1)
 #' lm_fit <- stats::lm(y ~ X)
-#' boot <- comp_empirical_bootstrap_samples(model.frame(lm_fit))$data[[1]]
-#' mod <- comp_cond_model(lm_fit, boot)
+#' boot <- comp_boot_emp_samples(model.frame(lm_fit))$data[[1]]
+#' mod <- fit_reg(lm_fit, boot)
 #'
 #' # Display the output
 #' print(mod)
@@ -98,12 +98,12 @@ comp_empirical_bootstrap_samples <- function(data,
 #' y <- 2 + X * 1 + stats::rnorm(n, 0, 1)
 #' mod_fit <- lm(y ~ X)
 #' df <- tibble::tibble(y = y, X = X, weights = 1:length(X))
-#' mod <- comp_cond_model(mod_fit, df, "weights")
+#' mod <- fit_reg(mod_fit, df, "weights")
 #'
 #' # Display the output
 #' print(mod)
 #' }
-comp_cond_model <- function(mod_fit, data, weights = NULL) {
+fit_reg <- function(mod_fit, data, weights = NULL) {
   if (all("lm" == class(mod_fit))) {
     if (is.null(weights)) {
       out <- stats::lm(
@@ -144,7 +144,7 @@ comp_cond_model <- function(mod_fit, data, weights = NULL) {
 
 #' A wrapper for the empirical bootstrap of a fitted OLS or GLM regression model
 #'
-#' \code{comp_empirical_bootstrap} is a wrapper for the empirical bootstrap of
+#' \code{comp_boot_emp} is a wrapper for the empirical bootstrap of
 #' a fitted \code{\link[stats]{lm}} or \code{\link[stats]{glm}} model.
 #'
 #' @details The empirical bootstrap consists of fitting the chosen statistical
@@ -176,22 +176,22 @@ comp_cond_model <- function(mod_fit, data, weights = NULL) {
 #' X <- stats::rnorm(n, 0, 1)
 #' y <- 2 + X * 1 + stats::rnorm(n, 0, 1)
 #' lm_fit <- stats::lm(y ~ X)
-#' out <- comp_empirical_bootstrap(lm_fit, B = 100, m = 300)
+#' out <- comp_boot_emp(lm_fit, B = 100, m = 300)
 #'
 #' print(out)
 #' }
-comp_empirical_bootstrap <- function(mod_fit, B = 100, m = NULL) {
+comp_boot_emp <- function(mod_fit, B = 100, m = NULL) {
   assertthat::assert_that(all("lm" == class(mod_fit)) | any("glm" == class(mod_fit)),
     msg = glue::glue("mod_fit must only be of class lm or glm")
   )
-  checkargs(B=B,m=m)
+  check_fn_args(B=B,m=m)
 
   data <- stats::model.frame(mod_fit)
   if (is.null(m)) {
     m <- nrow(data)
   }
 
-  boot_samples <- comp_empirical_bootstrap_samples(data, B, m)
+  boot_samples <- comp_boot_emp_samples(data, B, m)
 
   boot_out <- boot_samples %>%
     tibble::add_column(m = m) %>%
@@ -200,7 +200,7 @@ comp_empirical_bootstrap <- function(mod_fit, B = 100, m = NULL) {
       boot_out =
         purrr::map(
           data,
-          ~ comp_cond_model(mod_fit = mod_fit, data = .)
+          ~ fit_reg(mod_fit = mod_fit, data = .)
         )
     ) %>%
     dplyr::select(b, m, n, boot_out)
@@ -210,10 +210,10 @@ comp_empirical_bootstrap <- function(mod_fit, B = 100, m = NULL) {
 
 #' Confidence intervals for on bootstrapped datasets via percentile bootstrap
 #'
-#' \code{comp_conf_int_bootstrap} produces confidence intervals for regression
+#' \code{comp_ci_boot} produces confidence intervals for regression
 #' models estimates on bootstrapped datasets, via percentile bootstrap.
 #'
-#' @details `comp_conf_int_bootstrap` takes in a set of bootstrap estimates
+#' @details `comp_ci_boot` takes in a set of bootstrap estimates
 #'   (\code{boot_out}), a series of probabilities for the quantiles
 #'   (\code{probs}), and optionally some "grouping" terms (\code{group_vars}).
 #'   It returns the corresponding quantiles.
@@ -243,14 +243,14 @@ comp_empirical_bootstrap <- function(mod_fit, B = 100, m = NULL) {
 #' y <- 2 + X1 + X2 * 0.3 + stats::rnorm(n, 0, 1)
 #' df <- tibble::tibble(y = y, X1 = X1, X2 = X2, n_obs = 1:length(X1))
 #' mod_fit <- stats::lm(y ~ X1 + X2, df)
-#' boot_out <- comp_empirical_bootstrap(mod_fit)
-#' conf_int <- comp_conf_int_bootstrap(boot_out, c(0.05, 0.95)) %>%
+#' boot_out <- comp_boot_emp(mod_fit)
+#' conf_int <- comp_ci_boot(boot_out, c(0.05, 0.95)) %>%
 #'   tidyr::pivot_wider(names_from = q, values_from = x)
 #'
 #' # Display the output
 #' print(conf_int)
 #' }
-comp_conf_int_bootstrap <- function(boot_out, probs = c(0.025, 0.975),
+comp_ci_boot <- function(boot_out, probs = c(0.025, 0.975),
                                     group_vars = "term") {
   out <- boot_out %>%
     tidyr::unnest(boot_out) %>%
@@ -265,7 +265,7 @@ comp_conf_int_bootstrap <- function(boot_out, probs = c(0.025, 0.975),
 
 #' Normal QQ plot of the terms in an output of the bootstrap function
 #'
-#' \code{qqnorm_bootstrap} produces a normal QQPlot for each regressors included
+#' \code{diag_boot_emp_qqn} produces a normal QQPlot for each regressors included
 #' in the estimates on the bootstrapped datasets. This function is a wrapper
 #' for the \code{\link[ggplot2]{stat_qq}} function.
 #'
@@ -293,12 +293,12 @@ comp_conf_int_bootstrap <- function(boot_out, probs = c(0.025, 0.975),
 #'
 #' # Fit a linear model (OLS) to the data
 #' mod_fit <- stats::lm(y ~ X1 + X2, df)
-#' boot_out <- comp_empirical_bootstrap(mod_fit)
+#' boot_out <- comp_boot_emp(mod_fit)
 #'
 #' # Display the output
-#' qqnorm_bootstrap(boot_out)
+#' diag_boot_emp_qqn(boot_out)
 #' }
-qqnorm_bootstrap <- function(boot_out) {
+diag_boot_emp_qqn <- function(boot_out) {
   out <- boot_out %>%
     tidyr::unnest(
       data = .,

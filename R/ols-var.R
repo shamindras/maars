@@ -1,18 +1,18 @@
 #' Create an empirical or multiplier bootstrap summary table
 #'
-#' \code{comp_bootstrap_summary} creates an OLS bootstrap summary table for
+#' \code{comp_var} creates an OLS bootstrap summary table for
 #' empirical bootstrap output or multiplier bootstrap output as generated from
-#' \code{\link{comp_empirical_bootstrap}} or
-#' \code{\link{comp_multiplier_bootstrap_var}}, respectively.
+#' \code{\link{comp_boot_emp}} or
+#' \code{\link{comp_boot_mul}}, respectively.
 #'
 #'
 #' @param mod_fit An lm (OLS) object
 #' @param boot_out A tibble of the bootstrap calculations from either
-#'   \code{\link{comp_empirical_bootstrap}} or
-#'   \code{\link{comp_multiplier_bootstrap_var}}, respectively.
+#'   \code{\link{comp_boot_emp}} or
+#'   \code{\link{comp_boot_mul}}, respectively.
 #' @param boot_type A character specifying the bootstrap type. Must be "emp"
-#'   for output from \code{\link{comp_empirical_bootstrap}} or "mult"
-#'   for output from \code{\link{comp_multiplier_bootstrap_var}}, respectively.
+#'   for output from \code{\link{comp_boot_emp}} or "mult"
+#'   for output from \code{\link{comp_boot_mul}}, respectively.
 #'
 #' @return A summary statistics tibble for the bootstrap input.
 #'
@@ -33,13 +33,13 @@
 #'
 #' # Run the multiplier bootstrap on the fitted (OLS) linear model
 #' set.seed(162632)
-#' coef_emp_boot <- comp_empirical_bootstrap(mod_fit = mod_fit, B = 1000)
-#' out <- comp_bootstrap_summary(mod_fit, coef_emp_boot, 'emp')
+#' coef_emp_boot <- comp_boot_emp(mod_fit = mod_fit, B = 1000)
+#' out <- comp_var(mod_fit, coef_emp_boot, 'emp')
 #'
 #' # print output
 #' print(out)
 #' }
-comp_bootstrap_summary <- function(mod_fit, boot_out, boot_type) {
+comp_var <- function(mod_fit, boot_out, boot_type) {
     assertthat::assert_that(all("lm" == class(mod_fit)) | any("glm" == class(mod_fit)),
                             msg = glue::glue("mod_fit must only be of class lm or glm"))
     assertthat::assert_that("tbl_df" %in% class(boot_out),

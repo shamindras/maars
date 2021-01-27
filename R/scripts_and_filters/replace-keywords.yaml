@@ -1,7 +1,7 @@
 # Statistical Utilities - Public Functions
 "comp_conf_int_bootstrap": "comp_ci_boot"
 "comp_coef_rwgt": "diag_fit_reg_rwgt"
-"comp_bootstrap_summary": "comp_boot_summary"
+"comp_bootstrap_summary": "comp_var"
 # Statistical Utilities - Private Functions
 "comp_sandwich_qr_var": "comp_sand_var"
 "gen_multiplier_bootstrap_weights": "comp_boot_mul_wgt"

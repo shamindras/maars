@@ -27,9 +27,9 @@
 #' X <- stats::rnorm(n, 0, 1)
 #' y <- 2 + X * 1 + stats::rnorm(n, 0, 10)
 #' lm_fit <- stats::lm(y ~ X)
-#' sandwich_qr_std_err <- comp_sandwich_qr_var(lm_fit)
+#' sandwich_qr_std_err <- comp_sand_var(lm_fit)
 #' }
-comp_sandwich_qr_var <- function(mod_fit) {
+comp_sand_var <- function(mod_fit) {
   assertthat::assert_that(all("lm" == class(mod_fit)),
                           msg = glue::glue("lm_object must only be of class lm")
   )
