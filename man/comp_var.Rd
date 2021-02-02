@@ -9,13 +9,11 @@ comp_var(mod_fit, boot_emp = NULL, boot_res = NULL, boot_mul = NULL)
 \arguments{
 \item{mod_fit}{An lm (OLS) object}
 
-\item{boot_out}{A tibble of the bootstrap calculations from either
-\code{\link{comp_boot_emp}} or
-\code{\link{comp_boot_mul}}, respectively.}
+\item{boot_emp}{to add}
 
-\item{boot_type}{A character specifying the bootstrap type. Must be "emp"
-for output from \code{\link{comp_boot_emp}} or "mult"
-for output from \code{\link{comp_boot_mul}}, respectively.}
+\item{boot_res}{to add}
+
+\item{boot_mul}{to add}
 }
 \value{
 A summary statistics tibble for the bootstrap input.

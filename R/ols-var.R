@@ -108,12 +108,9 @@ get_summary <- function(mod_fit, boot_out, boot_type) {
 #'
 #'
 #' @param mod_fit An lm (OLS) object
-#' @param boot_out A tibble of the bootstrap calculations from either
-#'   \code{\link{comp_boot_emp}} or
-#'   \code{\link{comp_boot_mul}}, respectively.
-#' @param boot_type A character specifying the bootstrap type. Must be "emp"
-#'   for output from \code{\link{comp_boot_emp}} or "mult"
-#'   for output from \code{\link{comp_boot_mul}}, respectively.
+#' @param boot_emp to add
+#' @param boot_mul to add
+#' @param boot_res to add
 #'
 #' @return A summary statistics tibble for the bootstrap input.
 #'

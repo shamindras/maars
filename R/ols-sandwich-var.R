@@ -45,7 +45,7 @@ comp_sand_var <- function(mod_fit) {
     tibble::enframe(
       x = .,
       name = "term",
-      value = "std.error.sand"
+      value = "std.error"
     )
 
   summary_sand <- mod_fit %>%
@@ -58,7 +58,7 @@ comp_sand_var <- function(mod_fit) {
     ) %>%
     dplyr::mutate(
       .data = .,
-      statistic = .data$estimate / .data$std.error.sand,
+      statistic = .data$estimate / .data$std.error,
       p.value = 2 * (1 - sapply(
         abs(.data$statistic),
         stats::pnorm
