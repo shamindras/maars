@@ -64,7 +64,7 @@ WEIGHTS_TYPE <- "std_gaussian"
 test_that("Check matrix and purrr multiplier bootstrap implmentations", {
     set.seed(5444243)
     mult_boot_1 <- comp_boot_mul(mod_fit = lm_fit, B = 3,
-                                                 weights_type = WEIGHTS_TYPE)
+                                                 weights_type = WEIGHTS_TYPE)$boot_out
     set.seed(5444243)
     mult_boot_2 <- comp_multiplier_bootstrap_purrr_var(mod_fit = lm_fit, B = 3,
                                                        weights_type = WEIGHTS_TYPE)
@@ -76,7 +76,7 @@ test_that("Check matrix and purrr multiplier bootstrap implmentations", {
 test_that("Check matrix and purrr multiplier bootstrap implmentations, 30 replications", {
     set.seed(1626323)
     mult_boot_1 <- comp_boot_mul(mod_fit = lm_fit, B = 30,
-                                                 weights_type = WEIGHTS_TYPE)
+                                                 weights_type = WEIGHTS_TYPE)$boot_out
     set.seed(1626323)
     mult_boot_2 <- comp_multiplier_bootstrap_purrr_var(mod_fit = lm_fit, B = 30,
                                                        weights_type = WEIGHTS_TYPE)
@@ -88,13 +88,13 @@ test_that("Check matrix and purrr multiplier bootstrap implmentations, 30 replic
 testthat::test_that("Check assertions are handled correctly", {
     # Check that B is an integer
     expect_error(comp_boot_mul(mod_fit = lm_fit, B = 3.5,
-                                               weights_type = WEIGHTS_TYPE))
+                                               weights_type = WEIGHTS_TYPE)$boot_out)
     # Check that B is positive
     expect_error(comp_boot_mul(mod_fit = lm_fit, B = -1,
-                                               weights_type = WEIGHTS_TYPE))
+                                               weights_type = WEIGHTS_TYPE)$boot_out)
     # Check that lm_fit is an object of class "lm"
     expect_error(comp_boot_mul(mod_fit = mtcars, B = -1,
-                                               weights_type = WEIGHTS_TYPE))
+                                               weights_type = WEIGHTS_TYPE)$boot_out)
 })
 
 

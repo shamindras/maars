@@ -38,64 +38,26 @@ get_summary <- function(mod_fit, boot_out, boot_type) {
         boot_out <- boot_out %>% dplyr::mutate(m = nrow(model.frame(mod_fit)), n = m)
     }
 
-    # Get model's estimate
-    mod_out <- broom::tidy(x = mod_fit) %>%
-        dplyr::rename(.data = .,
-                      statistic = .data$statistic,
-                      p.value = .data$p.value)
-    mod_out_sel <- mod_out %>%
-        dplyr::select(.data = .,
-                      .data$term,
-                      .data$estimate)
-
-    # Define colnames into separate variables, dplyr::rename does not like
-    # this to be defined on the fly. TODO: Investigate a more elegant approach
-    std.error.boot.colname <- stringr::str_c("std.error.boot", boot_type, sep = ".")
-    p.value.boot.colname <- stringr::str_c("p.value.boot", boot_type, sep = ".")
-    statistic.boot.colname <-  stringr::str_c("statistic.boot", boot_type, sep = ".")
-
     out <- boot_out %>%
-        tidyr::unnest(data = .,
-                      .data$boot_out) %>%
+        tidyr::unnest(.data$boot_out) %>%
         dplyr::rename(.data = .,
                       estimate.boot = .data$estimate) %>%
         dplyr::left_join(x = .,
-                         y = mod_out %>%
+                         y = broom::tidy(mod_fit) %>%
                              dplyr::select(.data = .,
                                            .data$term, .data$estimate),
                          by = "term") %>%
-        dplyr::group_by(.data = .,
-                        .data$term,
+        dplyr::group_by(.data$term,
                         .data$estimate) %>%
         dplyr::summarise(
             .data = .,
-            std.error.boot = stats::sd(sqrt(.data$m / .data$n) * (.data$estimate.boot - mean(.data$estimate.boot))),
-            p.value.boot = mean(abs(.data$estimate - .data$estimate.boot) > abs(.data$estimate)),
+            std.error = stats::sd(sqrt(.data$m / .data$n) * (.data$estimate.boot - mean(.data$estimate.boot))),
+            p.value = mean(abs(.data$estimate - .data$estimate.boot) > abs(.data$estimate)),
             .groups = 'keep'
         ) %>%
-        dplyr::mutate(.data = .,
-                      statistic.boot = .data$estimate / .data$std.error.boot)  %>%
-        dplyr::left_join(x = .,
-                         y = mod_out %>% dplyr::select(.data = .,
-                                                       -.data$estimate),
-                         by = "term") %>%
-        # dplyr::left_join(mod_out, by = "term") %>%
-        dplyr::select(.data = .,
-                      .data$term,
-                      .data$estimate,
-                      .data$std.error,
-                      .data$statistic,
-                      .data$p.value,
-                      .data$std.error.boot,
-                      .data$statistic.boot,
-                      .data$p.value.boot) %>%
-        purrr::set_names(x = .,
-                         nm = c("term", "estimate",
-                                "std.error", "statistic", "p.value",
-                                std.error.boot.colname,
-                                statistic.boot.colname,
-                                p.value.boot.colname)) %>%
-        dplyr::arrange(.data = ., .data$term)
+        dplyr::mutate(statistic = .data$estimate / .data$std.error)  %>%
+        dplyr::arrange(.data = ., .data$term) %>%
+        dplyr::relocate(.data$statistic, .after = estimate)
     return(out)
 }
 

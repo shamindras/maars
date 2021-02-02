@@ -13,11 +13,11 @@ glm_fit <- stats::glm(y ~ X, family = binomial())
 
 
 # test_that("test estimate variance from empirical bootstrap matches estimate of variance from stats::lm", {
-#     boot_out <- comp_boot_emp(lm_fit, B = 1e3)
-#     boot_summary <- comp_var(mod_fit = lm_fit, boot_out = boot_out, boot_type = 'emp')
-#     expect_equal(boot_summary$std.error.boot.emp, boot_summary$std.error, tol = 1e-2)
-#     expect_equal(boot_summary$statistic.boot.emp, boot_summary$statistic, tol = 1e-1)
-#     expect_equal(boot_summary$p.value.boot.emp, boot_summary$p.value, tol = 1e-2)
+#      boot_out <- comp_boot_emp(lm_fit, B = 1e3)
+#      boot_summary <- comp_var(mod_fit = lm_fit, boot_out = boot_out, boot_type = 'emp')
+#      expect_equal(boot_summary$std.error.boot.emp, boot_summary$std.error, tol = 1e-2)
+#      expect_equal(boot_summary$statistic.boot.emp, boot_summary$statistic, tol = 1e-1)
+#      expect_equal(boot_summary$p.value.boot.emp, boot_summary$p.value, tol = 1e-2)
 # })
 #
 #

@@ -42,11 +42,11 @@ test_that("lm and glm fitted with conditional_model return the same outputs as t
 
 test_that("test sample mean of coefficients estimated via bootstrap matches the original coefficients", {
   # ols
-  boot_out <- comp_boot_emp(lm_fit, B = 1e3) %>% tidyr::unnest(cols = boot_out)
+  boot_out <- comp_boot_emp(lm_fit, B = 1e3)$boot_out %>% tidyr::unnest(cols = boot_out)
   expect_equal(boot_out %>% dplyr::group_by(term) %>% dplyr::summarise(mean = mean(estimate)) %>% dplyr::pull(mean) %>% unname(), unname(stats::coef(lm_fit)), tol = 1e-2)
 
   # glm
-  boot_out <- comp_boot_emp(glm_fit, B = 1e3) %>% tidyr::unnest(cols = boot_out)
+  boot_out <- comp_boot_emp(glm_fit, B = 1e3)$boot_out %>% tidyr::unnest(cols = boot_out)
   expect_equal(boot_out %>% dplyr::group_by(term) %>% dplyr::summarise(mean = mean(estimate)) %>% dplyr::pull(mean) %>% unname(), unname(stats::coef(glm_fit)), tol = 1e-2)
 })
 
@@ -54,9 +54,9 @@ test_that("test sample mean of coefficients estimated via bootstrap matches the 
 
 test_that("test bootstrap confidence intervals via percentile method for different values of m matches for stats::lm", {
   # ols
-  boot_out <- comp_boot_emp(lm_fit, B = 1e3)
-  ci <- comp_ci_boot(comp_boot_emp(lm_fit, B = 1e3))
-  boot_50 <- comp_boot_emp(lm_fit, B = 1e4, m = 50)
+  boot_out <- comp_boot_emp(lm_fit, B = 1e3)$boot_out
+  ci <- comp_ci_boot(comp_boot_emp(lm_fit, B = 1e3)$boot_out)
+  boot_50 <- comp_boot_emp(lm_fit, B = 1e4, m = 50)$boot_out
   ci_50 <- comp_ci_boot(boot_50)
   expect_equal(ci, ci_50, tol = 1e-2)
 #
