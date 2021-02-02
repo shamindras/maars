@@ -10,8 +10,12 @@ comp_sand_var(mod_fit)
 \item{mod_fit}{A \code{\link[stats]{lm}} (OLS) object.}
 }
 \value{
-A tibble containing the sandwich estimator of variance for OLS
-regression.
+A list containing the following elements: the type of estimator of
+of the variance  (\code{var_type}); the summary statistics of \code{mod_fit} based on
+this estimator of the variance (e.g., standard errors and p-values)
+(\code{var_summary}); the assumptions under which the estimator of the
+variance is consistent (\code{var_assumptions}); the covariance matrix for
+the coefficients estimates (\code{cov_mat}).
 }
 \description{
 Compute the sandwich estimator of standard errors for
