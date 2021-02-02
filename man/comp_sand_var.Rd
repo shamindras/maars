@@ -11,8 +11,8 @@ comp_sand_var(mod_fit)
 }
 \value{
 A list containing the following elements: the type of estimator of
-of the variance  (\code{var_type}); the summary statistics of \code{mod_fit} based on
-this estimator of the variance (e.g., standard errors and p-values)
+of the variance  (\code{var_type}); the summary statistics of \code{mod_fit}
+based on this estimator of the variance (e.g., standard errors and p-values)
 (\code{var_summary}); the assumptions under which the estimator of the
 variance is consistent (\code{var_assumptions}); the covariance matrix for
 the coefficients estimates (\code{cov_mat}).

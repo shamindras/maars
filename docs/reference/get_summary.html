@@ -40,7 +40,9 @@
 
 
 <meta property="og:title" content="get_summary computes the statistics based on boot_out and boot_type — get_summary" />
-<meta property="og:description" content="get_summary computes the statistics based on boot_out and boot_type" />
+<meta property="og:description" content="get_summary returns a tibble containing the model's statistics
+based on the coefficients estimates (boot_out) obtained via
+boot_type bootstrap (e.g., empirical)." />
 
 
 
@@ -133,7 +135,9 @@
     </div>
 
     <div class="ref-description">
-    <p>get_summary computes the statistics based on boot_out and boot_type</p>
+    <p><code>get_summary</code> returns a tibble containing the model's statistics
+based on the coefficients estimates (<code>boot_out</code>) obtained via
+<code>boot_type</code> bootstrap (e.g., empirical).</p>
     </div>
 
     <pre class="usage"><span class='fu'>get_summary</span><span class='op'>(</span><span class='va'>mod_fit</span>, <span class='va'>boot_out</span>, <span class='va'>boot_type</span><span class='op'>)</span></pre>
@@ -142,14 +146,30 @@
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
+      <th>mod_fit</th>
+      <td><p>A <code><a href='https://rdrr.io/r/stats/lm.html'>lm</a></code> (OLS) object.</p></td>
+    </tr>
+    <tr>
+      <th>boot_out</th>
+      <td><p>A tibble of the model's coefficients estimated (<code>term</code>
+and <code>estimate</code>) on the bootstrapped datasets, the size of each
+bootstrapped dataset (<code>m</code>), the size of the original dataset
+(<code>n</code>), and the number of the bootstrap repetition (<code>b</code>).</p></td>
+    </tr>
+    <tr>
       <th>boot_type</th>
-      <td></td>
+      <td><p>A character specifying the bootstrap type. It can be be "emp"
+for output from <code><a href='comp_boot_emp.html'>comp_boot_emp</a></code>, "mul"
+for output from <code><a href='comp_boot_mul.html'>comp_boot_mul</a></code>, or
+"res" for output from <code><a href='comp_boot_res.html'>comp_boot_res</a></code>.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    
+    <p>A tibble containing the summary statistics for the model: terms,
+coefficients estimates, t-statistics, and p-values. These statistics are
+based on the output of the bootstrap passed in <code>boot_out</code>.</p>
 
 
 

@@ -1,4 +1,31 @@
-
+#' get_summary computes the statistics based on boot_out and boot_type
+#'
+#' \code{get_summary} returns a tibble containing the model's statistics
+#'   based on the coefficients estimates (\code{boot_out}) obtained via
+#'   \code{boot_type} bootstrap (e.g., empirical).
+#'
+#' @param mod_fit A \code{\link[stats]{lm}} (OLS) object.
+#' @param boot_out A tibble of the model's coefficients estimated (\code{term}
+#'   and \code{estimate}) on the bootstrapped datasets, the size of each
+#'   bootstrapped dataset (\code{m}), the size of the original dataset
+#'   (\code{n}), and the number of the bootstrap repetition (\code{b}).
+#' @param boot_type A character specifying the bootstrap type. It can be be "emp"
+#'   for output from \code{\link{comp_boot_emp}}, "mul"
+#'   for output from \code{\link{comp_boot_mul}}, or
+#'   "res" for output from \code{\link{comp_boot_res}}.
+#'
+#' @return A tibble containing the summary statistics for the model: terms,
+#'   coefficients estimates, t-statistics, and p-values. These statistics are
+#'   based on the output of the bootstrap passed in \code{boot_out}.
+#'
+#'
+#' @keywords internal
+#'
+#' @importFrom Rdpack reprompt
+#' @importFrom rlang .data
+#'
+#'
+#' @return
 get_summary <- function(mod_fit, boot_out, boot_type) {
     assertthat::assert_that(all("lm" == class(mod_fit)) | any("glm" == class(mod_fit)),
                             msg = glue::glue("mod_fit must only be of class lm or glm"))
@@ -71,7 +98,6 @@ get_summary <- function(mod_fit, boot_out, boot_type) {
         dplyr::arrange(.data = ., .data$term)
     return(out)
 }
-
 
 #' Create an empirical or multiplier bootstrap summary table
 #'

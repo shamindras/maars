@@ -142,7 +142,7 @@ empirical bootstrap output or multiplier bootstrap output as generated from
 <code><a href='comp_boot_mul.html'>comp_boot_mul</a></code>, respectively.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>comp_var</span><span class='op'>(</span><span class='va'>mod_fit</span>, <span class='va'>boot_out</span>, <span class='va'>boot_type</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>comp_var</span><span class='op'>(</span><span class='va'>mod_fit</span>, boot_emp <span class='op'>=</span> <span class='cn'>NULL</span>, boot_res <span class='op'>=</span> <span class='cn'>NULL</span>, boot_mul <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -183,7 +183,7 @@ for output from <code><a href='comp_boot_mul.html'>comp_boot_mul</a></code>, res
 <span class='co'># Run the multiplier bootstrap on the fitted (OLS) linear model</span>
 <span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>162632</span><span class='op'>)</span>
 <span class='va'>coef_emp_boot</span> <span class='op'>&lt;-</span> <span class='fu'><a href='comp_boot_emp.html'>comp_boot_emp</a></span><span class='op'>(</span>mod_fit <span class='op'>=</span> <span class='va'>mod_fit</span>, B <span class='op'>=</span> <span class='fl'>1000</span><span class='op'>)</span>
-<span class='va'>out</span> <span class='op'>&lt;-</span> <span class='fu'>comp_var</span><span class='op'>(</span><span class='va'>mod_fit</span>, <span class='va'>coef_emp_boot</span>, <span class='st'>'emp'</span><span class='op'>)</span>
+<span class='va'>out</span> <span class='op'>&lt;-</span> <span class='fu'>comp_var</span><span class='op'>(</span><span class='va'>mod_fit</span>, boot_mul <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>B <span class='op'>=</span> <span class='fl'>100</span>, weights_type <span class='op'>=</span> <span class='st'>'rademacher'</span><span class='op'>)</span><span class='op'>)</span>
 
 <span class='co'># print output</span>
 <span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>out</span><span class='op'>)</span>
