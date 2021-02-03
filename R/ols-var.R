@@ -103,40 +103,46 @@ comp_var <- function(mod_fit, boot_emp = NULL, boot_res = NULL, boot_mul = NULL)
     assertthat::assert_that(all("lm" == class(mod_fit)) | any("glm" == class(mod_fit)),
                             msg = glue::glue("mod_fit must only be of class lm or glm"))
 
-    out <- comp_sand_var(mod_fit)
+    # Compute the sandwich estimator by default
+    out_sand <- comp_sand_var(mod_fit)
+
+    # Initialize all other bootstrap variance computations to NULL values
+    boot_out_emp <- NULL
+    boot_out_mul <- NULL
+    boot_out_res <- NULL
+
+    # Override boostrap NULL bootstrap variance calculations if any of the
+    # input values passed in are not NULL
     if(!is.null(boot_emp)){
         assertthat::assert_that('B' %in% names(boot_emp),
                                 msg = glue::glue("boot_emp must contain a value for B"))
         # we should probably set m=sample size by default
         assertthat::assert_that('m' %in% names(boot_emp),
                                 msg = glue::glue("boot_emp must contain a value for m"))
-        boot_out_emp <- comp_boot_emp(mod_fit = mod_fit, B = boot_emp$B, m = boot_emp$m)
-        tidy_emp <- get_summary(mod_fit = mod_fit, boot_out = boot_out_emp, boot_type = 'emp')
-        out <- out %>% dplyr::left_join(tidy_emp,
-                                        by = c('term', 'std.error', 'estimate',
-                                               'statistic', 'p.value'))
+        boot_out_emp <- comp_boot_emp(mod_fit = mod_fit,
+                                      B = boot_emp$B,
+                                      m = boot_emp$m)
     }
     if(!is.null(boot_res)){
         assertthat::assert_that('B' %in% names(boot_res),
                                 msg = glue::glue("boot_res must contain a value for B"))
         boot_out_res <- comp_boot_res(mod_fit = mod_fit, B = boot_res$B)
-        tidy_res <- get_summary(mod_fit = mod_fit, boot_out = boot_out_res, boot_type = 'res')
-        out <- out %>% dplyr::left_join(tidy_res,
-                                        by = c('term', 'std.error', 'estimate',
-                                               'statistic', 'p.value'))
     }
     if(!is.null(boot_mul)){
         assertthat::assert_that('B' %in% names(boot_mul),
                                 msg = glue::glue("boot_mul must contain a value for B"))
         assertthat::assert_that('weights_type' %in% names(boot_mul),
                                 msg = glue::glue("boot_mul must contain a value for weights_type"))
-        boot_out_mul <- comp_boot_mul(mod_fit = mod_fit, B = boot_mul$B,
+        boot_out_mul <- comp_boot_mul(mod_fit = mod_fit,
+                                      B = boot_mul$B,
                                       weights_type = boot_mul$weights_type)
-        tidy_mul <- get_summary(mod_fit, boot_out = boot_out_mul, boot_type = 'mul')
-        out <- out %>% dplyr::left_join(tidy_mul,
-                                        by = c('term', 'std.error', 'estimate',
-                                               'statistic', 'p.value'))
     }
 
+    # Combine all output into a single list of lists
+    out <- list(var_sand = out_sand,
+                var_boot_emp = boot_out_emp,
+                var_boot_mul = boot_out_mul,
+                var_boot_res = boot_out_res
+                )
     return(out)
 }
