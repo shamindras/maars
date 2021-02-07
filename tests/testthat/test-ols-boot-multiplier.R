@@ -98,3 +98,23 @@ testthat::test_that("Check assertions are handled correctly", {
 })
 
 
+
+test_that("test std errors from our multiplier bootstrap match those from the sandwich package for misspecified model", {
+
+    # ols
+    n <- 1e2
+    X <- rnorm(n, 0, 4)
+    y <- 2*X + 3 + X^3 + rnorm(n, 0, 2)
+    lm_fit <- lm(y ~ X)
+    var_mulboot <- comp_boot_mul(mod_fit = lm_fit, B = 1e5,
+                                 weights_type = 'rademacher')$var_summary$std.error^2
+    # get estimate from sandwich package
+    var_sandwichpkg <- sandwich::vcovBS(lm_fit, cluster = NULL, R = 1e5, type = "wild-rademacher")
+    expect_equal(var_mulboot,
+                 diag(var_sandwichpkg) %>% unname(), tol = 1e-2)
+
+})
+
+
+
+
