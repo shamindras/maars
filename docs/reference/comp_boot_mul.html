@@ -144,7 +144,7 @@ This wrapper function calls on the helper function <code><a href='comp_boot_mul_
 for how a single instance is run.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>comp_boot_mul</span><span class='op'>(</span><span class='va'>mod_fit</span>, <span class='va'>B</span>, <span class='va'>weights_type</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>comp_boot_mul</span><span class='op'>(</span><span class='va'>mod_fit</span>, <span class='va'>B</span>, weights_type <span class='op'>=</span> <span class='st'>"rademacher"</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -164,7 +164,7 @@ Based on the <code>weighttype</code> option in the Stata <code>boottest</code> p
 this can only take the following five prespecified values
 <code>"rademacher", "mammen", "webb", "std_gaussian", "gamma"</code>.
 For more details see the documentation for
-<code><a href='comp_boot_mul_wgt.html'>comp_boot_mul_wgt</a></code>.</p></td>
+<code><a href='comp_boot_mul_wgt.html'>comp_boot_mul_wgt</a></code>. The default value is "rademacher".</p></td>
     </tr>
     </table>
 

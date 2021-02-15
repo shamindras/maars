@@ -15,7 +15,7 @@ check_fn_args(n = NULL, B = NULL, m = NULL)
 dataset for each bootstrap repetition.}
 }
 \value{
-
+(logical) returns \code{TRUE} if the logical assertions are satisfied
 }
 \description{
 \code{check_fn_args} is used to assess whether the arguments

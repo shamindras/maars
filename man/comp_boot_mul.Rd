@@ -4,7 +4,7 @@
 \alias{comp_boot_mul}
 \title{A wrapper to replicate the multiplier bootstrap calculation for an OLS fitted dataset}
 \usage{
-comp_boot_mul(mod_fit, B, weights_type)
+comp_boot_mul(mod_fit, B, weights_type = "rademacher")
 }
 \arguments{
 \item{mod_fit}{An \code{\link[stats]{lm}} (OLS) object.}
@@ -16,7 +16,7 @@ Based on the \code{weighttype} option in the Stata \code{boottest} package,
 this can only take the following five prespecified values
 \code{"rademacher", "mammen", "webb", "std_gaussian", "gamma"}.
 For more details see the documentation for
-\code{\link{comp_boot_mul_wgt}}.}
+\code{\link{comp_boot_mul_wgt}}. The default value is "rademacher".}
 }
 \value{
 A list containing the following elements.

@@ -52,12 +52,19 @@
 #' gamma_w <- comp_boot_mul_wgt(n = n, weights_type = "gamma")
 #' }
 comp_boot_mul_wgt <- function(n, weights_type) {
-  check_fn_args(n=n)
-  assertthat::assert_that(weights_type %in% c("rademacher", "mammen",
-                                              "webb", "std_gaussian", "gamma"),
-                          msg = glue::glue("weights_type must only be one of the following types c('rademacher', 'mammen', 'webb', 'std_gaussian', 'gamma')"))
+  check_fn_args(n = n)
+
+  assertthat::assert_that(
+    is.character(weights_type)
+    && weights_type %in% c(
+        "rademacher", "mammen", "webb",
+        "std_gaussian", "gamma"
+      ),
+    msg = glue::glue("weights_type must only be one of the following types ['rademacher', 'mammen', 'webb', 'std_gaussian', 'gamma']")
+  )
   assertthat::assert_that(length(weights_type) == 1,
-                          msg = glue::glue("weights_type must only be a single value"))
+    msg = glue::glue("weights_type must only be a single value")
+  )
 
   if (weights_type == "rademacher") {
     out <- sample(
@@ -165,7 +172,7 @@ comp_boot_mul_ind <- function(n, J_inv_X_res, e) {
 #'   this can only take the following five prespecified values
 #'   \code{"rademacher", "mammen", "webb", "std_gaussian", "gamma"}.
 #'   For more details see the documentation for
-#'   \code{\link{comp_boot_mul_wgt}}.
+#'   \code{\link{comp_boot_mul_wgt}}. The default value is "rademacher".
 #'
 #' @return A list containing the following elements.
 #'   \code{var_type}: The type of estimator for the variance of the coefficients
@@ -204,7 +211,7 @@ comp_boot_mul_ind <- function(n, J_inv_X_res, e) {
 #' set.seed(162632)
 #' comp_boot_mul(lm_fit, B = 15, weights_type = 'std_gaussian')
 #' }
-comp_boot_mul <- function(mod_fit, B, weights_type) {
+comp_boot_mul <- function(mod_fit, B, weights_type = "rademacher") {
   assertthat::assert_that(all("lm" == class(mod_fit)),
                           msg = glue::glue("mod_fit must only be of class lm"))
   check_fn_args(B=B)
