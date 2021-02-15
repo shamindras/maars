@@ -1,11 +1,10 @@
-#' Draw bootstrap samples from the data
+#' Draw bootstrap sample from the data
 #'
-#' \code{comp_boot_emp_samples} draws bootstrap samples
+#' \code{comp_boot_emp_sample} draws one bootstrap samples
 #' (i.e. sampling observations with replacement) from the input
-#' \code{data}.
-#'
-#' @details More specifically, \code{B} bootstraped datasets of size
-#'   \code{m} are drawn from the \code{data}.
+#' \code{data}. It returns a list containing the indices of the
+#' \code{m} observations that have been sampled (\code{indices}) and
+#' the bootstrapped dataset (\code{data}).
 #'
 #' @param data A tibble or data frame containing the dataset to be
 #'   sampled from.
@@ -14,8 +13,10 @@
 #' @param m Number of observations to be sampled with replacement from
 #'   the original dataset for each bootstrap repetition.
 #'
-#' @return A tibble containing the bootstrap samples (\code{data})
-#'   and their corresponding number (\code{b}).
+#' @return A tibble containing the number of bootstrap iteration, the
+#'   bootstrap samples (\code{data}),
+#'   and the indices of the observations (linked to the original sample) in the
+#'   sample (\code{indices}).
 #'
 #' @keywords internal
 #'
@@ -27,17 +28,20 @@
 #' set.seed(162632)
 #' n <- 100
 #' boot <- comp_boot_emp_samples(
-#'   data.frame(y = stats::rnorm(n, 0, 1),
-#'              x = stats::rnorm(n, 0, 1)),
+#'   data.frame(
+#'     y = stats::rnorm(n, 0, 1),
+#'     x = stats::rnorm(n, 0, 1)
+#'   ),
 #'   B = 100,
-#'   m = 5)
+#'   m = 5
+#' )
 #'
 #' # Display the output
 #' print(boot)
 #' }
 comp_boot_emp_samples <- function(data,
-                                             B = 100,
-                                             m = NULL) {
+                                 B = 1,
+                                 m = NULL) {
   n <- nrow(data)
   if (is.null(m)) {
     m <- n
@@ -47,8 +51,10 @@ comp_boot_emp_samples <- function(data,
 
   out <- tibble::tibble(
     b = as.integer(paste0(1:length(indices))),
-    data = purrr::map(indices, ~ data[.x, ])
+    data = purrr::map(indices, ~ data[.x, ]),
+    indices = indices
   )
+
   return(out)
 }
 
@@ -200,23 +206,19 @@ comp_boot_emp <- function(mod_fit, B = 100, m = NULL) {
   check_fn_args(B=B,m=m)
 
   data <- stats::model.frame(mod_fit)
+  n <- nrow(data)
   if (is.null(m)) {
-    m <- nrow(data)
+    m <- n
   }
 
-  boot_samples <- comp_boot_emp_samples(data, B, m)
+  boot_out <- purrr::map(1:B,
+                         ~ fit_reg(mod_fit = mod_fit,
+                                   data = comp_boot_emp_samples(data,B=1,m)$data[[1]]))
 
-  boot_out <- boot_samples %>%
-    tibble::add_column(m = m) %>%
-    tibble::add_column(n = nrow(data)) %>%
-    dplyr::mutate(
-      boot_out =
-        purrr::map(
-          data,
-          ~ fit_reg(mod_fit = mod_fit, data = .)
-        )
-    ) %>%
-    dplyr::select(b, m, n, boot_out)
+  boot_out <- boot_out %>%
+    dplyr::bind_rows(.id = 'b') %>%
+    tidyr::nest(boot_out = c(estimate, term)) %>%
+    tibble::add_column(m = m, n = n)
 
   summary_boot <- get_summary(mod_fit = mod_fit,
                               boot_out = boot_out,

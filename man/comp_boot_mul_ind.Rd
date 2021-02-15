@@ -5,19 +5,19 @@
 \title{Calculate a single replication of the multiplier bootstrap for an OLS
 fitted dataset}
 \usage{
-comp_boot_mul_ind(n, J_inv_X_res, e)
+comp_boot_mul_ind(J_inv_X_res, e)
 }
 \arguments{
-\item{n}{Number of observations (rows) of the underlying dataset.
-In the given notation we assume our dataset has \eqn{n}
-observations and \eqn{d} features (including an intercept)}
-
 \item{J_inv_X_res}{A \eqn{d \times \d} matrix given by the
 expression
 \eqn{\sum_{i=1}^{n}\widehat{J}^{-1}X_{i}(Y_{i}-X_{i}^{T} \widehat{\beta})}.}
 
 \item{e}{multiplier bootstrap weights. This is an \eqn{n \times 1}
 vector of mean zero, variance 1 random variables.}
+
+\item{n}{Number of observations (rows) of the underlying dataset.
+In the given notation we assume our dataset has \eqn{n}
+observations and \eqn{d} features (including an intercept)}
 }
 \value{
 A tibble of the bootstrap standard errors.

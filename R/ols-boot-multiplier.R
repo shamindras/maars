@@ -70,8 +70,8 @@ comp_boot_mul_wgt <- function(n, weights_type) {
     out <- sample(
       x = c(-1, 1),
       size = n,
-      replace = TRUE,
-      prob = rep(x = 1 / 2, times = 2)
+      replace = TRUE#,
+     # prob = rep(x = 1 / 2, times = 2)
     )
   } else if (weights_type == "mammen") {
     phi <- (1 + sqrt(5)) / 2 # Golden ratio
@@ -152,7 +152,7 @@ comp_boot_mul_wgt <- function(n, weights_type) {
 #' # Display the output
 #' print(mult_boot)
 #' }
-comp_boot_mul_ind <- function(n, J_inv_X_res, e) {
+comp_boot_mul_ind <- function(J_inv_X_res, e) {
   out <- t(J_inv_X_res) %*% e #/ n
   return(out)
 }
@@ -225,33 +225,37 @@ comp_boot_mul <- function(mod_fit, B, weights_type = "rademacher") {
                   purrr::map(~ t(J_inv %*% X[.x, ] * res[.x])) %>%
                   do.call(rbind, .)
 
-  # multiplier weights (mean 0, variance = 1)
-  e <- matrix(data =
-                comp_boot_mul_wgt(n = B * n,
-                                                 weights_type = weights_type),
-              nrow = B,
-              ncol = n)
+  # # multiplier weights (mean 0, variance = 1)
+  e <- comp_boot_mul_wgt(n = B * n, weights_type = weights_type)
+  boot_out <- purrr::map(
+    1:B,
+    ~ betas + comp_boot_mul_ind(J_inv_X_res = J_inv_X_res,
+                                e = e[seq(n * (.x - 1) + 1, .x * n)])
+  ) %>%
+    do.call(rbind, .)
 
-  # multiplier bootstrap replications, B times
-  boot_out <- 1:B %>%
-                purrr::map(~ betas +
-                             comp_boot_mul_ind(n, J_inv_X_res,
-                                                         e[.x, ])) %>%
-                purrr::map(~ tibble::tibble(term = rownames(.x),
-                                            estimate = .x[, 1]))
+  # convert to tibble
+  boot_out <- tibble::tibble(
+    b = rep(1:B, each = length(betas)),
+    term = rownames(boot_out),
+    estimate = boot_out[, 1]
+  ) %>%
+    # consolidate tibble
+    tidyr::nest(boot_out = c(term, estimate))
 
-  # Consolidate output in a nested tibble
-  boot_out <- tibble::tibble("B" = 1:B) %>% dplyr::mutate("boot_out" = boot_out)
+  summary_boot <- get_summary(
+    mod_fit = mod_fit,
+    boot_out = boot_out,
+    boot_type = "mul"
+  )
 
-  summary_boot <- get_summary(mod_fit = mod_fit,
-                              boot_out = boot_out,
-                              boot_type = 'mul')
-
-  out <- list(var_type = "var_boot_mul",
-              var_summary =  summary_boot,
-              var_assumptions = "The observations need to be independent.",
-              cov_mat = NULL,
-              boot_out = boot_out)
+  out <- list(
+    var_type = "var_boot_mul",
+    var_summary = summary_boot,
+    var_assumptions = "The observations need to be independent.",
+    cov_mat = NULL,
+    boot_out = boot_out
+  )
 
   return(out)
 }

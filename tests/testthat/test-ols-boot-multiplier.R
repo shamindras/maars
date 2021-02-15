@@ -30,11 +30,7 @@ comp_multiplier_bootstrap_purrr_var <- function(mod_fit, B = 100, weights_type) 
         purrr::map(~ t(J_inv %*% X[.x, ] * res[.x]))
 
     # Multiplier weights (mean 0, variance = 1)
-    e <- matrix(data =
-                    comp_boot_mul_wgt(n = B * n,
-                                                     weights_type = weights_type),
-                nrow = B,
-                ncol = n)
+    e <- comp_boot_mul_wgt(n = B * n, weights_type = weights_type)
     # e <- matrix(data = rnorm(n = B * n, mean = 0, sd = 1), nrow = B, ncol = n)
 
     # Multiplier Bootstrap replications, B times
@@ -42,12 +38,12 @@ comp_multiplier_bootstrap_purrr_var <- function(mod_fit, B = 100, weights_type) 
         purrr::map(~ betas +
                        comp_multiplier_single_bootstrap_purrr_var(n = n,
                                                                   J_inv_X_res = J_inv_X_res,
-                                                                  e = e[.x, ])) %>%
+                                                                  e = e[seq(n * (.x - 1) + 1, .x * n)])) %>%
         purrr::map(~ tibble::tibble(term = rownames(.x),
                                     estimate = .x[, 1]))
 
     # Consolidate output in a nested tibble
-    out <- tibble::tibble("B" = 1:B) %>% dplyr::mutate("boot_out" = boot_out)
+    out <- tibble::tibble("b" = 1:B) %>% dplyr::mutate("boot_out" = boot_out)
 
     return(out)
 }
