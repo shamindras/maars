@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Draw bootstrap samples from the data — comp_boot_emp_samples • maars</title>
+<title>Draw bootstrap sample from the data — comp_boot_emp_samples • maars</title>
 
 
 <!-- jquery -->
@@ -39,10 +39,12 @@
 
 
 
-<meta property="og:title" content="Draw bootstrap samples from the data — comp_boot_emp_samples" />
-<meta property="og:description" content="comp_boot_emp_samples draws bootstrap samples
+<meta property="og:title" content="Draw bootstrap sample from the data — comp_boot_emp_samples" />
+<meta property="og:description" content="comp_boot_emp_sample draws one bootstrap samples
 (i.e. sampling observations with replacement) from the input
-data." />
+data. It returns a list containing the indices of the
+m observations that have been sampled (indices) and
+the bootstrapped dataset (data)." />
 
 
 
@@ -129,18 +131,20 @@ data." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Draw bootstrap samples from the data</h1>
+    <h1>Draw bootstrap sample from the data</h1>
     
     <div class="hidden name"><code>comp_boot_emp_samples.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p><code>comp_boot_emp_samples</code> draws bootstrap samples
+    <p><code>comp_boot_emp_sample</code> draws one bootstrap samples
 (i.e. sampling observations with replacement) from the input
-<code>data</code>.</p>
+<code>data</code>. It returns a list containing the indices of the
+<code>m</code> observations that have been sampled (<code>indices</code>) and
+the bootstrapped dataset (<code>data</code>).</p>
     </div>
 
-    <pre class="usage"><span class='fu'>comp_boot_emp_samples</span><span class='op'>(</span><span class='va'>data</span>, B <span class='op'>=</span> <span class='fl'>100</span>, m <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>comp_boot_emp_samples</span><span class='op'>(</span><span class='va'>data</span>, B <span class='op'>=</span> <span class='fl'>1</span>, m <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -164,12 +168,10 @@ the original dataset for each bootstrap repetition.</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A tibble containing the bootstrap samples (<code>data</code>)
-and their corresponding number (<code>b</code>).</p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>More specifically, <code>B</code> bootstraped datasets of size
-<code>m</code> are drawn from the <code>data</code>.</p>
+    <p>A tibble containing the number of bootstrap iteration, the
+bootstrap samples (<code>data</code>),
+and the indices of the observations (linked to the original sample) in the
+sample (<code>indices</code>).</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
@@ -177,10 +179,13 @@ and their corresponding number (<code>b</code>).</p>
 <span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>162632</span><span class='op'>)</span>
 <span class='va'>n</span> <span class='op'>&lt;-</span> <span class='fl'>100</span>
 <span class='va'>boot</span> <span class='op'>&lt;-</span> <span class='fu'>comp_boot_emp_samples</span><span class='op'>(</span>
-  <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>y <span class='op'>=</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>,
-             x <span class='op'>=</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span>,
+  <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>
+    y <span class='op'>=</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>,
+    x <span class='op'>=</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>
+  <span class='op'>)</span>,
   B <span class='op'>=</span> <span class='fl'>100</span>,
-  m <span class='op'>=</span> <span class='fl'>5</span><span class='op'>)</span>
+  m <span class='op'>=</span> <span class='fl'>5</span>
+<span class='op'>)</span>
 
 <span class='co'># Display the output</span>
 <span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>boot</span><span class='op'>)</span>
