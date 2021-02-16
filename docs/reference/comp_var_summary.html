@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Function reference • maars</title>
+<title>Create an empirical or multiplier bootstrap summary table — comp_var_summary • maars</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,11 @@
 
 
 
-<meta property="og:title" content="Function reference" />
+<meta property="og:title" content="Create an empirical or multiplier bootstrap summary table — comp_var_summary" />
+<meta property="og:description" content="comp_var creates an OLS bootstrap summary table for
+empirical bootstrap output or multiplier bootstrap output as generated from
+comp_boot_emp or
+comp_boot_mul, respectively." />
 
 
 
@@ -58,7 +62,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-reference-index">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -124,111 +128,68 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Reference</h1>
+    <h1>Create an empirical or multiplier bootstrap summary table</h1>
+    
+    <div class="hidden name"><code>comp_var_summary.Rd</code></div>
     </div>
 
-    <table class="ref-index">
+    <div class="ref-description">
+    <p><code>comp_var</code> creates an OLS bootstrap summary table for
+empirical bootstrap output or multiplier bootstrap output as generated from
+<code><a href='comp_boot_emp.html'>comp_boot_emp</a></code> or
+<code><a href='comp_boot_mul.html'>comp_boot_mul</a></code>, respectively.</p>
+    </div>
 
-    <colgroup>
-      
-      <col class="alias" />
-      <col class="title" />
-    </colgroup>
+    <pre class="usage"><span class='fu'>comp_var_summary</span><span class='op'>(</span><span class='va'>comp_var_out</span><span class='op'>)</span></pre>
 
-    <tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-statistical-utilities" class="hasAnchor"><a href="#section-statistical-utilities" class="anchor"></a>Statistical Utilities</h2>
-          <p class="section-desc"><p>Utilities for doing <em>statistical estimation and inference</em> under model misspecification</p></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="comp_boot_res.html">comp_boot_res()</a></code> </p>
-        </td>
-        <td><p>A wrapper for the residual bootstrap of a fitted OLS regression model</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="comp_ci_boot.html">comp_ci_boot()</a></code> </p>
-        </td>
-        <td><p>Confidence intervals for on bootstrapped datasets via percentile bootstrap</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="comp_var.html">comp_var()</a></code> </p>
-        </td>
-        <td><p>Create an empirical or multiplier bootstrap summary table</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="comp_var_summary.html">comp_var_summary()</a></code> </p>
-        </td>
-        <td><p>Create an empirical or multiplier bootstrap summary table</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="diag_fit_reg_rwgt.html">diag_fit_reg_rwgt()</a></code> </p>
-        </td>
-        <td><p>Obtain estimates of GLM or OLS under reweighting of one or
-multiple regressors</p></td>
-      </tr>
-    </tbody><tbody>
-      <tr>
-        <th colspan="2">
-          <h2 id="section-diagnostic-utilities" class="hasAnchor"><a href="#section-diagnostic-utilities" class="anchor"></a>Diagnostic Utilities</h2>
-          <p class="section-desc"><p>Utilities for performing <em>model fit diagnostics</em> under model misspecification</p></p>
-        </th>
-      </tr>
-      
-      
-    </tbody><tbody>
-      
-      
-      <tr>
-        
-        <td>
-          <p><code><a href="diag_boot_emp_qqn.html">diag_boot_emp_qqn()</a></code> </p>
-        </td>
-        <td><p>Normal QQ plot of the terms in an output of the bootstrap function</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="diag_fit_reg_rwgt.html">diag_fit_reg_rwgt()</a></code> </p>
-        </td>
-        <td><p>Obtain estimates of GLM or OLS under reweighting of one or
-multiple regressors</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="diag_foc_rwgt.html">diag_foc_rwgt()</a></code> </p>
-        </td>
-        <td><p>Obtain the "focal reweighting variable" model diagnostic.</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="diag_foc_slope.html">diag_foc_slope()</a></code> </p>
-        </td>
-        <td><p>Obtain the "focal slope" model diagnostic</p></td>
-      </tr><tr>
-        
-        <td>
-          <p><code><a href="diag_nl_detect.html">diag_nl_detect()</a></code> </p>
-        </td>
-        <td><p>Obtain the "nonlinearity detection" model diagnostic</p></td>
-      </tr>
-    </tbody>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>mod_fit</th>
+      <td><p>An lm (OLS) object</p></td>
+    </tr>
+    <tr>
+      <th>boot_emp</th>
+      <td><p>to add</p></td>
+    </tr>
+    <tr>
+      <th>boot_mul</th>
+      <td><p>to add</p></td>
+    </tr>
+    <tr>
+      <th>boot_res</th>
+      <td><p>to add</p></td>
+    </tr>
     </table>
-  </div>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>A summary statistics tibble for the bootstrap input.</p>
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+<span class='co'># Simulate data from a linear model</span>
+<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>35542</span><span class='op'>)</span>
+<span class='va'>n</span> <span class='op'>&lt;-</span> <span class='fl'>1e2</span>
+<span class='va'>X</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>
+<span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fl'>2</span> <span class='op'>+</span> <span class='va'>X</span> <span class='op'>*</span> <span class='fl'>1</span> <span class='op'>+</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>
+
+<span class='co'># Fit the linear model using OLS (ordinary least squares)</span>
+<span class='va'>mod_fit</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>y</span> <span class='op'>~</span> <span class='va'>X</span><span class='op'>)</span>
+
+<span class='co'># Run the multiplier bootstrap on the fitted (OLS) linear model</span>
+<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>162632</span><span class='op'>)</span>
+<span class='va'>coef_emp_boot</span> <span class='op'>&lt;-</span> <span class='fu'><a href='comp_boot_emp.html'>comp_boot_emp</a></span><span class='op'>(</span>mod_fit <span class='op'>=</span> <span class='va'>mod_fit</span>, B <span class='op'>=</span> <span class='fl'>1000</span><span class='op'>)</span>
+<span class='va'>out</span> <span class='op'>&lt;-</span> <span class='fu'><a href='comp_var.html'>comp_var</a></span><span class='op'>(</span><span class='va'>mod_fit</span>, boot_mul <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>B <span class='op'>=</span> <span class='fl'>100</span>, weights_type <span class='op'>=</span> <span class='st'>"rademacher"</span><span class='op'>)</span><span class='op'>)</span>
+
+<span class='co'># print output</span>
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>out</span><span class='op'>)</span>
+<span class='op'>}</span>
+</div></pre>
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
       <h2 data-toc-skip>Contents</h2>

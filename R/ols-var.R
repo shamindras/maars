@@ -1,6 +1,6 @@
 #' Assertion Checks for \code{\link{comp_var}} function bootstrap function inputs
 #'
-#' \code{check_fn_args} is used to assess whether the arguments
+#' \code{check_fn_args_comp_var_boot_ind} is used to assess whether the arguments
 #' are correctly specified in \code{list} format and returns an error message if
 #' they do not match the correct specification
 #'
@@ -50,18 +50,18 @@
 #' # Multiplier Bootstrap input list assertion checking
 #'
 #' # valid since the named arguments are B, weights_type
-#' testthat::expect_true(check_fn_args_comp_var_boot(
+#' testthat::expect_true(check_fn_args_comp_var_boot_ind(
 #'   inp_list = list(B = 10, weights_type = "rademacher"),
 #'   boot_type = "boot_mul"
 #' ))
 #'
 #' # valid since the named arguments are B, weights_type i.e. weights_type is NULL
-#' testthat::expect_true(check_fn_args_comp_var_boot(
+#' testthat::expect_true(check_fn_args_comp_var_boot_ind(
 #'   inp_list = list(B = 10, weights_type = NULL),
 #'   boot_type = "boot_mul"
 #' ))
 #' }
-check_fn_args_comp_var_boot <- function(inp_list, boot_type) {
+check_fn_args_comp_var_boot_ind <- function(inp_list, boot_type) {
   # Do input assertion checks on this function's inputs
   assertthat::assert_that(
     is.list(inp_list)
@@ -281,16 +281,9 @@ comp_var <- function(mod_fit, boot_emp = NULL, boot_res = NULL, boot_mul = NULL)
   # Override boostrap NULL bootstrap variance calculations if any of the
   # input values passed in are not NULL
   if (!is.null(boot_emp)) {
-    assertthat::assert_that("B" %in% names(boot_emp),
-      msg = glue::glue("boot_emp must contain a value for B")
-    )
-    # we should probably set m=sample size by default
-    assertthat::assert_that("m" %in% names(boot_emp),
-      msg = glue::glue("boot_emp must contain a value for m")
-    )
 
     # Empirical Bootstrap: list format assertion checking
-    check_fn_args_comp_var_boot(
+    check_fn_args_comp_var_boot_ind(
       inp_list = boot_emp,
       boot_type = "boot_emp"
     )
@@ -314,12 +307,9 @@ comp_var <- function(mod_fit, boot_emp = NULL, boot_res = NULL, boot_mul = NULL)
     )
   }
   if (!is.null(boot_res)) {
-    assertthat::assert_that("B" %in% names(boot_res),
-      msg = glue::glue("boot_res must contain a value for B")
-    )
 
     # Residual Bootstrap: list format assertion checking
-    check_fn_args_comp_var_boot(
+    check_fn_args_comp_var_boot_ind(
       inp_list = boot_res,
       boot_type = "boot_res"
     )
@@ -335,15 +325,138 @@ comp_var <- function(mod_fit, boot_emp = NULL, boot_res = NULL, boot_mul = NULL)
     boot_out_res <- comp_boot_res(mod_fit = mod_fit, B = B)
   }
   if (!is.null(boot_mul)) {
-    assertthat::assert_that("B" %in% names(boot_mul),
-      msg = glue::glue("boot_mul must contain a value for B")
-    )
-    assertthat::assert_that("weights_type" %in% names(boot_mul),
-      msg = glue::glue("boot_mul must contain a value for weights_type")
-    )
 
     # Multiplier Bootstrap: list format assertion checking
-    check_fn_args_comp_var_boot(
+    check_fn_args_comp_var_boot_ind(
+      inp_list = boot_mul,
+      boot_type = "boot_mul"
+    )
+
+    # Multiplier Bootstrap: Extract parameters from list input
+    if (length(purrr::compact(.x = boot_mul)) == 2) {
+      B <- boot_mul[["B"]]
+      weights_type <- boot_mul[["weights_type"]]
+    } else if (length(purrr::compact(.x = boot_mul)) == 1) {
+      B <- boot_mul[["B"]]
+      weights_type <- NULL
+    } else {
+      stop("An error has occurred in boot_mul input. Please check it and rerun")
+    }
+
+    # Run Multiplier Bootstrap
+    boot_out_mul <- comp_boot_mul(
+      mod_fit = mod_fit,
+      B = B,
+      weights_type = weights_type
+    )
+  }
+
+  # Combine all output into a single list of lists
+  out <- list(
+    var_sand = out_sand,
+    var_boot_emp = boot_out_emp,
+    var_boot_mul = boot_out_mul,
+    var_boot_res = boot_out_res
+  )
+  return(out)
+}
+
+
+#' Create an empirical or multiplier bootstrap summary table
+#'
+#' \code{comp_var} creates an OLS bootstrap summary table for
+#' empirical bootstrap output or multiplier bootstrap output as generated from
+#' \code{\link{comp_boot_emp}} or
+#' \code{\link{comp_boot_mul}}, respectively.
+#'
+#'
+#' @param mod_fit An lm (OLS) object
+#' @param boot_emp to add
+#' @param boot_mul to add
+#' @param boot_res to add
+#'
+#' @return A summary statistics tibble for the bootstrap input.
+#'
+#' @export
+#'
+#' @importFrom rlang .data
+#'
+#' @examples
+#' \dontrun{
+#' # Simulate data from a linear model
+#' set.seed(35542)
+#' n <- 1e2
+#' X <- stats::rnorm(n, 0, 1)
+#' y <- 2 + X * 1 + stats::rnorm(n, 0, 1)
+#'
+#' # Fit the linear model using OLS (ordinary least squares)
+#' mod_fit <- stats::lm(y ~ X)
+#'
+#' # Run the multiplier bootstrap on the fitted (OLS) linear model
+#' set.seed(162632)
+#' coef_emp_boot <- comp_boot_emp(mod_fit = mod_fit, B = 1000)
+#' out <- comp_var(mod_fit, boot_mul = list(B = 100, weights_type = "rademacher"))
+#'
+#' # print output
+#' print(out)
+#' }
+comp_var_summary <- function(comp_var_out) {
+
+  # Initialize all other bootstrap variance computations to NULL values
+  boot_out_emp <- NULL
+  boot_out_mul <- NULL
+  boot_out_res <- NULL
+
+  # Override boostrap NULL bootstrap variance calculations if any of the
+  # input values passed in are not NULL
+  if (!is.null(boot_emp)) {
+
+    # Empirical Bootstrap: list format assertion checking
+    check_fn_args_comp_var_boot_ind(
+      inp_list = boot_emp,
+      boot_type = "boot_emp"
+    )
+
+    # Empirical Bootstrap: Extract parameters from list input
+    if (length(purrr::compact(.x = boot_emp)) == 2) {
+      B <- boot_emp[["B"]]
+      m <- boot_emp[["m"]]
+    } else if (length(purrr::compact(.x = boot_emp)) == 1) {
+      B <- boot_emp[["B"]]
+      m <- NULL
+    } else {
+      stop("An error has occurred in boot_emp input. Please check it and rerun")
+    }
+
+    # Run Empirical Bootstrap
+    boot_out_emp <- comp_boot_emp(
+      mod_fit = mod_fit,
+      B = B,
+      m = m
+    )
+  }
+  if (!is.null(boot_res)) {
+
+    # Residual Bootstrap: list format assertion checking
+    check_fn_args_comp_var_boot_ind(
+      inp_list = boot_res,
+      boot_type = "boot_res"
+    )
+
+    # Residual Bootstrap: Extract parameters from list input
+    if (length(purrr::compact(.x = boot_res)) == 1) {
+      B <- boot_res[["B"]]
+    } else {
+      stop("An error has occurred in boot_res input. Please check it and rerun")
+    }
+
+    # Run Residual Bootstrap
+    boot_out_res <- comp_boot_res(mod_fit = mod_fit, B = B)
+  }
+  if (!is.null(boot_mul)) {
+
+    # Multiplier Bootstrap: list format assertion checking
+    check_fn_args_comp_var_boot_ind(
       inp_list = boot_mul,
       boot_type = "boot_mul"
     )

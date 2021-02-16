@@ -32,3 +32,25 @@ boot_out_mul_comp1 <- comp_var(mod_fit = lm_fit,
 expect_equal(
     boot_out_mul_comp1[["var_boot_mul"]][["var_summary"]][, "std.error"],
     boot_out_mul1[["var_summary"]][, "std.error"], tol = 1e-7)
+
+
+set.seed(454354534)
+boot_out_comb <- comp_var(mod_fit = lm_fit,
+                          boot_emp = list(B = 1e4, m = 600),
+                          boot_res = list(B = 1e4),
+                          boot_mul = list(B = 1e4, weights_type = "rademacher"))
+
+# Simple example of combining summary tables for meeting
+set.seed(454354534)
+boot_out_comb2 <- comp_var(mod_fit = lm_fit,
+                           boot_emp = list(B = 1e4, m = 600),
+                           boot_res = list(B = 1e4),
+                           boot_mul = NULL)
+
+comp_var_tbls <- boot_out_comb %>%
+    purrr::map(.x, .f = ~.x[["var_summary"]]) %>%
+    purrr::compact(.x = .) %>%
+    purrr::reduce(.x = ., .f = dplyr::left_join, by = "term")
+
+comp_var_tbls %>%
+    print.data.frame(x = ., digits = 4)

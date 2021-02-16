@@ -7,7 +7,7 @@
     <loc>https://shamindras.github.io/maars/reference/check_fn_args.html</loc>
   </url>
   <url>
-    <loc>https://shamindras.github.io/maars/reference/check_fn_args_comp_var_boot.html</loc>
+    <loc>https://shamindras.github.io/maars/reference/check_fn_args_comp_var_boot_ind.html</loc>
   </url>
   <url>
     <loc>https://shamindras.github.io/maars/reference/check_fn_args_posint.html</loc>
@@ -38,6 +38,9 @@
   </url>
   <url>
     <loc>https://shamindras.github.io/maars/reference/comp_var.html</loc>
+  </url>
+  <url>
+    <loc>https://shamindras.github.io/maars/reference/comp_var_summary.html</loc>
   </url>
   <url>
     <loc>https://shamindras.github.io/maars/reference/diag_boot_emp_qqn.html</loc>

@@ -12,85 +12,85 @@ glm_fit <- stats::glm(y ~ X, family = binomial())
 
 test_that("Empirical Bootstrap input list assertion checking explicitly", {
     # valid since the named arguments are B, m
-    testthat::expect_true(check_fn_args_comp_var_boot(inp_list = list(B = 10, m = 100), boot_type = "boot_emp"))
+    testthat::expect_true(check_fn_args_comp_var_boot_ind(inp_list = list(B = 10, m = 100), boot_type = "boot_emp"))
     # valid since the named arguments are B, m with m = NULL
-    testthat::expect_true(check_fn_args_comp_var_boot(inp_list = list(B = 10, m = NULL), boot_type = "boot_emp"))
+    testthat::expect_true(check_fn_args_comp_var_boot_ind(inp_list = list(B = 10, m = NULL), boot_type = "boot_emp"))
     # valid since the named arguments are B only, so m = NULL here by assumption
-    testthat::expect_true(check_fn_args_comp_var_boot(inp_list = list(B = 10), boot_type = "boot_emp"))
+    testthat::expect_true(check_fn_args_comp_var_boot_ind(inp_list = list(B = 10), boot_type = "boot_emp"))
     # valid since the named arguments are B, m
-    testthat::expect_true(check_fn_args_comp_var_boot(inp_list = list(B = 0, m = 100), boot_type = "boot_emp"))
+    testthat::expect_true(check_fn_args_comp_var_boot_ind(inp_list = list(B = 0, m = 100), boot_type = "boot_emp"))
     # valid since the named arguments are B, m
-    testthat::expect_true(check_fn_args_comp_var_boot(inp_list = list(B = 10, m = 0), boot_type = "boot_emp"))
+    testthat::expect_true(check_fn_args_comp_var_boot_ind(inp_list = list(B = 10, m = 0), boot_type = "boot_emp"))
     # valid since the named arguments are B, m
-    testthat::expect_true(check_fn_args_comp_var_boot(inp_list = list(B = 10, m = -1), boot_type = "boot_emp"))
+    testthat::expect_true(check_fn_args_comp_var_boot_ind(inp_list = list(B = 10, m = -1), boot_type = "boot_emp"))
     # valid since the named arguments are B, m
-    testthat::expect_true(check_fn_args_comp_var_boot(inp_list = list(B = -10, m = -1), boot_type = "boot_emp"))
+    testthat::expect_true(check_fn_args_comp_var_boot_ind(inp_list = list(B = -10, m = -1), boot_type = "boot_emp"))
     # invalid due to extra z parameter
-    testthat::expect_error(check_fn_args_comp_var_boot(inp_list = list(B = 200, m = 400, z = 2300), boot_type = "boot_emp"))
+    testthat::expect_error(check_fn_args_comp_var_boot_ind(inp_list = list(B = 200, m = 400, z = 2300), boot_type = "boot_emp"))
     # invalid since the named arguments are b, m i.e. not B, m
-    testthat::expect_error(check_fn_args_comp_var_boot(inp_list = list(b = 200, m = 400), boot_type = "boot_emp"))
+    testthat::expect_error(check_fn_args_comp_var_boot_ind(inp_list = list(b = 200, m = 400), boot_type = "boot_emp"))
     # invalid since the named arguments are b, M i.e. not B, m
-    testthat::expect_error(check_fn_args_comp_var_boot(inp_list = list(b = 200, M = 400), boot_type = "boot_emp"))
+    testthat::expect_error(check_fn_args_comp_var_boot_ind(inp_list = list(b = 200, M = 400), boot_type = "boot_emp"))
     # invalid since the named arguments are B, M i.e. not B, m
-    testthat::expect_error(check_fn_args_comp_var_boot(inp_list = list(B = 200, M = 400), boot_type = "boot_emp"))
-    testthat::expect_error(check_fn_args_comp_var_boot(inp_list = list(B = 200, m = 400, z = NULL), boot_type = "boot_emp"))
+    testthat::expect_error(check_fn_args_comp_var_boot_ind(inp_list = list(B = 200, M = 400), boot_type = "boot_emp"))
+    testthat::expect_error(check_fn_args_comp_var_boot_ind(inp_list = list(B = 200, m = 400, z = NULL), boot_type = "boot_emp"))
 })
 
 test_that("Residual Bootstrap input list assertion checking explicitly", {
     # invalid since the named arguments are B, m i.e. not just B
-    testthat::expect_error(check_fn_args_comp_var_boot(inp_list = list(B = 10, m = 100), boot_type = "boot_res"))
+    testthat::expect_error(check_fn_args_comp_var_boot_ind(inp_list = list(B = 10, m = 100), boot_type = "boot_res"))
     # invalid since the named arguments are B, m i.e. not just B
-    testthat::expect_error(check_fn_args_comp_var_boot(inp_list = list(B = 10, m = NULL), boot_type = "boot_res"))
+    testthat::expect_error(check_fn_args_comp_var_boot_ind(inp_list = list(B = 10, m = NULL), boot_type = "boot_res"))
     # valid since the named arguments are B only
-    testthat::expect_true(check_fn_args_comp_var_boot(inp_list = list(B = 10), boot_type = "boot_res"))
+    testthat::expect_true(check_fn_args_comp_var_boot_ind(inp_list = list(B = 10), boot_type = "boot_res"))
     # invalid since the named arguments are B, m i.e. not just B
-    testthat::expect_error(check_fn_args_comp_var_boot(inp_list = list(B = 0, m = 100), boot_type = "boot_res"))
+    testthat::expect_error(check_fn_args_comp_var_boot_ind(inp_list = list(B = 0, m = 100), boot_type = "boot_res"))
     # invalid since the named arguments are B, m i.e. not just B
-    testthat::expect_error(check_fn_args_comp_var_boot(inp_list = list(B = 10, m = 0), boot_type = "boot_res"))
+    testthat::expect_error(check_fn_args_comp_var_boot_ind(inp_list = list(B = 10, m = 0), boot_type = "boot_res"))
     # invalid since the named arguments are B, m i.e. not just B
-    testthat::expect_error(check_fn_args_comp_var_boot(inp_list = list(B = 10, m = -1), boot_type = "boot_res"))
+    testthat::expect_error(check_fn_args_comp_var_boot_ind(inp_list = list(B = 10, m = -1), boot_type = "boot_res"))
     # valid since the named arguments are B, m
-    testthat::expect_error(check_fn_args_comp_var_boot(inp_list = list(B = -10, m = -1), boot_type = "boot_res"))
+    testthat::expect_error(check_fn_args_comp_var_boot_ind(inp_list = list(B = -10, m = -1), boot_type = "boot_res"))
     # invalid since the named arguments are B, m, z i.e. not just B
-    testthat::expect_error(check_fn_args_comp_var_boot(inp_list = list(B = 200, m = 400, z = 2300), boot_type = "boot_res"))
+    testthat::expect_error(check_fn_args_comp_var_boot_ind(inp_list = list(B = 200, m = 400, z = 2300), boot_type = "boot_res"))
     # invalid since the named arguments are b, m i.e. not just B
-    testthat::expect_error(check_fn_args_comp_var_boot(inp_list = list(b = 200, m = 400), boot_type = "boot_res"))
+    testthat::expect_error(check_fn_args_comp_var_boot_ind(inp_list = list(b = 200, m = 400), boot_type = "boot_res"))
     # invalid since the named arguments are b, M i.e. not just B
-    testthat::expect_error(check_fn_args_comp_var_boot(inp_list = list(b = 200, M = 400), boot_type = "boot_res"))
+    testthat::expect_error(check_fn_args_comp_var_boot_ind(inp_list = list(b = 200, M = 400), boot_type = "boot_res"))
     # invalid since the named arguments are B, M i.e. not just B
-    testthat::expect_error(check_fn_args_comp_var_boot(inp_list = list(B = 200, M = 400), boot_type = "boot_res"))
+    testthat::expect_error(check_fn_args_comp_var_boot_ind(inp_list = list(B = 200, M = 400), boot_type = "boot_res"))
     # invalid since the named arguments are B, m, z i.e. not just B
-    testthat::expect_error(check_fn_args_comp_var_boot(inp_list = list(B = 200, m = 400, z = NULL), boot_type = "boot_res"))
+    testthat::expect_error(check_fn_args_comp_var_boot_ind(inp_list = list(B = 200, m = 400, z = NULL), boot_type = "boot_res"))
     # invalid since the named arguments are b i.e. not B
-    testthat::expect_error(check_fn_args_comp_var_boot(inp_list = list(b = 200), boot_type = "boot_res"))
+    testthat::expect_error(check_fn_args_comp_var_boot_ind(inp_list = list(b = 200), boot_type = "boot_res"))
     # invalid since the named arguments are all NULL
-    testthat::expect_error(check_fn_args_comp_var_boot(inp_list = list(B = NULL), boot_type = "boot_res"))
+    testthat::expect_error(check_fn_args_comp_var_boot_ind(inp_list = list(B = NULL), boot_type = "boot_res"))
 })
 
 test_that("Multiplier Bootstrap input list assertion checking explicitly", {
     # valid since the named arguments are B, weights_type
-    testthat::expect_true(check_fn_args_comp_var_boot(inp_list = list(B = 10, weights_type = "rademacher"), boot_type = "boot_mul"))
+    testthat::expect_true(check_fn_args_comp_var_boot_ind(inp_list = list(B = 10, weights_type = "rademacher"), boot_type = "boot_mul"))
     # valid since the named arguments are B, weights_type i.e. weights_type is NULL
-    testthat::expect_true(check_fn_args_comp_var_boot(inp_list = list(B = 10, weights_type = NULL), boot_type = "boot_mul"))
+    testthat::expect_true(check_fn_args_comp_var_boot_ind(inp_list = list(B = 10, weights_type = NULL), boot_type = "boot_mul"))
     # valid since the named arguments are B only, so weights_type = NULL here by assumption
-    testthat::expect_true(check_fn_args_comp_var_boot(inp_list = list(B = 10), boot_type = "boot_mul"))
+    testthat::expect_true(check_fn_args_comp_var_boot_ind(inp_list = list(B = 10), boot_type = "boot_mul"))
     # valid since the named arguments are B, m
-    testthat::expect_true(check_fn_args_comp_var_boot(inp_list = list(B = 0, weights_type = 100), boot_type = "boot_mul"))
+    testthat::expect_true(check_fn_args_comp_var_boot_ind(inp_list = list(B = 0, weights_type = 100), boot_type = "boot_mul"))
     # valid since the named arguments are B, weights_type
-    testthat::expect_true(check_fn_args_comp_var_boot(inp_list = list(B = 10, weights_type = 0), boot_type = "boot_mul"))
+    testthat::expect_true(check_fn_args_comp_var_boot_ind(inp_list = list(B = 10, weights_type = 0), boot_type = "boot_mul"))
     # valid since the named arguments are B, weights_type
-    testthat::expect_true(check_fn_args_comp_var_boot(inp_list = list(B = 10, weights_type = -1), boot_type = "boot_mul"))
+    testthat::expect_true(check_fn_args_comp_var_boot_ind(inp_list = list(B = 10, weights_type = -1), boot_type = "boot_mul"))
     # valid since the named arguments are B, weights_type
-    testthat::expect_true(check_fn_args_comp_var_boot(inp_list = list(B = -10, weights_type = -1), boot_type = "boot_mul"))
+    testthat::expect_true(check_fn_args_comp_var_boot_ind(inp_list = list(B = -10, weights_type = -1), boot_type = "boot_mul"))
     # invalid due to extra z parameter
-    testthat::expect_error(check_fn_args_comp_var_boot(inp_list = list(B = 200, weights_type = 400, z = 2300), boot_type = "boot_mul"))
+    testthat::expect_error(check_fn_args_comp_var_boot_ind(inp_list = list(B = 200, weights_type = 400, z = 2300), boot_type = "boot_mul"))
     # invalid since the named arguments are b, weights_type i.e. not B, weights_type
-    testthat::expect_error(check_fn_args_comp_var_boot(inp_list = list(b = 200, weights_type = 400), boot_type = "boot_mul"))
+    testthat::expect_error(check_fn_args_comp_var_boot_ind(inp_list = list(b = 200, weights_type = 400), boot_type = "boot_mul"))
     # invalid since the named arguments are b, WEIGHTS_TYPE i.e. not B, weights_type
-    testthat::expect_error(check_fn_args_comp_var_boot(inp_list = list(b = 200, WEIGHTS_TYPE = 400), boot_type = "boot_mul"))
+    testthat::expect_error(check_fn_args_comp_var_boot_ind(inp_list = list(b = 200, WEIGHTS_TYPE = 400), boot_type = "boot_mul"))
     # invalid since the named arguments are B, WEIGHTS_TYPE i.e. not B, weights_type
-    testthat::expect_error(check_fn_args_comp_var_boot(inp_list = list(B = 200, WEIGHTS_TYPE = 400), boot_type = "boot_mul"))
-    testthat::expect_error(check_fn_args_comp_var_boot(inp_list = list(B = 200, weights_type = 400, z = NULL), boot_type = "boot_mul"))
+    testthat::expect_error(check_fn_args_comp_var_boot_ind(inp_list = list(B = 200, WEIGHTS_TYPE = 400), boot_type = "boot_mul"))
+    testthat::expect_error(check_fn_args_comp_var_boot_ind(inp_list = list(B = 200, weights_type = 400, z = NULL), boot_type = "boot_mul"))
 })
 
 # test_that("test estimate variance from empirical bootstrap matches estimate of variance from stats::lm", {
