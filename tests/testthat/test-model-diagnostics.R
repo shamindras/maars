@@ -29,7 +29,7 @@ test_that("computation of grid centers for regular grid", {
 test_that("standard errors in reweighting with extreme center has large variance", {
     data <- model.frame(glm_fit)
     # with reweighting
-    boot_samples <- comp_boot_emp_samples(data = data %>% tibble::add_column(n_obs = 1:nrow(data), B = 1000, m = nrow(data)))
+    boot_samples <- comp_boot_emp_samples(data = data %>% tibble::add_column(n_obs = 1:nrow(data)), B = 1000)
     coef_rwgt_boot <- suppressWarnings(diag_fit_reg_rwgt_single(glm_fit, 'X', boot_samples, c(-5)))
     # without reweighting
     coef_boot <- comp_boot_emp(glm_fit, B = 1e3)$boot_out %>% tidyr::unnest(cols = boot_out)

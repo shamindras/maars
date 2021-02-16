@@ -2,9 +2,9 @@
 % Please edit documentation in R/boot-empirical.R
 \name{comp_boot_emp_samples}
 \alias{comp_boot_emp_samples}
-\title{Draw bootstrap samples from the data}
+\title{Draw bootstrap sample from the data}
 \usage{
-comp_boot_emp_samples(data, B = 100, m = NULL)
+comp_boot_emp_samples(data, B = 1, m = NULL)
 }
 \arguments{
 \item{data}{A tibble or data frame containing the dataset to be
@@ -17,17 +17,17 @@ be drawn.}
 the original dataset for each bootstrap repetition.}
 }
 \value{
-A tibble containing the bootstrap samples (\code{data})
-and their corresponding number (\code{b}).
+A tibble containing the number of bootstrap iteration, the
+bootstrap samples (\code{data}),
+and the indices of the observations (linked to the original sample) in the
+sample (\code{indices}).
 }
 \description{
-\code{comp_boot_emp_samples} draws bootstrap samples
+\code{comp_boot_emp_sample} draws one bootstrap samples
 (i.e. sampling observations with replacement) from the input
-\code{data}.
-}
-\details{
-More specifically, \code{B} bootstraped datasets of size
-\code{m} are drawn from the \code{data}.
+\code{data}. It returns a list containing the indices of the
+\code{m} observations that have been sampled (\code{indices}) and
+the bootstrapped dataset (\code{data}).
 }
 \examples{
 \dontrun{
@@ -35,10 +35,13 @@ More specifically, \code{B} bootstraped datasets of size
 set.seed(162632)
 n <- 100
 boot <- comp_boot_emp_samples(
-  data.frame(y = stats::rnorm(n, 0, 1),
-             x = stats::rnorm(n, 0, 1)),
+  data.frame(
+    y = stats::rnorm(n, 0, 1),
+    x = stats::rnorm(n, 0, 1)
+  ),
   B = 100,
-  m = 5)
+  m = 5
+)
 
 # Display the output
 print(boot)
