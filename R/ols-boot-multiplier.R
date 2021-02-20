@@ -250,7 +250,7 @@ comp_boot_mul <- function(mod_fit, B, weights_type = "rademacher") {
   )
 
   out <- list(
-    var_type = "var_boot_mul",
+    var_type = "boot_mul",
     var_summary = summary_boot,
     var_assumptions = "The observations need to be independent.",
     cov_mat = NULL,

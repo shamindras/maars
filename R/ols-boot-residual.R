@@ -76,7 +76,7 @@ comp_boot_res <- function(mod_fit, B = 100) {
                               boot_out = boot_out,
                               boot_type = 'res')
 
-  out <- list(var_type = "var_boot_res",
+  out <- list(var_type = "boot_res",
               var_summary =  summary_boot,
               var_assumptions = "The observations need to be independent.",
               cov_mat = NULL,
