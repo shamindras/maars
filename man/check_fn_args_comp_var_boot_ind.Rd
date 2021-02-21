@@ -2,7 +2,7 @@
 % Please edit documentation in R/ols-var.R
 \name{check_fn_args_comp_var_boot_ind}
 \alias{check_fn_args_comp_var_boot_ind}
-\title{Assertion Checks for \code{\link{comp_var}} function bootstrap function inputs}
+\title{Assertion Checks for individual \code{\link{comp_var}} function bootstrap function inputs}
 \usage{
 check_fn_args_comp_var_boot_ind(inp_list, boot_type)
 }

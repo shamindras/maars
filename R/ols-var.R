@@ -1,4 +1,4 @@
-#' Assertion Checks for \code{\link{comp_var}} function bootstrap function inputs
+#' Assertion Checks for individual \code{\link{comp_var}} function bootstrap function inputs
 #'
 #' \code{check_fn_args_comp_var_boot_ind} is used to assess whether the arguments
 #' are correctly specified in \code{list} format and returns an error message if
@@ -79,7 +79,7 @@ check_fn_args_comp_var_boot_ind <- function(inp_list, boot_type) {
   if (boot_type == "boot_emp") {
     assertthat::assert_that(
       length(inp_list) <= 2,
-      msg = glue::glue("Input list must have 1 or 2 elements",
+      msg = glue::glue("{boot_type} input list must have 1 or 2 elements",
         "currently it has",
         "{length(inp_list)} items",
         .sep = " "
@@ -89,14 +89,14 @@ check_fn_args_comp_var_boot_ind <- function(inp_list, boot_type) {
     if (length(inp_list) == 1 || length(purrr::compact(.x = inp_list)) == 1) {
       assertthat::assert_that(
         all(names(purrr::compact(.x = inp_list)) == c("B")),
-        msg = glue::glue("inp_list must only contain the ",
+        msg = glue::glue("{boot_type} input list must only contain the ",
           "named element: B",
           .sep = " "
         )
       )
     } else if (length(inp_list) == 2) {
       assertthat::assert_that(all(sort(names(inp_list)) == sort(c("B", "m"))),
-        msg = glue::glue("{var_name} list must only contain the ",
+        msg = glue::glue("{boot_type} input list must only contain the ",
           "names ['B', 'm']",
           .sep = " "
         )
@@ -107,7 +107,7 @@ check_fn_args_comp_var_boot_ind <- function(inp_list, boot_type) {
   else if (boot_type == "boot_mul") {
     assertthat::assert_that(
       length(inp_list) <= 2,
-      msg = glue::glue("Input list must have 1 or 2 elements",
+      msg = glue::glue("{boot_type} input list must have 1 or 2 elements",
         "currently it has",
         "{length(inp_list)} items",
         .sep = " "
@@ -117,14 +117,14 @@ check_fn_args_comp_var_boot_ind <- function(inp_list, boot_type) {
     if (length(inp_list) == 1 || length(purrr::compact(.x = inp_list)) == 1) {
       assertthat::assert_that(
         all(names(purrr::compact(.x = inp_list)) == c("B")),
-        msg = glue::glue("inp_list must only contain the ",
+        msg = glue::glue("{boot_type} input list must only contain the ",
           "named element: B",
           .sep = " "
         )
       )
     } else if (length(inp_list) == 2) {
       assertthat::assert_that(all(sort(names(inp_list)) == sort(c("B", "weights_type"))),
-        msg = glue::glue("{var_name} list must only contain the ",
+        msg = glue::glue("{boot_type} input list must only contain the ",
           "names ['B', 'weights_type']",
           .sep = " "
         )
@@ -135,7 +135,7 @@ check_fn_args_comp_var_boot_ind <- function(inp_list, boot_type) {
   else if (boot_type == "boot_res") {
     assertthat::assert_that(
       length(inp_list) == 1,
-      msg = glue::glue("Input list must have 1 element",
+      msg = glue::glue("{boot_type} input list must have 1 element",
         "currently it has",
         "{length(inp_list)} items",
         .sep = " "
@@ -144,13 +144,90 @@ check_fn_args_comp_var_boot_ind <- function(inp_list, boot_type) {
 
     assertthat::assert_that(
       all(names(purrr::compact(.x = inp_list)) == c("B")),
-      msg = glue::glue("inp_list must only contain the ",
+      msg = glue::glue("{boot_type} input list must only contain the ",
         "named element: B",
         .sep = " "
       )
     )
   } else {
     stop("An assertion error has occurred! Please review inputs and re-run.")
+  }
+}
+
+#' Assertion Checks for all \code{\link{comp_var}} function bootstrap function inputs
+#'
+#' \code{check_fn_args_comp_var_boot} is used to assess whether the arguments
+#' are correctly specified in \code{list} format and returns an error message if
+#' they do not match the correct specification
+#'
+#' @param boot_emp (list) In the case of empirical bootstrap the expected input
+#'   is of the form #'   \code{list(B = 10, m = 100)}. Here the named
+#'   element \code{m} is optional e.g. \code{list(B = 10)} is valid, or passed
+#'   in as an explicit \code{NULL} e.g. \code{list(B = 10, m = NULL)}.
+#'   Note that technically \code{B, m} should both be positive integers,
+#'   but this assertion checking is handled explicitly in the
+#'   \code{\link{comp_boot_emp}} function. So although passing
+#'   in \code{list(B = -15, m = -20)} will pass this function without errors,
+#'   these will be addressed explicitly in \code{\link{comp_boot_emp}} as
+#'   invalid inputs.
+#' @param boot_res (list) : In the case of residual bootstrap the expected
+#'   input is of the form \code{list(B = 10)}. Note that technically \code{B}
+#'   should be a positive integer, but this assertion checking is handled
+#'   explicitly in the \code{\link{comp_boot_res}} function. So although passing
+#'   in \code{list(B = -15)} will pass this function without errors,
+#'   these will be addressed explicitly in \code{\link{comp_boot_res}} as
+#'   invalid inputs.
+#' @param boot_mul (list) : In the case of multiplier bootstrap the expected
+#'   input is of the form \code{list(B = 10, weights_type = "rademacher")}.
+#'   Here the named element \code{weights_type} is optional
+#'   e.g. \code{list(B = 10)} is valid, or passed in as an explicit \code{NULL}
+#'   e.g. \code{list(B = 10, weights_type = NULL)}.
+#'   Note that technically \code{B} should be a positive integer, and
+#'   \code{weights_type} should be a character vector
+#'   (see \code{\link{comp_boot_mul}}), but this assertion checking is handled
+#'   explicitly in the \code{\link{comp_boot_mul}} function. So although passing
+#'   in \code{list(B = -15, m = "test")} will pass this function without errors,
+#'   these will be addressed explicitly in \code{\link{comp_boot_mul}} as
+#'   invalid inputs.
+#'
+#' @return A summary statistics tibble for the bootstrap input.
+#'
+#' @return : A \code{TRUE} if assertions pass, or an error if there is an
+#'   assertion failure.
+#'
+#' @keywords internal
+#'
+#' @examples
+#' \dontrun{
+#' # Expect all assertions to pass
+#' check_fn_args_comp_var_boot(boot_emp = list(B = 1e4, m = 600),
+#'                             boot_res = NULL,
+#'                             boot_mul = NULL)
+#' }
+check_fn_args_comp_var_boot <- function(boot_emp, boot_res, boot_mul) {
+
+  # Override boostrap NULL bootstrap variance calculations if any of the
+  # input values passed in are not NULL
+  if (!is.null(boot_emp)) {
+    # Empirical Bootstrap: list format assertion checking
+    check_fn_args_comp_var_boot_ind(
+      inp_list = boot_emp,
+      boot_type = "boot_emp"
+    )
+  }
+  if (!is.null(boot_res)) {
+    # Residual Bootstrap: list format assertion checking
+    check_fn_args_comp_var_boot_ind(
+      inp_list = boot_res,
+      boot_type = "boot_res"
+    )
+  }
+  if (!is.null(boot_mul)) {
+    # Multiplier Bootstrap: list format assertion checking
+    check_fn_args_comp_var_boot_ind(
+      inp_list = boot_mul,
+      boot_type = "boot_mul"
+    )
   }
 }
 
@@ -236,9 +313,35 @@ get_summary <- function(mod_fit, boot_out, boot_type) {
 #'
 #'
 #' @param mod_fit An lm (OLS) object
-#' @param boot_emp to add
-#' @param boot_mul to add
-#' @param boot_res to add
+#' @param boot_emp (list) In the case of empirical bootstrap the expected input
+#'   is of the form #'   \code{list(B = 10, m = 100)}. Here the named
+#'   element \code{m} is optional e.g. \code{list(B = 10)} is valid, or passed
+#'   in as an explicit \code{NULL} e.g. \code{list(B = 10, m = NULL)}.
+#'   Note that technically \code{B, m} should both be positive integers,
+#'   but this assertion checking is handled explicitly in the
+#'   \code{\link{comp_boot_emp}} function. So although passing
+#'   in \code{list(B = -15, m = -20)} will pass this function without errors,
+#'   these will be addressed explicitly in \code{\link{comp_boot_emp}} as
+#'   invalid inputs.
+#' @param boot_mul (list) : In the case of multiplier bootstrap the expected
+#'   input is of the form \code{list(B = 10, weights_type = "rademacher")}.
+#'   Here the named element \code{weights_type} is optional
+#'   e.g. \code{list(B = 10)} is valid, or passed in as an explicit \code{NULL}
+#'   e.g. \code{list(B = 10, weights_type = NULL)}.
+#'   Note that technically \code{B} should be a positive integer, and
+#'   \code{weights_type} should be a character vector
+#'   (see \code{\link{comp_boot_mul}}), but this assertion checking is handled
+#'   explicitly in the \code{\link{comp_boot_mul}} function. So although passing
+#'   in \code{list(B = -15, m = "test")} will pass this function without errors,
+#'   these will be addressed explicitly in \code{\link{comp_boot_mul}} as
+#'   invalid inputs.
+#' @param boot_res (list) : In the case of residual bootstrap the expected
+#'   input is of the form \code{list(B = 10)}. Note that technically \code{B}
+#'   should be a positive integer, but this assertion checking is handled
+#'   explicitly in the \code{\link{comp_boot_res}} function. So although passing
+#'   in \code{list(B = -15)} will pass this function without errors,
+#'   these will be addressed explicitly in \code{\link{comp_boot_res}} as
+#'   invalid inputs.
 #'
 #' @return A summary statistics tibble for the bootstrap input.
 #'
@@ -266,9 +369,16 @@ get_summary <- function(mod_fit, boot_out, boot_type) {
 #' print(out)
 #' }
 comp_var <- function(mod_fit, boot_emp = NULL, boot_res = NULL, boot_mul = NULL) {
-  assertthat::assert_that(all("lm" == class(mod_fit)) | any("glm" == class(mod_fit)),
+  # Assertion checking for mod_fit
+  assertthat::assert_that(all("lm" == class(mod_fit))
+                          || any("glm" == class(mod_fit)),
     msg = glue::glue("mod_fit must only be of class lm or glm")
   )
+
+  # Assertion checking for empirical, multiplier, and residual bootstrap
+  check_fn_args_comp_var_boot(boot_emp = boot_emp,
+                              boot_res = boot_res,
+                              boot_mul = boot_mul)
 
   # Compute the sandwich estimator by default
   out_sand <- comp_sand_var(mod_fit)
@@ -281,13 +391,6 @@ comp_var <- function(mod_fit, boot_emp = NULL, boot_res = NULL, boot_mul = NULL)
   # Override boostrap NULL bootstrap variance calculations if any of the
   # input values passed in are not NULL
   if (!is.null(boot_emp)) {
-
-    # Empirical Bootstrap: list format assertion checking
-    check_fn_args_comp_var_boot_ind(
-      inp_list = boot_emp,
-      boot_type = "boot_emp"
-    )
-
     # Empirical Bootstrap: Extract parameters from list input
     if (length(purrr::compact(.x = boot_emp)) == 2) {
       B <- boot_emp[["B"]]
@@ -307,13 +410,6 @@ comp_var <- function(mod_fit, boot_emp = NULL, boot_res = NULL, boot_mul = NULL)
     )
   }
   if (!is.null(boot_res)) {
-
-    # Residual Bootstrap: list format assertion checking
-    check_fn_args_comp_var_boot_ind(
-      inp_list = boot_res,
-      boot_type = "boot_res"
-    )
-
     # Residual Bootstrap: Extract parameters from list input
     if (length(purrr::compact(.x = boot_res)) == 1) {
       B <- boot_res[["B"]]
@@ -325,13 +421,6 @@ comp_var <- function(mod_fit, boot_emp = NULL, boot_res = NULL, boot_mul = NULL)
     boot_out_res <- comp_boot_res(mod_fit = mod_fit, B = B)
   }
   if (!is.null(boot_mul)) {
-
-    # Multiplier Bootstrap: list format assertion checking
-    check_fn_args_comp_var_boot_ind(
-      inp_list = boot_mul,
-      boot_type = "boot_mul"
-    )
-
     # Multiplier Bootstrap: Extract parameters from list input
     if (length(purrr::compact(.x = boot_mul)) == 2) {
       B <- boot_mul[["B"]]
