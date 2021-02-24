@@ -1,3 +1,5 @@
+# maars 0.6.0
+
 # maars 0.5.0
 
 * Rename function names to be more consistent e.g. remove `qr` from `empirical` bootstrap names
