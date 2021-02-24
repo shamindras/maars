@@ -3,10 +3,10 @@ citHeader("To cite maars in publications use:")
 citEntry(
   entry    = "Manual",
   title    = "{maars}: Models as Approximations in R",
-  author   = "Riccardo Fogliato and Arun Kumar Kuchibhotla and Shamindra Shrotriya",
+  author   = "Riccardo Fogliato and Shamindra Shrotriya and Arun Kumar Kuchibhotla",
   year     = "2020",
   journal  = "preprint",
   note     = "R package version 0.3.0",
   url      = "https://shamindras.github.io/maars/",
-  textVersion = "R. Fogliato, A. K. Kuchibhotla, S. Shrotriya. maars: Models as Approximations in R, 2020."
+  textVersion = "R. Fogliato, S. Shrotriya, A. K. Kuchibhotla. maars: Models as Approximations in R, 2020."
 )

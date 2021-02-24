@@ -54,6 +54,26 @@ set_ggplot2_theme <- function(ggplot_obj,
 }
 
 
+#' Check whether the input argument is a positive integer
+#'
+#' @param inp_arg Input function argument. Should be of type numeric, and a
+#'   positive integer
+#'
+#' @return (logical) returns \code{TRUE} if input is a positive integer
+#'
+#' @keywords internal
+#'
+#' @examples
+#' \dontrun{
+#' B <- 100
+#' assertthat::assert_that(check_fn_args_posint(inp_arg = B)) # Pass assertion
+#' }
+check_fn_args_posint <- function(inp_arg){
+  base::return(is.numeric(inp_arg)
+               && inp_arg == as.integer(inp_arg)
+               && as.integer(inp_arg) > 0)
+}
+
 #' Check whether the arguments in the function are correctly specified
 #'
 #' \code{check_fn_args} is used to assess whether the arguments
@@ -65,33 +85,24 @@ set_ggplot2_theme <- function(ggplot_obj,
 #' @param m Number of observations to be sampled with replacement from the
 #'   dataset for each bootstrap repetition.
 #'
-#' @return
+#' @return (logical) returns \code{TRUE} if the logical assertions are satisfied
 #' @keywords internal
 check_fn_args <- function(n = NULL, B = NULL, m = NULL) {
   if (!is.null(B)) {
-    assertthat::assert_that(B == as.integer(B),
-      msg = glue::glue("B must be an integer e.g. 100, it is currently {B}")
-    )
-    assertthat::assert_that(B > 0,
-      msg = glue::glue("B must be positive e.g. 100, it is currently {B}")
+    assertthat::assert_that(check_fn_args_posint(inp_arg = B),
+                            msg = glue::glue("B must be a positive integer")
     )
   }
 
   if (!is.null(m)) {
-    assertthat::assert_that(m == as.integer(m),
-      msg = glue::glue("m must be an integer e.g. 100, it is currently {m}")
-    )
-    assertthat::assert_that(m > 0,
-      msg = glue::glue("m must be positive e.g. 100, it is currently {m}")
+    assertthat::assert_that(check_fn_args_posint(inp_arg = m),
+                            msg = glue::glue("m must be a positive integer")
     )
   }
 
   if (!is.null(n)) {
-    assertthat::assert_that(n == as.integer(n),
-      msg = glue::glue("n must be an integer")
-    )
-    assertthat::assert_that(n > 0,
-      msg = glue::glue("n must be positive")
+    assertthat::assert_that(check_fn_args_posint(inp_arg = n),
+                            msg = glue::glue("n must be a positive integer")
     )
   }
 }

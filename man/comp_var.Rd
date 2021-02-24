@@ -4,18 +4,42 @@
 \alias{comp_var}
 \title{Create an empirical or multiplier bootstrap summary table}
 \usage{
-comp_var(mod_fit, boot_out, boot_type)
+comp_var(mod_fit, boot_emp = NULL, boot_res = NULL, boot_mul = NULL)
 }
 \arguments{
 \item{mod_fit}{An lm (OLS) object}
 
-\item{boot_out}{A tibble of the bootstrap calculations from either
-\code{\link{comp_boot_emp}} or
-\code{\link{comp_boot_mul}}, respectively.}
+\item{boot_emp}{(list) In the case of empirical bootstrap the expected input
+is of the form #'   \code{list(B = 10, m = 100)}. Here the named
+element \code{m} is optional e.g. \code{list(B = 10)} is valid, or passed
+in as an explicit \code{NULL} e.g. \code{list(B = 10, m = NULL)}.
+Note that technically \code{B, m} should both be positive integers,
+but this assertion checking is handled explicitly in the
+\code{\link{comp_boot_emp}} function. So although passing
+in \code{list(B = -15, m = -20)} will pass this function without errors,
+these will be addressed explicitly in \code{\link{comp_boot_emp}} as
+invalid inputs.}
 
-\item{boot_type}{A character specifying the bootstrap type. Must be "emp"
-for output from \code{\link{comp_boot_emp}} or "mult"
-for output from \code{\link{comp_boot_mul}}, respectively.}
+\item{boot_res}{(list) : In the case of residual bootstrap the expected
+input is of the form \code{list(B = 10)}. Note that technically \code{B}
+should be a positive integer, but this assertion checking is handled
+explicitly in the \code{\link{comp_boot_res}} function. So although passing
+in \code{list(B = -15)} will pass this function without errors,
+these will be addressed explicitly in \code{\link{comp_boot_res}} as
+invalid inputs.}
+
+\item{boot_mul}{(list) : In the case of multiplier bootstrap the expected
+input is of the form \code{list(B = 10, weights_type = "rademacher")}.
+Here the named element \code{weights_type} is optional
+e.g. \code{list(B = 10)} is valid, or passed in as an explicit \code{NULL}
+e.g. \code{list(B = 10, weights_type = NULL)}.
+Note that technically \code{B} should be a positive integer, and
+\code{weights_type} should be a character vector
+(see \code{\link{comp_boot_mul}}), but this assertion checking is handled
+explicitly in the \code{\link{comp_boot_mul}} function. So although passing
+in \code{list(B = -15, m = "test")} will pass this function without errors,
+these will be addressed explicitly in \code{\link{comp_boot_mul}} as
+invalid inputs.}
 }
 \value{
 A summary statistics tibble for the bootstrap input.
@@ -40,7 +64,7 @@ mod_fit <- stats::lm(y ~ X)
 # Run the multiplier bootstrap on the fitted (OLS) linear model
 set.seed(162632)
 coef_emp_boot <- comp_boot_emp(mod_fit = mod_fit, B = 1000)
-out <- comp_var(mod_fit, coef_emp_boot, 'emp')
+out <- comp_var(mod_fit, boot_mul = list(B = 100, weights_type = "rademacher"))
 
 # print output
 print(out)

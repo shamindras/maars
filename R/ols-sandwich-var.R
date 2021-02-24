@@ -10,8 +10,12 @@
 #'
 #' @param mod_fit A \code{\link[stats]{lm}} (OLS) object.
 #'
-#' @return A tibble containing the sandwich estimator of variance for OLS
-#'   regression.
+#' @return A list containing the following elements: the type of estimator of
+#'   of the variance  (\code{var_type}); the summary statistics of \code{mod_fit}
+#'   based on this estimator of the variance (e.g., standard errors and p-values)
+#'   (\code{var_summary}); the assumptions under which the estimator of the
+#'   variance is consistent (\code{var_assumptions}); the covariance matrix for
+#'   the coefficients estimates (\code{cov_mat}).
 #'
 #' @keywords internal
 #'
@@ -33,37 +37,38 @@ comp_sand_var <- function(mod_fit) {
   assertthat::assert_that(all("lm" == class(mod_fit)),
                           msg = glue::glue("lm_object must only be of class lm")
   )
-J_inv <- stats::summary.lm(mod_fit)$cov.unscaled
-X <- qr.X(mod_fit$qr)
-V <- t(X) %*% Matrix::Diagonal(x = stats::residuals(mod_fit)^2) %*% X
+  J_inv <- stats::summary.lm(mod_fit)$cov.unscaled
+  X <- qr.X(mod_fit$qr)
+  V <- t(X) %*% Matrix::Diagonal(x = stats::residuals(mod_fit)^2) %*% X
 
-std_error_sand <- sqrt(diag(as.matrix(J_inv %*% V %*% J_inv))) %>%
-  tibble::enframe(
-    x = .,
-    name = "term",
-    value = "std.error.sand"
-  )
+  std_error_sand <- sqrt(diag(as.matrix(J_inv %*% V %*% J_inv))) %>%
+    tibble::enframe(
+      x = .,
+      name = "term",
+      value = "std.error"
+    )
 
-out <- mod_fit %>%
-  broom::tidy(x = .) %>%
-  dplyr::rename(
-    .data = .,
-    statistic = .data$statistic,
-    p.value = .data$p.value
-  ) %>%
-  dplyr::left_join(
-    x = .,
-    y = std_error_sand,
-    by = "term"
-  ) %>%
-  dplyr::mutate(
-    .data = .,
-    statistic.sand = .data$estimate / .data$std.error.sand,
-    p.value.sand = 2 * (1 - sapply(
-      abs(.data$statistic.sand),
-      stats::pnorm
-    ))
-  )
+  summary_sand <- mod_fit %>%
+    broom::tidy(x = .) %>%
+    dplyr::select(term, estimate) %>%
+    dplyr::left_join(
+      x = .,
+      y = std_error_sand,
+      by = "term"
+    ) %>%
+    dplyr::mutate(
+      .data = .,
+      statistic = .data$estimate / .data$std.error,
+      p.value = 2 * (1 - sapply(
+        abs(.data$statistic),
+        stats::pnorm
+      ))
+    )
 
-return(out)
+  out <- list(var_type = "sand",
+              var_summary =  summary_sand,
+              var_assumptions = "The observations need to be i.i.d.",
+              cov_mat = V)
+
+  return(out)
 }
