@@ -29,8 +29,7 @@ Imports:
     vroom,
     Rdpack,
     ggplot2,
-    stringr,
-    pillar
+    stringr
 Suggests: 
     bench,
     kableExtra,
