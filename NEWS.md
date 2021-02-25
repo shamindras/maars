@@ -1,7 +1,5 @@
 # maars 0.6.0
 
-This is per #40 
-
 * update the documentation of `comp_var` and of the estimators of the variance
 * Adapt tests to handle the new function `comp_var`
 * create a function to nicely return a string containing the assumptions behind each computation of the variance (e.g., call it `get_assumptions`)
