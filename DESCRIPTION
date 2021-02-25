@@ -12,7 +12,7 @@ Authors@R:
              role = c("aut"),
              email = "rfogliat@andrew.cmu.edu"))
 Description: An implementation of the Models As Approximations series of statistics papers
-License: MIT + file LICENSE
+License: GPL (>= 2)
 Imports: 
     magrittr,
     rlang (>= 0.1.2),
