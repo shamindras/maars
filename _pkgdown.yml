@@ -1,3 +1,7 @@
+template:
+  params:
+    bootswatch: sandstone
+
 url: https://shamindras.github.io/maars
 
 navbar:
