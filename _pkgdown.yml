@@ -1,6 +1,6 @@
 template:
   params:
-    bootswatch: sandstone
+    bootswatch: flatly
 
 url: https://shamindras.github.io/maars
 

@@ -9,3 +9,4 @@
 ^\.github$
 ^codecov\.yml$
 ^bench$
+^R\.scripts_and_filters\.experiments$
