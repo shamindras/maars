@@ -39,8 +39,12 @@ preamble: >
 output: rticles::jss_article
 ---
 
-```{r, setup, include=FALSE, purl = FALSE}
+```{r, setup, include=FALSE, purl=FALSE}
 options(prompt = 'R> ', continue = '+ ')
+knitr::opts_chunk$set(purl = TRUE)
+```
+
+```{r, child=here::here('paper', '00-introduction.Rmd'), purl=TRUE}
 ```
 
 # Introduction
@@ -60,7 +64,7 @@ If you want to use LaTeX commands in headers, you need to provide a `short-title
 
 # \proglang{R} code {short-title="R code" #r-code}
 
-Can be inserted in regular R markdown blocks.
+Can be inserted in regular R markdown block.
 
 ```{r}
 x <- 1:10
@@ -72,6 +76,6 @@ x
 * Adding short titles to section headers is a feature specific to \pkg{rticles} (implemented via a Pandoc Lua filter). This feature is currently not supported by Pandoc and we will update this template if [it is officially supported in the future](https://github.com/jgm/pandoc/issues/4409).
 * Using the `\AND` syntax in the `author` field to add authors on a new line. This is a specific to the `rticles::jss_article` format.
 
-```{r session-info, include=FALSE, purl=TRUE}
+```{r session-info, include=FALSE}
 utils::sessionInfo()
 ```

@@ -11,11 +11,13 @@
 #' @param mod_fit A \code{\link[stats]{lm}} (OLS) object.
 #'
 #' @return A list containing the following elements: the type of estimator of
-#'   of the variance  (\code{var_type}); the summary statistics of \code{mod_fit}
-#'   based on this estimator of the variance (e.g., standard errors and p-values)
-#'   (\code{var_summary}); the assumptions under which the estimator of the
-#'   variance is consistent (\code{var_assumptions}); the covariance matrix for
-#'   the coefficients estimates (\code{cov_mat}).
+#'   of the variance  (\code{var_type}); An abbreviated string representing the
+#'   type of the estimator of the variance  (\code{var_type_abb}); the summary
+#'   statistics of \code{mod_fit} based on this estimator of the variance
+#'   (e.g., standard errors and p-values) (\code{var_summary}); the assumptions
+#'   under which the estimator of the variance is consistent
+#'   (\code{var_assumptions}); the covariance matrix for the coefficients
+#'   estimates (\code{cov_mat}).
 #'
 #' @keywords internal
 #'
@@ -66,6 +68,7 @@ comp_sand_var <- function(mod_fit) {
     )
 
   out <- list(var_type = "sand",
+              var_type_abb = "sand",
               var_summary =  summary_sand,
               var_assumptions = "The observations need to be i.i.d.",
               cov_mat = V)

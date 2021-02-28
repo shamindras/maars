@@ -40,3 +40,21 @@ test1 <- c(sand, boot_emp, boot_res, boot_mul, well_specified)
 !is.logical(test1)
 !any(test1)
 all(test1)
+
+# Comp var examples ----
+set.seed(1243434)
+
+# generate data
+n <- 1e3
+X <- stats::rnorm(n, 0, 1)
+# OLS data and model
+y <- 2 + X * 1 + stats::rnorm(n, 0, 1)
+lm_fit <- stats::lm(y ~ X)
+
+# Empirical Bootstrap check
+set.seed(454354534)
+comp_var1 <- comp_var(mod_fit = lm_fit,
+                      boot_emp = list(B = 100, m = 200),
+                      boot_res = list(B = 100),
+                      boot_mul = NULL)
+comp_var1

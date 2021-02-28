@@ -1,0 +1,3 @@
+# Introduction to our software package
+
+Here is why we created our software package.

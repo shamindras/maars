@@ -380,8 +380,11 @@ comp_var <- function(mod_fit, boot_emp = NULL, boot_res = NULL, boot_mul = NULL)
                               boot_res = boot_res,
                               boot_mul = boot_mul)
 
+  # Compute the well specified lm standard errors by default
+  out_well_specified <- comp_lm_var(mod_fit = mod_fit)
+
   # Compute the sandwich estimator by default
-  out_sand <- comp_sand_var(mod_fit)
+  out_sand <- comp_sand_var(mod_fit = mod_fit)
 
   # Initialize all other bootstrap variance computations to NULL values
   boot_out_emp <- NULL
@@ -445,7 +448,8 @@ comp_var <- function(mod_fit, boot_emp = NULL, boot_res = NULL, boot_mul = NULL)
     var_sand = out_sand,
     var_boot_emp = boot_out_emp,
     var_boot_mul = boot_out_mul,
-    var_boot_res = boot_out_res
+    var_boot_res = boot_out_res,
+    var_well_specified = out_well_specified
   )
   return(out)
 }

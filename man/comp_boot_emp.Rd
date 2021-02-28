@@ -20,7 +20,8 @@ dataset for each bootstrap repetition.}
 \value{
 A list containing the following elements.
 \code{var_type}: The type of estimator for the variance of the coefficients
-estimates.
+estimates. An abbreviated string representing the
+type of the estimator of the variance  (\code{var_type_abb}).
 \code{var_summary}: A tibble containing the summary statistics for the model:
 terms (\code{term}), standard errors (\code{std.error}),
 statistics (\code{statistic}), p-values (\code{p.values}). The format
