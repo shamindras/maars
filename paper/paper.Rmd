@@ -1,43 +1,63 @@
 ---
+# see https://www.jstatsoft.org/pages/view/style#what-are-the-capitalization-rules-in-jss-what-is-title-style-and-sentence-style
 documentclass: jss
 author:
-  - name: FirstName LastName
-    affiliation: University/Company
-    # use this syntax to add text on several lines
+  - name: Riccardo Fogliato # (!!!!) order of authors to be revisited (!!!!)
+    affiliation: 'Carnegie Mellon University'
+  #  affiliation: | doesn't fit
+  #    | Department of Statistics and Data Science
+  #    | Carnegie Mellon University
     address: |
-      | First line
-      | Second line
-    email: \email{name@company.com}
-    url: http://rstudio.com
-  - name: Second Author
-    affiliation: 'Affiliation \AND'
-    # To add another line, use \AND at the end of the previous one as above
-  - name: Third Author
+      | FMS 317, 5000 Forbes Ave
+      | Pittsburgh, PA 15213, United States
+    email: \email{rfogliat@andrew.cmu.edu}
+  - name: Shamindra Shrotriya
+    affiliation: 'Carnegie Mellon University'
     address: |
-      | Department of Statistics and Mathematics,
-      | Faculty of Biosciences,
-      | Universitat Autònoma de Barcelona
-    affiliation: |
-      | Universitat Autònoma 
-      | de Barcelona
+      | FMS 317, 5000 Forbes Ave
+      | Pittsburgh, PA 15213, United States
+    email: \email{sshrotri@andrew.cmu.edu}
+  - name: Arun Kuchibotla
+    affiliation: 'Carnegie Mellon University'
+    address: |
+      | Baker Hall, 4909 Frew St
+      | Pittsburgh, PA 15213, United States
+    email: \email{arunku@stat.cmu.edu}
     # use a different affiliation in adress field (differently formated here)
-    affiliation2: Universitat Autònoma de Barcelona
+    #affiliation2: Universitat Autònoma de Barcelona
 title:
-  formatted: "A Capitalized Title: Something about a Package \\pkg{foo}"
+  formatted: "\\pkg{maars:} Tidy Inference Under the `Models as Approximations' Framework in \\pkg{R}"
   # If you use tex in the formatted title, also supply version without
-  plain:     "A Capitalized Title: Something about a Package foo"
+  plain:     "maars: Tidy Inference Under the `Models as Approximations' Framework in R"
   # For running headers, if needed
-  short:     "\\pkg{foo}: A Capitalized Title"
+  short:     "\\pkg{maars}: Models as Approximations"
 abstract: >
-  The abstract of the article.
+  Linear regression using ordinary least squares (OLS) 
+  is a critical part of a statistician's
+  toolkit. In \pkg{R}, this is elegantly implemented 
+  via the \pkg{lm()} and related functions. However, this functionality is based on the 
+  unrealistic assumption that the linear model is well-specified. A large 
+  body of econometric and statistical research has focused on performing OLS inference under 
+  more practical assumptions. There is a need for a comprehensive workflow in $\pkg{R}$
+  for OLS under these practical assumptions. In this paper, we introduce our \pkg{R} package \pkg{maars}, 
+  to enable a \textit{tidy} inferential workflow in the misspecified OLS setting. Under potential 
+  misspecification, we demonstrate how the \pkg{maars} package performs variance estimation, 
+  confidence interval computation, hypothesis testing, and diagnostics. The outputs of \pkg{maars} 
+  functions are tailored for further exploration using the \pkg{tidyverse} \pkg{R} packages.
 keywords:
   # at least one keyword must be supplied
-  formatted: [keywords, not capitalized, "\\proglang{Java}"]
-  plain:     [keywords, not capitalized, Java]
+  formatted: [Ordinary Least Squares (OLS), Sandwich variance, Bootstrap, Model Misspecification, "\\pkg{tidyverse}"]
+  plain:     [ordinary least squares (OLS), sandwich variance, bootstrap, model misspecification, tidyverse]
 preamble: >
   \usepackage{amsmath}
-output: rticles::jss_article
+output: 
+  rticles::jss_article:
+    includes:
+      in_header: ["Latex/macros_01_proof_envs.sty", "Latex/macros_02_operators_commands.sty", "Latex/macros_03_symbols.sty", "Latex/macros_04_propernames.sty", "Latex/macros_05_reviewer.sty"]
+bibliography: references.bib 
 ---
+
+
 
 ```{r, setup, include=FALSE, purl=FALSE}
 options(prompt = 'R> ', continue = '+ ')
@@ -75,6 +95,10 @@ x
 
 * Adding short titles to section headers is a feature specific to \pkg{rticles} (implemented via a Pandoc Lua filter). This feature is currently not supported by Pandoc and we will update this template if [it is officially supported in the future](https://github.com/jgm/pandoc/issues/4409).
 * Using the `\AND` syntax in the `author` field to add authors on a new line. This is a specific to the `rticles::jss_article` format.
+
+# References
+
+<div id="refs"></div>
 
 ```{r session-info, include=FALSE}
 utils::sessionInfo()

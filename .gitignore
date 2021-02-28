@@ -24,6 +24,20 @@
 vignettes/*.html
 vignettes/*.pdf
 
+# produced paper
+paper/paper/*.pdf
+paper/paper/*.log
+paper/paper/*.tex
+paper/code/*.html
+paper/code/*.md
+paper/*.html
+paper/*.tex
+paper/*.html
+paper/*.pdf
+paper/*.log
+paper/*.md
+paper/*.R
+
 # OAuth2 token, see https://github.com/hadley/httr/releases/tag/v0.3
 .httr-oauth
 
