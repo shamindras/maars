@@ -90,16 +90,23 @@ now discuss the properties of OLS under misspecification of the linear model. It
 should be mentioned here that we will only discuss misspecification of the
 linear model but require independence of the observations. Dependence will be
 part of our future work (see \Cref{sec:conclusion-and-future-work}).
-\subsection{OLS under misspecification} If $(X_i, Y_i)\in\reals^d\times\reals,
-1\le i\le n$ are independent and identically distributed (\iid), then the least
+
+\subsection{OLS under misspecification} 
+
+If $(X_i, Y_i)\in\reals^d\times\reals, 1\le i\le n$ are independent and 
+identically distributed (\iid), then the least
 squares estimator $\widehat{\beta}$ converges (in probability) to\footnote{Note
 that $\beta^{\infty}  (\widehat{\beta}\mbox{ at }n=\infty)$ is the population
-projection parameter.} \[ \beta^{\infty} ~\defined~
-\argmin_{\theta\in\reals^d}\,\Exp{(Y - X^{\top}\theta)^2} \] where $(X,
-Y)\in\reals^d\times\reals$ is an independent copy of $(X_i, Y_i)$. If the linear
-model~\eqref{eq:linear-model} holds true, then $\beta^{\infty} = \beta_0$.
-Assuming only \iid observations with finite moments, it is easy to obtain the
-normal limiting distribution: \[ \sqrt{n}(\widehat{\beta} - \beta^{\infty})
+projection parameter.} 
+
+\[ \beta^{\infty} ~\defined~
+\argmin_{\theta\in\reals^d}\,\Exp{(Y - X^{\top}\theta)^2} \] 
+where $(X,Y)\in\reals^d\times\reals$ is an independent copy of $(X_i, Y_i)$. If 
+the linear model~\eqref{eq:linear-model} holds true, then 
+$\beta^{\infty} = \beta_0$. Assuming only \iid observations with finite moments, 
+it is easy to obtain the normal limiting distribution: 
+
+\[ \sqrt{n}(\widehat{\beta} - \beta^{\infty})
 ~\convd~ N(0, J^{-1}VJ^{-1}) \]
 
 where $J = \Exp{XX^{\top}}$, and $V = \Exp{XX^{\top}(Y -

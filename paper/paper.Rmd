@@ -57,8 +57,6 @@ output:
 bibliography: references.bib 
 ---
 
-
-
 ```{r, setup, include=FALSE, purl=FALSE}
 options(prompt = 'R> ', continue = '+ ')
 knitr::opts_chunk$set(purl = TRUE)
