@@ -1,0 +1,3 @@
+```{r session-info, include=FALSE}
+utils::sessionInfo()
+```

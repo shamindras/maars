@@ -1,44 +1,75 @@
 # Introduction
 
-Multiple linear regression is one of the most commonly used data analytic tools. Although the general notion of ``all models are approximations'' is well received in terms of inference under model misspecification, most statistical software (including \proglang{R}) does not yet have a comprehensive implementation of all such aspects. In detail, the elegant implementation of the least squares estimator through the \pkg{lm()} function is based on the classical and unrealistic assumptions of a linear model \ie linearity, homoscedasticity, and normality. The \pkg{lm()} implementation does provide methods for diagnosing these assumptions. However, it has long been recognized that inference should be performed under more general assumptions, even if the estimator is constructed based on likelihood principles \cite{huber1967behavior,buja2019modelsasapproximationspart1}.
+Multiple linear regression is one of the most commonly used data analytic tools.
+Although the general notion of ``all models are approximations'' is well
+received in terms of inference under model misspecification, most statistical
+software (including \proglang{R}) does not yet have a comprehensive
+implementation of all such aspects. In detail, the elegant implementation of the
+least squares estimator through the \code{lm()} function is based on the
+classical and unrealistic assumptions of a linear model \ie linearity,
+homoscedasticity, and normality. The \code{lm()} implementation does provide
+methods for diagnosing these assumptions. However, it has long been recognized
+that inference should be performed under more general assumptions, even if the
+estimator is constructed based on likelihood principles
+\cite{huber1967behavior,buja2019modelsasapproximationspart1}.
 
-Over the years, several \proglang{R} packages (such as \pkg{car} \citep{car2019cran} and \pkg{sandwich} \citep{sandwich2004lmjss,sandwich2020jssversatilevariances}) have been developed to implement heteroscedasticity and non-linearity consistent estimators of the asymptotic variance. In this misspecfied setting, a tidy workflow is currently unavailable in \proglang{R}. 
-By a \textit{tidy workflow}, we mean a suite of functions for variance estimation, confidence interval computation, hypothesis testing, and diagnostics
-whose outputs are tailored for further exploration using the \pkg{tidyverse} set of \proglang{R} packages \citep{tidyverse2019cranjoss}. 
-In this paper, we introduce our \pkg{maars} \proglang{R} package that provides such a tidy workflow for data analysis with ordinary least squares (OLS) linear regression. 
-Our package is motivated, in large part, by the discussion of \citet{buja2019modelsasapproximationspart1,buja2019modelsasapproximationspart2}. 
-Part of our motivation is also pedagogical, 
-in making statisticians more aware of the consequences 
-of model-based variance estimators for inference. 
+Over the years, several \proglang{R} packages (such as \pkg{car}
+\citep{car2019cran} and \pkg{sandwich}
+\citep{sandwich2004lmjss,sandwich2020jssversatilevariances}) have been developed
+to implement heteroscedasticity and non-linearity consistent estimators of the
+asymptotic variance. In this misspecfied setting, a tidy workflow is currently
+unavailable in \proglang{R}. By a \textit{tidy workflow}, we mean a suite of
+functions for variance estimation, confidence interval computation, hypothesis
+testing, and diagnostics whose outputs are tailored for further exploration
+using the \pkg{tidyverse} set of \proglang{R} packages
+\citep{tidyverse2019cranjoss}. In this paper, we introduce our \pkg{maars}
+\proglang{R} package that provides such a tidy workflow for data analysis with
+ordinary least squares (OLS) linear regression. Our package is motivated, in
+large part, by the discussion of
+\citet{buja2019modelsasapproximationspart1,buja2019modelsasapproximationspart2}.
+Part of our motivation is also pedagogical, in making statisticians more aware
+of the consequences of model-based variance estimators for inference.
 
-In the remaining part of the paper, we introduce the functions in our \pkg{maars} \proglang{R} 
-package\footnote{The package name \ie \pkg{maars}, is a derived abbreviation of \textit{Models As Approximations in R}, based on the series of papers with a similar name \citep{buja2019modelsasapproximationspart1,buja2019modelsasapproximationspart2}.} and, when applicable, compare them with the \pkg{lm()} function. For illustrative purposes only, we 
-use the \textit{LA Homeless data} from \cite{buja2019modelsasapproximationspart1} 
-to demonstrate the \pkg{maars} package functionality.
+In the remaining part of the paper, we introduce the functions in our
+\pkg{maars} \proglang{R} package\footnote{The package name \ie \pkg{maars}, is a
+derived abbreviation of \textit{Models As Approximations in R}, based on the
+series of papers with a similar name
+\citep{buja2019modelsasapproximationspart1,buja2019modelsasapproximationspart2}.}
+and, when applicable, compare them with the \code{lm()} function. For
+illustrative purposes only, we use the \textit{LA Homeless data} from
+\cite{buja2019modelsasapproximationspart1} to demonstrate the \pkg{maars}
+package functionality.
 
-As noted in \cite{buja2019modelsasapproximationspart1}, 
-this dataset has 505 observations, each representing a sampled metropolitan 
-LA County Census tract. It also has 7 numeric variables measuring different 
-quantities of interest in each tract. For linear modeling purposes, the 
-response variable (\textit{StreetTotal}) is a count of the homeless people 
-in each tract. There are six covariates for regression purposes. These include 
-the Median Income of Households (\textit{MedianInc (\$1000})), 
-and the share of non-Caucasian residents  
-(\textit{PercMinority}). The remaining four covariates measure
-the proportion of the different types of lots in each 
-tract (\textit{PercCommercial}, \textit{PercVacant}, 
-\textit{PercResidential} and \textit{PercIndustrial}).
+As noted in \cite{buja2019modelsasapproximationspart1}, this dataset has 505
+observations, each representing a sampled metropolitan LA County Census tract.
+It also has 7 numeric variables measuring different quantities of interest in
+each tract. For linear modeling purposes, the response variable
+(\textit{StreetTotal}) is a count of the homeless people in each tract. There
+are six covariates for regression purposes. These include the Median Income of
+Households (\textit{MedianInc (\$1000})), and the share of non-Caucasian
+residents (\textit{PercMinority}). The remaining four covariates measure the
+proportion of the different types of lots in each tract
+(\textit{PercCommercial}, \textit{PercVacant}, \textit{PercResidential} and
+\textit{PercIndustrial}).
 
-\subsection{OLS under well-specification}
-Suppose we have regression data $(X_i, Y_i)\in\reals^d\times\reals, 1\le i\le n$. The well-specified (classical) linear model stipulates that $(X_i, Y_i), 1\le i\le n$ are independent and satisfy
-\begin{align}\label{eq:linear-model}
-Y_i &= X_i^{\top}\beta_0 + \varepsilon_i,
+\subsection{OLS under well-specification} Suppose we have regression data $(X_i,
+Y_i)\in\reals^d\times\reals, 1\le i\le n$. The well-specified (classical) linear
+model stipulates that $(X_i, Y_i), 1\le i\le n$ are independent and satisfy
+\begin{align}\label{eq:linear-model} Y_i &= X_i^{\top}\beta_0 + \varepsilon_i,
 \end{align}
-where $\varepsilon_i|X_i\sim N(0,\sigma^2)$. This implies that $\Exp{Y_i|X_i} = X_i^{\top}\beta_0$ (linearity) and $\mbox{Var}(Y_i|X_i) = \sigma^2$ (homoscedasticity). Usually one also assumes covariates to be non-stochastic. Under these assumptions, we get that the OLS estimator $$\widehat{\beta} = \argmin_{\theta\in\reals^d}\textstyle\sum_{i=1}^n (Y_i - X_i^{\top}\theta)^2,$$ has a normal distribution (conditional on $X_i, i\le n$): 
-\begin{align}\label{eq:distribution-well-specified}\textstyle
-\widehat{\beta} - \beta_0 ~\sim~ \distNorm(0, \sigma^2(\sum_{i=1}^n X_iX_i^{\top})^{-1})
+where $\varepsilon_i|X_i\sim N(0,\sigma^2)$. This implies that $\Exp{Y_i|X_i} =
+X_i^{\top}\beta_0$ (linearity) and $\mbox{Var}(Y_i|X_i) = \sigma^2$
+(homoscedasticity). Usually one also assumes covariates to be non-stochastic.
+Under these assumptions, we get that the OLS estimator $$\widehat{\beta} =
+\argmin_{\theta\in\reals^d}\textstyle\sum_{i=1}^n (Y_i - X_i^{\top}\theta)^2,$$
+has a normal distribution (conditional on $X_i, i\le n$):
+\begin{align}\label{eq:distribution-well-specified}\textstyle \widehat{\beta} -
+\beta_0 ~\sim~ \distNorm(0, \sigma^2(\sum_{i=1}^n X_iX_i^{\top})^{-1})
 \end{align}
-This distribution yields confidence intervals, hypothesis tests, and $p$-values for $\beta_0$. The \pkg{R} function \pkg{lm()} provides inference based on~\eqref{eq:distribution-well-specified}. For the LA Homeless data, the implementation of OLS along with its inference are as follows:
+This distribution yields confidence intervals, hypothesis tests, and $p$-values
+for $\beta_0$. The \pkg{R} function \code{lm()} provides inference based
+on~\eqref{eq:distribution-well-specified}. For the LA Homeless data, the
+implementation of OLS along with its inference are as follows:
 
 ```{r nlst:r00_mod_lm_fit, message = FALSE, warning = FALSE, error = FALSE}
 # import LA homeless data from source
@@ -52,23 +83,43 @@ mod_fit <- stats::lm(formula = StreetTotal ~ .,
 summary(mod_fit)
 ```
 
-As mentioned, the standard errors, $t$-scores, and the $p$-values reported in the summary above are probably invalid, because the linear model for LA Homeless data is not well-specified \cite{buja2019modelsasapproximationspart1}. We will now discuss the properties of OLS under misspecification of the linear model. It should be mentioned here that we will only discuss misspecification of the linear model but require independence of the observations. Dependence will be part of our future work (see \Cref{sec:conclusion-and-future-work}). 
-\subsection{OLS under misspecification}
-If $(X_i, Y_i)\in\reals^d\times\reals, 1\le i\le n$ are independent and identically distributed (\iid), then the least squares estimator $\widehat{\beta}$ converges (in probability) to\footnote{Note that $\beta^{\infty}  (\widehat{\beta}\mbox{ at }n=\infty)$ is the population projection parameter.}
-\[
-\beta^{\infty} ~\defined~ \argmin_{\theta\in\reals^d}\,\Exp{(Y - X^{\top}\theta)^2}
-\]
-where $(X, Y)\in\reals^d\times\reals$ is an independent copy of $(X_i, Y_i)$. If the linear model~\eqref{eq:linear-model} holds true, then $\beta^{\infty} = \beta_0$. Assuming only \iid observations with finite moments, it is easy to obtain the normal limiting distribution:
-\[
-\sqrt{n}(\widehat{\beta} - \beta^{\infty}) ~\convd~ N(0, J^{-1}VJ^{-1})
-\]
+As mentioned, the standard errors, $t$-scores, and the $p$-values reported in
+the summary above are probably invalid, because the linear model for LA Homeless
+data is not well-specified \cite{buja2019modelsasapproximationspart1}. We will
+now discuss the properties of OLS under misspecification of the linear model. It
+should be mentioned here that we will only discuss misspecification of the
+linear model but require independence of the observations. Dependence will be
+part of our future work (see \Cref{sec:conclusion-and-future-work}).
+\subsection{OLS under misspecification} If $(X_i, Y_i)\in\reals^d\times\reals,
+1\le i\le n$ are independent and identically distributed (\iid), then the least
+squares estimator $\widehat{\beta}$ converges (in probability) to\footnote{Note
+that $\beta^{\infty}  (\widehat{\beta}\mbox{ at }n=\infty)$ is the population
+projection parameter.} \[ \beta^{\infty} ~\defined~
+\argmin_{\theta\in\reals^d}\,\Exp{(Y - X^{\top}\theta)^2} \] where $(X,
+Y)\in\reals^d\times\reals$ is an independent copy of $(X_i, Y_i)$. If the linear
+model~\eqref{eq:linear-model} holds true, then $\beta^{\infty} = \beta_0$.
+Assuming only \iid observations with finite moments, it is easy to obtain the
+normal limiting distribution: \[ \sqrt{n}(\widehat{\beta} - \beta^{\infty})
+~\convd~ N(0, J^{-1}VJ^{-1}) \]
 
-where $J = \Exp{XX^{\top}}$, and $V = \Exp{XX^{\top}(Y - X^{\top}\beta^{\infty})^2}$; see \cite{buja2019modelsasapproximationspart1} for details. A similar limit theorem also holds when the observations are independent but not identically distributed (\inid). The matrices $J$ and $V$ can be readily estimated by replacing the expectations by averages and $\beta^{\infty}$ by $\widehat{\beta}$ leading to the sandwich estimator $\widehat{J}^{-1}\widehat{V}\widehat{J}^{-1}$ \cite{buja2019modelsasapproximationspart1}. Here
-\begin{equation}\label{eq:Jhat-Vhat}
-\widehat{J} = \frac{1}{n}\sum_{i=1}^n X_iX_i^{\top}\quad\mbox{and}\quad
-\widehat{V} = \frac{1}{n}\sum_{i=1}^n X_iX_i^{\top}(Y_i - X_i^{\top}\widehat{\beta})^2
-\end{equation}
-It can be shown that $\widehat{J}^{-1}\widehat{V}\widehat{J}^{-1}$ consistently estimates the asymptotic variance under \iid, and over-estimates the asymptotic variance under \inid data \cite{kuchibhotla2018model}. It is noteworthy that the estimator $\widehat{J}^{-1}\widehat{V}\widehat{J}^{-1}$ converges to the model-based variance if the linear model \eqref{eq:linear-model} holds true.
+where $J = \Exp{XX^{\top}}$, and $V = \Exp{XX^{\top}(Y -
+X^{\top}\beta^{\infty})^2}$; see \cite{buja2019modelsasapproximationspart1} for
+details. A similar limit theorem also holds when the observations are
+independent but not identically distributed (\inid). The matrices $J$ and $V$
+can be readily estimated by replacing the expectations by averages and
+$\beta^{\infty}$ by $\widehat{\beta}$ leading to the sandwich estimator
+$\widehat{J}^{-1}\widehat{V}\widehat{J}^{-1}$
+\cite{buja2019modelsasapproximationspart1}. Here
+\begin{equation}\label{eq:Jhat-Vhat} \widehat{J} = \frac{1}{n}\sum_{i=1}^n
+X_iX_i^{\top}\quad\mbox{and}\quad \widehat{V} = \frac{1}{n}\sum_{i=1}^n
+X_iX_i^{\top}(Y_i - X_i^{\top}\widehat{\beta})^2 \end{equation} It can be shown
+that $\widehat{J}^{-1}\widehat{V}\widehat{J}^{-1}$ consistently estimates the
+asymptotic variance under \iid, and over-estimates the asymptotic variance under
+\inid data \cite{kuchibhotla2018model}. It is noteworthy that the estimator
+$\widehat{J}^{-1}\widehat{V}\widehat{J}^{-1}$ converges to the model-based
+variance if the linear model \eqref{eq:linear-model} holds true.
 
-Our implementation is aimed at appending the columns of the summary table from \pkg{lm()} by statistically valid quantities based on the sandwich variance estimator, the empirical bootstrap, and the multiplier bootstrap.
+Our implementation is aimed at appending the columns of the summary table from
+\code{lm()} by statistically valid quantities based on the sandwich variance
+estimator, the empirical bootstrap, and the multiplier bootstrap.
 

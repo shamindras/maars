@@ -35,7 +35,7 @@ abstract: >
   Linear regression using ordinary least squares (OLS) 
   is a critical part of a statistician's
   toolkit. In \pkg{R}, this is elegantly implemented 
-  via the \pkg{lm()} and related functions. However, this functionality is based on the 
+  via the \code{lm()} and related functions. However, this functionality is based on the 
   unrealistic assumption that the linear model is well-specified. A large 
   body of econometric and statistical research has focused on performing OLS inference under 
   more practical assumptions. There is a need for a comprehensive workflow in $\pkg{R}$
@@ -69,7 +69,8 @@ knitr::opts_chunk$set(purl = TRUE)
 
 # Introduction
 
-This template demonstrates some of the basic LaTeX that you need to know to create a JSS article.
+This template demonstrates some of the basic LaTeX that you need to know to
+create a JSS article.
 
 ## Code formatting
 
@@ -78,9 +79,12 @@ In general, don't use Markdown, but use the more precise LaTeX commands instead:
 * \proglang{Java}
 * \pkg{plyr}
 
-One exception is inline code, which can be written inside a pair of backticks (i.e., using the Markdown syntax).
+One exception is inline code, which can be written inside a pair of backticks
+(i.e., using the Markdown syntax).
 
-If you want to use LaTeX commands in headers, you need to provide a `short-title` attribute. You can also provide a custom identifier if necessary. See the header of Section \ref{r-code} for example.
+If you want to use LaTeX commands in headers, you need to provide a
+`short-title` attribute. You can also provide a custom identifier if necessary.
+See the header of Section \ref{r-code} for example.
 
 # \proglang{R} code {short-title="R code" #r-code}
 
@@ -93,13 +97,16 @@ x
 
 ## Features specific to \pkg{rticles} {short-title="Features specific to rticles"}
 
-* Adding short titles to section headers is a feature specific to \pkg{rticles} (implemented via a Pandoc Lua filter). This feature is currently not supported by Pandoc and we will update this template if [it is officially supported in the future](https://github.com/jgm/pandoc/issues/4409).
-* Using the `\AND` syntax in the `author` field to add authors on a new line. This is a specific to the `rticles::jss_article` format.
+* Adding short titles to section headers is a feature specific to \pkg{rticles}
+(implemented via a Pandoc Lua filter). This feature is currently not supported
+by Pandoc and we will update this template if 
+[it is officially supported in the future](https://github.com/jgm/pandoc/issues/4409).
+* Using the `\AND` syntax in the `author` field to add authors on a new line.
+This is a specific to the `rticles::jss_article` format.
 
 # References
 
 <div id="refs"></div>
 
-```{r session-info, include=FALSE}
-utils::sessionInfo()
+```{r, child=here::here('paper', '99-sessioninfo.Rmd'), purl=TRUE}
 ```
