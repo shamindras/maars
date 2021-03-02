@@ -46,7 +46,8 @@ comp_boot_emp_samples <- function(data,
   if (is.null(m)) {
     m <- n
   }
-
+  # this is a simplified version of rsample because rsample currently
+  # does not allow for sampling m!=n observations from the data
   indices <- purrr::map(rep(n, B), sample, replace = TRUE, size = m)
 
   out <- tibble::tibble(
