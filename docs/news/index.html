@@ -112,7 +112,12 @@
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/shamindras/maars/">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -127,7 +132,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
       <h1 data-toc-skip>Changelog <small></small></h1>
-      
+      <small>Source: <a href='https://github.com/shamindras/maars/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
     <div id="maars-060" class="section level1">
@@ -169,7 +174,7 @@
 <li>Ensure renamed function names are also correctly changed in the corresponding test files</li>
 <li>Split our <code>pkgdown</code> references into suitable categories <a href="https://usethis.r-lib.org/reference/index.html">like usethis</a>, here is <a href="https://github.com/r-lib/usethis/blob/45d0fef414fd69ac7ed468d196e93db7f2008e27/_pkgdown.yml">an example</a>
 </li>
-<li>Change specific functions to be private by removing <code>#' @export</code> in <code>roxygen2</code> and replacing it with <code>#' @keywords internal</code>
+<li>Change specific functions to be private by removing <code>#' <a href='https://github.com/export'>@export</a></code> in <code>roxygen2</code> and replacing it with <code>#' <a href='https://github.com/keywords'>@keywords</a> internal</code>
 </li>
 </ul>
 </div>
@@ -209,7 +214,7 @@
 <li>Create a <code>utils-common.R</code> similar to the <a href="https://github.com/selective-inference/R-software/blob/master/selectiveInference/R/funs.common.R#L87-L123">selectiveInference package</a>, ensure that common functions are put in this file</li>
 <li>clean up the <code>tests</code> directory i.e. delete unused <code>R</code> test files</li>
 <li>clean up the <code>R</code> directory i.e. delete unused <code>R</code> files</li>
-<li>We should add <code>#' @importFrom rlang .data</code> in all our functions under <code>#' @export</code>
+<li>We should add <code>#' <a href='https://github.com/importFrom'>@importFrom</a> rlang .data</code> in all our functions under <code>#' <a href='https://github.com/export'>@export</a></code>
 </li>
 <li>Fix <code>R CMD CHECK</code> error caused in <code>vignette</code>, namely <a href="https://github.com/shamindras/maars/pull/21/checks?check_run_id=1555124560">this one</a>
 </li>
