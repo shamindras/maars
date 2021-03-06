@@ -391,7 +391,7 @@ comp_var <- function(mod_fit, boot_emp = NULL, boot_res = NULL, boot_mul = NULL)
   boot_out_mul <- NULL
   boot_out_res <- NULL
 
-  # Override boostrap NULL bootstrap variance calculations if any of the
+  # Override bootstrap NULL bootstrap variance calculations if any of the
   # input values passed in are not NULL
   if (!is.null(boot_emp)) {
     # Empirical Bootstrap: Extract parameters from list input
@@ -412,6 +412,8 @@ comp_var <- function(mod_fit, boot_emp = NULL, boot_res = NULL, boot_mul = NULL)
       m = m
     )
   }
+
+
   if (!is.null(boot_res)) {
     # Residual Bootstrap: Extract parameters from list input
     if (length(purrr::compact(.x = boot_res)) == 1) {
@@ -423,6 +425,8 @@ comp_var <- function(mod_fit, boot_emp = NULL, boot_res = NULL, boot_mul = NULL)
     # Run Residual Bootstrap
     boot_out_res <- comp_boot_res(mod_fit = mod_fit, B = B)
   }
+
+
   if (!is.null(boot_mul)) {
     # Multiplier Bootstrap: Extract parameters from list input
     if (length(purrr::compact(.x = boot_mul)) == 2) {
@@ -430,7 +434,7 @@ comp_var <- function(mod_fit, boot_emp = NULL, boot_res = NULL, boot_mul = NULL)
       weights_type <- boot_mul[["weights_type"]]
     } else if (length(purrr::compact(.x = boot_mul)) == 1) {
       B <- boot_mul[["B"]]
-      weights_type <- NULL
+      weights_type <- "rademacher"
     } else {
       stop("An error has occurred in boot_mul input. Please check it and rerun")
     }
