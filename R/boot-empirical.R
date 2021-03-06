@@ -229,7 +229,7 @@ comp_boot_emp <- function(mod_fit, B = 100, m = NULL) {
   out <- list(var_type = "boot_emp",
               var_type_abb = "emp",
               var_summary =  summary_boot,
-              var_assumptions = "The observations need to be independent.",
+              var_assumptions = "The observations must be independent.",
               cov_mat = NULL,
               boot_out = boot_out)
 

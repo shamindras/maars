@@ -41,9 +41,10 @@ comp_sand_var <- function(mod_fit) {
   )
   J_inv <- stats::summary.lm(mod_fit)$cov.unscaled
   X <- qr.X(mod_fit$qr)
-  V <- t(X) %*% Matrix::Diagonal(x = stats::residuals(mod_fit)^2) %*% X
+  meat <- t(X) %*% Matrix::Diagonal(x = stats::residuals(mod_fit)^2) %*% X
+  cov_mat <- as.matrix(J_inv %*% meat %*% J_inv)
 
-  std_error_sand <- sqrt(diag(as.matrix(J_inv %*% V %*% J_inv))) %>%
+  std_error_sand <- sqrt(diag(cov_mat)) %>%
     tibble::enframe(
       x = .,
       name = "term",
@@ -71,7 +72,7 @@ comp_sand_var <- function(mod_fit) {
               var_type_abb = "sand",
               var_summary =  summary_sand,
               var_assumptions = "The observations must be i.i.d.",
-              cov_mat = V)
+              cov_mat = cov_mat)
 
   return(out)
 }

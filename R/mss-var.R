@@ -9,7 +9,7 @@ get_tidy_summary <- function(x, sand = TRUE,
     boot_emp = ifelse(boot_emp, "boot_emp", FALSE),
     boot_res = ifelse(boot_res, "boot_res", FALSE),
     boot_mul = ifelse(boot_mul, "boot_mul", FALSE),
-    well_specified = ifelse(boot_mul, "boot_mul", FALSE)
+    well_specified = ifelse(boot_mul, "well_specified", FALSE)
   ) %>%
     purrr::keep(~ !isFALSE(.x)) %>%
     purrr::map(~ mod_fit[["var"]][[paste0("var_", .x)]]$var_summary %>%
@@ -81,7 +81,13 @@ summary.maars_lm <- function(x, sand = TRUE, boot_emp = FALSE, boot_res = FALSE,
   cat("\n---\n")
   cat("Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1")
 
-  warning(get_assumptions(x,
+  cat("\n")
+  # add here - broom glance / glue / augment
+  # add here
+  # add here
+
+  cat("\n---\n")
+  cat(get_assumptions(x,
     sand = sand, boot_emp = boot_emp,
     boot_res = boot_res,
     boot_mul = boot_mul,
