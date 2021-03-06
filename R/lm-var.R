@@ -41,7 +41,7 @@ comp_lm_var <- function(mod_fit) {
     var_type = "well_specified",
     var_type_abb = "lm",
     var_summary = summary_lm,
-    var_assumptions = "All OLS assumptions",
+    var_assumptions = "The model must be well specified.",
     cov_mat = NULL
   )
 

@@ -70,7 +70,7 @@ comp_sand_var <- function(mod_fit) {
   out <- list(var_type = "sand",
               var_type_abb = "sand",
               var_summary =  summary_sand,
-              var_assumptions = "The observations need to be i.i.d.",
+              var_assumptions = "The observations must be i.i.d.",
               cov_mat = V)
 
   return(out)
