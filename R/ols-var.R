@@ -449,11 +449,11 @@ comp_var <- function(mod_fit, boot_emp = NULL, boot_res = NULL, boot_mul = NULL)
 
   # Combine all output into a single list of lists
   out <- list(
+    var_well_specified = out_well_specified,
     var_sand = out_sand,
     var_boot_emp = boot_out_emp,
     var_boot_mul = boot_out_mul,
-    var_boot_res = boot_out_res,
-    var_well_specified = out_well_specified
+    var_boot_res = boot_out_res
   )
   return(out)
 }
