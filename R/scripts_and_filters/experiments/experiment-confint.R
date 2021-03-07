@@ -27,7 +27,15 @@ broom::tidy(lm_fit, conf.int = TRUE)
 ci <- get_confint(mod_fit = mss_var1,
             level = 0.95,
             sand = TRUE,
-            boot_emp = TRUE)
+            boot_emp = TRUE) %>%
+    dplyr::select(conf.low.sand, conf.high.sand)
+ci
+
+get_confint(mod_fit = mss_var1,
+                  level = 0.1,
+                  sand = TRUE,
+                  boot_emp = TRUE) %>%
+    dplyr::select(conf.low.sand, conf.high.sand)
 
 get_var_tidy_summary(mod_fit = mss_var1, sand = TRUE,
                      boot_emp = TRUE, boot_res = TRUE, boot_mul = FALSE,

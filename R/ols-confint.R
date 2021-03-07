@@ -22,6 +22,11 @@
 #' @return (tibble) : Combined standard error and confidence intervals
 #'   summary from a fitted OLS \code{maars_lm, lm} class object
 #'
+#' @details The function generates the same output as \code{\link{get_summary}},
+#'   but also includes lower and upper confidence intervals for the regression
+#'   coefficients according to the significance level specified in the "level"
+#'   argument.
+#'
 #' @export
 #'
 #' @examples
@@ -76,8 +81,8 @@ get_confint <- function(mod_fit,
       purrr::modify_in(.x = ., list(1,'var_summary'),
                        .f = ~ .x %>%
                         dplyr::mutate(
-          conf.low = estimate - qnorm(0.5 + level / 2) * std.error,
-          conf.high = estimate + qnorm(0.5 + level / 2) * std.error
+          conf.low = estimate + qt((1-level)/2, mod_fit$df.residual) * std.error,
+          conf.high = estimate + qt(1 - (1-level)/2, mod_fit$df.residual) * std.error
       ))
 
   out_comp_var_filt_mod <- out_comp_var_filt %>%
