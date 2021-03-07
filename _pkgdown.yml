@@ -27,6 +27,7 @@ reference:
     contents:
     - starts_with("comp_", internal = FALSE)
     - starts_with("fit_", internal = FALSE)
+    - get_var_tidy_summary
     - diag_fit_reg_rwgt
   - title: Diagnostic Utilities
     desc: >
