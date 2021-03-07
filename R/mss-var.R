@@ -1,74 +1,53 @@
-# generate tibble with coefficients and stats
-get_tidy_summary <- function(x, sand = TRUE,
+
+
+
+
+# print summary of object
+summary.maars_lm <- function(mod_fit,
+                             sand = TRUE,
                              boot_emp = FALSE,
                              boot_res = FALSE,
                              boot_mul = FALSE,
-                             well_specified = FALSE, ...) {
-  out_summ <- list(
-    sand = ifelse(sand, "sand", FALSE),
-    boot_emp = ifelse(boot_emp, "boot_emp", FALSE),
-    boot_res = ifelse(boot_res, "boot_res", FALSE),
-    boot_mul = ifelse(boot_mul, "boot_mul", FALSE),
-    well_specified = ifelse(boot_mul, "well_specified", FALSE)
-  ) %>%
-    purrr::keep(~ !isFALSE(.x)) %>%
-    purrr::map(~ mod_fit[["var"]][[paste0("var_", .x)]]$var_summary %>%
-      dplyr::mutate(sig = dplyr::case_when(
-        p.value <= 0.001 ~ "***",
-        p.value <= 0.01 ~ "**",
-        p.value <= 0.05 ~ "*",
-        TRUE ~ "."
-      )) %>%
-      stats::setNames(c(
-        "Term",
-        "Estimate",
-        paste0("t value ", .x),
-        paste0("Std. Error ", .x),
-        paste0("Pr(>|t|) ", .x),
-        paste0("Significance ", .x)
-      ))) %>%
-    purrr::reduce(dplyr::left_join, by = c("Term", "Estimate")) %>%
-    dplyr::relocate(
-      Term, Estimate, matches("Std. Error"),
-      matches("t value"), matches("Pr(>|t|)"),
-      matches("Significance")
-    )
-  out_summ
-}
+                             well_specified = FALSE,
+                             digits = 3, ...) {
 
-get_assumptions <- function(x, sand = sand,
-                            boot_emp = boot_emp,
-                            boot_res = boot_res,
-                            boot_mul = boot_mul,
-                            well_specified = well_specified, ...) {
-  ass <- list(
-    sand = ifelse(sand, "sand", FALSE),
-    boot_emp = ifelse(boot_emp, "boot_emp", FALSE),
-    boot_res = ifelse(boot_res, "boot_res", FALSE),
-    boot_mul = ifelse(boot_mul, "boot_mul", FALSE),
-    well_specified = ifelse(well_specified, 'well_specified', FALSE)
-  ) %>%
-    purrr::keep(~ !isFALSE(.x)) %>%
-    purrr::map(~ tibble::tibble(Assumption = mod_fit[["var"]][[paste0("var_", .x)]]$var_assumptions)) %>%
-    dplyr::bind_rows(.id = "Type")
-  paste0("Assumptions:\n", paste0(ass$Type, "->", ass$Assumption, collapse = "\n"))
-}
-
-# print summary of object
-summary.maars_lm <- function(x, sand = TRUE, boot_emp = FALSE, boot_res = FALSE,
-                             boot_mul = FALSE,
-                             well_specified = FALSE, ...) {
-  out_summ <- get_tidy_summary(x,
+  out_summ <- get_var_tidy_summary(mod_fit,
     sand = sand,
     boot_emp = boot_emp,
     boot_res = boot_res,
     boot_mul = boot_mul,
-    well_specified = well_specified, ...
+    well_specified = well_specified
   )
 
-  out_summ
+  # add asterisks for statistical significance in a separate tibble
+  significance_ast <- out_summ %>%
+    dplyr::select(dplyr::starts_with('p.value')) %>%
+    dplyr::mutate(dplyr::across(dplyr::everything(),
+                                ~dplyr::case_when(round(.x,3) == 0.000 ~ '***',
+                                           .x < 0.001 ~ '**',
+                                           .x < 0.01 ~ '*',
+                                           .x < 0.05 ~ '.',
+                                           TRUE ~ ' '))) %>%
+  setNames(paste0('signif.', stringr::str_sub(names(.), start=9)))
 
-  cat("\nCall:\n", # S has ' ' instead of '\n'
+  # join asterisks with out_summ
+  out_summ <- out_summ %>% dplyr::bind_cols(significance_ast)
+
+  # reorder columns - we could change the order
+  cols_prefix_order <- c('term', 'estimate', 'std.error',
+                  'statistic', 'p.value', 'signif')
+  out_summ <- out_summ[,cols_prefix_order %>%
+                          purrr::map(~ names(out_summ)[grepl(., names(out_summ))]) %>%
+                         unlist()]
+
+  # format p values
+  out_summ <- out_summ %>%
+    dplyr::mutate(dplyr::across(
+      dplyr::starts_with("p.value"),
+      ~ format.pval(.x, digits = 1)
+    ))
+
+  cat("\nCall:\n",
     stringr::str_c(rlang::expr_deparse(x = mod_fit$call),
       sep = "\n",
       collapse = "\n"
@@ -77,23 +56,41 @@ summary.maars_lm <- function(x, sand = TRUE, boot_emp = FALSE, boot_res = FALSE,
     sep = ""
   )
   cat("Coefficients:\n")
-  print.data.frame(out_summ, row.names = FALSE, digits = 2)
+  print.data.frame(out_summ, row.names = FALSE, digits = digits, right = TRUE)
   cat("\n---\n")
   cat("Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1")
 
-  cat("\n")
-  # add here - broom glance / glue / augment
-  # add here
-  # add here
+  summ_lm <- summary.lm(mod_fit)
+  cat(
+    "\n\nResidual standard error:",
+    formatC(signif(summ_lm$sigma, digits = digits)), "on",
+    mod_fit$df.residual, "degrees of freedom"
+  )
+  cat(
+    "\nMultiple R-squared:", formatC(summ_lm$r.squared, digits = digits),
+    ",\tAdjusted R-squared:", formatC(summ_lm$adj.r.squared, digits = digits)
+  )
+  cat(
+    "\nF-statistic:", summ_lm$fstatistic[1L],
+    " on ", summ_lm$fstatistic[2L], " and ", summ_lm$fstatistic[3L],
+    "DF,  p-value:",
+    format.pval(pf(summ_lm$fstatistic[1L],
+      summ_lm$fstatistic[2L],
+      summ_lm$fstatistic[3L],
+      lower.tail = FALSE
+    ))
+  )
 
-  cat("\n---\n")
-  cat(get_assumptions(x,
+  cat("\n---\nAssumptions:\n")
+  cat(paste0(utf8::utf8_format('\U001F3AF'),
+             get_assumptions(mod_fit = mod_fit,
     sand = sand, boot_emp = boot_emp,
     boot_res = boot_res,
     boot_mul = boot_mul,
     well_specified = well_specified
-  ))
+  )) %>% paste0(., collapse = '\n'))
 }
+
 
 # print variance
 mss_var <- function(mod_fit, boot_emp = NULL, boot_res = NULL,
@@ -103,12 +100,19 @@ mss_var <- function(mod_fit, boot_emp = NULL, boot_res = NULL,
     attr(mod_fit, "class") <-
       "lm"
   }
-  var_est <- comp_var(mod_fit, boot_emp, boot_res, boot_mul)
-  mod_fit$var <- var_est
+
+  out_var <- comp_var(mod_fit, boot_emp, boot_res, boot_mul)
+  mod_fit$var <- out_var
+
   attr(mod_fit, "class") <- c("maars_lm", "lm")
-  mod_fit
+
+  return(mod_fit)
 }
 
+
+tidy.maars_lm <- function(x, ...){
+  # do be added
+}
 
 print.maars_lm <- function(x, ...) {
   # this function is not really needed, but let's keep it for now
@@ -120,6 +124,8 @@ print.maars_lm <- function(x, ...) {
 as.maars.lm <- function(x, ...) {
   UseMethod("as.maars")
 }
+
+
 as.maars <- function(x, ...) {
   attr(x, "class") <- c("maars_lm", "lm")
   return(x)

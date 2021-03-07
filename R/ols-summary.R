@@ -260,3 +260,79 @@ get_var_tidy_summary <- function(mod_fit,
     return(out)
 
 }
+
+#' Retrieve the assumptions for the variance estimators to be consistent for a
+#' a fitted OLS \code{maars_lm, lm} class object
+#'
+#' Retrieve the assumptions for the variance estimators to be consistent for a
+#' a fitted OLS \code{maars_lm, lm} class object.
+#'
+#' @param mod_fit (maars_lm, lm) A fitted OLS \code{maars_lm, lm} class object
+#' @param sand (logical) : \code{TRUE} if sandwich estimator output is required,
+#'   \code{FALSE} to exclude this output from the request
+#' @param boot_emp (logical) : \code{TRUE} if empirical bootstrap standard error
+#'   output is required, \code{FALSE} to exclude this output from the request
+#' @param boot_res (logical) : \code{TRUE} if residual bootstrap standard error
+#'   output is required, \code{FALSE} to exclude this output from the request
+#' @param boot_mul (logical) : \code{TRUE} if multiplier bootstrap standard error
+#'   output is required, \code{FALSE} to exclude this output from the request
+#' @param well_specified (logical) : \code{TRUE} if lm standard errors
+#'   (well specified) output is required, \code{FALSE} to exclude this output
+#'   from the request
+#'
+#' @return (vector) : Vectors containing the assumptions under which each estimator
+#'   of the variance is consistent.
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' set.seed(1243434)
+#'
+#' # generate data
+#' n <- 1e3
+#' X_1 <- stats::rnorm(n, 0, 1)
+#' X_2 <- stats::rnorm(n, 10, 20)
+#' eps <- stats::rnorm(n, 0, 1)
+#'
+#' # OLS data and model
+#' y <- 2 + X_1 * 1 + X_2 * 5 + eps
+#' lm_fit <- stats::lm(y ~ X_1 + X_2)
+#'
+#' # DEFINE common column names - these stay the same across all
+#' # reported error types
+#' common_vars <- c("term", "estimate")
+#'
+#' # Empirical Bootstrap check
+#' set.seed(454354534)
+#' mss_var1 <- mss_var(mod_fit = lm_fit, boot_emp = list(B = 20, m = 200),
+#'                     boot_res = list(B = 30),
+#'                     boot_mul = NULL)
+#'
+#' # This returns everything but boot_mul, since we didn't run it in the original
+#' # original maars_lm model
+#' get_assumptions(mod_fit = mss_var1, sand = TRUE,
+#'                      boot_emp = TRUE, boot_res = TRUE, boot_mul = FALSE,
+#'                      well_specified = TRUE)
+#' }
+get_assumptions <- function(mod_fit,
+                            sand = sand,
+                            boot_emp = boot_emp,
+                            boot_res = boot_res,
+                            boot_mul = boot_mul,
+                            well_specified = well_specified) {
+
+    req_var_nms <- check_fn_args_summary(mod_fit = mod_fit, sand = sand,
+                                         boot_emp = boot_emp, boot_res = boot_res,
+                                         boot_mul = boot_mul,
+                                         well_specified = well_specified)
+
+    assumptions <- req_var_nms %>%
+        purrr::map(.x = ., ~paste0(purrr::pluck(mod_fit$var, .x, 'var_type_abb'),
+                                   ': ',
+                                   purrr::pluck(mod_fit$var, .x, 'var_assumptions')))
+
+    assumptions <- unlist(assumptions)
+
+    return(assumptions)
+}
