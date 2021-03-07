@@ -1,5 +1,5 @@
 library(here)
-source(here('R', 'mss-var.R'))
+devtools::load_all()
 # ------------------
 set.seed(1243434)
 
