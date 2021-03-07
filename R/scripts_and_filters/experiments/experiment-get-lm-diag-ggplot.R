@@ -123,3 +123,36 @@ dev.off()
 # Run our ggplot2 based diagnostics
 mms_diag_plots <- get_lm_diag_plots(mod_fit = lm_fit)
 mms_diag_plots
+
+# Add in plot methods with
+for (i in seq_along(mms_diag_plots)) {
+    if (i == 1) {
+        # For the first plot, don't ask the user for prompt
+        par(ask = FALSE)
+        print(mms_diag_plots[[i]])
+    } else {
+        # For subsequent plots, ask the user for prompts to display the plots
+        # sequentially
+        par(ask = TRUE)
+        print(mms_diag_plots[[i]])
+    }
+    par(ask = FALSE)
+}
+
+# This is just a prototype - open for discussion
+# plot.maars_lm <- function(mod_fit, ...){
+#     mms_diag_plots <- get_lm_diag_plots(mod_fit = lm_fit)
+#     for (i in seq_along(mms_diag_plots)) {
+#         if (i == 1) {
+#             # For the first plot, don't ask the user for prompt
+#             par(ask = FALSE)
+#             print(mms_diag_plots[[i]])
+#         } else {
+#             # For subsequent plots, ask the user for prompts to display the plots
+#             # sequentially
+#             par(ask = TRUE)
+#             print(mms_diag_plots[[i]])
+#         }
+#         par(ask = FALSE)
+#     }
+# }
