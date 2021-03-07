@@ -49,8 +49,11 @@
 #'                       boot_emp = TRUE, boot_res = FALSE, boot_mul = FALSE,
 #'                       well_specified = FALSE)
 #' }
-check_fn_args_summary <- function(mod_fit, sand,
-                                  boot_emp, boot_res, boot_mul,
+check_fn_args_summary <- function(mod_fit,
+                                  sand,
+                                  boot_emp,
+                                  boot_mul,
+                                  boot_res,
                                   well_specified) {
 
     # Assertion checking for mod_fit is of class "maars_lm", "lm"
@@ -147,41 +150,27 @@ check_fn_args_summary <- function(mod_fit, sand,
 #'
 #' @keywords internal
 get_var_tidy_summary_ind <- function(comp_var_dat){
+    # Riccardo for Shamindra: this is an internal function so you do not need assertion checking
     # TODO: Add assertion error that comp_var_dat is a list and is non_null
     # TODO: Add assertion Check that the comp_var_dat has the correct names
-
-    # browser()
-
-    # DEFINE common column names - these stay the same across all
-    # reported error types. This is a global variable
-    COMMON_ERR_STAT_COLNAMES <- c("term", "estimate")
 
     # Get the abbreviated variance type name
     var_type_name_abb <- purrr::pluck(.x = comp_var_dat, "var_type_abb")
 
     # Get the abbreviated variance summary table
-    var_dat_var_summ <- comp_var_dat %>% purrr::pluck("var_summary")
+    var_summ <- comp_var_dat %>% purrr::pluck("var_summary")
 
-    # Get all names except for term, estimate
-    err_comm_stat_names <- var_dat_var_summ %>%
-        base::colnames(x = .)
+    # Append suffix to variable names
+    cols_common <- c("term", "estimate")
+    cols_with_suffix <- setdiff(colnames(var_summ), cols_common) %>%
+        stringr::str_c(., var_type_name_abb, sep = ".")
+    cols_renamed <- c(cols_common, cols_with_suffix)
 
-    # Get the column names that should have the var type suffix added
-    err_stat_names_mod <- setdiff(err_comm_stat_names,
-                                  COMMON_ERR_STAT_COLNAMES)
+    # Apply new names
+    var_summ <- var_summ %>%
+        dplyr::rename_with(~ cols_renamed, dplyr::everything())
 
-    # Create the modified column names with the var type suffix added
-    err_stat_names_mod <- err_stat_names_mod %>%
-        stringr::str_c(var_type_name_abb, sep = ".")
-    err_fin_stat_names <- c(COMMON_ERR_STAT_COLNAMES,
-                            err_stat_names_mod)
-
-    # Apply the modified column names with the var type suffix added on
-    # the standard error dataset
-    var_dat_var_summ <- var_dat_var_summ %>%
-        dplyr::rename_with(~ err_fin_stat_names, dplyr::everything())
-
-    base::return(var_dat_var_summ)
+    return(var_summ)
 }
 
 #' Get the tidy variance summary from a fitted OLS \code{maars_lm, lm}
@@ -224,7 +213,7 @@ get_var_tidy_summary_ind <- function(comp_var_dat){
 #'
 #' # DEFINE common column names - these stay the same across all
 #' # reported error types
-#' COMMON_ERR_STAT_COLNAMES <- c("term", "estimate")
+#' common_vars <- c("term", "estimate")
 #'
 #' # Empirical Bootstrap check
 #' set.seed(454354534)
@@ -238,8 +227,11 @@ get_var_tidy_summary_ind <- function(comp_var_dat){
 #'                      boot_emp = TRUE, boot_res = TRUE, boot_mul = FALSE,
 #'                      well_specified = TRUE)
 #' }
-get_var_tidy_summary <- function(mod_fit, sand = TRUE,
-                                 boot_emp = FALSE, boot_res = FALSE, boot_mul = FALSE,
+get_var_tidy_summary <- function(mod_fit,
+                                 sand = TRUE,
+                                 boot_emp = FALSE,
+                                 boot_mul = FALSE,
+                                 boot_res = FALSE,
                                  well_specified = FALSE) {
     # Get the variance types the user has requested. This performs assertion
     # Checking, so if there is no error it will return the required names,
@@ -249,17 +241,11 @@ get_var_tidy_summary <- function(mod_fit, sand = TRUE,
                                          boot_mul = boot_mul,
                                          well_specified = well_specified)
 
-    # Get the comp_var output from the fitted maars_lm object
-    out_comp_var <- mod_fit$var
-
     # Filter the comp_var output from the fitted maars_lm object for the
     # requested variance types from the user
     # out_comp_var_filt <- out_comp_var %>% purrr::pluck(req_var_nms)
-    out_comp_var_filt <- req_var_nms %>% purrr::map(.x = ., ~purrr::pluck(out_comp_var, .x))
-
-    out_comp_var_summ_filt <- out_comp_var_filt %>%
-                                purrr::map(.x = ., .f = purrr::pluck("var_summary"))
-
+    out_comp_var_filt <- req_var_nms %>%
+        purrr::map(.x = ., ~purrr::pluck(mod_fit$var, .x))
 
     # Now for each individual variance type get the modified summary table
     # with the abbreviated variance type added as a suffix
@@ -271,6 +257,6 @@ get_var_tidy_summary <- function(mod_fit, sand = TRUE,
     out <- out_comp_var_filt_mod %>%
         purrr::reduce(.x = ., dplyr::left_join, by = c("term", "estimate"))
 
-    base::return(out)
+    return(out)
 
 }
