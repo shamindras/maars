@@ -2,8 +2,7 @@
 % Please edit documentation in R/ols-summary.R
 \name{check_fn_args_summary}
 \alias{check_fn_args_summary}
-\title{Assertion Checks for individual \code{\link{get_summary}},
-\code{\link{get_assumptions}}, \code{\link{get_summary}} function inputs}
+\title{Assertion Checks for individual \code{\link{get_summary}} function inputs}
 \usage{
 check_fn_args_summary(
   mod_fit,
