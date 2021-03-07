@@ -9,8 +9,8 @@ get_var_tidy_summary(
   mod_fit,
   sand = TRUE,
   boot_emp = FALSE,
-  boot_res = FALSE,
   boot_mul = FALSE,
+  boot_res = FALSE,
   well_specified = FALSE
 )
 }
@@ -23,10 +23,10 @@ get_var_tidy_summary(
 \item{boot_emp}{(logical) : \code{TRUE} if empirical bootstrap standard error
 output is required, \code{FALSE} to exclude this output from the request}
 
-\item{boot_res}{(logical) : \code{TRUE} if residual bootstrap standard error
+\item{boot_mul}{(logical) : \code{TRUE} if multiplier bootstrap standard error
 output is required, \code{FALSE} to exclude this output from the request}
 
-\item{boot_mul}{(logical) : \code{TRUE} if multiplier bootstrap standard error
+\item{boot_res}{(logical) : \code{TRUE} if residual bootstrap standard error
 output is required, \code{FALSE} to exclude this output from the request}
 
 \item{well_specified}{(logical) : \code{TRUE} if lm standard errors
@@ -57,7 +57,7 @@ lm_fit <- stats::lm(y ~ X_1 + X_2)
 
 # DEFINE common column names - these stay the same across all
 # reported error types
-COMMON_ERR_STAT_COLNAMES <- c("term", "estimate")
+common_vars <- c("term", "estimate")
 
 # Empirical Bootstrap check
 set.seed(454354534)
