@@ -467,10 +467,10 @@ print.maars_lm <- function(x, ...) {
     NextMethod("print")
 }
 
-#' Convert an object to an object that can be handled by the \code{maars} package
+#' Convert an object to an object that can be handled by the "maars" package
 #'
 #' Several methods are provided to convert common objects
-#' (such as \code{\link{stats::lm}}) into `maars` objects,
+#' (such as "lm") into "maars" objects,
 #' which can be used with the various functions in the package.
 #'
 #' @param x Object to be converted. See Methods section below for details on
