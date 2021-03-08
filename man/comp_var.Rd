@@ -44,7 +44,7 @@ invalid inputs.}
 \value{
 A list containing the several types of variance estimates requested
 by the  user, including the sandwich and the the variance returned by
-\code{\link{stats::lm}}.
+\code{\link[stats]{lm}}.
 }
 \description{
 \code{comp_var} returns a list containing the requested estimates of the

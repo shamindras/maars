@@ -237,7 +237,7 @@ check_fn_args_comp_var_boot <- function(boot_emp, boot_res, boot_mul) {
 #'   based on the coefficients estimates (\code{boot_out}) obtained via
 #'   \code{boot_type} bootstrap (e.g., empirical).
 #'
-#' @param mod_fit A \code{\link[stats]{lm}} (OLS) object.
+#' @param mod_fit An "lm" (OLS) object.
 #' @param boot_out A tibble of the model's coefficients estimated (\code{term}
 #'   and \code{estimate}) on the bootstrapped datasets, the size of each
 #'   bootstrapped dataset (\code{m}), the size of the original dataset
@@ -344,7 +344,7 @@ get_summary <- function(mod_fit, boot_out, boot_type) {
 #'
 #' @return A list containing the several types of variance estimates requested
 #'   by the  user, including the sandwich and the the variance returned by
-#'   \code{\link{stats::lm}}.
+#'   \code{\link[stats]{lm}}.
 #'
 #' @export
 #'

@@ -7,7 +7,7 @@
 get_summary(mod_fit, boot_out, boot_type)
 }
 \arguments{
-\item{mod_fit}{A \code{\link[stats]{lm}} (OLS) object.}
+\item{mod_fit}{An "lm" (OLS) object.}
 
 \item{boot_out}{A tibble of the model's coefficients estimated (\code{term}
 and \code{estimate}) on the bootstrapped datasets, the size of each
