@@ -23,7 +23,7 @@ which can be used with the various functions in the package.
 \section{Methods (by generic)}{
 \itemize{
 \item \code{as.maars}: The input object \code{x} must be of class
-\code{\link{stats::lm}}. THe function returns an object of class
+"lm". The function returns an object of class
 ("maars_lm, "lm").
 }}
 

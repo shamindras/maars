@@ -354,11 +354,12 @@ get_assumptions <- function(mod_fit,
 #' @param well_specified (logical) : \code{TRUE} if lm standard errors.
 #'   (well specified) output is required, \code{FALSE} to exclude this output
 #'   from the request.
+#' @param digits (integer) : Rounding digits used in some of the function's output.
 #' @param ... Additional arguments.
 #'
 #' @method summary maars_lm
 #' @export
-summary.maars_lm <- function(mod_fit,
+summary.maars_lm <- function(object,
                              sand = TRUE,
                              boot_emp = FALSE,
                              boot_res = FALSE,
@@ -366,7 +367,7 @@ summary.maars_lm <- function(mod_fit,
                              well_specified = FALSE,
                              digits = 3, ...) {
 
-    out_summ <- get_var_tidy_summary(mod_fit,
+    out_summ <- get_var_tidy_summary(mod_fit = object,
                                      sand = sand,
                                      boot_emp = boot_emp,
                                      boot_res = boot_res,
@@ -403,7 +404,7 @@ summary.maars_lm <- function(mod_fit,
         ))
 
     cat("\nCall:\n",
-        stringr::str_c(rlang::expr_deparse(x = mod_fit$call),
+        stringr::str_c(rlang::expr_deparse(x = object$call),
                        sep = "\n",
                        collapse = "\n"
         ),
@@ -419,7 +420,7 @@ summary.maars_lm <- function(mod_fit,
     cat(
         "\n\nResidual standard error:",
         formatC(signif(summ_lm$sigma, digits = digits)), "on",
-        mod_fit$df.residual, "degrees of freedom"
+        object$df.residual, "degrees of freedom"
     )
     cat(
         "\nMultiple R-squared:", formatC(summ_lm$r.squared, digits = digits),
@@ -438,7 +439,7 @@ summary.maars_lm <- function(mod_fit,
 
     cat("\n---\nAssumptions:\n")
     cat(paste0(utf8::utf8_format('\U001F3AF'),
-               get_assumptions(mod_fit = mod_fit,
+               get_assumptions(mod_fit = object,
                                sand = sand, boot_emp = boot_emp,
                                boot_res = boot_res,
                                boot_mul = boot_mul,
@@ -486,7 +487,7 @@ as.maars <- function(x, ...) {
 
 #' @method as.maars lm
 #' @describeIn as.maars The input object \code{x} must be of class
-#'   \code{\link{stats::lm}}. THe function returns an object of class
+#'   "lm". The function returns an object of class
 #'   ("maars_lm, "lm").
 #'
 #' @export

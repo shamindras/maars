@@ -225,11 +225,11 @@ estimates (<code>cov_mat</code>).</p>
 
 <span class='co'># Run the multiplier bootstrap on the fitted (OLS) linear model</span>
 <span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>162632</span><span class='op'>)</span>
-<span class='va'>coef_emp_boot</span> <span class='op'>&lt;-</span> <span class='fu'><a href='comp_boot_emp.html'>comp_boot_emp</a></span><span class='op'>(</span>mod_fit <span class='op'>=</span> <span class='va'>mod_fit</span>, B <span class='op'>=</span> <span class='fl'>1000</span><span class='op'>)</span>
-<span class='va'>out</span> <span class='op'>&lt;-</span> <span class='fu'><a href='comp_var.html'>comp_var</a></span><span class='op'>(</span><span class='va'>mod_fit</span>, boot_mul <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>B <span class='op'>=</span> <span class='fl'>100</span>, weights_type <span class='op'>=</span> <span class='st'>"rademacher"</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>out</span> <span class='op'>&lt;-</span> <span class='fu'>mss_var</span><span class='op'>(</span><span class='va'>mod_fit</span>, boot_mul <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>B <span class='op'>=</span> <span class='fl'>100</span>, weights_type <span class='op'>=</span> <span class='st'>"rademacher"</span><span class='op'>)</span><span class='op'>)</span>
 
 <span class='co'># print output</span>
 <span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>out</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>out</span><span class='op'>$</span><span class='va'>var</span><span class='op'>$</span><span class='va'>var_boot_mul</span><span class='op'>)</span>
 <span class='op'>}</span>
 </div></pre>
   </div>
