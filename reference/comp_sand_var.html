@@ -76,7 +76,7 @@ see also Buja et al. (2019) and Buja et al. (2019)
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">maars</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.5.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.0</span>
       </span>
     </div>
 
@@ -157,8 +157,12 @@ see also Buja et al. (2019) and Buja et al. (2019)
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A tibble containing the sandwich estimator of variance for OLS
-regression.</p>
+    <p>A list containing the following elements: the type of estimator of
+of the variance  (<code>var_type</code>); the summary statistics of <code>mod_fit</code>
+based on this estimator of the variance (e.g., standard errors and p-values)
+(<code>var_summary</code>); the assumptions under which the estimator of the
+variance is consistent (<code>var_assumptions</code>); the covariance matrix for
+the coefficients estimates (<code>cov_mat</code>).</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>The function computes the sandwich estimator for the OLS regression

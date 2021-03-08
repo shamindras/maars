@@ -7,6 +7,15 @@
     <loc>https://shamindras.github.io/maars/reference/check_fn_args.html</loc>
   </url>
   <url>
+    <loc>https://shamindras.github.io/maars/reference/check_fn_args_comp_var_boot.html</loc>
+  </url>
+  <url>
+    <loc>https://shamindras.github.io/maars/reference/check_fn_args_comp_var_boot_ind.html</loc>
+  </url>
+  <url>
+    <loc>https://shamindras.github.io/maars/reference/check_fn_args_posint.html</loc>
+  </url>
+  <url>
     <loc>https://shamindras.github.io/maars/reference/comp_boot_emp.html</loc>
   </url>
   <url>
@@ -56,6 +65,9 @@
   </url>
   <url>
     <loc>https://shamindras.github.io/maars/reference/gen_grid_cent_rwgt.html</loc>
+  </url>
+  <url>
+    <loc>https://shamindras.github.io/maars/reference/get_summary.html</loc>
   </url>
   <url>
     <loc>https://shamindras.github.io/maars/reference/pipe.html</loc>
