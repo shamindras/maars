@@ -1,7 +1,7 @@
 #' Get a list of standard diagnostic plots for \code{\link[stats]{lm}},
 #' in the \code{link[ggplot2]} package style.
 #'
-#' @param mod_fit A \code{\link[stats]{lm}} (OLS) object.
+#' @param mod_fit (maars_lm, lm) A fitted OLS \code{maars_lm, lm} class object
 #'
 #' @return A list of standard diagnostic plots for OLS in the
 #'   \code{link[ggplot2]} package style.
@@ -10,7 +10,23 @@
 #'
 #' @examples
 #' \dontrun{
+#' set.seed(1243434)
 #'
+#' # generate data
+#' n <- 1e3
+#' X_1 <- stats::rnorm(n, 0, 1)
+#' X_2 <- stats::rnorm(n, 10, 20)
+#' eps <- stats::rnorm(n, 0, 1)
+#'
+#' # OLS data and model
+#' y <- 2 + X_1 * 1 + X_2 * 5 + eps
+#' lm_fit <- stats::lm(y ~ X_1 + X_2)
+#' mms_fit <- lm_fit %>% mss_var(mod_fit = .,
+#'                               boot_emp = list(B = 100, m = 50),
+#'                               boot_res = list(B = 50))
+#'
+#' # Produce and sequentially display diagnostic plots
+#' plot(mms_fit)
 #' }
 get_ols_diag_plots <- function(mod_fit){
     # Assertion checking for mod_fit is of class "maars_lm", "lm"
@@ -37,8 +53,7 @@ get_ols_diag_plots <- function(mod_fit){
             x = "Fitted values",
             y = "Residuals"
         ) +
-        ggplot2::theme_bw() +
-        NULL
+        ggplot2::theme_bw()
 
     # Scale-Location Plots
     p2 <- ggplot2::ggplot(data = std_resid_tbl, aes(sample = std_residuals)) +
@@ -50,8 +65,7 @@ get_ols_diag_plots <- function(mod_fit){
             x = "Theoretical Quantiles", # x-axis label
             y = "Standardized Residuals"
         ) +
-        ggplot2::theme_bw() +
-        NULL
+        ggplot2::theme_bw()
 
     # Fitted vs. Standardized Residuals
     p3 <- ggplot2::ggplot(
@@ -65,8 +79,7 @@ get_ols_diag_plots <- function(mod_fit){
             x = "Fitted values",
             y = expression(sqrt("|Standardized residuals|"))
         ) +
-        ggplot2::theme_bw() +
-        NULL
+        ggplot2::theme_bw()
 
     # Residual vs. Leverage Plot
     p4 <- ggplot2::ggplot(
@@ -82,79 +95,8 @@ get_ols_diag_plots <- function(mod_fit){
         ) +
         ggplot2::scale_size_continuous("Cook's Distance", range=c(1,5)) +
         ggplot2::theme_bw() +
-        ggplot2::theme(legend.position="bottom") +
-        NULL
+        ggplot2::theme(legend.position="bottom")
 
     out <- list(p1 = p1, p2 = p2, p3 = p3, p4 = p4)
     base::return(out)
 }
-
-# devtools::load_all()
-library(tidyverse)
-set.seed(1243434)
-devtools::load_all()
-
-# generate data
-n <- 1e3
-X_1 <- stats::rnorm(n, 0, 1)
-X_2 <- stats::rnorm(n, 10, 20)
-eps <- stats::rnorm(n, 0, 1)
-
-# OLS data and model
-y <- 2 + X_1 * 1 + X_2 * 5 + eps
-lm_fit <- stats::lm(y ~ X_1 + X_2)
-mms_fit <- lm_fit %>% mss_var(mod_fit = .,
-                              boot_emp = list(B = 100, m = 50),
-                              boot_res = list(B = 50))
-
-mms_fit
-
-# Clear all existing plots - may throw a error if there are no plots to clear
-# Uncomment the following line to clear plots
-# dev.off()
-
-# Check against the standard lm plot method
-# Uncomment the following line to run the standard base lm plots
-# plot(lm_fit)
-
-# Clear all existing plots - may throw a error if there are no plots to clear
-dev.off()
-
-# Run our ggplot2 based diagnostics
-mms_diag_plots <- get_ols_diag_plots(mod_fit = lm_fit)
-# mms_diag_plots
-#
-# # Add in plot methods with
-# for (i in seq_along(mms_diag_plots)) {
-#     if (i == 1) {
-#         # For the first plot, don't ask the user for prompt
-#         par(ask = FALSE)
-#         print(mms_diag_plots[[i]])
-#     } else {
-#         # For subsequent plots, ask the user for prompts to display the plots
-#         # sequentially
-#         par(ask = TRUE)
-#         print(mms_diag_plots[[i]])
-#     }
-#     par(ask = FALSE)
-# }
-
-# This is just a prototype - open for discussion
-plot.maars_lm <- function(x, ...){
-    mms_diag_plots <- get_ols_diag_plots(mod_fit = x)
-    for (i in base::seq_along(mms_diag_plots)) {
-        if (i == 1) {
-            # For the first plot, don't ask the user for prompt
-            par(ask = FALSE)
-            print(mms_diag_plots[[i]])
-        } else {
-            # For subsequent plots, ask the user for prompts to display
-            # the plots sequentially
-            par(ask = TRUE)
-            print(mms_diag_plots[[i]])
-        }
-        par(ask = FALSE)
-    }
-}
-
-plot(mms_fit)

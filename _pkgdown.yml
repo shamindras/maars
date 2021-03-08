@@ -23,16 +23,13 @@ navbar:
 reference:
   - title: Statistical Utilities
     desc: >
-      Utilities for doing *statistical estimation and inference* under model misspecification
+      Utilities for doing **statistical estimation and inference** under model misspecification
     contents:
     - starts_with("comp_", internal = FALSE)
     - starts_with("fit_", internal = FALSE)
-    - get_var_tidy_summary
-    - get_assumptions
-    - get_confint
-    - diag_fit_reg_rwgt
+    - starts_with("get_", internal = FALSE)
   - title: Diagnostic Utilities
     desc: >
-      Utilities for performing *model fit diagnostics* under model misspecification
+      Utilities for performing **model fit diagnostics** under model misspecification
     contents:
     - starts_with("diag_", internal = FALSE)

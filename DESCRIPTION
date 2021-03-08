@@ -29,7 +29,8 @@ Imports:
     vroom,
     Rdpack,
     ggplot2,
-    stringr
+    stringr,
+    utf8
 Suggests: 
     bench,
     kableExtra,

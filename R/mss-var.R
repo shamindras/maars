@@ -1,7 +1,3 @@
-
-
-
-
 # print summary of object
 summary.maars_lm <- function(mod_fit,
                              sand = TRUE,
@@ -28,7 +24,7 @@ summary.maars_lm <- function(mod_fit,
                                            .x < 0.01 ~ '*',
                                            .x < 0.05 ~ '.',
                                            TRUE ~ ' '))) %>%
-  setNames(paste0('signif.', stringr::str_sub(names(.), start=9)))
+  stats::setNames(paste0('signif.', stringr::str_sub(names(.), start=9)))
 
   # join asterisks with out_summ
   out_summ <- out_summ %>% dplyr::bind_cols(significance_ast)
@@ -131,5 +127,20 @@ as.maars <- function(x, ...) {
   return(x)
 }
 
-
-
+# This is just a prototype - open for discussion
+plot.maars_lm <- function(x, ...){
+  mms_diag_plots <- get_ols_diag_plots(mod_fit = x)
+  for (i in base::seq_along(mms_diag_plots)) {
+    if (i == 1) {
+      # For the first plot, don't ask the user for prompt
+      par(ask = FALSE)
+      print(mms_diag_plots[[i]])
+    } else {
+      # For subsequent plots, ask the user for prompts to display
+      # the plots sequentially
+      par(ask = TRUE)
+      print(mms_diag_plots[[i]])
+    }
+    par(ask = FALSE)
+  }
+}
