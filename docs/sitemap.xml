@@ -4,6 +4,9 @@
     <loc>https://shamindras.github.io/maars/index.html</loc>
   </url>
   <url>
+    <loc>https://shamindras.github.io/maars/reference/as.maars.html</loc>
+  </url>
+  <url>
     <loc>https://shamindras.github.io/maars/reference/check_fn_args.html</loc>
   </url>
   <url>
@@ -91,10 +94,19 @@
     <loc>https://shamindras.github.io/maars/reference/get_var_tidy_summary_ind.html</loc>
   </url>
   <url>
+    <loc>https://shamindras.github.io/maars/reference/mss_var.html</loc>
+  </url>
+  <url>
     <loc>https://shamindras.github.io/maars/reference/pipe.html</loc>
   </url>
   <url>
+    <loc>https://shamindras.github.io/maars/reference/print.maars_lm.html</loc>
+  </url>
+  <url>
     <loc>https://shamindras.github.io/maars/reference/set_ggplot2_theme.html</loc>
+  </url>
+  <url>
+    <loc>https://shamindras.github.io/maars/reference/summary.maars_lm.html</loc>
   </url>
   <url>
     <loc>https://shamindras.github.io/maars/reference/tidyeval.html</loc>

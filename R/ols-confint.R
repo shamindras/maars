@@ -1,5 +1,5 @@
 #' Get the tidy variance summary and confidence intervals for the coefficients of
-#' an object of class \code{maars_lm, lm}
+#' an object of class "maars_lm"
 #'
 #' Get the tidy variance summary and confidence intervals from a fitted OLS \code{maars_lm, lm}
 #' class object

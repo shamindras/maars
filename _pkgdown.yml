@@ -28,8 +28,20 @@ reference:
     - starts_with("comp_", internal = FALSE)
     - starts_with("fit_", internal = FALSE)
     - starts_with("get_", internal = FALSE)
+    - mss_var
   - title: Diagnostic Utilities
     desc: >
       Utilities for performing **model fit diagnostics** under model misspecification
     contents:
     - starts_with("diag_", internal = FALSE)
+  - title: Print and summarize data
+    desc: >
+      Print and summarize maars objects
+    contents:
+    - print.maars_lm
+    - summary.maars_lm
+  - title: Other utilities
+    desc: >
+        Other utilities
+    contents:
+      - as.maars

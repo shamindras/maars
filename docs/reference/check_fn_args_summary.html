@@ -210,7 +210,7 @@ error if there is an assertion failure.</p>
 
 <span class='co'># Create a maars_lm model with empirical bootstrap, sandwich, and</span>
 <span class='co'># well-specified variance estimates</span>
-<span class='va'>mss_var1</span> <span class='op'>&lt;-</span> <span class='fu'>mss_var</span><span class='op'>(</span>mod_fit <span class='op'>=</span> <span class='va'>lm_fit</span>, boot_emp <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>B <span class='op'>=</span> <span class='fl'>20</span>, m <span class='op'>=</span> <span class='fl'>200</span><span class='op'>)</span>,
+<span class='va'>mss_var1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mss_var.html'>mss_var</a></span><span class='op'>(</span>mod_fit <span class='op'>=</span> <span class='va'>lm_fit</span>, boot_emp <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>B <span class='op'>=</span> <span class='fl'>20</span>, m <span class='op'>=</span> <span class='fl'>200</span><span class='op'>)</span>,
                     boot_res <span class='op'>=</span> <span class='cn'>NULL</span>,
                     boot_mul <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span>
 

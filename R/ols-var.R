@@ -304,12 +304,11 @@ get_summary <- function(mod_fit, boot_out, boot_type) {
   return(out)
 }
 
-#' Create an empirical or multiplier bootstrap summary table
+#' Generates list containing several estimates of the variance
 #'
-#' \code{comp_var} creates an OLS bootstrap summary table for
-#' empirical bootstrap output or multiplier bootstrap output as generated from
-#' \code{\link{comp_boot_emp}} or
-#' \code{\link{comp_boot_mul}}, respectively.
+#' \code{comp_var} returns a list containing the requested estimates of the
+#' variance, together with the assumptions behind which these estimates are
+#' consistent.
 #'
 #'
 #' @param mod_fit An lm (OLS) object
@@ -343,11 +342,11 @@ get_summary <- function(mod_fit, boot_out, boot_type) {
 #'   these will be addressed explicitly in \code{\link{comp_boot_res}} as
 #'   invalid inputs.
 #'
-#' @return A summary statistics tibble for the bootstrap input.
+#' @return A list containing the several types of variance estimates requested
+#'   by the  user, including the sandwich and the the variance returned by
+#'   \code{\link{stats::lm}}.
 #'
 #' @export
-#'
-#' @importFrom rlang .data
 #'
 #' @examples
 #' \dontrun{
@@ -362,7 +361,6 @@ get_summary <- function(mod_fit, boot_out, boot_type) {
 #'
 #' # Run the multiplier bootstrap on the fitted (OLS) linear model
 #' set.seed(162632)
-#' coef_emp_boot <- comp_boot_emp(mod_fit = mod_fit, B = 1000)
 #' out <- comp_var(mod_fit, boot_mul = list(B = 100, weights_type = "rademacher"))
 #'
 #' # print output

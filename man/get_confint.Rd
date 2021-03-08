@@ -3,7 +3,7 @@
 \name{get_confint}
 \alias{get_confint}
 \title{Get the tidy variance summary and confidence intervals for the coefficients of
-an object of class \code{maars_lm, lm}}
+an object of class "maars_lm"}
 \usage{
 get_confint(
   mod_fit,

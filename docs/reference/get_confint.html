@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Get the tidy variance summary and confidence intervals for the coefficients of
-an object of class maars_lm, lm — get_confint • maars</title>
+an object of class "maars_lm" — get_confint • maars</title>
 
 
 <!-- jquery -->
@@ -41,7 +41,7 @@ an object of class maars_lm, lm — get_confint • maars</title>
 
 
 <meta property="og:title" content="Get the tidy variance summary and confidence intervals for the coefficients of
-an object of class maars_lm, lm — get_confint" />
+an object of class "maars_lm" — get_confint" />
 <meta property="og:description" content="Get the tidy variance summary and confidence intervals from a fitted OLS maars_lm, lm
 class object" />
 
@@ -136,7 +136,7 @@ class object" />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Get the tidy variance summary and confidence intervals for the coefficients of
-an object of class <code>maars_lm, lm</code></h1>
+an object of class "maars_lm"</h1>
     <small class="dont-index">Source: <a href='https://github.com/shamindras/maars/blob/master/R/ols-confint.R'><code>R/ols-confint.R</code></a></small>
     <div class="hidden name"><code>get_confint.Rd</code></div>
     </div>
@@ -223,7 +223,7 @@ argument.</p>
 
 <span class='co'># Empirical Bootstrap check</span>
 <span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>454354534</span><span class='op'>)</span>
-<span class='va'>mss_var1</span> <span class='op'>&lt;-</span> <span class='fu'>mss_var</span><span class='op'>(</span>mod_fit <span class='op'>=</span> <span class='va'>lm_fit</span>, boot_emp <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>B <span class='op'>=</span> <span class='fl'>20</span>, m <span class='op'>=</span> <span class='fl'>200</span><span class='op'>)</span>,
+<span class='va'>mss_var1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='mss_var.html'>mss_var</a></span><span class='op'>(</span>mod_fit <span class='op'>=</span> <span class='va'>lm_fit</span>, boot_emp <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>B <span class='op'>=</span> <span class='fl'>20</span>, m <span class='op'>=</span> <span class='fl'>200</span><span class='op'>)</span>,
                     boot_res <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>B <span class='op'>=</span> <span class='fl'>30</span><span class='op'>)</span>,
                     boot_mul <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span>
 

@@ -13,9 +13,12 @@ mod_fit <- mss_var(lm_fit, boot_emp = list(B=10))
 
 class(mod_fit)
 print(mod_fit)
+
+broom::tidy(lm_fit)
+tidy(mod_fit)
+
 summary(mod_fit, sand = TRUE)
 summary(mod_fit, sand = FALSE, boot_emp = TRUE)
-get_summary2(mod_fit, boot_emp = TRUE)
 
 
 # recompute variance on the maars_lm object
