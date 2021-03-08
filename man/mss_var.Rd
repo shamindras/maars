@@ -44,7 +44,7 @@ invalid inputs.}
 \value{
 A "maars_lm" object containing the estimates of the variance of the
 regression coefficients, including the sandwich and the variance
-returned by \code{\link{stats::lm}}.
+returned by \code{stats::lm}.
 }
 \description{
 Generates an object of class "maars_lm" containing estimates of the variance

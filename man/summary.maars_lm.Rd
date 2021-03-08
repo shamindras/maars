@@ -16,6 +16,8 @@
 )
 }
 \arguments{
+\item{object}{A fitted "maars_lm" object.}
+
 \item{sand}{(logical) : \code{TRUE} if sandwich estimator output is required,
 \code{FALSE} to exclude this output from the request.}
 
@@ -35,8 +37,6 @@ from the request.}
 \item{digits}{(integer) : Rounding digits used in some of the function's output.}
 
 \item{...}{Additional arguments.}
-
-\item{mod_fit}{A fitted "maars_lm" object.}
 }
 \description{
 Summary method for class "maars_lm".
