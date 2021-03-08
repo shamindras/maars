@@ -13,5 +13,5 @@
 object.}
 }
 \description{
-Calls \code{print} on a \code{\link{stats::lm}} object.
+Calls \code{print} on a \code{\link[stats]{lm}} object.
 }

@@ -455,7 +455,7 @@ summary.maars_lm <- function(object,
 
 #' Print `maars_lm` object
 #'
-#' Calls \code{print} on a \code{\link{stats::lm}} object.
+#' Calls \code{print} on a \code{\link[stats]{lm}} object.
 #'
 #' @param x A `maars_lm` object.
 #' @param ... Additional arguments passed to `print.lm()` to print the
