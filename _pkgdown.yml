@@ -28,7 +28,6 @@ reference:
     - starts_with("comp_", internal = FALSE)
     - starts_with("fit_", internal = FALSE)
     - starts_with("get_", internal = FALSE)
-    - mss_var
   - title: Diagnostic Utilities
     desc: >
       Utilities for performing **model fit diagnostics** under model misspecification

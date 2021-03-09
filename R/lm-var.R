@@ -2,7 +2,7 @@
 #' linear modeling assumptions
 #'
 #' Get a list output summary for \code{\link[stats]{lm}} that is consistent
-#' for use in \code{\link{comp_var}}. This assumes that the linear model is
+#' for use in \code{\link{comp_mms_var}}. This assumes that the linear model is
 #' fitted under well specified assumptions. That is, the data is assumed to be
 #' generated directly from the linear model under OLS assumptions.
 #'

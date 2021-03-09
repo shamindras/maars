@@ -68,13 +68,13 @@
 #'
 #' # Run the multiplier bootstrap on the fitted (OLS) linear model
 #' set.seed(162632)
-#' out <- mss_var(mod_fit, boot_mul = list(B = 100, weights_type = "rademacher"))
+#' out <- comp_var(mod_fit, boot_mul = list(B = 100, weights_type = "rademacher"))
 #'
 #' # print output
 #' print(out)
 #' print(out$var$var_boot_mul)
 #' }
-mss_var <- function(mod_fit,
+comp_var <- function(mod_fit,
                     boot_emp = NULL,
                     boot_res = NULL,
                     boot_mul = NULL) {
@@ -82,7 +82,7 @@ mss_var <- function(mod_fit,
   if (all(c("maars_lm", "lm") %in% class(mod_fit))) {
     attr(mod_fit, "class") <- "lm"}
 
-  out_var <- comp_var(mod_fit, boot_emp, boot_res, boot_mul)
+  out_var <- comp_mms_var(mod_fit, boot_emp, boot_res, boot_mul)
   mod_fit[['var']] <- out_var
 
   attr(mod_fit, "class") <- c("maars_lm", "lm")

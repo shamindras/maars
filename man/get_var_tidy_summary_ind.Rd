@@ -5,10 +5,10 @@
 \title{An individual variance table summary function that adds the variance type
 suffix to the table columns}
 \usage{
-get_var_tidy_summary_ind(comp_var_dat)
+get_var_tidy_summary_ind(comp_mms_var_dat)
 }
 \arguments{
-\item{comp_var_dat}{TODO Add}
+\item{comp_mms_var_dat}{TODO Add}
 }
 \value{
 TODO Add

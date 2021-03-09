@@ -1,6 +1,6 @@
-#' Assertion Checks for individual \code{\link{comp_var}} function bootstrap function inputs
+#' Assertion Checks for individual \code{\link{comp_mms_var}} function bootstrap function inputs
 #'
-#' \code{check_fn_args_comp_var_boot_ind} is used to assess whether the arguments
+#' \code{check_fn_args_comp_mms_var_boot_ind} is used to assess whether the arguments
 #' are correctly specified in \code{list} format and returns an error message if
 #' they do not match the correct specification
 #'
@@ -50,18 +50,18 @@
 #' # Multiplier Bootstrap input list assertion checking
 #'
 #' # valid since the named arguments are B, weights_type
-#' testthat::expect_true(check_fn_args_comp_var_boot_ind(
+#' testthat::expect_true(check_fn_args_comp_mms_var_boot_ind(
 #'   inp_list = list(B = 10, weights_type = "rademacher"),
 #'   boot_type = "boot_mul"
 #' ))
 #'
 #' # valid since the named arguments are B, weights_type i.e. weights_type is NULL
-#' testthat::expect_true(check_fn_args_comp_var_boot_ind(
+#' testthat::expect_true(check_fn_args_comp_mms_var_boot_ind(
 #'   inp_list = list(B = 10, weights_type = NULL),
 #'   boot_type = "boot_mul"
 #' ))
 #' }
-check_fn_args_comp_var_boot_ind <- function(inp_list, boot_type) {
+check_fn_args_comp_mms_var_boot_ind <- function(inp_list, boot_type) {
   # Do input assertion checks on this function's inputs
   assertthat::assert_that(
     is.list(inp_list)
@@ -154,9 +154,9 @@ check_fn_args_comp_var_boot_ind <- function(inp_list, boot_type) {
   }
 }
 
-#' Assertion Checks for all \code{\link{comp_var}} function bootstrap function inputs
+#' Assertion Checks for all \code{\link{comp_mms_var}} function bootstrap function inputs
 #'
-#' \code{check_fn_args_comp_var_boot} is used to assess whether the arguments
+#' \code{check_fn_args_comp_mms_var_boot} is used to assess whether the arguments
 #' are correctly specified in \code{list} format and returns an error message if
 #' they do not match the correct specification
 #'
@@ -200,31 +200,31 @@ check_fn_args_comp_var_boot_ind <- function(inp_list, boot_type) {
 #' @examples
 #' \dontrun{
 #' # Expect all assertions to pass
-#' check_fn_args_comp_var_boot(boot_emp = list(B = 1e4, m = 600),
+#' check_fn_args_comp_mms_var_boot(boot_emp = list(B = 1e4, m = 600),
 #'                             boot_res = NULL,
 #'                             boot_mul = NULL)
 #' }
-check_fn_args_comp_var_boot <- function(boot_emp, boot_res, boot_mul) {
+check_fn_args_comp_mms_var_boot <- function(boot_emp, boot_res, boot_mul) {
 
   # Override boostrap NULL bootstrap variance calculations if any of the
   # input values passed in are not NULL
   if (!is.null(boot_emp)) {
     # Empirical Bootstrap: list format assertion checking
-    check_fn_args_comp_var_boot_ind(
+    check_fn_args_comp_mms_var_boot_ind(
       inp_list = boot_emp,
       boot_type = "boot_emp"
     )
   }
   if (!is.null(boot_res)) {
     # Residual Bootstrap: list format assertion checking
-    check_fn_args_comp_var_boot_ind(
+    check_fn_args_comp_mms_var_boot_ind(
       inp_list = boot_res,
       boot_type = "boot_res"
     )
   }
   if (!is.null(boot_mul)) {
     # Multiplier Bootstrap: list format assertion checking
-    check_fn_args_comp_var_boot_ind(
+    check_fn_args_comp_mms_var_boot_ind(
       inp_list = boot_mul,
       boot_type = "boot_mul"
     )
@@ -306,7 +306,7 @@ get_summary <- function(mod_fit, boot_out, boot_type) {
 
 #' Generates list containing several estimates of the variance
 #'
-#' \code{comp_var} returns a list containing the requested estimates of the
+#' \code{comp_mms_var} returns a list containing the requested estimates of the
 #' variance, together with the assumptions behind which these estimates are
 #' consistent.
 #'
@@ -361,12 +361,12 @@ get_summary <- function(mod_fit, boot_out, boot_type) {
 #'
 #' # Run the multiplier bootstrap on the fitted (OLS) linear model
 #' set.seed(162632)
-#' out <- comp_var(mod_fit, boot_mul = list(B = 100, weights_type = "rademacher"))
+#' out <- comp_mms_var(mod_fit, boot_mul = list(B = 100, weights_type = "rademacher"))
 #'
 #' # print output
 #' print(out)
 #' }
-comp_var <- function(mod_fit, boot_emp = NULL, boot_res = NULL, boot_mul = NULL) {
+comp_mms_var <- function(mod_fit, boot_emp = NULL, boot_res = NULL, boot_mul = NULL) {
   # Assertion checking for mod_fit
   assertthat::assert_that(all("lm" == class(mod_fit))
                           || any("glm" == class(mod_fit)),
@@ -374,7 +374,7 @@ comp_var <- function(mod_fit, boot_emp = NULL, boot_res = NULL, boot_mul = NULL)
   )
 
   # Assertion checking for empirical, multiplier, and residual bootstrap
-  check_fn_args_comp_var_boot(boot_emp = boot_emp,
+  check_fn_args_comp_mms_var_boot(boot_emp = boot_emp,
                               boot_res = boot_res,
                               boot_mul = boot_mul)
 

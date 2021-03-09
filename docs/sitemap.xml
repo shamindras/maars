@@ -10,10 +10,10 @@
     <loc>https://shamindras.github.io/maars/reference/check_fn_args.html</loc>
   </url>
   <url>
-    <loc>https://shamindras.github.io/maars/reference/check_fn_args_comp_var_boot.html</loc>
+    <loc>https://shamindras.github.io/maars/reference/check_fn_args_comp_mms_var_boot.html</loc>
   </url>
   <url>
-    <loc>https://shamindras.github.io/maars/reference/check_fn_args_comp_var_boot_ind.html</loc>
+    <loc>https://shamindras.github.io/maars/reference/check_fn_args_comp_mms_var_boot_ind.html</loc>
   </url>
   <url>
     <loc>https://shamindras.github.io/maars/reference/check_fn_args_posint.html</loc>
@@ -44,6 +44,9 @@
   </url>
   <url>
     <loc>https://shamindras.github.io/maars/reference/comp_lm_var.html</loc>
+  </url>
+  <url>
+    <loc>https://shamindras.github.io/maars/reference/comp_mms_var.html</loc>
   </url>
   <url>
     <loc>https://shamindras.github.io/maars/reference/comp_sand_var.html</loc>
@@ -92,9 +95,6 @@
   </url>
   <url>
     <loc>https://shamindras.github.io/maars/reference/get_var_tidy_summary_ind.html</loc>
-  </url>
-  <url>
-    <loc>https://shamindras.github.io/maars/reference/mss_var.html</loc>
   </url>
   <url>
     <loc>https://shamindras.github.io/maars/reference/pipe.html</loc>

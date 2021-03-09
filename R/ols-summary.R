@@ -1,6 +1,6 @@
 #' Assertion Checks for individual \code{\link{get_summary}} function inputs
 #'
-#' \code{check_fn_args_comp_var_boot_ind} is used to assess whether the arguments
+#' \code{check_fn_args_comp_mms_var_boot_ind} is used to assess whether the arguments
 #' are correctly specified in \code{list} format and returns an error message if
 #' they do not match the correct specification
 #'
@@ -38,14 +38,14 @@
 #'
 #' # Create a maars_lm model with empirical bootstrap, sandwich, and
 #' # well-specified variance estimates
-#' mss_var1 <- mss_var(mod_fit = lm_fit, boot_emp = list(B = 20, m = 200),
+#' comp_var1 <- comp_var(mod_fit = lm_fit, boot_emp = list(B = 20, m = 200),
 #'                     boot_res = NULL,
 #'                     boot_mul = NULL)
 #'
 #' # Let the user request only the empirical bootstrap variance estimates
 #' # This function should return "boot_emp" since the user only requested it
 #' # and it is available in the fitted maars_lm model
-#' check_fn_args_summary(mod_fit = mss_var1, sand = FALSE,
+#' check_fn_args_summary(mod_fit = comp_var1, sand = FALSE,
 #'                       boot_emp = TRUE, boot_res = FALSE, boot_mul = FALSE,
 #'                       well_specified = FALSE)
 #' }
@@ -97,28 +97,28 @@ check_fn_args_summary <- function(mod_fit,
         # Filter to only the selected variance params i.e. those with TRUE values
         var_param_nms_filt <- var_param_nms[var_param_vals_lgl]
 
-        # Get the comp_var output from the fitted maars_lm object
-        out_comp_var <- mod_fit$var
-        # out_comp_var_nms <- names(out_comp_var)
+        # Get the comp_mms_var output from the fitted maars_lm object
+        out_comp_mms_var <- mod_fit$var
+        # out_comp_mms_var_nms <- names(out_comp_mms_var)
         # Get the abbreviated names i.e. remove the "var_" prefix to align with summary
         # inputs
-        # out_comp_var_nms_abb <- names(out_comp_var) %>%
+        # out_comp_mms_var_nms_abb <- names(out_comp_mms_var) %>%
         #     stringr::str_replace_all(string = ., pattern = "var_", "")
 
         # Filter out the non-NULL variance values
-        out_comp_var_filt <- out_comp_var %>% purrr::compact(.x = .)
+        out_comp_mms_var_filt <- out_comp_mms_var %>% purrr::compact(.x = .)
         # Get the abbreviated names i.e. with the "_var" prefix removed
-        out_comp_var_filt_nms_abb <- names(out_comp_var_filt) %>%
+        out_comp_mms_var_filt_nms_abb <- names(out_comp_mms_var_filt) %>%
             stringr::str_replace_all(string = ., pattern = "var_", "")
 
         # Get the common variance estimates from the the model and the user
         # requested variance estimates
         # Here intersect first uses the model variance estimate names to ensure
-        # that the ordering of variance estimates is preserved from comp_var.
+        # that the ordering of variance estimates is preserved from comp_mms_var.
         # This will ensure the correct default ordering in the consolidated
         # variance summary terms in other functions that use this assertion
         # check
-        comm_nms_abb <- intersect(out_comp_var_filt_nms_abb, var_param_nms_filt)
+        comm_nms_abb <- intersect(out_comp_mms_var_filt_nms_abb, var_param_nms_filt)
 
         # Check that the user requested cterms are
         assertthat::assert_that(
@@ -126,14 +126,14 @@ check_fn_args_summary <- function(mod_fit,
             msg = glue::glue("You have requested variance summary for",
                              "[{glue::glue_collapse(var_param_nms_filt, sep = ' ')}]",
                              "\nHowever your model only has the following variance computations:",
-                             "[{glue::glue_collapse(out_comp_var_filt_nms_abb, sep = ' ')}]",
+                             "[{glue::glue_collapse(out_comp_mms_var_filt_nms_abb, sep = ' ')}]",
                              .sep = " "
             )
         )
 
         # Add the "var_" prefix to the requested variance terms, so that we
         # match the names in the variance estimates from the model i.e. from the
-        # comp_var output
+        # comp_mms_var output
         comm_nms <- comm_nms_abb %>% stringr::str_c("var_", ., sep = "")
     }
 
@@ -144,21 +144,21 @@ check_fn_args_summary <- function(mod_fit,
 #' An individual variance table summary function that adds the variance type
 #' suffix to the table columns
 #'
-#' @param comp_var_dat TODO Add
+#' @param comp_mms_var_dat TODO Add
 #'
 #' @return TODO Add
 #'
 #' @keywords internal
-get_var_tidy_summary_ind <- function(comp_var_dat){
+get_var_tidy_summary_ind <- function(comp_mms_var_dat){
     # Riccardo for Shamindra: this is an internal function so you do not need assertion checking
-    # TODO: Add assertion error that comp_var_dat is a list and is non_null
-    # TODO: Add assertion Check that the comp_var_dat has the correct names
+    # TODO: Add assertion error that comp_mms_var_dat is a list and is non_null
+    # TODO: Add assertion Check that the comp_mms_var_dat has the correct names
 
     # Get the abbreviated variance type name
-    var_type_name_abb <- purrr::pluck(.x = comp_var_dat, "var_type_abb")
+    var_type_name_abb <- purrr::pluck(.x = comp_mms_var_dat, "var_type_abb")
 
     # Get the abbreviated variance summary table
-    var_summ <- comp_var_dat %>% purrr::pluck("var_summary")
+    var_summ <- comp_mms_var_dat %>% purrr::pluck("var_summary")
 
     # Append suffix to variable names
     cols_common <- c("term", "estimate")
@@ -217,13 +217,13 @@ get_var_tidy_summary_ind <- function(comp_var_dat){
 #'
 #' # Empirical Bootstrap check
 #' set.seed(454354534)
-#' mss_var1 <- mss_var(mod_fit = lm_fit, boot_emp = list(B = 20, m = 200),
+#' comp_var1 <- comp_var(mod_fit = lm_fit, boot_emp = list(B = 20, m = 200),
 #'                     boot_res = list(B = 30),
 #'                     boot_mul = NULL)
 #'
 #' # This returns everything but boot_mul, since we didn't run it in the original
 #' # original maars_lm model
-#' get_var_tidy_summary(mod_fit = mss_var1, sand = TRUE,
+#' get_var_tidy_summary(mod_fit = comp_var1, sand = TRUE,
 #'                      boot_emp = TRUE, boot_res = TRUE, boot_mul = FALSE,
 #'                      well_specified = TRUE)
 #' }
@@ -241,20 +241,20 @@ get_var_tidy_summary <- function(mod_fit,
                                          boot_mul = boot_mul,
                                          well_specified = well_specified)
 
-    # Filter the comp_var output from the fitted maars_lm object for the
+    # Filter the comp_mms_var output from the fitted maars_lm object for the
     # requested variance types from the user
-    # out_comp_var_filt <- out_comp_var %>% purrr::pluck(req_var_nms)
-    out_comp_var_filt <- req_var_nms %>%
+    # out_comp_mms_var_filt <- out_comp_mms_var %>% purrr::pluck(req_var_nms)
+    out_comp_mms_var_filt <- req_var_nms %>%
         purrr::map(.x = ., ~purrr::pluck(mod_fit$var, .x))
 
     # Now for each individual variance type get the modified summary table
     # with the abbreviated variance type added as a suffix
     # e.g. for sandwich estimator, the 'p.value' column becomes 'p.value.sand'
-    out_comp_var_filt_mod <- out_comp_var_filt %>%
-        purrr::map(.x = ., .f = ~get_var_tidy_summary_ind(comp_var_dat = .x))
+    out_comp_mms_var_filt_mod <- out_comp_mms_var_filt %>%
+        purrr::map(.x = ., .f = ~get_var_tidy_summary_ind(comp_mms_var_dat = .x))
 
     # Now return the left_join output of all tables
-    out <- out_comp_var_filt_mod %>%
+    out <- out_comp_mms_var_filt_mod %>%
         purrr::reduce(.x = ., dplyr::left_join, by = c("term", "estimate"))
 
     return(out)
@@ -305,13 +305,13 @@ get_var_tidy_summary <- function(mod_fit,
 #'
 #' # Empirical Bootstrap check
 #' set.seed(454354534)
-#' mss_var1 <- mss_var(mod_fit = lm_fit, boot_emp = list(B = 20, m = 200),
+#' comp_var1 <- comp_var(mod_fit = lm_fit, boot_emp = list(B = 20, m = 200),
 #'                     boot_res = list(B = 30),
 #'                     boot_mul = NULL)
 #'
 #' # This returns everything but boot_mul, since we didn't run it in the original
 #' # original maars_lm model
-#' get_assumptions(mod_fit = mss_var1, sand = TRUE,
+#' get_assumptions(mod_fit = comp_var1, sand = TRUE,
 #'                      boot_emp = TRUE, boot_res = TRUE, boot_mul = FALSE,
 #'                      well_specified = TRUE)
 #' }

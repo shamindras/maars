@@ -45,12 +45,12 @@
 #'
 #' # Empirical Bootstrap check
 #' set.seed(454354534)
-#' mss_var1 <- mss_var(mod_fit = lm_fit, boot_emp = list(B = 20, m = 200),
+#' comp_var1 <- comp_var(mod_fit = lm_fit, boot_emp = list(B = 20, m = 200),
 #'                     boot_res = list(B = 30),
 #'                     boot_mul = NULL)
 #'
 #' # Return the summary with the confidence intervals
-#' get_confint(mod_fit = mss_var1, sand = TRUE,
+#' get_confint(mod_fit = comp_var1, sand = TRUE,
 #'                      boot_emp = TRUE, boot_res = TRUE, boot_mul = FALSE,
 #'                      well_specified = TRUE)
 #' }
@@ -74,10 +74,10 @@ get_confint <- function(mod_fit,
     msg = glue::glue("level must be between 0 and 1")
   )
 
-  out_comp_var_filt <- req_var_nms %>%
+  out_comp_mms_var_filt <- req_var_nms %>%
       purrr::map(.x = ., ~purrr::pluck(mod_fit$var, .x))
 
-  out_comp_var_filt <- out_comp_var_filt %>%
+  out_comp_mms_var_filt <- out_comp_mms_var_filt %>%
       purrr::modify_in(.x = ., list(1,'var_summary'),
                        .f = ~ .x %>%
                         dplyr::mutate(
@@ -85,10 +85,10 @@ get_confint <- function(mod_fit,
           conf.high = estimate + qt(1 - (1-level)/2, mod_fit$df.residual) * std.error
       ))
 
-  out_comp_var_filt_mod <- out_comp_var_filt %>%
-      purrr::map(.x = ., .f = ~get_var_tidy_summary_ind(comp_var_dat = .x))
+  out_comp_mms_var_filt_mod <- out_comp_mms_var_filt %>%
+      purrr::map(.x = ., .f = ~get_var_tidy_summary_ind(comp_mms_var_dat = .x))
 
-  out <- out_comp_var_filt_mod %>%
+  out <- out_comp_mms_var_filt_mod %>%
       purrr::reduce(.x = ., dplyr::left_join, by = c("term", "estimate"))
 
   return(out)

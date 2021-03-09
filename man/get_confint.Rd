@@ -67,12 +67,12 @@ lm_fit <- stats::lm(y ~ X_1 + X_2)
 
 # Empirical Bootstrap check
 set.seed(454354534)
-mss_var1 <- mss_var(mod_fit = lm_fit, boot_emp = list(B = 20, m = 200),
+comp_var1 <- comp_var(mod_fit = lm_fit, boot_emp = list(B = 20, m = 200),
                     boot_res = list(B = 30),
                     boot_mul = NULL)
 
 # Return the summary with the confidence intervals
-get_confint(mod_fit = mss_var1, sand = TRUE,
+get_confint(mod_fit = comp_var1, sand = TRUE,
                      boot_emp = TRUE, boot_res = TRUE, boot_mul = FALSE,
                      well_specified = TRUE)
 }
