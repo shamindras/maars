@@ -343,6 +343,6 @@ diag_boot_emp_qqn <- function(boot_out) {
       x = "Theoretical quantiles",
       y = "Sample quantiles"
     ) %>%
-    set_ggplot2_theme(ggplot_obj = .)
+    set_mms_ggplot2_theme(ggplot_obj = .)
   return(out)
 }

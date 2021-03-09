@@ -419,7 +419,7 @@ diag_foc_slope <- function(mod_fit, coef_rwgt, term_chosen) {
       col = "blue"
     )
   out <- (p_spaghetti + p_confint + p_meanest + p_oriest) %>%
-    set_ggplot2_theme(ggplot_obj = .)
+    set_mms_ggplot2_theme(ggplot_obj = .)
 
   return(out)
 }
@@ -580,7 +580,7 @@ diag_nl_detect <- function(mod_fit, coef_rwgt) {
     )
 
   out <- (p_spaghetti + p_confint + p_meanest + p_oriest) %>%
-    set_ggplot2_theme(ggplot_obj = .)
+    set_mms_ggplot2_theme(ggplot_obj = .)
 
   return(out)
 }
@@ -737,7 +737,7 @@ diag_foc_rwgt <- function(mod_fit, coef_rwgt, term_chosen) {
     )
 
   out <- (p_spaghetti + p_confint + p_meanest + p_oriest) %>%
-    set_ggplot2_theme(ggplot_obj = .)
+    set_mms_ggplot2_theme(ggplot_obj = .)
 
   return(out)
 }

@@ -1,8 +1,9 @@
 
-#' Gemerate "maars_lm" object with estimates of the variance
+#' Generate \code{maars_lm, lm} object with estimates of the variance
 #'
-#' Generates an object of class "maars_lm" containing estimates of the variance
-#' of the coefficients in the regression model.
+#' Generates an object of class \code{"maars_lm", "lm"} containing
+#' estimates of the variance of the coefficients in the regression
+#' model.
 #'
 #'
 #' @param mod_fit An lm (OLS) object
