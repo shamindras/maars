@@ -231,9 +231,9 @@ check_fn_args_comp_mms_var_boot <- function(boot_emp, boot_res, boot_mul) {
   }
 }
 
-#' get_summary computes the statistics based on boot_out and boot_type
+#' get_boot_summary computes the statistics based on boot_out and boot_type
 #'
-#' \code{get_summary} returns a tibble containing the model's statistics
+#' \code{get_boot_summary} returns a tibble containing the model's statistics
 #'   based on the coefficients estimates (\code{boot_out}) obtained via
 #'   \code{boot_type} bootstrap (e.g., empirical).
 #'
@@ -258,7 +258,7 @@ check_fn_args_comp_mms_var_boot <- function(boot_emp, boot_res, boot_mul) {
 #'
 #'
 #' @return
-get_summary <- function(mod_fit, boot_out, boot_type) {
+get_boot_summary <- function(mod_fit, boot_out, boot_type) {
   assertthat::assert_that(all("lm" == class(mod_fit)) | any("glm" == class(mod_fit)),
     msg = glue::glue("mod_fit must only be of class lm or glm")
   )

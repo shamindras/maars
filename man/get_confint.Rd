@@ -46,7 +46,7 @@ Get the tidy variance summary and confidence intervals from a fitted OLS \code{m
 class object
 }
 \details{
-The function generates the same output as \code{\link{get_summary}},
+The function generates the same output as \code{\link{get_boot_summary}},
 but also includes lower and upper confidence intervals for the regression
 coefficients according to the significance level specified in the "level"
 argument.

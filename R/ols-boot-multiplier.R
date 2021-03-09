@@ -244,7 +244,7 @@ comp_boot_mul <- function(mod_fit, B, weights_type = "rademacher") {
     # consolidate tibble
     tidyr::nest(boot_out = c(term, estimate))
 
-  summary_boot <- get_summary(
+  summary_boot <- get_boot_summary(
     mod_fit = mod_fit,
     boot_out = boot_out,
     boot_type = "mul"

@@ -1,7 +1,7 @@
 # Statistical Utilities - Public Functions
-"comp_var": "comp_mms_var"
-"mss_var": "comp_var"
-# "get_summary": "get_boot_summary"
+# "comp_var": "comp_mms_var"
+# "mss_var": "comp_var"
+"get_summary": "get_boot_summary"
 # "get_var_tidy_summary_ind": "get_tidy_summary_ind"
 # "get_var_tidy_summary": "get_tidy_summary"
 # "get_tidy_summary": "get_summary"

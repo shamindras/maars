@@ -1,4 +1,4 @@
-#' Assertion Checks for individual \code{\link{get_summary}} function inputs
+#' Assertion Checks for individual \code{\link{get_boot_summary}} function inputs
 #'
 #' \code{check_fn_args_comp_mms_var_boot_ind} is used to assess whether the arguments
 #' are correctly specified in \code{list} format and returns an error message if

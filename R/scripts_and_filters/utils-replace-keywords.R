@@ -69,8 +69,11 @@ keyword_rnm_tbl <- read_keyword_rnm_tbl(fpath_yml =
                                        "replace-keywords.yaml"))
 
 # Rename all keywords in all our R files in the main/test directories
-DIRS_TO_REPLACE <- c(here::here("R"), here::here("tests", "testthat"))
 # DIRS_TO_REPLACE <- c(here::here("R"))
+# DIRS_TO_REPLACE <- c(here::here("R"), here::here("tests", "testthat"))
+DIRS_TO_REPLACE <- c(here::here("R"),
+                     here::here("tests", "testthat"),
+                     here::here("R", "scripts_and_filters", "experiments"))
 
 DIRS_TO_REPLACE %>%
   purrr::walk(

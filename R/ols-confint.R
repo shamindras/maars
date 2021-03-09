@@ -22,7 +22,7 @@
 #' @return (tibble) : Combined standard error and confidence intervals
 #'   summary from a fitted OLS \code{maars_lm, lm} class object
 #'
-#' @details The function generates the same output as \code{\link{get_summary}},
+#' @details The function generates the same output as \code{\link{get_boot_summary}},
 #'   but also includes lower and upper confidence intervals for the regression
 #'   coefficients according to the significance level specified in the "level"
 #'   argument.

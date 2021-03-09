@@ -222,7 +222,7 @@ comp_boot_emp <- function(mod_fit, B = 100, m = NULL) {
     tidyr::nest(boot_out = c(estimate, term)) %>%
     tibble::add_column(m = m, n = n)
 
-  summary_boot <- get_summary(mod_fit = mod_fit,
+  summary_boot <- get_boot_summary(mod_fit = mod_fit,
                               boot_out = boot_out,
                               boot_type = 'emp')
 

@@ -73,7 +73,7 @@ comp_boot_res <- function(mod_fit, B = 100) {
     dplyr::mutate(n = n) %>%
     dplyr::relocate(n)
 
-  summary_boot <- get_summary(mod_fit = mod_fit,
+  summary_boot <- get_boot_summary(mod_fit = mod_fit,
                               boot_out = boot_out,
                               boot_type = 'res')
 
