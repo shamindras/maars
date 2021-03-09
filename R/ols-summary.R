@@ -123,10 +123,11 @@ check_fn_args_summary <- function(mod_fit,
         # Check that the user requested cterms are
         assertthat::assert_that(
             length(comm_nms_abb) == length(var_param_nms_filt),
-            msg = glue::glue("You have requested variance summary for",
-                             "[{glue::glue_collapse(var_param_nms_filt, sep = ' ')}]",
-                             "\nHowever your model only has the following variance computations:",
-                             "[{glue::glue_collapse(out_comp_mms_var_filt_nms_abb, sep = ' ')}]",
+            msg = glue::glue("You have requested variance summary for:",
+                             "\n[{glue::glue_collapse(var_param_nms_filt, sep = ', ')}]",
+                             "\n\nHowever your model only has the following variance computations:",
+                             "\n[{glue::glue_collapse(out_comp_mms_var_filt_nms_abb, sep = ', ')}]",
+                             "\n\nPlease refit your maars_lm model again with your requested variance computations and re-run...",
                              .sep = " "
             )
         )

@@ -1,4 +1,3 @@
-
 #' Generate \code{maars_lm, lm} object with estimates of the variance
 #'
 #' Generates an object of class \code{"maars_lm", "lm"} containing
@@ -91,8 +90,39 @@ comp_var <- function(mod_fit,
   return(mod_fit)
 }
 
-
-# This is just a prototype - open for discussion
+#' Plot \code{maars_lm, lm} object
+#'
+#' @param x (\code{maars_lm, lm}) : A fitted \code{maars_lm, lm} OLS object
+#'
+#' @param ...
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' set.seed(454354534)
+#'
+#' # generate data ----
+#' n <- 1e3
+#' X_1 <- stats::rnorm(n, 0, 1)
+#' X_2 <- stats::rnorm(n, 10, 20)
+#' eps <- stats::rnorm(n, 0, 1)
+#'
+#' # Let's generate data and fit a well-specified OLS data and model ----
+#' y <- 2 + X_1 * 1 + X_2 * 5 + eps
+#' lm_fit <- stats::lm(y ~ X_1 + X_2)
+#' summary(lm_fit)
+#'
+#' # Fit our first maars_lm object i.e. comp_var1
+#' comp_var1 <- comp_var(mod_fit = lm_fit,
+#'                       boot_emp = list(B = 50, m = 200),
+#'                       boot_res = NULL,
+#'                       boot_mul = list(B = 60))
+#'
+#' # Plot our maars_lm object
+#' plot(comp_var1)
+#' }
 plot.maars_lm <- function(x, ...){
   mms_diag_plots <- get_ols_diag_plots(mod_fit = x)
   for (i in base::seq_along(mms_diag_plots)) {

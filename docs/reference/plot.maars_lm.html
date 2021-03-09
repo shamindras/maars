@@ -6,8 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Get a list of standard diagnostic plots for lm,
-in the link[ggplot2] package style. — get_ols_diag_plots • maars</title>
+<title>Plot maars_lm, lm object — plot.maars_lm • maars</title>
 
 
 <!-- jquery -->
@@ -40,10 +39,8 @@ in the link[ggplot2] package style. — get_ols_diag_plots • maars</title>
 
 
 
-<meta property="og:title" content="Get a list of standard diagnostic plots for lm,
-in the link[ggplot2] package style. — get_ols_diag_plots" />
-<meta property="og:description" content="Get a list of standard diagnostic plots for lm,
-in the link[ggplot2] package style." />
+<meta property="og:title" content="Plot maars_lm, lm object — plot.maars_lm" />
+<meta property="og:description" content="Plot maars_lm, lm object" />
 
 
 
@@ -135,54 +132,60 @@ in the link[ggplot2] package style." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Get a list of standard diagnostic plots for <code><a href='https://rdrr.io/r/stats/lm.html'>lm</a></code>,
-in the <code>link[ggplot2]</code> package style.</h1>
-    <small class="dont-index">Source: <a href='https://github.com/shamindras/maars/blob/master/R/ols-diag-plot.R'><code>R/ols-diag-plot.R</code></a></small>
-    <div class="hidden name"><code>get_ols_diag_plots.Rd</code></div>
+    <h1>Plot <code>maars_lm, lm</code> object</h1>
+    <small class="dont-index">Source: <a href='https://github.com/shamindras/maars/blob/master/R/maars-lm.R'><code>R/maars-lm.R</code></a></small>
+    <div class="hidden name"><code>plot.maars_lm.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Get a list of standard diagnostic plots for <code><a href='https://rdrr.io/r/stats/lm.html'>lm</a></code>,
-in the <code>link[ggplot2]</code> package style.</p>
+    <p>Plot <code>maars_lm, lm</code> object</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_ols_diag_plots</span><span class='op'>(</span><span class='va'>mod_fit</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='co'># S3 method for maars_lm</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>mod_fit</th>
-      <td><p>(maars_lm, lm) A fitted OLS <code>maars_lm, lm</code> class object</p></td>
+      <th>x</th>
+      <td><p>(<code>maars_lm, lm</code>) : A fitted <code>maars_lm, lm</code> OLS object</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A list of standard diagnostic plots for OLS in the
-<code>link[ggplot2]</code> package style.</p>
+    
+
+
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>1243434</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>454354534</span><span class='op'>)</span>
 
-<span class='co'># generate data</span>
+<span class='co'># generate data ----</span>
 <span class='va'>n</span> <span class='op'>&lt;-</span> <span class='fl'>1e3</span>
 <span class='va'>X_1</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>
 <span class='va'>X_2</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>10</span>, <span class='fl'>20</span><span class='op'>)</span>
 <span class='va'>eps</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>
 
-<span class='co'># OLS data and model</span>
+<span class='co'># Let's generate data and fit a well-specified OLS data and model ----</span>
 <span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fl'>2</span> <span class='op'>+</span> <span class='va'>X_1</span> <span class='op'>*</span> <span class='fl'>1</span> <span class='op'>+</span> <span class='va'>X_2</span> <span class='op'>*</span> <span class='fl'>5</span> <span class='op'>+</span> <span class='va'>eps</span>
 <span class='va'>lm_fit</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>y</span> <span class='op'>~</span> <span class='va'>X_1</span> <span class='op'>+</span> <span class='va'>X_2</span><span class='op'>)</span>
-<span class='va'>mms_fit</span> <span class='op'>&lt;-</span> <span class='va'>lm_fit</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='comp_var.html'>comp_var</a></span><span class='op'>(</span>
-  mod_fit <span class='op'>=</span> <span class='va'>.</span>,
-  boot_emp <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>B <span class='op'>=</span> <span class='fl'>100</span>, m <span class='op'>=</span> <span class='fl'>50</span><span class='op'>)</span>,
-  boot_res <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>B <span class='op'>=</span> <span class='fl'>50</span><span class='op'>)</span>
-<span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span><span class='op'>(</span><span class='va'>lm_fit</span><span class='op'>)</span>
 
-<span class='co'># Produce and sequentially display diagnostic plots</span>
-<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>mms_fit</span><span class='op'>)</span>
+<span class='co'># Fit our first maars_lm object i.e. comp_var1</span>
+<span class='va'>comp_var1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='comp_var.html'>comp_var</a></span><span class='op'>(</span>mod_fit <span class='op'>=</span> <span class='va'>lm_fit</span>,
+                      boot_emp <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>B <span class='op'>=</span> <span class='fl'>50</span>, m <span class='op'>=</span> <span class='fl'>200</span><span class='op'>)</span>,
+                      boot_res <span class='op'>=</span> <span class='cn'>NULL</span>,
+                      boot_mul <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>B <span class='op'>=</span> <span class='fl'>60</span><span class='op'>)</span><span class='op'>)</span>
+
+<span class='co'># Plot our maars_lm object</span>
+<span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>comp_var1</span><span class='op'>)</span>
 <span class='op'>}</span>
 </div></pre>
   </div>

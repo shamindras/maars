@@ -31,9 +31,11 @@ eps <- stats::rnorm(n, 0, 1)
 # OLS data and model
 y <- 2 + X_1 * 1 + X_2 * 5 + eps
 lm_fit <- stats::lm(y ~ X_1 + X_2)
-mms_fit <- lm_fit \%>\% comp_var(mod_fit = .,
-                              boot_emp = list(B = 100, m = 50),
-                              boot_res = list(B = 50))
+mms_fit <- lm_fit \%>\% comp_var(
+  mod_fit = .,
+  boot_emp = list(B = 100, m = 50),
+  boot_res = list(B = 50)
+)
 
 # Produce and sequentially display diagnostic plots
 plot(mms_fit)
