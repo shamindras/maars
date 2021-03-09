@@ -9,7 +9,7 @@
 \arguments{
 \item{x}{(\code{maars_lm, lm}) : A fitted \code{maars_lm, lm} OLS object}
 
-\item{...}{}
+\item{...}{Additional arguments passed to methods.}
 }
 \value{
 

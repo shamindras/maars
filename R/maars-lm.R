@@ -94,7 +94,7 @@ comp_var <- function(mod_fit,
 #'
 #' @param x (\code{maars_lm, lm}) : A fitted \code{maars_lm, lm} OLS object
 #'
-#' @param ...
+#' @param ... Additional arguments passed to methods.
 #'
 #' @return
 #' @export
