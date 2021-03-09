@@ -2,7 +2,7 @@
 % Please edit documentation in R/maars-lm.R
 \name{comp_var}
 \alias{comp_var}
-\title{Gemerate "maars_lm" object with estimates of the variance}
+\title{Generate \code{maars_lm, lm} object with estimates of the variance}
 \usage{
 comp_var(mod_fit, boot_emp = NULL, boot_res = NULL, boot_mul = NULL)
 }
@@ -47,8 +47,9 @@ regression coefficients, including the sandwich and the variance
 returned by \code{stats::lm}.
 }
 \description{
-Generates an object of class "maars_lm" containing estimates of the variance
-of the coefficients in the regression model.
+Generates an object of class \code{"maars_lm", "lm"} containing
+estimates of the variance of the coefficients in the regression
+model.
 }
 \details{
 The "maars_lm" object is basically an "lm" object with additional
