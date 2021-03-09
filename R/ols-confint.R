@@ -86,7 +86,7 @@ get_confint <- function(mod_fit,
       ))
 
   out_comp_mms_var_filt_mod <- out_comp_mms_var_filt %>%
-      purrr::map(.x = ., .f = ~get_var_tidy_summary_ind(comp_mms_var_dat = .x))
+      purrr::map(.x = ., .f = ~get_summary_ind(comp_mms_var_dat = .x))
 
   out <- out_comp_mms_var_filt_mod %>%
       purrr::reduce(.x = ., dplyr::left_join, by = c("term", "estimate"))

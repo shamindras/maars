@@ -37,7 +37,7 @@ get_confint(mod_fit = comp_var1,
                   boot_emp = TRUE) %>%
     dplyr::select(conf.low.sand, conf.high.sand)
 
-get_var_tidy_summary(mod_fit = comp_var1, sand = TRUE,
+get_summary(mod_fit = comp_var1, sand = TRUE,
                      boot_emp = TRUE, boot_res = TRUE, boot_mul = FALSE,
                      well_specified = TRUE)
 

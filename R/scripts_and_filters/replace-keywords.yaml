@@ -1,10 +1,10 @@
 # Statistical Utilities - Public Functions
 # "comp_var": "comp_mms_var"
 # "mss_var": "comp_var"
-"get_summary": "get_boot_summary"
+# "get_summary": "get_boot_summary"
 # "get_var_tidy_summary_ind": "get_tidy_summary_ind"
 # "get_var_tidy_summary": "get_tidy_summary"
-# "get_tidy_summary": "get_summary"
+"get_tidy_summary": "get_summary"
 # Supporting Utilities - Public Functions
 # "set_ggplot2_theme": "set_mms_ggplot2_theme"
 # Supporting Utilities - Private Functions

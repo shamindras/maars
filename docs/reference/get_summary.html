@@ -6,7 +6,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>get_summary computes the statistics based on boot_out and boot_type — get_summary • maars</title>
+<title>Get the tidy variance summary from a fitted OLS maars_lm, lm
+class object — get_summary • maars</title>
 
 
 <!-- jquery -->
@@ -39,10 +40,10 @@
 
 
 
-<meta property="og:title" content="get_summary computes the statistics based on boot_out and boot_type — get_summary" />
-<meta property="og:description" content="get_summary returns a tibble containing the model's statistics
-based on the coefficients estimates (boot_out) obtained via
-boot_type bootstrap (e.g., empirical)." />
+<meta property="og:title" content="Get the tidy variance summary from a fitted OLS maars_lm, lm
+class object — get_summary" />
+<meta property="og:description" content="Get the tidy variance summary from a fitted OLS maars_lm, lm
+class object" />
 
 
 
@@ -134,50 +135,97 @@ boot_type bootstrap (e.g., empirical)." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>get_summary computes the statistics based on boot_out and boot_type</h1>
-    <small class="dont-index">Source: <a href='https://github.com/shamindras/maars/blob/master/R/ols-var.R'><code>R/ols-var.R</code></a></small>
+    <h1>Get the tidy variance summary from a fitted OLS <code>maars_lm, lm</code>
+class object</h1>
+    <small class="dont-index">Source: <a href='https://github.com/shamindras/maars/blob/master/R/ols-summary.R'><code>R/ols-summary.R</code></a></small>
     <div class="hidden name"><code>get_summary.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p><code>get_summary</code> returns a tibble containing the model's statistics
-based on the coefficients estimates (<code>boot_out</code>) obtained via
-<code>boot_type</code> bootstrap (e.g., empirical).</p>
+    <p>Get the tidy variance summary from a fitted OLS <code>maars_lm, lm</code>
+class object</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_summary</span><span class='op'>(</span><span class='va'>mod_fit</span>, <span class='va'>boot_out</span>, <span class='va'>boot_type</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>get_summary</span><span class='op'>(</span>
+  <span class='va'>mod_fit</span>,
+  sand <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  boot_emp <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  boot_mul <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  boot_res <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  well_specified <span class='op'>=</span> <span class='cn'>FALSE</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>mod_fit</th>
-      <td><p>An "lm" (OLS) object.</p></td>
+      <td><p>(maars_lm, lm) A fitted OLS <code>maars_lm, lm</code> class object</p></td>
     </tr>
     <tr>
-      <th>boot_out</th>
-      <td><p>A tibble of the model's coefficients estimated (<code>term</code>
-and <code>estimate</code>) on the bootstrapped datasets, the size of each
-bootstrapped dataset (<code>m</code>), the size of the original dataset
-(<code>n</code>), and the number of the bootstrap repetition (<code>b</code>).</p></td>
+      <th>sand</th>
+      <td><p>(logical) : <code>TRUE</code> if sandwich estimator output is required,
+<code>FALSE</code> to exclude this output from the request</p></td>
     </tr>
     <tr>
-      <th>boot_type</th>
-      <td><p>A character specifying the bootstrap type. It can be be "emp"
-for output from <code><a href='comp_boot_emp.html'>comp_boot_emp</a></code>, "mul"
-for output from <code><a href='comp_boot_mul.html'>comp_boot_mul</a></code>, or
-"res" for output from <code><a href='comp_boot_res.html'>comp_boot_res</a></code>.</p></td>
+      <th>boot_emp</th>
+      <td><p>(logical) : <code>TRUE</code> if empirical bootstrap standard error
+output is required, <code>FALSE</code> to exclude this output from the request</p></td>
+    </tr>
+    <tr>
+      <th>boot_mul</th>
+      <td><p>(logical) : <code>TRUE</code> if multiplier bootstrap standard error
+output is required, <code>FALSE</code> to exclude this output from the request</p></td>
+    </tr>
+    <tr>
+      <th>boot_res</th>
+      <td><p>(logical) : <code>TRUE</code> if residual bootstrap standard error
+output is required, <code>FALSE</code> to exclude this output from the request</p></td>
+    </tr>
+    <tr>
+      <th>well_specified</th>
+      <td><p>(logical) : <code>TRUE</code> if lm standard errors
+(well specified) output is required, <code>FALSE</code> to exclude this output
+from the request</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A tibble containing the summary statistics for the model: terms,
-coefficients estimates, t-statistics, and p-values. These statistics are
-based on the output of the bootstrap passed in <code>boot_out</code>.</p>
+    <p>(tibble) : Combined standard error summary from a fitted
+OLS <code>maars_lm, lm</code> class object</p>
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>1243434</span><span class='op'>)</span>
 
+<span class='co'># generate data</span>
+<span class='va'>n</span> <span class='op'>&lt;-</span> <span class='fl'>1e3</span>
+<span class='va'>X_1</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>
+<span class='va'>X_2</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>10</span>, <span class='fl'>20</span><span class='op'>)</span>
+<span class='va'>eps</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>
 
+<span class='co'># OLS data and model</span>
+<span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fl'>2</span> <span class='op'>+</span> <span class='va'>X_1</span> <span class='op'>*</span> <span class='fl'>1</span> <span class='op'>+</span> <span class='va'>X_2</span> <span class='op'>*</span> <span class='fl'>5</span> <span class='op'>+</span> <span class='va'>eps</span>
+<span class='va'>lm_fit</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>y</span> <span class='op'>~</span> <span class='va'>X_1</span> <span class='op'>+</span> <span class='va'>X_2</span><span class='op'>)</span>
+
+<span class='co'># DEFINE common column names - these stay the same across all</span>
+<span class='co'># reported error types</span>
+<span class='va'>common_vars</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"term"</span>, <span class='st'>"estimate"</span><span class='op'>)</span>
+
+<span class='co'># Empirical Bootstrap check</span>
+<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>454354534</span><span class='op'>)</span>
+<span class='va'>comp_var1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='comp_var.html'>comp_var</a></span><span class='op'>(</span>mod_fit <span class='op'>=</span> <span class='va'>lm_fit</span>, boot_emp <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>B <span class='op'>=</span> <span class='fl'>20</span>, m <span class='op'>=</span> <span class='fl'>200</span><span class='op'>)</span>,
+                    boot_res <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>B <span class='op'>=</span> <span class='fl'>30</span><span class='op'>)</span>,
+                    boot_mul <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span>
+
+<span class='co'># This returns everything but boot_mul, since we didn't run it in the original</span>
+<span class='co'># original maars_lm model</span>
+<span class='fu'>get_summary</span><span class='op'>(</span>mod_fit <span class='op'>=</span> <span class='va'>comp_var1</span>, sand <span class='op'>=</span> <span class='cn'>TRUE</span>,
+                     boot_emp <span class='op'>=</span> <span class='cn'>TRUE</span>, boot_res <span class='op'>=</span> <span class='cn'>TRUE</span>, boot_mul <span class='op'>=</span> <span class='cn'>FALSE</span>,
+                     well_specified <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+<span class='op'>}</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

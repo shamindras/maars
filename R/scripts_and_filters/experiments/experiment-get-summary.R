@@ -24,19 +24,19 @@ comp_var1 <- comp_var(mod_fit = lm_fit, boot_emp = list(B = 20, m = 200),
 
 # This returns everything but boot_mul, since we didn't run it in the original
 # original maars_lm model
-get_var_tidy_summary(mod_fit = comp_var1, sand = TRUE,
+get_summary(mod_fit = comp_var1, sand = TRUE,
                      boot_emp = TRUE, boot_res = TRUE, boot_mul = FALSE,
                      well_specified = TRUE)
 
 # This returns an error since we require the tidy summary with boot_mul, but
 # we have not run it in the original maars_lm model
-get_var_tidy_summary(mod_fit = comp_var1, sand = TRUE,
+get_summary(mod_fit = comp_var1, sand = TRUE,
                      boot_emp = TRUE, boot_res = TRUE, boot_mul = TRUE,
                      well_specified = TRUE)
 
 # We are passing in all FALSE values, should return the sandwich estimator
 # with a warning message
-get_var_tidy_summary(mod_fit = comp_var1, sand = FALSE,
+get_summary(mod_fit = comp_var1, sand = FALSE,
                      boot_emp = FALSE, boot_res = FALSE, boot_mul = FALSE,
                      well_specified = FALSE)
 

@@ -149,7 +149,7 @@ check_fn_args_summary <- function(mod_fit,
 #' @return TODO Add
 #'
 #' @keywords internal
-get_var_tidy_summary_ind <- function(comp_mms_var_dat){
+get_summary_ind <- function(comp_mms_var_dat){
     # Riccardo for Shamindra: this is an internal function so you do not need assertion checking
     # TODO: Add assertion error that comp_mms_var_dat is a list and is non_null
     # TODO: Add assertion Check that the comp_mms_var_dat has the correct names
@@ -223,11 +223,11 @@ get_var_tidy_summary_ind <- function(comp_mms_var_dat){
 #'
 #' # This returns everything but boot_mul, since we didn't run it in the original
 #' # original maars_lm model
-#' get_var_tidy_summary(mod_fit = comp_var1, sand = TRUE,
+#' get_summary(mod_fit = comp_var1, sand = TRUE,
 #'                      boot_emp = TRUE, boot_res = TRUE, boot_mul = FALSE,
 #'                      well_specified = TRUE)
 #' }
-get_var_tidy_summary <- function(mod_fit,
+get_summary <- function(mod_fit,
                                  sand = TRUE,
                                  boot_emp = FALSE,
                                  boot_mul = FALSE,
@@ -251,7 +251,7 @@ get_var_tidy_summary <- function(mod_fit,
     # with the abbreviated variance type added as a suffix
     # e.g. for sandwich estimator, the 'p.value' column becomes 'p.value.sand'
     out_comp_mms_var_filt_mod <- out_comp_mms_var_filt %>%
-        purrr::map(.x = ., .f = ~get_var_tidy_summary_ind(comp_mms_var_dat = .x))
+        purrr::map(.x = ., .f = ~get_summary_ind(comp_mms_var_dat = .x))
 
     # Now return the left_join output of all tables
     out <- out_comp_mms_var_filt_mod %>%
@@ -367,7 +367,7 @@ summary.maars_lm <- function(object,
                              well_specified = FALSE,
                              digits = 3, ...) {
 
-    out_summ <- get_var_tidy_summary(mod_fit = object,
+    out_summ <- get_summary(mod_fit = object,
                                      sand = sand,
                                      boot_emp = boot_emp,
                                      boot_res = boot_res,
