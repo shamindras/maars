@@ -343,7 +343,7 @@ get_assumptions <- function(mod_fit,
 #'
 #' Summary method for class "maars_lm".
 #'
-#' @param object A fitted "maars_lm" object.
+#' @param mod_fit A fitted "maars_lm" object.
 #' @param sand (logical) : \code{TRUE} if sandwich estimator output is required,
 #'   \code{FALSE} to exclude this output from the request.
 #' @param boot_emp (logical) : \code{TRUE} if empirical bootstrap standard error
@@ -360,7 +360,7 @@ get_assumptions <- function(mod_fit,
 #'
 #' @method summary maars_lm
 #' @export
-summary.maars_lm <- function(object,
+summary.maars_lm <- function(mod_fit,
                              sand = TRUE,
                              boot_emp = FALSE,
                              boot_res = FALSE,
@@ -368,7 +368,7 @@ summary.maars_lm <- function(object,
                              well_specified = FALSE,
                              digits = 3, ...) {
 
-    out_summ <- get_summary(mod_fit = object,
+    out_summ <- get_summary(mod_fit = mod_fit,
                                      sand = sand,
                                      boot_emp = boot_emp,
                                      boot_res = boot_res,
@@ -405,7 +405,7 @@ summary.maars_lm <- function(object,
         ))
 
     cat("\nCall:\n",
-        stringr::str_c(rlang::expr_deparse(x = object$call),
+        stringr::str_c(rlang::expr_deparse(x = mod_fit$call),
                        sep = "\n",
                        collapse = "\n"
         ),
@@ -417,11 +417,11 @@ summary.maars_lm <- function(object,
     cat("\n---\n")
     cat("Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1")
 
-    summ_lm <- summary.lm(object)
+    summ_lm <- summary.lm(mod_fit)
     cat(
         "\n\nResidual standard error:",
         formatC(signif(summ_lm$sigma, digits = digits)), "on",
-        object$df.residual, "degrees of freedom"
+        mod_fit$df.residual, "degrees of freedom"
     )
     cat(
         "\nMultiple R-squared:", formatC(summ_lm$r.squared, digits = digits),
@@ -439,13 +439,14 @@ summary.maars_lm <- function(object,
     )
 
     cat("\n---\nAssumptions:\n")
-    cat(paste0(utf8::utf8_format('\U001F3AF'),
-               get_assumptions(mod_fit = object,
+    cat(paste0(utf8::utf8_format('\U001F96A'),
+               get_assumptions(mod_fit = mod_fit,
                                sand = sand, boot_emp = boot_emp,
                                boot_res = boot_res,
                                boot_mul = boot_mul,
                                well_specified = well_specified
                )) %>% paste0(., collapse = '\n'))
+    cat('\n')
 }
 
 # tidy.maars_lm <- function(x, ...){

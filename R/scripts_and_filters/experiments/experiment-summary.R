@@ -1,29 +1,11 @@
 
-
-
-get_assumptions <- function(mod_fit,
-                            sand = sand,
-                            boot_emp = boot_emp,
-                            boot_res = boot_res,
-                            boot_mul = boot_mul,
-                            well_specified = well_specified,
-                            as_tibble = TRUE) {
-    req_var_nms <- check_fn_args_summary(mod_fit = mod_fit, sand = sand,
-                                         boot_emp = boot_emp, boot_res = boot_res,
-                                         boot_mul = boot_mul,
-                                         well_specified = well_specified)
-
-    assumptions <- req_var_nms %>%
-        purrr::map(.x = ., ~paste0(purrr::pluck(mod_fit$var, .x, 'var_type_abb'),
-                                   ': ',
-                                   purrr::pluck(mod_fit$var, .x, 'var_assumptions')))
-
-    assumptions <- unlist(assumptions)
-
-    return(assumptions)
+get_emoji <- function(x){
+    if(x=='sand') out <- '\U001F96A'
+    if(x=='emp') out <- '\U001F97E'
+    if(x=='res') out <- '\U001F4B1'
+    if(x=='mul') out <- '\U002716'
+    return(out)
 }
-
-
 
 summary.maars_lm <- function(object,
                              sand = TRUE,
@@ -33,8 +15,11 @@ summary.maars_lm <- function(object,
                              well_specified = FALSE,
                              digits = 3, ...) {
 
+    ### TO DO: get rid of
+
+
     ## Generate main table (coefficients estimates etc)
-    out_summ <- get_var_tidy_summary(mod_fit = object,
+    out_summ <- get_summary(mod_fit = object,
                                      sand = sand,
                                      boot_emp = boot_emp,
                                      boot_res = boot_res,
@@ -94,19 +79,19 @@ summary.maars_lm <- function(object,
                        sep = "\n",
                        collapse = "\n"
         ),
-        "\n\n",
+        #"\n\n",
         sep = ""
     )
 
     # old way - change with purrr?
     for(est in names(assumptions)){
-        cat("\n---\n")
-        cat(est, '\n')
+        cat("\n\n---\n")
+        cat(get_emoji(est), est, '\n')
         print.data.frame(out_summ[[est]],
                          row.names = FALSE, digits = digits, right = TRUE)
         cat('\nAssumption:')
         cat(assumptions[[est]])
-        cat("\n---\n")
+        #cat("\n---\n")
     }
 
     #cat("Coefficients:\n")
@@ -164,9 +149,9 @@ COMMON_ERR_STAT_COLNAMES <- c("term", "estimate")
 set.seed(454354534)
 mss_var1 <- comp_var(mod_fit = lm_fit, boot_emp = list(B = 20, m = 200),
                     boot_res = list(B = 30),
-                    boot_mul = NULL)
+                    boot_mul = list(B = 30))
 
-summary(mss_var1, boot_emp = TRUE)
+summary(mss_var1, boot_emp = TRUE, boot_mul = TRUE)
 
 
 

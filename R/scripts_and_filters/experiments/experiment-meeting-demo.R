@@ -24,25 +24,42 @@ comp_var1 <- comp_var(mod_fit = lm_fit,
                       boot_res = NULL,
                       boot_mul = list(B = 60))
 
+# summary
+print(comp_var1)
+summary(comp_var1)
+
 # SUMMARY: comp_var1 tidy and printed summary examples ----
 # This returns everything but boot_mul, since we didn't run it in the original
 # original maars_lm model
 get_summary(mod_fit = comp_var1, sand = TRUE,
             boot_emp = TRUE, boot_res = FALSE, boot_mul = FALSE,
             well_specified = TRUE)
+# CONFINT: comp_var1 lm plot examples ----
+get_confint(mod_fit = comp_var1, level = 0.95, sand = TRUE,
+            boot_emp = TRUE, boot_res = FALSE, boot_mul = FALSE,
+            well_specified = TRUE)
 
 # Let's run the printed summary!
 # TODO: This is not currently working! Minor fix mod_fit vs. object
-# summary(object = comp_var1)
+#summary(object = comp_var1)
 
 # This returns an error since we require the tidy summary with boot_res, but
 # we have not run it in the original maars_lm model
+summary(mod_fit = comp_var1, sand = TRUE,
+        boot_emp = TRUE, boot_res = TRUE, boot_mul = TRUE,
+        well_specified = TRUE)
 get_summary(mod_fit = comp_var1, sand = TRUE,
+            boot_emp = TRUE, boot_res = TRUE, boot_mul = TRUE,
+            well_specified = TRUE)
+get_confint(mod_fit = comp_var1, level = 0.95, sand = TRUE,
             boot_emp = TRUE, boot_res = TRUE, boot_mul = TRUE,
             well_specified = TRUE)
 
 # We are passing in all FALSE values, should return the sandwich estimator
 # with a warning message
+summary(mod_fit = comp_var1, sand = FALSE,
+        boot_emp = FALSE, boot_res = FALSE, boot_mul = FALSE,
+        well_specified = FALSE)
 get_summary(mod_fit = comp_var1, sand = FALSE,
             boot_emp = FALSE, boot_res = FALSE, boot_mul = FALSE,
             well_specified = FALSE)
@@ -63,4 +80,3 @@ plot(lm_fit)
 # other default plots are displayed in order
 plot(comp_var1)
 
-# CONFINT: comp_var1 lm plot examples ----
