@@ -417,7 +417,7 @@ summary.maars_lm <- function(object,
     cat("\n---\n")
     cat("Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1")
 
-    summ_lm <- summary.lm(mod_fit)
+    summ_lm <- summary.lm(object)
     cat(
         "\n\nResidual standard error:",
         formatC(signif(summ_lm$sigma, digits = digits)), "on",
