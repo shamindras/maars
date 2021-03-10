@@ -5,7 +5,7 @@
 \title{Summary of \code{maars_lm} object}
 \usage{
 \method{summary}{maars_lm}(
-  mod_fit,
+  object,
   sand = TRUE,
   boot_emp = FALSE,
   boot_res = FALSE,
@@ -16,7 +16,7 @@
 )
 }
 \arguments{
-\item{mod_fit}{A fitted "maars_lm" object.}
+\item{object}{A fitted "maars_lm" object.}
 
 \item{sand}{(logical) : \code{TRUE} if sandwich estimator output is required,
 \code{FALSE} to exclude this output from the request.}

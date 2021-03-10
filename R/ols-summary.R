@@ -343,7 +343,7 @@ get_assumptions <- function(mod_fit,
 #'
 #' Summary method for class "maars_lm".
 #'
-#' @param mod_fit A fitted "maars_lm" object.
+#' @param object A fitted "maars_lm" object.
 #' @param sand (logical) : \code{TRUE} if sandwich estimator output is required,
 #'   \code{FALSE} to exclude this output from the request.
 #' @param boot_emp (logical) : \code{TRUE} if empirical bootstrap standard error
