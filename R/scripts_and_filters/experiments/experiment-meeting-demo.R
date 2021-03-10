@@ -6,7 +6,7 @@ set.seed(1243434)
 n <- 1e3
 X_1 <- stats::rnorm(n, 0, 1)
 X_2 <- stats::rnorm(n, 10, 20)
-eps <- stats::rnorm(n, 0, 1)
+eps <- stats::rnorm(n, 0, 100)
 
 # Let's generate data and fit a well-specified OLS data and model ----
 y <- 2 + X_1 * 1 + X_2 * 5 + eps
@@ -80,3 +80,5 @@ plot(lm_fit)
 # other default plots are displayed in order
 plot(comp_var1)
 
+# get assumptions
+get_assumptions(comp_var1)

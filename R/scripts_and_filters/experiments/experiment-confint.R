@@ -31,6 +31,8 @@ ci <- get_confint(mod_fit = comp_var1,
     dplyr::select(conf.low.sand, conf.high.sand)
 ci
 
+confint(lm_fit)
+
 get_confint(mod_fit = comp_var1,
                   level = 0.1,
                   sand = TRUE,
