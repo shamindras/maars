@@ -12,8 +12,8 @@
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
 
@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">maars</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7.0</span>
       </span>
     </div>
 
@@ -112,7 +112,12 @@
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/shamindras/maars/">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -141,7 +146,7 @@
       <tr>
         <th colspan="2">
           <h2 id="section-statistical-utilities" class="hasAnchor"><a href="#section-statistical-utilities" class="anchor"></a>Statistical Utilities</h2>
-          <p class="section-desc"><p>Utilities for doing <em>statistical estimation and inference</em> under model misspecification</p></p>
+          <p class="section-desc"><p>Utilities for doing <strong>statistical estimation and inference</strong> under model misspecification</p></p>
         </th>
       </tr>
       
@@ -164,22 +169,42 @@
       </tr><tr>
         
         <td>
-          <p><code><a href="comp_var.html">comp_var()</a></code> </p>
+          <p><code><a href="comp_mms_var.html">comp_mms_var()</a></code> </p>
         </td>
-        <td><p>Create an empirical or multiplier bootstrap summary table</p></td>
+        <td><p>Generates list containing several estimates of the variance</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="diag_fit_reg_rwgt.html">diag_fit_reg_rwgt()</a></code> </p>
+          <p><code><a href="comp_var.html">comp_var()</a></code> </p>
         </td>
-        <td><p>Obtain estimates of GLM or OLS under reweighting of one or
-multiple regressors</p></td>
+        <td><p>Generate <code>maars_lm, lm</code> object with estimates of the variance</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_assumptions.html">get_assumptions()</a></code> </p>
+        </td>
+        <td><p>Retrieve the assumptions for the variance estimators to be consistent for a
+a fitted OLS <code>maars_lm, lm</code> class object</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_confint.html">get_confint()</a></code> </p>
+        </td>
+        <td><p>Get the tidy variance summary and confidence intervals for the coefficients of
+an object of class "maars_lm"</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get_summary.html">get_summary()</a></code> </p>
+        </td>
+        <td><p>Get the tidy variance summary from a fitted OLS <code>maars_lm, lm</code>
+class object</p></td>
       </tr>
     </tbody><tbody>
       <tr>
         <th colspan="2">
           <h2 id="section-diagnostic-utilities" class="hasAnchor"><a href="#section-diagnostic-utilities" class="anchor"></a>Diagnostic Utilities</h2>
-          <p class="section-desc"><p>Utilities for performing <em>model fit diagnostics</em> under model misspecification</p></p>
+          <p class="section-desc"><p>Utilities for performing <strong>model fit diagnostics</strong> under model misspecification</p></p>
         </th>
       </tr>
       
@@ -218,6 +243,56 @@ multiple regressors</p></td>
           <p><code><a href="diag_nl_detect.html">diag_nl_detect()</a></code> </p>
         </td>
         <td><p>Obtain the "nonlinearity detection" model diagnostic</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-print-summarize-and-plot-data" class="hasAnchor"><a href="#section-print-summarize-and-plot-data" class="anchor"></a>Print, summarize, and plot data</h2>
+          <p class="section-desc"><p><strong>Print, summarize, and plot</strong> maars objects</p></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
+        
+        <td>
+          <p><code><a href="print.maars_lm.html">print(<i>&lt;maars_lm&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Print <code>maars_lm</code> object</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="summary.maars_lm.html">summary(<i>&lt;maars_lm&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Summary of <code>maars_lm</code> object</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plot.maars_lm.html">plot(<i>&lt;maars_lm&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Plot <code>maars_lm, lm</code> object</p></td>
+      </tr>
+    </tbody><tbody>
+      <tr>
+        <th colspan="2">
+          <h2 id="section-other-utilities" class="hasAnchor"><a href="#section-other-utilities" class="anchor"></a>Other utilities</h2>
+          <p class="section-desc"><p>Other utilities</p></p>
+        </th>
+      </tr>
+      
+      
+    </tbody><tbody>
+      
+      
+      <tr>
+        
+        <td>
+          <p><code><a href="as.maars.html">as.maars()</a></code> </p>
+        </td>
+        <td><p>Convert an object to an object that can be handled by the "maars" package</p></td>
       </tr>
     </tbody>
     </table>

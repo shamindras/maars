@@ -1,3 +1,7 @@
+template:
+  params:
+    bootswatch: flatly
+
 url: https://shamindras.github.io/maars
 
 navbar:
@@ -19,13 +23,25 @@ navbar:
 reference:
   - title: Statistical Utilities
     desc: >
-      Utilities for doing *statistical estimation and inference* under model misspecification
+      Utilities for doing **statistical estimation and inference** under model misspecification
     contents:
     - starts_with("comp_", internal = FALSE)
     - starts_with("fit_", internal = FALSE)
-    - diag_fit_reg_rwgt
+    - starts_with("get_", internal = FALSE)
   - title: Diagnostic Utilities
     desc: >
-      Utilities for performing *model fit diagnostics* under model misspecification
+      Utilities for performing **model fit diagnostics** under model misspecification
     contents:
     - starts_with("diag_", internal = FALSE)
+  - title: Print, summarize, and plot data
+    desc: >
+      **Print, summarize, and plot** maars objects
+    contents:
+    - print.maars_lm
+    - summary.maars_lm
+    - plot.maars_lm
+  - title: Other utilities
+    desc: >
+        Other utilities
+    contents:
+      - as.maars

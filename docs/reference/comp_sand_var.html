@@ -12,8 +12,8 @@
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
 
@@ -76,7 +76,7 @@ see also Buja et al. (2019) and Buja et al. (2019)
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">maars</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7.0</span>
       </span>
     </div>
 
@@ -117,7 +117,12 @@ see also Buja et al. (2019) and Buja et al. (2019)
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/shamindras/maars/">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -132,7 +137,7 @@ see also Buja et al. (2019) and Buja et al. (2019)
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Compute the sandwich estimator of standard errors for OLS</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/shamindras/maars/blob/master/R/ols-sandwich-var.R'><code>R/ols-sandwich-var.R</code></a></small>
     <div class="hidden name"><code>comp_sand_var.Rd</code></div>
     </div>
 
@@ -158,11 +163,13 @@ see also Buja et al. (2019) and Buja et al. (2019)
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A list containing the following elements: the type of estimator of
-of the variance  (<code>var_type</code>); the summary statistics of <code>mod_fit</code>
-based on this estimator of the variance (e.g., standard errors and p-values)
-(<code>var_summary</code>); the assumptions under which the estimator of the
-variance is consistent (<code>var_assumptions</code>); the covariance matrix for
-the coefficients estimates (<code>cov_mat</code>).</p>
+of the variance  (<code>var_type</code>); An abbreviated string representing the
+type of the estimator of the variance  (<code>var_type_abb</code>); the summary
+statistics of <code>mod_fit</code> based on this estimator of the variance
+(e.g., standard errors and p-values) (<code>var_summary</code>); the assumptions
+under which the estimator of the variance is consistent
+(<code>var_assumptions</code>); the covariance matrix for the coefficients
+estimates (<code>cov_mat</code>).</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>The function computes the sandwich estimator for the OLS regression

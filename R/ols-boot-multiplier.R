@@ -176,7 +176,8 @@ comp_boot_mul_ind <- function(J_inv_X_res, e) {
 #'
 #' @return A list containing the following elements.
 #'   \code{var_type}: The type of estimator for the variance of the coefficients
-#'   estimates.
+#'   estimates. An abbreviated string representing the
+#'   type of the estimator of the variance  (\code{var_type_abb}).
 #'   \code{var_summary}: A tibble containing the summary statistics for the model:
 #'   terms (\code{term}), standard errors (\code{std.error}),
 #'   statistics (\code{statistic}), p-values (\code{p.values}). The format
@@ -243,7 +244,7 @@ comp_boot_mul <- function(mod_fit, B, weights_type = "rademacher") {
     # consolidate tibble
     tidyr::nest(boot_out = c(term, estimate))
 
-  summary_boot <- get_summary(
+  summary_boot <- get_boot_summary(
     mod_fit = mod_fit,
     boot_out = boot_out,
     boot_type = "mul"
@@ -251,8 +252,9 @@ comp_boot_mul <- function(mod_fit, B, weights_type = "rademacher") {
 
   out <- list(
     var_type = "boot_mul",
+    var_type_abb = "mul",
     var_summary = summary_boot,
-    var_assumptions = "The observations need to be independent.",
+    var_assumptions = "The observations must be independent.",
     cov_mat = NULL,
     boot_out = boot_out
   )

@@ -1,6 +1,18 @@
-# maars 0.6.0
+# maars 0.7.0
 
-This is per #40 
+* Write function to create `maars_lm` object from `comp_var`
+* write a `as.maars_lm` function to be run on an `lm` object
+* write `confint.maars_lm` method
+* write `print.maars_lm` method
+* Write `summary.maars_lm` method
+* Write `plot.maars_lm`, currently for `lm` objects
+* Correct typo in `maars` release `0.6.0` in `NEWS.md`
+* Use `GPL-2` and `GPL-3` `LICENCE`
+* Remove the `MIT LICENCE` files
+* We would like to thank [Alex Reinhart](https://www.refsmmat.com/) for his kind
+assistance in various aspects of this release
+
+# maars 0.6.0
 
 * update the documentation of `comp_var` and of the estimators of the variance
 * Adapt tests to handle the new function `comp_var`

@@ -1,6 +1,6 @@
 #' Set the custom \code{\link[ggplot2]{theme}} for our plots
 #'
-#' \code{set_ggplot2_theme} is a wrapper to set a standard custom
+#' \code{set_mms_ggplot2_theme} is a wrapper to set a standard custom
 #' \code{\link[ggplot2]{theme}} for all of our output plots. It contains
 #' only the necessary parameters we require to change in the
 #' \code{\link[ggplot2]{theme}} function, and takes the remaining arguments
@@ -30,9 +30,9 @@
 #'     ggplot2::geom_point()
 #'
 #' # Set the theme for a ggplot2 object with the default options
-#' out <- p1 %>% maars::set_ggplot2_theme(ggplot_obj = .)
+#' out <- p1 %>% maars::set_mms_ggplot2_theme(ggplot_obj = .)
 #' }
-set_ggplot2_theme <- function(ggplot_obj,
+set_mms_ggplot2_theme <- function(ggplot_obj,
                               axis_text_size = 17,
                               axis_title_size = 17,
                               strip_text_x_size = 17,

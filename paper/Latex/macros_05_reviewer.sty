@@ -1,0 +1,37 @@
+\usepackage{xcolor}
+% Reviewer comments
+\definecolor{cadmiumgreen}{rgb}{0.0, 0.42, 0.24}
+\newcommand{\colmn}[1]{\textcolor{red}{#1}}
+\newcommand{\colnd}[1]{\textcolor{blue}{#1}}
+\newcommand{\colhb}[1]{\textcolor{blue}{#1}}
+\newcommand{\colar}[1]{\textcolor{red}{#1}}
+\newcommand{\colam}[1]{\textcolor{red}{#1}}
+\newcommand{\colss}[1]{\textcolor{cadmiumgreen}{#1}}
+
+% ND comments
+\newcommand{\commnda}[1]{\todo[inline,color=blue!40]{\textbf{ND:} #1}}
+\newcommand{\commndb}[1]{{\textbf{{\colnd{{[ND: #1]}}}}}}
+
+% AR comments
+\newcommand{\commara}[1]{\todo[inline,color=red!40]{\textbf{AR:} #1}}
+\newcommand{\commarb}[1]{{\textbf{{\colar{{[AR: #1]}}}}}}
+
+% SS comments
+\newcommand{\commssa}[1]{\todo[inline,color=green!40]{\textbf{SS:} #1}}
+\newcommand{\commssb}[1]{{\textbf{{\colss{{[SS: #1]}}}}}}
+
+% MN comments
+\newcommand{\commmna}[1]{\todo[inline,color=red!40]{\textbf{MN:} #1}}
+\newcommand{\commmnb}[1]{{\textbf{{\colmn{{[MN: #1]}}}}}}
+
+% WL comments
+\newcommand{\commwla}[1]{\todo[inline,color=red!40]{\textbf{WL:} #1}}
+\newcommand{\commwlb}[1]{{\textbf{{\colhb{{[WL: #1]}}}}}}
+
+% HB comments
+\newcommand{\commhba}[1]{\todo[inline,color=blue!40]{\textbf{HB:} #1}}
+\newcommand{\commhbb}[1]{{\textbf{{\colhb{{[HB: #1]}}}}}}
+
+% AM comments
+\newcommand{\commama}[1]{\todo[inline,color=red!40]{\textbf{AM:} #1}}
+\newcommand{\commamb}[1]{{\textbf{{\colam{{[AM: #1]}}}}}}

@@ -6,14 +6,14 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Create an empirical or multiplier bootstrap summary table — comp_var • maars</title>
+<title>Generate maars_lm, lm object with estimates of the variance — comp_var • maars</title>
 
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
 
@@ -39,11 +39,10 @@
 
 
 
-<meta property="og:title" content="Create an empirical or multiplier bootstrap summary table — comp_var" />
-<meta property="og:description" content="comp_var creates an OLS bootstrap summary table for
-empirical bootstrap output or multiplier bootstrap output as generated from
-comp_boot_emp or
-comp_boot_mul, respectively." />
+<meta property="og:title" content="Generate maars_lm, lm object with estimates of the variance — comp_var" />
+<meta property="og:description" content="Generates an object of class &quot;maars_lm&quot;, &quot;lm&quot; containing
+estimates of the variance of the coefficients in the regression
+model." />
 
 
 
@@ -75,7 +74,7 @@ comp_boot_mul, respectively." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">maars</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7.0</span>
       </span>
     </div>
 
@@ -116,7 +115,12 @@ comp_boot_mul, respectively." />
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/shamindras/maars/">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -130,16 +134,15 @@ comp_boot_mul, respectively." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Create an empirical or multiplier bootstrap summary table</h1>
-    
+    <h1>Generate <code>maars_lm, lm</code> object with estimates of the variance</h1>
+    <small class="dont-index">Source: <a href='https://github.com/shamindras/maars/blob/master/R/maars-lm.R'><code>R/maars-lm.R</code></a></small>
     <div class="hidden name"><code>comp_var.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p><code>comp_var</code> creates an OLS bootstrap summary table for
-empirical bootstrap output or multiplier bootstrap output as generated from
-<code><a href='comp_boot_emp.html'>comp_boot_emp</a></code> or
-<code><a href='comp_boot_mul.html'>comp_boot_mul</a></code>, respectively.</p>
+    <p>Generates an object of class <code>"maars_lm", "lm"</code> containing
+estimates of the variance of the coefficients in the regression
+model.</p>
     </div>
 
     <pre class="usage"><span class='fu'>comp_var</span><span class='op'>(</span><span class='va'>mod_fit</span>, boot_emp <span class='op'>=</span> <span class='cn'>NULL</span>, boot_res <span class='op'>=</span> <span class='cn'>NULL</span>, boot_mul <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
@@ -193,7 +196,23 @@ invalid inputs.</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A summary statistics tibble for the bootstrap input.</p>
+    <p>A "maars_lm" object containing the estimates of the variance of the
+regression coefficients, including the sandwich and the variance
+returned by <code><a href='https://rdrr.io/r/stats/lm.html'>stats::lm</a></code>.</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>The "maars_lm" object is basically an "lm" object with additional
+attributes (the additional estimates of the coefficients variance),
+which are stored within "var". For example, the estimates of the empirical
+bootstrap will be stored within "var$var_boot_emp".
+Each of the nested lists contains the following elements: the type of estimator of
+of the variance  (<code>var_type</code>); An abbreviated string representing the
+type of the estimator of the variance  (<code>var_type_abb</code>); the summary
+statistics of <code>mod_fit</code> based on this estimator of the variance
+(e.g., standard errors and p-values) (<code>var_summary</code>); the assumptions
+under which the estimator of the variance is consistent
+(<code>var_assumptions</code>); the covariance matrix for the coefficients
+estimates (<code>cov_mat</code>).</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
@@ -208,11 +227,11 @@ invalid inputs.</p></td>
 
 <span class='co'># Run the multiplier bootstrap on the fitted (OLS) linear model</span>
 <span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>162632</span><span class='op'>)</span>
-<span class='va'>coef_emp_boot</span> <span class='op'>&lt;-</span> <span class='fu'><a href='comp_boot_emp.html'>comp_boot_emp</a></span><span class='op'>(</span>mod_fit <span class='op'>=</span> <span class='va'>mod_fit</span>, B <span class='op'>=</span> <span class='fl'>1000</span><span class='op'>)</span>
 <span class='va'>out</span> <span class='op'>&lt;-</span> <span class='fu'>comp_var</span><span class='op'>(</span><span class='va'>mod_fit</span>, boot_mul <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>B <span class='op'>=</span> <span class='fl'>100</span>, weights_type <span class='op'>=</span> <span class='st'>"rademacher"</span><span class='op'>)</span><span class='op'>)</span>
 
 <span class='co'># print output</span>
 <span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>out</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>out</span><span class='op'>$</span><span class='va'>var</span><span class='op'>$</span><span class='va'>var_boot_mul</span><span class='op'>)</span>
 <span class='op'>}</span>
 </div></pre>
   </div>

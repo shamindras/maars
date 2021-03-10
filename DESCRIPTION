@@ -1,7 +1,7 @@
 Package: maars
 Title: An implementation of the Models As Approximations series
     of statistics papers
-Version: 0.6.0
+Version: 0.7.0
 Authors@R: 
     c(person(given = "Shamindra",
              family = "Shrotriya",
@@ -12,7 +12,7 @@ Authors@R:
              role = c("aut"),
              email = "rfogliat@andrew.cmu.edu"))
 Description: An implementation of the Models As Approximations series of statistics papers
-License: MIT + file LICENSE
+License: GPL (>= 2)
 Imports: 
     magrittr,
     rlang (>= 0.1.2),
@@ -29,7 +29,8 @@ Imports:
     vroom,
     Rdpack,
     ggplot2,
-    stringr
+    stringr,
+    utf8
 Suggests: 
     bench,
     kableExtra,
@@ -48,3 +49,5 @@ LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
 VignetteBuilder: knitr
+URL: https://github.com/shamindras/maars, https://shamindras.github.io/maars/
+BugReports: https://github.com/shamindras/maars/issues

@@ -46,7 +46,8 @@ comp_boot_emp_samples <- function(data,
   if (is.null(m)) {
     m <- n
   }
-
+  # this is a simplified version of rsample because rsample currently
+  # does not allow for sampling m!=n observations from the data
   indices <- purrr::map(rep(n, B), sample, replace = TRUE, size = m)
 
   out <- tibble::tibble(
@@ -167,7 +168,8 @@ fit_reg <- function(mod_fit, data, weights = NULL) {
 #'
 #' @return A list containing the following elements.
 #'   \code{var_type}: The type of estimator for the variance of the coefficients
-#'   estimates.
+#'   estimates. An abbreviated string representing the
+#'   type of the estimator of the variance  (\code{var_type_abb}).
 #'   \code{var_summary}: A tibble containing the summary statistics for the model:
 #'   terms (\code{term}), standard errors (\code{std.error}),
 #'   statistics (\code{statistic}), p-values (\code{p.values}). The format
@@ -220,13 +222,14 @@ comp_boot_emp <- function(mod_fit, B = 100, m = NULL) {
     tidyr::nest(boot_out = c(estimate, term)) %>%
     tibble::add_column(m = m, n = n)
 
-  summary_boot <- get_summary(mod_fit = mod_fit,
+  summary_boot <- get_boot_summary(mod_fit = mod_fit,
                               boot_out = boot_out,
                               boot_type = 'emp')
 
   out <- list(var_type = "boot_emp",
+              var_type_abb = "emp",
               var_summary =  summary_boot,
-              var_assumptions = "The observations need to be independent.",
+              var_assumptions = "The observations must be independent.",
               cov_mat = NULL,
               boot_out = boot_out)
 
@@ -340,6 +343,6 @@ diag_boot_emp_qqn <- function(boot_out) {
       x = "Theoretical quantiles",
       y = "Sample quantiles"
     ) %>%
-    set_ggplot2_theme(ggplot_obj = .)
+    set_mms_ggplot2_theme(ggplot_obj = .)
   return(out)
 }

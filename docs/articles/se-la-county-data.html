@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Reproducing LA County Standard Errors from [@buja2019modelsasapproximationspart1] • maars</title>
-<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
+<!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">maars</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7.0</span>
       </span>
     </div>
 
@@ -71,7 +71,14 @@
   </ul>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right"></ul>
+<ul class="nav navbar-nav navbar-right">
+<li>
+  <a href="https://github.com/shamindras/maars/">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
 </div>
 <!--/.nav-collapse -->
   </div>
@@ -81,7 +88,7 @@
 
       
 
-      </header><script src="se-la-county-data_files/header-attrs-2.7.1/header-attrs.js"></script><div class="row">
+      </header><script src="se-la-county-data_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Reproducing LA County Standard Errors from <span class="citation">(Buja et al. 2019)</span>
@@ -89,7 +96,7 @@
                         <h4 class="author">Riccardo Fogliato, Shamindra Shrotriya</h4>
             
       
-      
+      <small class="dont-index">Source: <a href="https://github.com/shamindras/maars/blob/master/vignettes/se-la-county-data.Rmd"><code>vignettes/se-la-county-data.Rmd</code></a></small>
       <div class="hidden name"><code>se-la-county-data.Rmd</code></div>
 
     </div>
@@ -164,7 +171,7 @@
 <p>Let’s first get the OLS estimates.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">coef_emp_boot</span> <span class="op">&lt;-</span> <span class="fu">maars</span><span class="fu">::</span><span class="fu">comp_empirical_bootstrap</span><span class="op">(</span>mod_fit <span class="op">=</span> <span class="va">mod_fit</span>, B <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span>
-<span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html">glimpse</a></span><span class="op">(</span><span class="va">coef_emp_boot</span><span class="op">)</span></code></pre></div>
+<span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/glimpse.html">glimpse</a></span><span class="op">(</span><span class="va">coef_emp_boot</span><span class="op">)</span></code></pre></div>
 <p>We can visualize the distribution of the variance to check whether it well approximates the normal distribution.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">qnorm_boot</span> <span class="op">&lt;-</span> <span class="fu">maars</span><span class="fu">::</span><span class="fu">qqnorm_bootstrap</span><span class="op">(</span><span class="va">coef_emp_boot</span><span class="op">)</span>
@@ -202,7 +209,7 @@
 <code class="sourceCode R"><span class="va">coef_mult_boot</span> <span class="op">&lt;-</span> <span class="fu">maars</span><span class="fu">::</span><span class="fu">comp_multiplier_bootstrap_var</span><span class="op">(</span>mod_fit <span class="op">=</span> <span class="va">mod_fit</span>, 
                                                       B <span class="op">=</span> <span class="fl">1000</span>, 
                                                       weights_type <span class="op">=</span> <span class="st">"std_gaussian"</span><span class="op">)</span>
-<span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html">glimpse</a></span><span class="op">(</span><span class="va">coef_mult_boot</span><span class="op">)</span></code></pre></div>
+<span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/glimpse.html">glimpse</a></span><span class="op">(</span><span class="va">coef_mult_boot</span><span class="op">)</span></code></pre></div>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># se_mult &lt;- maars::comp_bootstrap_summary(mod_fit = mod_fit, </span>
 <span class="co">#                                        boot_out = coef_mult_boot, </span>
@@ -212,7 +219,7 @@
 <div id="computing-standard-errors-from-ols-using-sandwich-estimator" class="section level2">
 <h2 class="hasAnchor">
 <a href="#computing-standard-errors-from-ols-using-sandwich-estimator" class="anchor"></a>Computing standard errors from OLS using Sandwich Estimator</h2>
-<p>Then we obtain the standard errors using the White sandwich estimator see <span class="citation">(White 1980a, @white1980usinglsapproxunknownregfuncs)</span>.</p>
+<p>Then we obtain the standard errors using the White sandwich estimator see <span class="citation">White (1980b)</span>.</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">se_sand</span> <span class="op">&lt;-</span> <span class="fu">maars</span><span class="fu">::</span><span class="fu">comp_sandwich_qr_var</span><span class="op">(</span>mod_fit <span class="op">=</span> <span class="va">mod_fit</span><span class="op">)</span>
 <span class="va">se_sand</span></code></pre></div>
@@ -316,8 +323,8 @@
   <span class="fu">maars</span><span class="fu">::</span><span class="fu">comp_coef_rwgt</span><span class="op">(</span>mod_fit <span class="op">=</span> <span class="va">.</span>,
                  terms_to_rwgt <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">la_county_df</span><span class="op">)</span><span class="op">[</span><span class="op">-</span><span class="fl">1</span><span class="op">]</span>,
                  B <span class="op">=</span> <span class="fl">300</span><span class="op">)</span>
-<span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://pillar.r-lib.org/reference/glimpse.html">glimpse</a></span><span class="op">(</span><span class="va">coef_rwgt</span><span class="op">)</span></code></pre></div>
-<p>To facilitate the interpretation of the results, we rely on graphical model diagnostics. Here, we show the “focal slope” model diagnostics. The <code>focal_slope</code> plot shows how one coefficient of interests varies under reweighting of each of the regressors. In the plot below we consider the case of “PercVacant”.</p>
+<span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/glimpse.html">glimpse</a></span><span class="op">(</span><span class="va">coef_rwgt</span><span class="op">)</span></code></pre></div>
+<p>To facilitate the interpretation of the results, we rely on graphical model diagnostics. Here, we show the “focal slope” model diagnostics. The <code>focal_slope</code> plot shows how one coefficient of interests varies under reweighting of each of the regressors. In the plot below we consider the case of “PercVacant.”</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">fs</span> <span class="op">&lt;-</span> <span class="fu">maars</span><span class="fu">::</span><span class="fu">focal_slope</span><span class="op">(</span><span class="va">mod_fit</span>, <span class="va">coef_rwgt</span>, <span class="st">'PercVacant'</span><span class="op">)</span>
 <span class="va">fs</span></code></pre></div>
@@ -325,18 +332,18 @@
 <div id="references" class="section level2 unnumbered">
 <h2 class="hasAnchor">
 <a href="#references" class="anchor"></a>References</h2>
-<div id="refs" class="references hanging-indent">
-<div id="ref-buja2019modelsasapproximationspart1">
-<p>Buja, Andreas, Lawrence Brown, Richard Berk, Edward George, Emil Pitkin, Mikhail Traskin, Kai Zhang, and Linda Zhao. 2019. “Models as Approximations I: Consequences Illustrated with Linear Regression.” <em>Statist. Sci.</em> 34 (4): 523–44. <a href="https://doi.org/10.1214/18-STS693">https://doi.org/10.1214/18-STS693</a>.</p>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-buja2019modelsasapproximationspart1" class="csl-entry">
+Buja, Andreas, Lawrence Brown, Richard Berk, Edward George, Emil Pitkin, Mikhail Traskin, Kai Zhang, and Linda Zhao. 2019. <span>“Models as Approximations <span>I</span>: Consequences Illustrated with Linear Regression.”</span> <em>Statist. Sci.</em> 34 (4): 523–44. <a href="https://doi.org/10.1214/18-STS693">https://doi.org/10.1214/18-STS693</a>.
 </div>
-<div id="ref-white1980heteroskedasticconsistentcovest">
-<p>White, Halbert. 1980a. “A Heteroskedasticity-Consistent Covariance Matrix Estimator and a Direct Test for Heteroskedasticity.” <em>Econometrica</em> 48 (4): 817–38. <a href="https://doi.org/10.2307/1912934">https://doi.org/10.2307/1912934</a>.</p>
+<div id="ref-white1980heteroskedasticconsistentcovest" class="csl-entry">
+White, Halbert. 1980a. <span>“A Heteroskedasticity-Consistent Covariance Matrix Estimator and a Direct Test for Heteroskedasticity.”</span> <em>Econometrica</em> 48 (4): 817–38. <a href="https://doi.org/10.2307/1912934">https://doi.org/10.2307/1912934</a>.
 </div>
-<div id="ref-white1980usinglsapproxunknownregfuncs">
-<p>———. 1980b. “Using Least Squares to Approximate Unknown Regression Functions.” <em>Internat. Econom. Rev.</em> 21 (1): 149–70. <a href="https://doi.org/10.2307/2526245">https://doi.org/10.2307/2526245</a>.</p>
+<div id="ref-white1980usinglsapproxunknownregfuncs" class="csl-entry">
+———. 1980b. <span>“Using Least Squares to Approximate Unknown Regression Functions.”</span> <em>Internat. Econom. Rev.</em> 21 (1): 149–70. <a href="https://doi.org/10.2307/2526245">https://doi.org/10.2307/2526245</a>.
 </div>
-<div id="ref-wickham2014tidydata">
-<p>Wickham, Hadley. 2014. “Tidy Data.” <em>Journal of Statistical Software</em> 59 (10). <a href="https://doi.org/10.18637/jss.v059.i10">https://doi.org/10.18637/jss.v059.i10</a>.</p>
+<div id="ref-wickham2014tidydata" class="csl-entry">
+Wickham, Hadley. 2014. <span>“Tidy Data.”</span> <em>Journal of Statistical Software</em> 59 (10). <a href="https://doi.org/10.18637/jss.v059.i10">https://doi.org/10.18637/jss.v059.i10</a>.
 </div>
 </div>
 </div>

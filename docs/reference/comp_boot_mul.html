@@ -12,8 +12,8 @@
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
 
@@ -76,7 +76,7 @@ for how a single instance is run." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">maars</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.6.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7.0</span>
       </span>
     </div>
 
@@ -117,7 +117,12 @@ for how a single instance is run." />
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/shamindras/maars/">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
       </ul>
       
     </div><!--/.nav-collapse -->
@@ -132,7 +137,7 @@ for how a single instance is run." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>A wrapper to replicate the multiplier bootstrap calculation for an OLS fitted dataset</h1>
-    
+    <small class="dont-index">Source: <a href='https://github.com/shamindras/maars/blob/master/R/ols-boot-multiplier.R'><code>R/ols-boot-multiplier.R</code></a></small>
     <div class="hidden name"><code>comp_boot_mul.Rd</code></div>
     </div>
 
@@ -172,7 +177,8 @@ For more details see the documentation for
 
     <p>A list containing the following elements.
 <code>var_type</code>: The type of estimator for the variance of the coefficients
-estimates.
+estimates. An abbreviated string representing the
+type of the estimator of the variance  (<code>var_type_abb</code>).
 <code>var_summary</code>: A tibble containing the summary statistics for the model:
 terms (<code>term</code>), standard errors (<code>std.error</code>),
 statistics (<code>statistic</code>), p-values (<code>p.values</code>). The format

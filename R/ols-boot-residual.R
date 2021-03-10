@@ -15,7 +15,8 @@
 #'
 #' @return A list containing the following elements.
 #'   \code{var_type}: The type of estimator for the variance of the coefficients
-#'   estimates.
+#'   estimates. An abbreviated string representing the
+#'   type of the estimator of the variance  (\code{var_type_abb}).
 #'   \code{var_summary}: A tibble containing the summary statistics for the model:
 #'   terms (\code{term}), standard errors (\code{std.error}),
 #'   statistics (\code{statistic}), p-values (\code{p.values}). The format
@@ -72,13 +73,14 @@ comp_boot_res <- function(mod_fit, B = 100) {
     dplyr::mutate(n = n) %>%
     dplyr::relocate(n)
 
-  summary_boot <- get_summary(mod_fit = mod_fit,
+  summary_boot <- get_boot_summary(mod_fit = mod_fit,
                               boot_out = boot_out,
                               boot_type = 'res')
 
   out <- list(var_type = "boot_res",
+              var_type_abb = "res",
               var_summary =  summary_boot,
-              var_assumptions = "The observations need to be independent.",
+              var_assumptions = "The model must be well specified.",
               cov_mat = NULL,
               boot_out = boot_out)
 

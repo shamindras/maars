@@ -4,16 +4,22 @@
     <loc>https://shamindras.github.io/maars/index.html</loc>
   </url>
   <url>
+    <loc>https://shamindras.github.io/maars/reference/as.maars.html</loc>
+  </url>
+  <url>
     <loc>https://shamindras.github.io/maars/reference/check_fn_args.html</loc>
   </url>
   <url>
-    <loc>https://shamindras.github.io/maars/reference/check_fn_args_comp_var_boot.html</loc>
+    <loc>https://shamindras.github.io/maars/reference/check_fn_args_comp_mms_var_boot.html</loc>
   </url>
   <url>
-    <loc>https://shamindras.github.io/maars/reference/check_fn_args_comp_var_boot_ind.html</loc>
+    <loc>https://shamindras.github.io/maars/reference/check_fn_args_comp_mms_var_boot_ind.html</loc>
   </url>
   <url>
     <loc>https://shamindras.github.io/maars/reference/check_fn_args_posint.html</loc>
+  </url>
+  <url>
+    <loc>https://shamindras.github.io/maars/reference/check_fn_args_summary.html</loc>
   </url>
   <url>
     <loc>https://shamindras.github.io/maars/reference/comp_boot_emp.html</loc>
@@ -35,6 +41,12 @@
   </url>
   <url>
     <loc>https://shamindras.github.io/maars/reference/comp_ci_boot.html</loc>
+  </url>
+  <url>
+    <loc>https://shamindras.github.io/maars/reference/comp_lm_var.html</loc>
+  </url>
+  <url>
+    <loc>https://shamindras.github.io/maars/reference/comp_mms_var.html</loc>
   </url>
   <url>
     <loc>https://shamindras.github.io/maars/reference/comp_sand_var.html</loc>
@@ -67,13 +79,37 @@
     <loc>https://shamindras.github.io/maars/reference/gen_grid_cent_rwgt.html</loc>
   </url>
   <url>
+    <loc>https://shamindras.github.io/maars/reference/get_assumptions.html</loc>
+  </url>
+  <url>
+    <loc>https://shamindras.github.io/maars/reference/get_boot_summary.html</loc>
+  </url>
+  <url>
+    <loc>https://shamindras.github.io/maars/reference/get_confint.html</loc>
+  </url>
+  <url>
+    <loc>https://shamindras.github.io/maars/reference/get_ols_diag_plots.html</loc>
+  </url>
+  <url>
     <loc>https://shamindras.github.io/maars/reference/get_summary.html</loc>
+  </url>
+  <url>
+    <loc>https://shamindras.github.io/maars/reference/get_summary_ind.html</loc>
   </url>
   <url>
     <loc>https://shamindras.github.io/maars/reference/pipe.html</loc>
   </url>
   <url>
-    <loc>https://shamindras.github.io/maars/reference/set_ggplot2_theme.html</loc>
+    <loc>https://shamindras.github.io/maars/reference/plot.maars_lm.html</loc>
+  </url>
+  <url>
+    <loc>https://shamindras.github.io/maars/reference/print.maars_lm.html</loc>
+  </url>
+  <url>
+    <loc>https://shamindras.github.io/maars/reference/set_mms_ggplot2_theme.html</loc>
+  </url>
+  <url>
+    <loc>https://shamindras.github.io/maars/reference/summary.maars_lm.html</loc>
   </url>
   <url>
     <loc>https://shamindras.github.io/maars/reference/tidyeval.html</loc>

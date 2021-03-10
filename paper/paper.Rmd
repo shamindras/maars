@@ -1,0 +1,110 @@
+---
+# see https://www.jstatsoft.org/pages/view/style#what-are-the-capitalization-rules-in-jss-what-is-title-style-and-sentence-style
+documentclass: jss
+author:
+  - name: Riccardo Fogliato # (!!!!) order of authors to be revisited (!!!!)
+    affiliation: 'Carnegie Mellon University'
+  #  affiliation: | doesn't fit
+  #    | Department of Statistics and Data Science
+  #    | Carnegie Mellon University
+    address: |
+      | FMS 317, 5000 Forbes Ave
+      | Pittsburgh, PA 15213, United States
+    email: \email{rfogliat@andrew.cmu.edu}
+  - name: Shamindra Shrotriya
+    affiliation: 'Carnegie Mellon University'
+    address: |
+      | FMS 317, 5000 Forbes Ave
+      | Pittsburgh, PA 15213, United States
+    email: \email{sshrotri@andrew.cmu.edu}
+  - name: Arun Kuchibotla
+    affiliation: 'Carnegie Mellon University'
+    address: |
+      | Baker Hall, 4909 Frew St
+      | Pittsburgh, PA 15213, United States
+    email: \email{arunku@stat.cmu.edu}
+    # use a different affiliation in adress field (differently formated here)
+    #affiliation2: Universitat Autònoma de Barcelona
+title:
+  formatted: "\\pkg{maars:} Tidy Inference Under the `Models as Approximations' Framework in \\pkg{R}"
+  # If you use tex in the formatted title, also supply version without
+  plain:     "maars: Tidy Inference Under the `Models as Approximations' Framework in R"
+  # For running headers, if needed
+  short:     "\\pkg{maars}: Models as Approximations"
+abstract: >
+  Linear regression using ordinary least squares (OLS) 
+  is a critical part of a statistician's
+  toolkit. In \pkg{R}, this is elegantly implemented 
+  via the \code{lm()} and related functions. However, this functionality is based on the 
+  unrealistic assumption that the linear model is well-specified. A large 
+  body of econometric and statistical research has focused on performing OLS inference under 
+  more practical assumptions. There is a need for a comprehensive workflow in $\pkg{R}$
+  for OLS under these practical assumptions. In this paper, we introduce our \pkg{R} package \pkg{maars}, 
+  to enable a \textit{tidy} inferential workflow in the misspecified OLS setting. Under potential 
+  misspecification, we demonstrate how the \pkg{maars} package performs variance estimation, 
+  confidence interval computation, hypothesis testing, and diagnostics. The outputs of \pkg{maars} 
+  functions are tailored for further exploration using the \pkg{tidyverse} \pkg{R} packages.
+keywords:
+  # at least one keyword must be supplied
+  formatted: [Ordinary Least Squares (OLS), Sandwich variance, Bootstrap, Model Misspecification, "\\pkg{tidyverse}"]
+  plain:     [ordinary least squares (OLS), sandwich variance, bootstrap, model misspecification, tidyverse]
+preamble: >
+  \usepackage{amsmath}
+output: 
+  rticles::jss_article:
+    includes:
+      in_header: ["Latex/macros_01_proof_envs.sty", "Latex/macros_02_operators_commands.sty", "Latex/macros_03_symbols.sty", "Latex/macros_04_propernames.sty", "Latex/macros_05_reviewer.sty"]
+bibliography: references.bib 
+---
+
+```{r, setup, include=FALSE, purl=FALSE}
+options(prompt = 'R> ', continue = '+ ')
+knitr::opts_chunk$set(purl = TRUE)
+```
+
+```{r, child=here::here('paper', '00-introduction.Rmd'), purl=TRUE}
+```
+
+# Introduction
+
+This template demonstrates some of the basic LaTeX that you need to know to
+create a JSS article.
+
+## Code formatting
+
+In general, don't use Markdown, but use the more precise LaTeX commands instead:
+
+* \proglang{Java}
+* \pkg{plyr}
+
+One exception is inline code, which can be written inside a pair of backticks
+(i.e., using the Markdown syntax).
+
+If you want to use LaTeX commands in headers, you need to provide a
+`short-title` attribute. You can also provide a custom identifier if necessary.
+See the header of Section \ref{r-code} for example.
+
+# \proglang{R} code {short-title="R code" #r-code}
+
+Can be inserted in regular R markdown block.
+
+```{r}
+x <- 1:10
+x
+```
+
+## Features specific to \pkg{rticles} {short-title="Features specific to rticles"}
+
+* Adding short titles to section headers is a feature specific to \pkg{rticles}
+(implemented via a Pandoc Lua filter). This feature is currently not supported
+by Pandoc and we will update this template if 
+[it is officially supported in the future](https://github.com/jgm/pandoc/issues/4409).
+* Using the `\AND` syntax in the `author` field to add authors on a new line.
+This is a specific to the `rticles::jss_article` format.
+
+# References
+
+<div id="refs"></div>
+
+```{r, child=here::here('paper', '99-sessioninfo.Rmd'), purl=TRUE}
+```

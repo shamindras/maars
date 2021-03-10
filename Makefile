@@ -5,6 +5,7 @@
 PKGNAME = `sed -n "s/Package: *\([^ ]*\)/\1/p" DESCRIPTION`
 PKGVERS = `sed -n "s/Version: *\([^ ]*\)/\1/p" DESCRIPTION`
 
+.PHONY: paper
 
 all: check
 
@@ -27,6 +28,19 @@ build_pkgdown:
 	-e 'devtools::load_all(path = here::here())' \
 	-e 'devtools::document()' \
 	-e 'pkgdown::build_site()' \
+
+paper_clean: 
+	rm -rf paper/*.html paper/*.tex paper/*.log paper/*.md paper/submission/*.md
+paper:
+	Rscript -e "rmarkdown::render(input = here::here('paper', 'paper.Rmd'))"
+	Rscript -e "knitr::purl(here::here('paper', 'paper.Rmd'), documentation = 0)"
+	mv paper.R paper/code.R
+	Rscript -e "knitr::spin(hair = here::here('paper', 'code.R'))"
+	mv code.html code.md paper/code.R paper/submission/
+	mv paper/paper.pdf paper/submission/
+	tar -cvzf maars_submission.tar.gz paper/submission
+	mv maars_submission.tar.gz paper/submission/
+	make paper_clean
 
 clean:
 	@rm -rf $(PKGNAME)_$(PKGVERS).tar.gz $(PKGNAME).Rcheck
