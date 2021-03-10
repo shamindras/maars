@@ -6,8 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Get the tidy variance summary from a fitted OLS maars_lm, lm
-class object — get_summary • maars</title>
+<title>Assertion Checks for individual get_boot_summary function inputs — check_fn_args_summary • maars</title>
 
 
 <!-- jquery -->
@@ -40,10 +39,10 @@ class object — get_summary • maars</title>
 
 
 
-<meta property="og:title" content="Get the tidy variance summary from a fitted OLS maars_lm, lm
-class object — get_summary" />
-<meta property="og:description" content="Get the tidy variance summary from a fitted OLS maars_lm, lm
-class object" />
+<meta property="og:title" content="Assertion Checks for individual get_boot_summary function inputs — check_fn_args_summary" />
+<meta property="og:description" content="check_fn_args_comp_mms_var_boot_ind is used to assess whether the arguments
+are correctly specified in list format and returns an error message if
+they do not match the correct specification" />
 
 
 
@@ -135,24 +134,24 @@ class object" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Get the tidy variance summary from a fitted OLS <code>maars_lm, lm</code>
-class object</h1>
+    <h1>Assertion Checks for individual <code><a href='get_boot_summary.html'>get_boot_summary</a></code> function inputs</h1>
     <small class="dont-index">Source: <a href='https://github.com/shamindras/maars/blob/master/R/ols-summary.R'><code>R/ols-summary.R</code></a></small>
-    <div class="hidden name"><code>get_summary.Rd</code></div>
+    <div class="hidden name"><code>check_fn_args_summary.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Get the tidy variance summary from a fitted OLS <code>maars_lm, lm</code>
-class object</p>
+    <p><code>check_fn_args_comp_mms_var_boot_ind</code> is used to assess whether the arguments
+are correctly specified in <code>list</code> format and returns an error message if
+they do not match the correct specification</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_summary</span><span class='op'>(</span>
+    <pre class="usage"><span class='fu'>check_fn_args_summary</span><span class='op'>(</span>
   <span class='va'>mod_fit</span>,
-  sand <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  boot_emp <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  boot_mul <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  boot_res <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  well_specified <span class='op'>=</span> <span class='cn'>FALSE</span>
+  <span class='va'>sand</span>,
+  <span class='va'>boot_emp</span>,
+  <span class='va'>boot_mul</span>,
+  <span class='va'>boot_res</span>,
+  <span class='va'>well_specified</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -192,8 +191,8 @@ from the request</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>(tibble) : Combined standard error summary from a fitted
-OLS <code>maars_lm, lm</code> class object</p>
+    <p>: A character vector of  <code>TRUE</code> if assertions pass, or an
+error if there is an assertion failure.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
@@ -209,21 +208,18 @@ OLS <code>maars_lm, lm</code> class object</p>
 <span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fl'>2</span> <span class='op'>+</span> <span class='va'>X_1</span> <span class='op'>*</span> <span class='fl'>1</span> <span class='op'>+</span> <span class='va'>X_2</span> <span class='op'>*</span> <span class='fl'>5</span> <span class='op'>+</span> <span class='va'>eps</span>
 <span class='va'>lm_fit</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>y</span> <span class='op'>~</span> <span class='va'>X_1</span> <span class='op'>+</span> <span class='va'>X_2</span><span class='op'>)</span>
 
-<span class='co'># DEFINE common column names - these stay the same across all</span>
-<span class='co'># reported error types</span>
-<span class='va'>common_vars</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"term"</span>, <span class='st'>"estimate"</span><span class='op'>)</span>
-
-<span class='co'># Empirical Bootstrap check</span>
-<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>454354534</span><span class='op'>)</span>
+<span class='co'># Create a maars_lm model with empirical bootstrap, sandwich, and</span>
+<span class='co'># well-specified variance estimates</span>
 <span class='va'>comp_var1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='comp_var.html'>comp_var</a></span><span class='op'>(</span>mod_fit <span class='op'>=</span> <span class='va'>lm_fit</span>, boot_emp <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>B <span class='op'>=</span> <span class='fl'>20</span>, m <span class='op'>=</span> <span class='fl'>200</span><span class='op'>)</span>,
-                    boot_res <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>B <span class='op'>=</span> <span class='fl'>30</span><span class='op'>)</span>,
+                    boot_res <span class='op'>=</span> <span class='cn'>NULL</span>,
                     boot_mul <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span>
 
-<span class='co'># This returns everything but boot_mul, since we didn't run it in the original</span>
-<span class='co'># original maars_lm model</span>
-<span class='fu'>get_summary</span><span class='op'>(</span>mod_fit <span class='op'>=</span> <span class='va'>comp_var1</span>, sand <span class='op'>=</span> <span class='cn'>TRUE</span>,
-                     boot_emp <span class='op'>=</span> <span class='cn'>TRUE</span>, boot_res <span class='op'>=</span> <span class='cn'>TRUE</span>, boot_mul <span class='op'>=</span> <span class='cn'>FALSE</span>,
-                     well_specified <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+<span class='co'># Let the user request only the empirical bootstrap variance estimates</span>
+<span class='co'># This function should return "boot_emp" since the user only requested it</span>
+<span class='co'># and it is available in the fitted maars_lm model</span>
+<span class='fu'>check_fn_args_summary</span><span class='op'>(</span>mod_fit <span class='op'>=</span> <span class='va'>comp_var1</span>, sand <span class='op'>=</span> <span class='cn'>FALSE</span>,
+                      boot_emp <span class='op'>=</span> <span class='cn'>TRUE</span>, boot_res <span class='op'>=</span> <span class='cn'>FALSE</span>, boot_mul <span class='op'>=</span> <span class='cn'>FALSE</span>,
+                      well_specified <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
 <span class='op'>}</span>
 </div></pre>
   </div>

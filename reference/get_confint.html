@@ -6,8 +6,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Get the tidy variance summary from a fitted OLS maars_lm, lm
-class object — get_summary • maars</title>
+<title>Get the tidy variance summary and confidence intervals for the coefficients of
+an object of class "maars_lm" — get_confint • maars</title>
 
 
 <!-- jquery -->
@@ -40,9 +40,9 @@ class object — get_summary • maars</title>
 
 
 
-<meta property="og:title" content="Get the tidy variance summary from a fitted OLS maars_lm, lm
-class object — get_summary" />
-<meta property="og:description" content="Get the tidy variance summary from a fitted OLS maars_lm, lm
+<meta property="og:title" content="Get the tidy variance summary and confidence intervals for the coefficients of
+an object of class "maars_lm" — get_confint" />
+<meta property="og:description" content="Get the tidy variance summary and confidence intervals from a fitted OLS maars_lm, lm
 class object" />
 
 
@@ -135,19 +135,20 @@ class object" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Get the tidy variance summary from a fitted OLS <code>maars_lm, lm</code>
-class object</h1>
-    <small class="dont-index">Source: <a href='https://github.com/shamindras/maars/blob/master/R/ols-summary.R'><code>R/ols-summary.R</code></a></small>
-    <div class="hidden name"><code>get_summary.Rd</code></div>
+    <h1>Get the tidy variance summary and confidence intervals for the coefficients of
+an object of class "maars_lm"</h1>
+    <small class="dont-index">Source: <a href='https://github.com/shamindras/maars/blob/master/R/ols-confint.R'><code>R/ols-confint.R</code></a></small>
+    <div class="hidden name"><code>get_confint.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Get the tidy variance summary from a fitted OLS <code>maars_lm, lm</code>
+    <p>Get the tidy variance summary and confidence intervals from a fitted OLS <code>maars_lm, lm</code>
 class object</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_summary</span><span class='op'>(</span>
+    <pre class="usage"><span class='fu'>get_confint</span><span class='op'>(</span>
   <span class='va'>mod_fit</span>,
+  level <span class='op'>=</span> <span class='fl'>0.95</span>,
   sand <span class='op'>=</span> <span class='cn'>TRUE</span>,
   boot_emp <span class='op'>=</span> <span class='cn'>FALSE</span>,
   boot_mul <span class='op'>=</span> <span class='cn'>FALSE</span>,
@@ -161,6 +162,11 @@ class object</p>
     <tr>
       <th>mod_fit</th>
       <td><p>(maars_lm, lm) A fitted OLS <code>maars_lm, lm</code> class object</p></td>
+    </tr>
+    <tr>
+      <th>level</th>
+      <td><p>(double) : numeric value between 0 and 1 indicating the
+confidence level (e.g., 0.95)</p></td>
     </tr>
     <tr>
       <th>sand</th>
@@ -192,8 +198,14 @@ from the request</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>(tibble) : Combined standard error summary from a fitted
-OLS <code>maars_lm, lm</code> class object</p>
+    <p>(tibble) : Combined standard error and confidence intervals
+summary from a fitted OLS <code>maars_lm, lm</code> class object</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>The function generates the same output as <code><a href='get_boot_summary.html'>get_boot_summary</a></code>,
+but also includes lower and upper confidence intervals for the regression
+coefficients according to the significance level specified in the "level"
+argument.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
@@ -209,19 +221,14 @@ OLS <code>maars_lm, lm</code> class object</p>
 <span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fl'>2</span> <span class='op'>+</span> <span class='va'>X_1</span> <span class='op'>*</span> <span class='fl'>1</span> <span class='op'>+</span> <span class='va'>X_2</span> <span class='op'>*</span> <span class='fl'>5</span> <span class='op'>+</span> <span class='va'>eps</span>
 <span class='va'>lm_fit</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>y</span> <span class='op'>~</span> <span class='va'>X_1</span> <span class='op'>+</span> <span class='va'>X_2</span><span class='op'>)</span>
 
-<span class='co'># DEFINE common column names - these stay the same across all</span>
-<span class='co'># reported error types</span>
-<span class='va'>common_vars</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"term"</span>, <span class='st'>"estimate"</span><span class='op'>)</span>
-
 <span class='co'># Empirical Bootstrap check</span>
 <span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>454354534</span><span class='op'>)</span>
 <span class='va'>comp_var1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='comp_var.html'>comp_var</a></span><span class='op'>(</span>mod_fit <span class='op'>=</span> <span class='va'>lm_fit</span>, boot_emp <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>B <span class='op'>=</span> <span class='fl'>20</span>, m <span class='op'>=</span> <span class='fl'>200</span><span class='op'>)</span>,
                     boot_res <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>B <span class='op'>=</span> <span class='fl'>30</span><span class='op'>)</span>,
                     boot_mul <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span>
 
-<span class='co'># This returns everything but boot_mul, since we didn't run it in the original</span>
-<span class='co'># original maars_lm model</span>
-<span class='fu'>get_summary</span><span class='op'>(</span>mod_fit <span class='op'>=</span> <span class='va'>comp_var1</span>, sand <span class='op'>=</span> <span class='cn'>TRUE</span>,
+<span class='co'># Return the summary with the confidence intervals</span>
+<span class='fu'>get_confint</span><span class='op'>(</span>mod_fit <span class='op'>=</span> <span class='va'>comp_var1</span>, sand <span class='op'>=</span> <span class='cn'>TRUE</span>,
                      boot_emp <span class='op'>=</span> <span class='cn'>TRUE</span>, boot_res <span class='op'>=</span> <span class='cn'>TRUE</span>, boot_mul <span class='op'>=</span> <span class='cn'>FALSE</span>,
                      well_specified <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 <span class='op'>}</span>
