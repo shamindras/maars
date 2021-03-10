@@ -360,7 +360,7 @@ get_assumptions <- function(mod_fit,
 #'
 #' @method summary maars_lm
 #' @export
-summary.maars_lm <- function(mod_fit,
+summary.maars_lm <- function(object,
                              sand = TRUE,
                              boot_emp = FALSE,
                              boot_res = FALSE,
@@ -368,7 +368,7 @@ summary.maars_lm <- function(mod_fit,
                              well_specified = FALSE,
                              digits = 3, ...) {
 
-    out_summ <- get_summary(mod_fit = mod_fit,
+    out_summ <- get_summary(mod_fit = object,
                                      sand = sand,
                                      boot_emp = boot_emp,
                                      boot_res = boot_res,
@@ -385,7 +385,8 @@ summary.maars_lm <- function(mod_fit,
                                                       .x < 0.01 ~ '*',
                                                       .x < 0.05 ~ '.',
                                                       TRUE ~ ' '))) %>%
-        stats::setNames(paste0('signif.', stringr::str_sub(names(.), start=9)))
+        stats::setNames(object = .,
+                        nm = paste0('signif.', stringr::str_sub(names(.), start=9)))
 
     # join asterisks with out_summ
     out_summ <- out_summ %>% dplyr::bind_cols(significance_ast)
@@ -405,7 +406,7 @@ summary.maars_lm <- function(mod_fit,
         ))
 
     cat("\nCall:\n",
-        stringr::str_c(rlang::expr_deparse(x = mod_fit$call),
+        stringr::str_c(rlang::expr_deparse(x = object$call),
                        sep = "\n",
                        collapse = "\n"
         ),
@@ -417,11 +418,11 @@ summary.maars_lm <- function(mod_fit,
     cat("\n---\n")
     cat("Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1")
 
-    summ_lm <- summary.lm(mod_fit)
+    summ_lm <- summary.lm(object)
     cat(
         "\n\nResidual standard error:",
         formatC(signif(summ_lm$sigma, digits = digits)), "on",
-        mod_fit$df.residual, "degrees of freedom"
+        object$df.residual, "degrees of freedom"
     )
     cat(
         "\nMultiple R-squared:", formatC(summ_lm$r.squared, digits = digits),
@@ -440,7 +441,7 @@ summary.maars_lm <- function(mod_fit,
 
     cat("\n---\nAssumptions:\n")
     cat(paste0(utf8::utf8_format('\U001F96A'),
-               get_assumptions(mod_fit = mod_fit,
+               get_assumptions(mod_fit = object,
                                sand = sand, boot_emp = boot_emp,
                                boot_res = boot_res,
                                boot_mul = boot_mul,
