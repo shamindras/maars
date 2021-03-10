@@ -21,7 +21,8 @@ Buja](http://www-stat.wharton.upenn.edu/~buja/), as part of the **“STAT
 ## Installation and User Guide
 
 To get a bug fix or to use a feature from the development version, you
-can install the development version of `maars` from `GitHub`, as follows:
+can install the development version of `maars` from `GitHub`, as
+follows:
 
 ``` r
 # install.packages("remotes")
@@ -35,8 +36,8 @@ github](https://github.com/shamindras/maars).
 
 ## Code of Conduct
 
-Please note that the `maars` project is released with a [Contributor Code
-of
+Please note that the `maars` project is released with a [Contributor
+Code of
 Conduct](https://contributor-covenant.org/version/2/0/CODE_OF_CONDUCT.html).
 By contributing to this project, you agree to abide by its terms.
 
@@ -46,6 +47,7 @@ This package is developed and maintained by:
 
 -   [Riccardo Fogliato](http://www.stat.cmu.edu/~rfogliat/)
 -   [Shamindra Shrotriya](https://www.shamindras.com/)
+-   [Arun Kumar Kuchibhotla](https://arun-kuchibhotla.github.io/)
 
 We want this to be a community project, so please feel free to contact
 us, or file an issue if you would like to contribute to it.
