@@ -1,3 +1,5 @@
+# maars 0.7.0
+
 # maars 0.6.0
 
 * update the documentation of `comp_var` and of the estimators of the variance
