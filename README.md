@@ -25,8 +25,8 @@ can install the development version of `maars` from `GitHub`, as
 follows:
 
 ``` r
-# install.packages("remotes")
-remotes::install_github("shamindras/maars")
+# install.packages("devtools")
+devtools::install_github("shamindras/maars")
 ```
 
 More detailed instructions and user guides can be found at the [official
