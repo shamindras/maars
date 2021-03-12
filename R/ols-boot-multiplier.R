@@ -254,7 +254,8 @@ comp_boot_mul <- function(mod_fit, B, weights_type = "rademacher") {
     var_type = "boot_mul",
     var_type_abb = "mul",
     var_summary = summary_boot,
-    var_assumptions = "The observations must be independent.",
+    var_assumptions = c("The observations are assumed to be i.n.i.d",
+                        glue::glue("B = {B}")),
     cov_mat = NULL,
     boot_out = boot_out
   )

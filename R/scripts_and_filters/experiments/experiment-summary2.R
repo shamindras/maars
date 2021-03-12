@@ -218,10 +218,26 @@ get_mms_summary_cli <- function(title, summary, assumptions) {
   cli::cli_end()
 }
 
+# Get the printed summary table
 purrr::iwalk(all_emoji_title,
              ~get_mms_summary_cli(title = all_emoji_title[[.y]],
                                   summary = all_summary[[.y]],
                                   assumptions = all_assumptions[[.y]]))
+
+get_mms_assumptions_cli <- function(title, assumptions) {
+  cli::cli_end()
+  cli::cli_end()
+  cli::cli_h1(cli::col_green(glue::glue("{title} Assumptions")))
+  cli::cli_ul()
+  cli::cli_li(assumptions)
+  cli::cli_end()
+}
+
+# Get the printed assumptions
+purrr::iwalk(all_emoji_title,
+             ~get_mms_assumptions_cli(title = all_emoji_title[[.y]],
+                                      assumptions = all_assumptions[[.y]]))
+
 
 # all_emoji_title
 # all_summary

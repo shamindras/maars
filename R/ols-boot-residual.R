@@ -52,7 +52,7 @@ comp_boot_res <- function(mod_fit, B = 100) {
   assertthat::assert_that(all("lm" == class(mod_fit)),
     msg = glue::glue("mod_fit must only be of class lm")
   )
- check_fn_args(B=B)
+  check_fn_args(B = B)
 
   mod_res <- mod_fit$res
   mod_pred <- mod_fit$fitted.values
@@ -64,7 +64,7 @@ comp_boot_res <- function(mod_fit, B = 100) {
     purrr::map_df(
       ~ fit_reg(
         mod_fit = mod_fit,
-        data = data %>% dplyr::mutate({{response_name}} := mod_pred + sample(mod_res, n, replace = T))
+        data = data %>% dplyr::mutate({{ response_name }} := mod_pred + sample(mod_res, n, replace = TRUE))
       ),
       .id = "b"
     ) %>%
@@ -73,17 +73,21 @@ comp_boot_res <- function(mod_fit, B = 100) {
     dplyr::mutate(n = n) %>%
     dplyr::relocate(n)
 
-  summary_boot <- get_boot_summary(mod_fit = mod_fit,
-                              boot_out = boot_out,
-                              boot_type = 'res')
+  summary_boot <- get_boot_summary(
+    mod_fit = mod_fit,
+    boot_out = boot_out,
+    boot_type = "res"
+  )
 
-  out <- list(var_type = "boot_res",
-              var_type_abb = "res",
-              var_summary =  summary_boot,
-              var_assumptions = "The model must be well specified.",
-              cov_mat = NULL,
-              boot_out = boot_out)
+  out <- list(
+    var_type = "boot_res",
+    var_type_abb = "res",
+    var_summary = summary_boot,
+    var_assumptions = c("The model must be well specified.",
+                        glue::glue("B = {B}")),
+    cov_mat = NULL,
+    boot_out = boot_out
+  )
 
   return(out)
 }
-
