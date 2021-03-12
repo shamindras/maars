@@ -300,7 +300,7 @@ get_boot_summary <- function(mod_fit, boot_out, boot_type) {
     ) %>%
     dplyr::mutate(statistic = .data$estimate / .data$std.error) %>%
     dplyr::arrange(.data = ., .data$term) %>%
-    dplyr::relocate(.data$statistic, .after = estimate)
+    dplyr::relocate(.data$statistic, .after = .data$estimate)
   return(out)
 }
 

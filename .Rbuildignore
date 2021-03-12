@@ -12,5 +12,4 @@
 ^R\.scripts_and_filters\.experiments$
 ^paper$
 ^data-raw$
-^R/scripts_and_filters$
 ^R/scripts_and_filters/experiments$

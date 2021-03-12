@@ -128,14 +128,14 @@ plot.maars_lm <- function(x, ...){
   for (i in base::seq_along(mms_diag_plots)) {
     if (i == 1) {
       # For the first plot, don't ask the user for prompt
-      par(ask = FALSE)
+      graphics::par(ask = FALSE)
       print(mms_diag_plots[[i]])
     } else {
       # For subsequent plots, ask the user for prompts to display
       # the plots sequentially
-      par(ask = TRUE)
+      graphics::par(ask = TRUE)
       print(mms_diag_plots[[i]])
     }
-    par(ask = FALSE)
+    graphics::par(ask = FALSE)
   }
 }
