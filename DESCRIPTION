@@ -30,7 +30,8 @@ Imports:
     Rdpack,
     ggplot2,
     stringr,
-    utf8
+    utf8,
+    cli
 Suggests: 
     bench,
     kableExtra,
