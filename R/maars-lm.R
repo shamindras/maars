@@ -90,6 +90,165 @@ comp_var <- function(mod_fit,
   return(mod_fit)
 }
 
+#' Summary of `maars_lm` object
+#'
+#' Summary method for class "maars_lm".
+#'
+#' @param object A fitted "maars_lm" object.
+#' @param sand (logical) : \code{TRUE} if sandwich estimator output is required,
+#'   \code{FALSE} to exclude this output from the request.
+#' @param boot_emp (logical) : \code{TRUE} if empirical bootstrap standard error
+#'   output is required, \code{FALSE} to exclude this output from the request.
+#' @param boot_res (logical) : \code{TRUE} if residual bootstrap standard error
+#'   output is required, \code{FALSE} to exclude this output from the request.
+#' @param boot_mul (logical) : \code{TRUE} if multiplier bootstrap standard error
+#'   output is required, \code{FALSE} to exclude this output from the request
+#' @param well_specified (logical) : \code{TRUE} if lm standard errors.
+#'   (well specified) output is required, \code{FALSE} to exclude this output
+#'   from the request.
+#' @param digits (integer) : Rounding digits used in some of the function's output.
+#' @param ... Additional arguments.
+#'
+#' @method summary maars_lm
+#' @export
+summary.maars_lm <- function(object,
+                             sand = TRUE,
+                             boot_emp = FALSE,
+                             boot_res = FALSE,
+                             boot_mul = FALSE,
+                             well_specified = FALSE,
+                             digits = 3, ...) {
+
+  out_summ <- get_summary(mod_fit = object,
+                          sand = sand,
+                          boot_emp = boot_emp,
+                          boot_res = boot_res,
+                          boot_mul = boot_mul,
+                          well_specified = well_specified
+  )
+
+  # add asterisks for statistical significance in a separate tibble
+  significance_ast <- out_summ %>%
+    dplyr::select(dplyr::starts_with('p.value')) %>%
+    dplyr::mutate(dplyr::across(dplyr::everything(),
+                                ~dplyr::case_when(round(.x,3) == 0.000 ~ '***',
+                                                  .x < 0.001 ~ '**',
+                                                  .x < 0.01 ~ '*',
+                                                  .x < 0.05 ~ '.',
+                                                  TRUE ~ ' '))) %>%
+    stats::setNames(object = .,
+                    nm = paste0('signif.', stringr::str_sub(names(.), start=9)))
+
+  # join asterisks with out_summ
+  out_summ <- out_summ %>% dplyr::bind_cols(significance_ast)
+
+  # reorder columns - we could change the order
+  cols_prefix_order <- c('term', 'estimate', 'std.error',
+                         'statistic', 'p.value', 'signif')
+  out_summ <- out_summ[,cols_prefix_order %>%
+                         purrr::map(~ names(out_summ)[grepl(., names(out_summ))]) %>%
+                         unlist()]
+
+  # format p values
+  out_summ <- out_summ %>%
+    dplyr::mutate(dplyr::across(
+      dplyr::starts_with("p.value"),
+      ~ format.pval(.x, digits = 1)
+    ))
+
+  cat("\nCall:\n",
+      stringr::str_c(rlang::expr_deparse(x = object$call),
+                     sep = "\n",
+                     collapse = "\n"
+      ),
+      "\n\n",
+      sep = ""
+  )
+  cat("Coefficients:\n")
+  print.data.frame(out_summ, row.names = FALSE, digits = digits, right = TRUE)
+  cat("\n---\n")
+  cat("Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1")
+
+  summ_lm <- summary.lm(object)
+  cat(
+    "\n\nResidual standard error:",
+    formatC(signif(summ_lm$sigma, digits = digits)), "on",
+    object$df.residual, "degrees of freedom"
+  )
+  cat(
+    "\nMultiple R-squared:", formatC(summ_lm$r.squared, digits = digits),
+    ",\tAdjusted R-squared:", formatC(summ_lm$adj.r.squared, digits = digits)
+  )
+  cat(
+    "\nF-statistic:", summ_lm$fstatistic[1L],
+    " on ", summ_lm$fstatistic[2L], " and ", summ_lm$fstatistic[3L],
+    "DF,  p-value:",
+    format.pval(pf(summ_lm$fstatistic[1L],
+                   summ_lm$fstatistic[2L],
+                   summ_lm$fstatistic[3L],
+                   lower.tail = FALSE
+    ))
+  )
+
+  cat("\n---\nAssumptions:\n")
+  cat(paste0(utf8::utf8_format('\U001F96A'),
+             get_assumptions(mod_fit = object,
+                             sand = sand, boot_emp = boot_emp,
+                             boot_res = boot_res,
+                             boot_mul = boot_mul,
+                             well_specified = well_specified
+             )) %>% paste0(., collapse = '\n'))
+  cat('\n')
+}
+
+# tidy.maars_lm <- function(x, ...){
+#   warning(paste('The "tidy.maars_lm" method has not been implemented yet!',
+#                  'The tidy method on the lm object will be returned.'))
+#   NextMethod("tidy")
+# }
+
+#' Print `maars_lm` object
+#'
+#' Calls \code{print} on a \code{\link[stats]{lm}} object.
+#'
+#' @param x A `maars_lm` object.
+#' @param ... Additional arguments passed to `print.lm()` to print the
+#'   object.
+#'
+#' @method print maars_lm
+#' @export
+print.maars_lm <- function(x, ...) {
+  # this function is not really needed, but let's keep it for now
+  NextMethod("print")
+}
+
+#' Convert an object to an object that can be handled by the "maars" package
+#'
+#' Several methods are provided to convert common objects
+#' (such as "lm") into "maars" objects,
+#' which can be used with the various functions in the package.
+#'
+#' @param x Object to be converted. See Methods section below for details on
+#'   formatting of each input type.
+#' @param ... Additional arguments passed to methods.
+#'
+#' @export
+as.maars <- function(x, ...) {
+  attr(x, "class") <- c("maars_lm", "lm")
+  return(x)
+}
+
+
+#' @method as.maars lm
+#' @describeIn as.maars The input object \code{x} must be of class
+#'   "lm". The function returns an object of class
+#'   ("maars_lm, "lm").
+#'
+#' @export
+as.maars.lm <- function(x, ...) {
+  UseMethod("as.maars")
+}
+
 #' Plot \code{maars_lm, lm} object
 #'
 #' @param x (\code{maars_lm, lm}) : A fitted \code{maars_lm, lm} OLS object
@@ -139,3 +298,4 @@ plot.maars_lm <- function(x, ...){
     graphics::par(ask = FALSE)
   }
 }
+
