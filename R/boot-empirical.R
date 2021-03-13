@@ -222,7 +222,8 @@ comp_boot_emp <- function(mod_fit, B = 100, m = NULL) {
   # comp_boot_emp_samples(data, B) %>%
   #   purrr::map(~ .x %>% lm())
 
-  boot_out <- parallel::mclapply(1:B, function(x) fit_reg(
+  boot_out <- parallel::mclapply(1:B,
+                                 function(x) fit_reg(
     mod_fit = mod_fit,
     data = comp_boot_emp_samples(data, B = 1, m)$data[[1]]
   ))

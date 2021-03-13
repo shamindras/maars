@@ -233,15 +233,14 @@ comp_boot_mul <- function(mod_fit, B, weights_type = "rademacher") {
     purrr::map(~ t(J_inv %*% X[.x, ] * res[.x])) %>%
     do.call(rbind, .)
 
-  # # multiplier weights (mean 0, variance = 1)
+  # multiplier weights (mean 0, variance = 1)
   e <- comp_boot_mul_wgt(n = B * n, weights_type = weights_type)
-  boot_out <- purrr::map(
-    1:B,
-    ~ betas + comp_boot_mul_ind(
-      J_inv_X_res = J_inv_X_res,
-      e = e[seq(n * (.x - 1) + 1, .x * n)]
-    )
-  )
+  # compute the coffients estimates
+  boot_out <- parallel::mclapply(X = 1:B,
+                                 FUN = function(x) betas + comp_boot_mul_ind(
+                                   J_inv_X_res = J_inv_X_res,
+                                   e = e[seq(n * (x - 1) + 1, x * n)]
+                                 ))
 
   # compute covariance matrix
   cov_mat <- boot_out %>%

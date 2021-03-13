@@ -14,7 +14,7 @@ gen_reg_data <- function(n,
 # generate regression data on which we'll fit a correctly specified reg. model
 n <- 1e3
 df <- gen_reg_data(n = n, gamma = 0)
-lm_fit <- stats::lm(y ~ X)
+lm_fit <- stats::lm(Y ~ X, data = df)
 
 
 # ----
@@ -236,10 +236,12 @@ test_that("test estimate variance from empirical bootstrap matches comp_mms_var"
                                        boot_emp = list(B = 1e4, m = 600),
                                        boot_res = NULL,
                                        boot_mul = NULL)
-
+    expect_equal(
+        boot_out_emp_comp1[["var_boot_emp"]][["cov_mat"]],
+        boot_out_emp1[["cov_mat"]], tol = 1e-3)
     expect_equal(
         boot_out_emp_comp1[["var_boot_emp"]][["var_summary"]][, "std.error"],
-        boot_out_emp1[["var_summary"]][, "std.error"], tol = 1e-7)
+        boot_out_emp1[["var_summary"]][, "std.error"], tol = 1e-2)
 })
 
 test_that("test estimate variance from residual bootstrap matches comp_mms_var", {
