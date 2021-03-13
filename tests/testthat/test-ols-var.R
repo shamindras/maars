@@ -280,9 +280,9 @@ test_that("test estimate variance from multiplier bootstrap matches comp_mms_var
 
 test_that("test estimate covariance matrices from multiplier and empirical bootstraps match", {
 
-    set.seed(1342322)
+    set.seed(1342)
     # generate misspecified model
-    df <- gen_reg_data(100, gamma = 0.2)
+    df <- gen_reg_data(100, gamma = 0.1)
     lm_fit <- lm(Y ~ X, data = df)
 
     # Multiplier Bootstrap
@@ -298,7 +298,7 @@ test_that("test estimate covariance matrices from multiplier and empirical boots
     expect_equal(
         boot_out_mul[["var_summary"]],
         boot_out_emp[["var_summary"]],
-        tol = 1e-2)
+        tol = 1e-1)
 })
 
 
