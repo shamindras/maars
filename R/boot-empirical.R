@@ -197,7 +197,7 @@ fit_reg <- function(mod_fit, data, weights = NULL) {
 #' X <- stats::rnorm(n, 0, 1)
 #' y <- 2 + X * 1 + stats::rnorm(n, 0, 1)
 #' lm_fit <- stats::lm(y ~ X)
-#' out <- comp_boot_emp(lm_fit, B = 100, m = 300)
+#' out <- comp_boot_emp(lm_fit, B = 100, m = 1000)
 #'
 #' print(out)
 #' }
@@ -221,6 +221,11 @@ comp_boot_emp <- function(mod_fit, B = 100, m = NULL) {
     )
   )
 
+  cov_mat <- boot_out %>%
+    purrr::map(~ .x %>% dplyr::pull(estimate)) %>%
+    dplyr::bind_rows(data = ., .id = NULL) %>%
+      cov(.)*m/n
+
   boot_out <- boot_out %>%
     dplyr::bind_rows(.id = "b") %>%
     tidyr::nest(boot_out = c(estimate, term)) %>%
@@ -243,7 +248,7 @@ comp_boot_emp <- function(mod_fit, B = 100, m = NULL) {
       glue::glue("B = {B}"),
       glue::glue("m = {m}")
     ),
-    cov_mat = NULL,
+    cov_mat = cov_mat,
     boot_out = boot_out
   )
 

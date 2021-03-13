@@ -241,10 +241,17 @@ comp_boot_mul <- function(mod_fit, B, weights_type = "rademacher") {
       J_inv_X_res = J_inv_X_res,
       e = e[seq(n * (.x - 1) + 1, .x * n)]
     )
-  ) %>%
-    do.call(rbind, .)
+  )
 
-  # convert to tibble
+  # compute covariance matrix
+  cov_mat <- boot_out %>%
+    do.call(cbind, .) %>%
+    t(.) %>%
+    cov(.)
+
+  # convert output to tibble
+  boot_out <- boot_out %>%
+   do.call(rbind, .)
   boot_out <- tibble::tibble(
     b = rep(1:B, each = length(betas)),
     term = rownames(boot_out),
@@ -269,7 +276,7 @@ comp_boot_mul <- function(mod_fit, B, weights_type = "rademacher") {
       ),
       glue::glue("B = {B}")
     ),
-    cov_mat = NULL,
+    cov_mat = cov_mat,
     boot_out = boot_out
   )
 

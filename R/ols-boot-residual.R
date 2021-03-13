@@ -59,16 +59,23 @@ comp_boot_res <- function(mod_fit, B = 100) {
   n <- length(mod_res)
   data <- stats::model.frame(mod_fit)
   response_name <- as.character(formula(mod_fit)[2])
+  browser()
 
-  boot_out <- as.list(1:B) %>%
-    purrr::map_df(
-      ~ fit_reg(
-        mod_fit = mod_fit,
-        data = data %>%
-          dplyr::mutate({{ response_name }} := mod_pred + sample(mod_res, n, replace = TRUE))
-      ),
-      .id = "b"
-    ) %>%
+  boot_out <- 1:B %>% purrr::map(.x = ., .f = ~ fit_reg(
+    mod_fit = mod_fit,
+    data = data %>%
+      dplyr::mutate({{ response_name }} := mod_pred + sample(mod_res, n, replace = TRUE))
+  ))
+
+  # compute covariance matrix
+  cov_mat <- boot_out %>%
+    purrr::map(.x = ., .f = ~ .x %>% dplyr::pull(estimate)) %>%
+    dplyr::bind_rows(data = ., .id = NULL) %>%
+    cov(.)
+
+  boot_out <- boot_out %>%
+    dplyr::bind_rows(.id = 'b')  %>%
+    # consolidate tibble
     tidyr::nest(data = c(term, estimate)) %>%
     dplyr::rename(boot_out = data) %>%
     dplyr::mutate(n = n) %>%
@@ -93,7 +100,7 @@ comp_boot_res <- function(mod_fit, B = 100) {
       ),
       glue::glue("B = {B}")
     ),
-    cov_mat = NULL,
+    cov_mat = cov_mat,
     boot_out = boot_out
   )
 
