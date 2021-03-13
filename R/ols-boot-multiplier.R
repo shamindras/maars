@@ -43,12 +43,16 @@
 #' n <- 1000
 #'
 #' # Generate the different type of multiplier weights
-#' rademacher_w <- comp_boot_mul_wgt(n = n,
-#'                                                  weights_type = "rademacher")
+#' rademacher_w <- comp_boot_mul_wgt(
+#'   n = n,
+#'   weights_type = "rademacher"
+#' )
 #' mammen_w <- comp_boot_mul_wgt(n = n, weights_type = "mammen")
 #' webb_w <- comp_boot_mul_wgt(n = n, weights_type = "webb")
-#' std_gaussian_w <- comp_boot_mul_wgt(n = n,
-#'                                                    weights_type = "std_gaussian")
+#' std_gaussian_w <- comp_boot_mul_wgt(
+#'   n = n,
+#'   weights_type = "std_gaussian"
+#' )
 #' gamma_w <- comp_boot_mul_wgt(n = n, weights_type = "gamma")
 #' }
 comp_boot_mul_wgt <- function(n, weights_type) {
@@ -70,8 +74,8 @@ comp_boot_mul_wgt <- function(n, weights_type) {
     out <- sample(
       x = c(-1, 1),
       size = n,
-      replace = TRUE#,
-     # prob = rep(x = 1 / 2, times = 2)
+      replace = TRUE # ,
+      # prob = rep(x = 1 / 2, times = 2)
     )
   } else if (weights_type == "mammen") {
     phi <- (1 + sqrt(5)) / 2 # Golden ratio
@@ -136,9 +140,9 @@ comp_boot_mul_wgt <- function(n, weights_type) {
 #' res <- residuals(lm_fit)
 #' n <- length(res)
 #' J_inv_X_res <-
-#'    1:nrow(X) %>%
-#'      purrr::map(~ t(J_inv %*% X[.x, ] * res[.x])) %>%
-#'      do.call(rbind, .)
+#'   1:nrow(X) %>%
+#'   purrr::map(~ t(J_inv %*% X[.x, ] * res[.x])) %>%
+#'   do.call(rbind, .)
 #'
 #' # Generate a single random vector of length n, containing
 #' # mean 0, variance 1 random variables
@@ -146,14 +150,16 @@ comp_boot_mul_wgt <- function(n, weights_type) {
 #'
 #' # Run a single replication of the multiplier bootstrap
 #' mult_boot_single_rep <-
-#' comp_boot_mul_ind(n = n,
-#'                                      J_inv_X_res = J_inv_X_res,
-#'                                      e = e)
+#'   comp_boot_mul_ind(
+#'     n = n,
+#'     J_inv_X_res = J_inv_X_res,
+#'     e = e
+#'   )
 #' # Display the output
 #' print(mult_boot)
 #' }
 comp_boot_mul_ind <- function(J_inv_X_res, e) {
-  out <- t(J_inv_X_res) %*% e #/ n
+  out <- t(J_inv_X_res) %*% e # / n
   return(out)
 }
 
@@ -210,12 +216,13 @@ comp_boot_mul_ind <- function(J_inv_X_res, e) {
 #'
 #' # Run the multiplier bootstrap on the fitted (OLS) linear model
 #' set.seed(162632)
-#' comp_boot_mul(lm_fit, B = 15, weights_type = 'std_gaussian')
+#' comp_boot_mul(lm_fit, B = 15, weights_type = "std_gaussian")
 #' }
 comp_boot_mul <- function(mod_fit, B, weights_type = "rademacher") {
   assertthat::assert_that(all("lm" == class(mod_fit)),
-                          msg = glue::glue("mod_fit must only be of class lm"))
-  check_fn_args(B=B)
+    msg = glue::glue("mod_fit must only be of class lm")
+  )
+  check_fn_args(B = B)
   # Get OLS related output
   betas <- stats::coef(mod_fit)
   J_inv <- stats::summary.lm(mod_fit)$cov.unscaled
@@ -223,15 +230,17 @@ comp_boot_mul <- function(mod_fit, B, weights_type = "rademacher") {
   res <- stats::residuals(mod_fit)
   n <- length(res)
   J_inv_X_res <- 1:nrow(X) %>%
-                  purrr::map(~ t(J_inv %*% X[.x, ] * res[.x])) %>%
-                  do.call(rbind, .)
+    purrr::map(~ t(J_inv %*% X[.x, ] * res[.x])) %>%
+    do.call(rbind, .)
 
   # # multiplier weights (mean 0, variance = 1)
   e <- comp_boot_mul_wgt(n = B * n, weights_type = weights_type)
   boot_out <- purrr::map(
     1:B,
-    ~ betas + comp_boot_mul_ind(J_inv_X_res = J_inv_X_res,
-                                e = e[seq(n * (.x - 1) + 1, .x * n)])
+    ~ betas + comp_boot_mul_ind(
+      J_inv_X_res = J_inv_X_res,
+      e = e[seq(n * (.x - 1) + 1, .x * n)]
+    )
   ) %>%
     do.call(rbind, .)
 
@@ -254,8 +263,12 @@ comp_boot_mul <- function(mod_fit, B, weights_type = "rademacher") {
     var_type = "boot_mul",
     var_type_abb = "mul",
     var_summary = summary_boot,
-    var_assumptions = c("The observations are assumed to be i.n.i.d",
-                        glue::glue("B = {B}")),
+    var_assumptions = c(
+      glue::glue("The observations are assumed to be independent",
+        .sep = " "
+      ),
+      glue::glue("B = {B}")
+    ),
     cov_mat = NULL,
     boot_out = boot_out
   )

@@ -40,8 +40,8 @@
 #' print(boot)
 #' }
 comp_boot_emp_samples <- function(data,
-                                 B = 1,
-                                 m = NULL) {
+                                  B = 1,
+                                  m = NULL) {
   n <- nrow(data)
   if (is.null(m)) {
     m <- n
@@ -205,7 +205,7 @@ comp_boot_emp <- function(mod_fit, B = 100, m = NULL) {
   assertthat::assert_that(all("lm" == class(mod_fit)) | any("glm" == class(mod_fit)),
     msg = glue::glue("mod_fit must only be of class lm or glm")
   )
-  check_fn_args(B=B,m=m)
+  check_fn_args(B = B, m = m)
 
   data <- stats::model.frame(mod_fit)
   n <- nrow(data)
@@ -213,27 +213,39 @@ comp_boot_emp <- function(mod_fit, B = 100, m = NULL) {
     m <- n
   }
 
-  boot_out <- purrr::map(1:B,
-                         ~ fit_reg(mod_fit = mod_fit,
-                                   data = comp_boot_emp_samples(data,B=1,m)$data[[1]]))
+  boot_out <- purrr::map(
+    1:B,
+    ~ fit_reg(
+      mod_fit = mod_fit,
+      data = comp_boot_emp_samples(data, B = 1, m)$data[[1]]
+    )
+  )
 
   boot_out <- boot_out %>%
-    dplyr::bind_rows(.id = 'b') %>%
+    dplyr::bind_rows(.id = "b") %>%
     tidyr::nest(boot_out = c(estimate, term)) %>%
     tibble::add_column(m = m, n = n)
 
-  summary_boot <- get_boot_summary(mod_fit = mod_fit,
-                              boot_out = boot_out,
-                              boot_type = 'emp')
+  summary_boot <- get_boot_summary(
+    mod_fit = mod_fit,
+    boot_out = boot_out,
+    boot_type = "emp"
+  )
 
-  out <- list(var_type = "boot_emp",
-              var_type_abb = "emp",
-              var_summary =  summary_boot,
-              var_assumptions = c("The observations are assumed to be i.n.i.d",
-                                  glue::glue("B = {B}"),
-                                  glue::glue("m = {m}")),
-              cov_mat = NULL,
-              boot_out = boot_out)
+  out <- list(
+    var_type = "boot_emp",
+    var_type_abb = "emp",
+    var_summary = summary_boot,
+    var_assumptions = c(
+      glue::glue("The observations are assumed to be independent",
+        .sep = " "
+      ),
+      glue::glue("B = {B}"),
+      glue::glue("m = {m}")
+    ),
+    cov_mat = NULL,
+    boot_out = boot_out
+  )
 
   return(out)
 }
@@ -281,14 +293,17 @@ comp_boot_emp <- function(mod_fit, B = 100, m = NULL) {
 #' print(conf_int)
 #' }
 comp_ci_boot <- function(boot_out, probs = c(0.025, 0.975),
-                                    group_vars = "term") {
+                         group_vars = "term") {
   out <- boot_out %>%
     tidyr::unnest(boot_out) %>%
     dplyr::group_by(dplyr::across(dplyr::all_of(group_vars))) %>%
-    dplyr::summarise(x = stats::quantile(sqrt(m / n) * (estimate-mean(estimate)) + mean(estimate),
-                                         probs = probs),
-                     q = probs,
-                     .groups = "keep")
+    dplyr::summarise(
+      x = stats::quantile(sqrt(m / n) * (estimate - mean(estimate)) + mean(estimate),
+        probs = probs
+      ),
+      q = probs,
+      .groups = "keep"
+    )
   return(out)
 }
 

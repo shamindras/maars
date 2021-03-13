@@ -64,7 +64,8 @@ comp_boot_res <- function(mod_fit, B = 100) {
     purrr::map_df(
       ~ fit_reg(
         mod_fit = mod_fit,
-        data = data %>% dplyr::mutate({{ response_name }} := mod_pred + sample(mod_res, n, replace = TRUE))
+        data = data %>%
+          dplyr::mutate({{ response_name }} := mod_pred + sample(mod_res, n, replace = TRUE))
       ),
       .id = "b"
     ) %>%
@@ -83,8 +84,15 @@ comp_boot_res <- function(mod_fit, B = 100) {
     var_type = "boot_res",
     var_type_abb = "res",
     var_summary = summary_boot,
-    var_assumptions = c("The model must be well specified.",
-                        glue::glue("B = {B}")),
+    var_assumptions = c(
+      glue::glue("The model must be well specified"),
+      glue::glue("The observations are assumed to be independent",
+        "and",
+        "identically distributed (i.i.d)",
+        .sep = " "
+      ),
+      glue::glue("B = {B}")
+    ),
     cov_mat = NULL,
     boot_out = boot_out
   )

@@ -37,11 +37,55 @@ comp_lm_var <- function(mod_fit) {
   summary_lm <- mod_fit %>%
     broom::tidy(x = .)
 
+  # Add detailed assumptions for the well-specified linear model
+  # This is to design the specific string at the bottom of the
+  # standard out put of the summary.lm with F-statistics, p-value etc
+  lmg <- mod_fit %>% broom::glance(x = .)
+  lmg_v <- lmg %>%
+    as.numeric(x = .) %>%
+    purrr::set_names(x = ., nm = names(x = lmg))
+
+  # Default output to be with 4 digits
+  FMT_NUM_DIGITS <- 4
+  assumptions_lm <-
+    c(
+      glue::glue("The model must be well specified"),
+      glue::glue("The observations are assumed to be independent",
+        "and",
+        "identically distributed (i.i.d)",
+        .sep = " "
+      ),
+      glue::glue("Residual standard error:",
+        "{formatC(signif(lmg_v[['sigma']], digits = FMT_NUM_DIGITS))}",
+        "on",
+        "{lmg_v[['df.residual']]}",
+        "degrees of freedom",
+        .sep = " "
+      ),
+      glue::glue("Multiple R-squared:",
+        "{formatC(lmg_v[['r.squared']], digits = FMT_NUM_DIGITS)},",
+        "Adjusted R-squared:",
+        "{formatC(lmg_v[['adj.r.squared']], digits = FMT_NUM_DIGITS)}",
+        .sep = " "
+      ),
+      glue::glue("F-statistic:",
+        "{formatC(lmg_v[['statistic']], digits = FMT_NUM_DIGITS)}",
+        "on",
+        "{lmg_v[['df']]} and {lmg_v[['df.residual']]} DF,",
+        "p-value:",
+        "{format.pval(pf(lmg_v[['statistic']],
+                       lmg_v[['df']],
+                       lmg_v[['df.residual']],
+                       lower.tail = FALSE))}",
+        .sep = " "
+      )
+    )
+
   out <- list(
     var_type = "well_specified",
     var_type_abb = "lm",
     var_summary = summary_lm,
-    var_assumptions = "The model must be well specified.",
+    var_assumptions = assumptions_lm,
     cov_mat = NULL
   )
 

@@ -71,7 +71,7 @@ get_full_summary <- function(comp_var_ind, req_type) {
   cv_type <- purrr::pluck(.x = comp_var_ind, "var_type")
   cv_type_abb <- purrr::pluck(.x = comp_var_ind, "var_type_abb")
   cv_summary <- purrr::pluck(.x = comp_var_ind, "var_summary")
-  cv_assumptions <- purrr::pluck(.x = comp_var_ind, "var_assumptions") # Should be "var_assumptions"
+  cv_assumptions <- purrr::pluck(.x = comp_var_ind, "var_assumptions")
 
   # Derived variables
   cv_emoji <- get_mms_title(
@@ -191,7 +191,7 @@ comp_var1$var$var_sand
 # Run experiments: Get assumptions code working ----
 get_mms_assumptions_cli <- function(title, assumptions) {
   cli::cli_end()
-  cli::cli_h1(cli::col_green(glue::glue("{title} Assumptions")))
+  cli::cli_h1(cli::col_green(glue::glue("{title} Assmp.")))
   cli::cli_ul()
   cli::cli_li(assumptions)
   cli::cli_end()
@@ -233,17 +233,12 @@ get_mms_print_cli(mod_fit = comp_var1)
 # TODO: Pass in digits as in input to the function
 get_mms_summary_cli <- function(title, summary, assumptions, digits = 3) {
   cli::cli_end()
-  cli::cli_end()
-  # cli::cli_h1(cli::col_yellow(title))
   cli::cli_h1(cli::col_yellow(glue::glue("{title} Standard Errors")))
   cli::cli_text("\n")
   cli::cli_end()
-  # cli::cli_text("\n")
   print.data.frame(x = summary, digits = digits)
   cli::cli_end()
   cli::cli_ul()
-  # cli::cli_text("\n")
-  # cli::cli_h2(cli::col_green("Assumptions"))
   cli::cli_h2(cli::col_green(glue::glue("{title} Assumptions")))
   cli::cli_ul()
   cli::cli_li(assumptions)
@@ -280,3 +275,7 @@ get_mms_summary_join_cli <- function(summary_joined, digits = 3) {
 
 # Get the printed joined summary table with assumptions
 get_mms_summary_join_cli(summary_joined = all_summary_nmd_join, digits = 3)
+
+
+get_summary()
+get_confint()

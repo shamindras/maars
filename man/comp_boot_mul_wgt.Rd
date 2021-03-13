@@ -46,12 +46,16 @@ set.seed(824908)
 n <- 1000
 
 # Generate the different type of multiplier weights
-rademacher_w <- comp_boot_mul_wgt(n = n,
-                                                 weights_type = "rademacher")
+rademacher_w <- comp_boot_mul_wgt(
+  n = n,
+  weights_type = "rademacher"
+)
 mammen_w <- comp_boot_mul_wgt(n = n, weights_type = "mammen")
 webb_w <- comp_boot_mul_wgt(n = n, weights_type = "webb")
-std_gaussian_w <- comp_boot_mul_wgt(n = n,
-                                                   weights_type = "std_gaussian")
+std_gaussian_w <- comp_boot_mul_wgt(
+  n = n,
+  weights_type = "std_gaussian"
+)
 gamma_w <- comp_boot_mul_wgt(n = n, weights_type = "gamma")
 }
 }
