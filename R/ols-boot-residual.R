@@ -59,7 +59,6 @@ comp_boot_res <- function(mod_fit, B = 100) {
   n <- length(mod_res)
   data <- stats::model.frame(mod_fit)
   response_name <- as.character(formula(mod_fit)[2])
-  browser()
 
   boot_out <- 1:B %>% purrr::map(.x = ., .f = ~ fit_reg(
     mod_fit = mod_fit,

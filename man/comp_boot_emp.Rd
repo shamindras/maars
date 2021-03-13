@@ -54,7 +54,7 @@ n <- 1e3
 X <- stats::rnorm(n, 0, 1)
 y <- 2 + X * 1 + stats::rnorm(n, 0, 1)
 lm_fit <- stats::lm(y ~ X)
-out <- comp_boot_emp(lm_fit, B = 100, m = 300)
+out <- comp_boot_emp(lm_fit, B = 100, m = 1000)
 
 print(out)
 }

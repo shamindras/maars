@@ -52,7 +52,7 @@ comp_boot_emp_samples <- function(data,
 
   out <- tibble::tibble(
     b = as.integer(paste0(1:length(indices))),
-    data = purrr::map(indices, ~ data[.x, ]),
+    data = purrr::map(indices, ~ dplyr::slice(data, .x)),
     indices = indices
   )
 
@@ -104,11 +104,17 @@ comp_boot_emp_samples <- function(data,
 #' X <- stats::rnorm(n, 0, 1)
 #' y <- 2 + X * 1 + stats::rnorm(n, 0, 1)
 #' mod_fit <- lm(y ~ X)
+#'
+#' # fit weighted regression
 #' df <- tibble::tibble(y = y, X = X, weights = 1:length(X))
 #' mod <- fit_reg(mod_fit, df, "weights")
-#'
-#' # Display the output
 #' print(mod)
+#'
+#' # fit unweighted regression
+#' mod <- fit_reg(mod_fit, df)
+#' print(mod)
+#' # compare this output with the output from lm
+#' coef(lm(y ~ X, df))
 #' }
 fit_reg <- function(mod_fit, data, weights = NULL) {
   if (all("lm" == class(mod_fit))) {
@@ -213,13 +219,42 @@ comp_boot_emp <- function(mod_fit, B = 100, m = NULL) {
     m <- n
   }
 
-  boot_out <- purrr::map(
-    1:B,
-    ~ fit_reg(
-      mod_fit = mod_fit,
-      data = comp_boot_emp_samples(data, B = 1, m)$data[[1]]
-    )
-  )
+  # comp_boot_emp_samples(data, B) %>%
+  #   purrr::map(~ .x %>% lm())
+
+  boot_out <- parallel::mclapply(1:B, function(x) fit_reg(
+    mod_fit = mod_fit,
+    data = comp_boot_emp_samples(data, B = 1, m)$data[[1]]
+  ))
+  # boot_out <- purrr::map(
+  #   1:B,
+  #   ~ fit_reg(
+  #     mod_fit = mod_fit,
+  #     data = comp_boot_emp_samples(data, B = 1, m)$data[[1]]
+  #   )
+  # )
+  # set.seed(100)
+  # b <- purrr::map(
+  #   1:B,
+  #   ~ fit_reg(mod_fit = mod_fit,
+  #        #mod_fit = mod_fit,b
+  #        data = comp_boot_emp_samples(data, B = 1, m)$data[[1]]
+  #   )
+  # )
+  # boot_out <- purrr::map(
+  #   1:B,
+  #   ~ fit_reg(mod_fit = mod_fit,
+  #             data = comp_boot_emp_samples(data, B = 1, m)$data[[1]])
+  # )
+  # this works!
+  # b <- purrr::map(
+  #   1:B,
+  #   ~ tibble::tibble(coef = coef(lm(`df$Y` ~ `df$X`,
+  #     #mod_fit = mod_fit,
+  #     data = comp_boot_emp_samples(data, B = 1, m)$data[[1]]
+  #   )))
+  # )
+
 
   cov_mat <- boot_out %>%
     purrr::map(~ .x %>% dplyr::pull(estimate)) %>%
