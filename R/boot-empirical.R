@@ -219,48 +219,20 @@ comp_boot_emp <- function(mod_fit, B = 100, m = NULL) {
     m <- n
   }
 
-  # comp_boot_emp_samples(data, B) %>%
-  #   purrr::map(~ .x %>% lm())
-
-  boot_out <- parallel::mclapply(1:B,
-                                 function(x) fit_reg(
-    mod_fit = mod_fit,
-    data = comp_boot_emp_samples(data, B = 1, m)$data[[1]]
-  ))
-  # boot_out <- purrr::map(
-  #   1:B,
-  #   ~ fit_reg(
-  #     mod_fit = mod_fit,
-  #     data = comp_boot_emp_samples(data, B = 1, m)$data[[1]]
-  #   )
-  # )
-  # set.seed(100)
-  # b <- purrr::map(
-  #   1:B,
-  #   ~ fit_reg(mod_fit = mod_fit,
-  #        #mod_fit = mod_fit,b
-  #        data = comp_boot_emp_samples(data, B = 1, m)$data[[1]]
-  #   )
-  # )
-  # boot_out <- purrr::map(
-  #   1:B,
-  #   ~ fit_reg(mod_fit = mod_fit,
-  #             data = comp_boot_emp_samples(data, B = 1, m)$data[[1]])
-  # )
-  # this works!
-  # b <- purrr::map(
-  #   1:B,
-  #   ~ tibble::tibble(coef = coef(lm(`df$Y` ~ `df$X`,
-  #     #mod_fit = mod_fit,
-  #     data = comp_boot_emp_samples(data, B = 1, m)$data[[1]]
-  #   )))
-  # )
-
+  boot_out <- lapply(
+    1:B,
+    function(x) {
+      fit_reg(
+        mod_fit = mod_fit,
+        data = comp_boot_emp_samples(data, B = 1, m)$data[[1]]
+      )
+    }
+  )
 
   cov_mat <- boot_out %>%
     purrr::map(~ .x %>% dplyr::pull(estimate)) %>%
     dplyr::bind_rows(data = ., .id = NULL) %>%
-      cov(.)*m/n
+    cov(.) * m / n
 
   boot_out <- boot_out %>%
     dplyr::bind_rows(.id = "b") %>%

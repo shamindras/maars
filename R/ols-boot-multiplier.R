@@ -236,11 +236,15 @@ comp_boot_mul <- function(mod_fit, B, weights_type = "rademacher") {
   # multiplier weights (mean 0, variance = 1)
   e <- comp_boot_mul_wgt(n = B * n, weights_type = weights_type)
   # compute the coffients estimates
-  boot_out <- parallel::mclapply(X = 1:B,
-                                 FUN = function(x) betas + comp_boot_mul_ind(
-                                   J_inv_X_res = J_inv_X_res,
-                                   e = e[seq(n * (x - 1) + 1, x * n)]
-                                 ))
+  boot_out <- lapply(
+    X = 1:B,
+    FUN = function(x) {
+      betas + comp_boot_mul_ind(
+        J_inv_X_res = J_inv_X_res,
+        e = e[seq(n * (x - 1) + 1, x * n)]
+      )
+    }
+  )
 
   # compute covariance matrix
   cov_mat <- boot_out %>%
@@ -250,7 +254,7 @@ comp_boot_mul <- function(mod_fit, B, weights_type = "rademacher") {
 
   # convert output to tibble
   boot_out <- boot_out %>%
-   do.call(rbind, .)
+    do.call(rbind, .)
   boot_out <- tibble::tibble(
     b = rep(1:B, each = length(betas)),
     term = rownames(boot_out),
