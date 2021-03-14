@@ -120,10 +120,6 @@ get_mms_summary_print_lm_style <- function(var_summary, digits) {
   print.data.frame(out_summ, row.names = FALSE, digits = digits)
   # name_width <- max(sapply(names(out_summ), nchar))
   # format(out_summ, width = name_width, justify = "centre", digits = digits)
-  cli::cli_text("\n---")
-  cli::cli_h3(cli::col_blue(glue::glue("Signif. codes:")))
-  cli::cli_text("\n")
-  cli::cli_text("0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1")
 }
 
 #' Print interleaved summary for a \code{maars_lm, lm} object, for a
@@ -279,6 +275,9 @@ summary.maars_lm <- function(object,
         digits = digits
       )
     )
+    cli::cli_h3(cli::col_blue(glue::glue("Signif. codes:")))
+    cli::cli_text("\n")
+    cli::cli_text("0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1")
   } else{
     # Summary table with the abbreviated variance type as a suffix
     all_summaries_nmd_joined <- get_summary2(mod_fit = object,
@@ -358,6 +357,10 @@ get_mms_print_cli <- function(mod_fit,
       assumptions = all_assumptions[[.y]]
     )
   )
+  cli::cli_text("\n---")
+  cli::cli_h3(cli::col_blue(glue::glue("Signif. codes:")))
+  cli::cli_text("\n")
+  cli::cli_text("0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1")
   cli::cli_end()
 }
 

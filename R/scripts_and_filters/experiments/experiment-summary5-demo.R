@@ -40,7 +40,7 @@ print(mms_fit1)
 # print(mms_fit2) # TODO: This is failing, need to check it out
 
 # summary - let's test out the summary method for both objects ----
-summary(mms_fit1)
+summary(mms_fit1, boot_emp = TRUE)
 
 # Try some interesting cases
 summary(object = mms_fit2) # Just sand = TRUE
