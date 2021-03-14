@@ -3,7 +3,7 @@ pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
   se-la-county-data: se-la-county-data.html
-last_built: 2021-03-14T04:35Z
+last_built: 2021-03-14T05:00Z
 urls:
   reference: https://shamindras.github.io/maars/reference
   article: https://shamindras.github.io/maars/articles

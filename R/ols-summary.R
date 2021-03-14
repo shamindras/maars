@@ -578,11 +578,11 @@ get_summary2 <- function(mod_fit,
 #' )
 #' }
 get_assumptions <- function(mod_fit,
-                            sand = sand,
-                            boot_emp = boot_emp,
-                            boot_res = boot_res,
-                            boot_mul = boot_mul,
-                            well_specified = well_specified) {
+                            sand = TRUE,
+                            boot_emp = FALSE,
+                            boot_mul = FALSE,
+                            boot_res = FALSE,
+                            well_specified = FALSE) {
   req_var_nms <- check_fn_args_summary(
     mod_fit = mod_fit, sand = sand,
     boot_emp = boot_emp, boot_res = boot_res,

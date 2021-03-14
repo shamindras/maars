@@ -7,11 +7,11 @@ a fitted OLS \code{maars_lm, lm} class object}
 \usage{
 get_assumptions(
   mod_fit,
-  sand = sand,
-  boot_emp = boot_emp,
-  boot_res = boot_res,
-  boot_mul = boot_mul,
-  well_specified = well_specified
+  sand = TRUE,
+  boot_emp = FALSE,
+  boot_mul = FALSE,
+  boot_res = FALSE,
+  well_specified = FALSE
 )
 }
 \arguments{
@@ -23,10 +23,10 @@ get_assumptions(
 \item{boot_emp}{(logical) : \code{TRUE} if empirical bootstrap standard error
 output is required, \code{FALSE} to exclude this output from the request}
 
-\item{boot_res}{(logical) : \code{TRUE} if residual bootstrap standard error
+\item{boot_mul}{(logical) : \code{TRUE} if multiplier bootstrap standard error
 output is required, \code{FALSE} to exclude this output from the request}
 
-\item{boot_mul}{(logical) : \code{TRUE} if multiplier bootstrap standard error
+\item{boot_res}{(logical) : \code{TRUE} if residual bootstrap standard error
 output is required, \code{FALSE} to exclude this output from the request}
 
 \item{well_specified}{(logical) : \code{TRUE} if lm standard errors

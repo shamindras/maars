@@ -148,11 +148,11 @@ a fitted OLS <code>maars_lm, lm</code> class object.</p>
 
     <pre class="usage"><span class='fu'>get_assumptions</span><span class='op'>(</span>
   <span class='va'>mod_fit</span>,
-  sand <span class='op'>=</span> <span class='va'>sand</span>,
-  boot_emp <span class='op'>=</span> <span class='va'>boot_emp</span>,
-  boot_res <span class='op'>=</span> <span class='va'>boot_res</span>,
-  boot_mul <span class='op'>=</span> <span class='va'>boot_mul</span>,
-  well_specified <span class='op'>=</span> <span class='va'>well_specified</span>
+  sand <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  boot_emp <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  boot_mul <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  boot_res <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  well_specified <span class='op'>=</span> <span class='cn'>FALSE</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -173,13 +173,13 @@ a fitted OLS <code>maars_lm, lm</code> class object.</p>
 output is required, <code>FALSE</code> to exclude this output from the request</p></td>
     </tr>
     <tr>
-      <th>boot_res</th>
-      <td><p>(logical) : <code>TRUE</code> if residual bootstrap standard error
+      <th>boot_mul</th>
+      <td><p>(logical) : <code>TRUE</code> if multiplier bootstrap standard error
 output is required, <code>FALSE</code> to exclude this output from the request</p></td>
     </tr>
     <tr>
-      <th>boot_mul</th>
-      <td><p>(logical) : <code>TRUE</code> if multiplier bootstrap standard error
+      <th>boot_res</th>
+      <td><p>(logical) : <code>TRUE</code> if residual bootstrap standard error
 output is required, <code>FALSE</code> to exclude this output from the request</p></td>
     </tr>
     <tr>
