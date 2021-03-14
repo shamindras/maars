@@ -250,11 +250,10 @@ comp_boot_emp <- function(mod_fit, B = 100, m = NULL) {
     var_type_abb = "emp",
     var_summary = summary_boot,
     var_assumptions = c(
-      glue::glue("The observations are assumed to be independent",
+      glue::glue("Observations are assumed to be independent",
         .sep = " "
       ),
-      glue::glue("B = {B}"),
-      glue::glue("m = {m}")
+      glue::glue("Parameters: B = {B}, m = {m}")
     ),
     cov_mat = cov_mat,
     boot_out = boot_out

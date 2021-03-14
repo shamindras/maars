@@ -91,13 +91,13 @@ comp_boot_res <- function(mod_fit, B = 100) {
     var_type_abb = "res",
     var_summary = summary_boot,
     var_assumptions = c(
-      glue::glue("The model must be well specified"),
-      glue::glue("The observations are assumed to be independent",
+      glue::glue("Observations are assumed to be independent",
         "and",
         "identically distributed (i.i.d)",
         .sep = " "
       ),
-      glue::glue("B = {B}")
+      glue::glue("Residuals are assumed to be homoscedastic"),
+      glue::glue("Parameters: B = {B}")
     ),
     cov_mat = cov_mat,
     boot_out = boot_out

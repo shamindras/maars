@@ -71,7 +71,7 @@ comp_sand_var <- function(mod_fit) {
   out <- list(var_type = "sand",
               var_type_abb = "sand",
               var_summary =  summary_sand,
-              var_assumptions = "The observations must be i.i.d.",
+              var_assumptions = "Observations are assumed to be independent and identically distributed (i.i.d.)",
               cov_mat = cov_mat)
 
   return(out)
@@ -128,36 +128,36 @@ comp_lm_var <- function(mod_fit) {
   FMT_NUM_DIGITS <- 4
   assumptions_lm <-
     c(
-      glue::glue("The model must be well specified"),
-      glue::glue("The observations are assumed to be independent",
+      glue::glue("Observations are assumed to be independent",
                  "and",
                  "identically distributed (i.i.d)",
                  .sep = " "
       ),
-      glue::glue("Residual standard error:",
-                 "{formatC(signif(lmg_v[['sigma']], digits = FMT_NUM_DIGITS))}",
-                 "on",
-                 "{lmg_v[['df.residual']]}",
-                 "degrees of freedom",
-                 .sep = " "
-      ),
-      glue::glue("Multiple R-squared:",
-                 "{formatC(lmg_v[['r.squared']], digits = FMT_NUM_DIGITS)},",
-                 "Adjusted R-squared:",
-                 "{formatC(lmg_v[['adj.r.squared']], digits = FMT_NUM_DIGITS)}",
-                 .sep = " "
-      ),
-      glue::glue("F-statistic:",
-                 "{formatC(lmg_v[['statistic']], digits = FMT_NUM_DIGITS)}",
-                 "on",
-                 "{lmg_v[['df']]} and {lmg_v[['df.residual']]} DF,",
-                 "p-value:",
-                 "{format.pval(pf(lmg_v[['statistic']],
-                       lmg_v[['df']],
-                       lmg_v[['df.residual']],
-                       lower.tail = FALSE))}",
-                 .sep = " "
-      )
+      glue::glue("Residuals are assumed to be homoscedastic")
+      # glue::glue("Residual standard error:",
+      #            "{formatC(signif(lmg_v[['sigma']], digits = FMT_NUM_DIGITS))}",
+      #            "on",
+      #            "{lmg_v[['df.residual']]}",
+      #            "degrees of freedom",
+      #            .sep = " "
+      # ),
+      # glue::glue("Multiple R-squared:",
+      #            "{formatC(lmg_v[['r.squared']], digits = FMT_NUM_DIGITS)},",
+      #            "Adjusted R-squared:",
+      #            "{formatC(lmg_v[['adj.r.squared']], digits = FMT_NUM_DIGITS)}",
+      #            .sep = " "
+      # ),
+      # glue::glue("F-statistic:",
+      #            "{formatC(lmg_v[['statistic']], digits = FMT_NUM_DIGITS)}",
+      #            "on",
+      #            "{lmg_v[['df']]} and {lmg_v[['df.residual']]} DF,",
+      #            "p-value:",
+      #            "{format.pval(pf(lmg_v[['statistic']],
+      #                  lmg_v[['df']],
+      #                  lmg_v[['df.residual']],
+      #                  lower.tail = FALSE))}",
+      #            .sep = " "
+      # )
     )
 
   out <- list(
