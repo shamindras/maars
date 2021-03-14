@@ -51,43 +51,6 @@ summary(object = mms_fit2, boot_emp = TRUE, boot_mul = TRUE, boot_res = TRUE) # 
 # assumptions - let's test out the assumptions method for both objects ----
 get_assumptions2(mod_fit = mms_fit2, boot_emp = TRUE)
 
-# Check get_confint2 against get_confint3 ----
-# get_confint2 tidy version
-confint2_out_tidy <- get_confint2(mod_fit = mms_fit2,
-                                  level = 0.95,
-                                  sand = TRUE,
-                                  boot_emp = TRUE,
-                                  boot_mul = FALSE,
-                                  boot_res = FALSE,
-                                  well_specified = FALSE,
-                                  tidy = TRUE)
-
-# Manually get the wider (non-tidy) version
-confint2_out_tidy_wider <- confint2_out_tidy %>%
-    tidyr::pivot_wider(data = .,
-                       names_from = c(stat_type, var_type_abb),
-                       names_glue = "{stat_type}.{var_type_abb}",
-                       values_from = stat_val)
-
-# get_confint2 wider (non-tidy) version
-confint2_out_wider <- get_confint2(mod_fit = mms_fit2,
-                                   level = 0.95,
-                                   sand = TRUE,
-                                   boot_emp = TRUE,
-                                   boot_mul = FALSE,
-                                   boot_res = FALSE,
-                                   well_specified = FALSE,
-                                   tidy = FALSE)
-confint2_out_wider
-# confint2_out_wider %>% dplyr::glimpse()
-
-# Check: confint2 manual wider check
-# It fails, but it is just a column ordering issue
-identical(x = confint2_out_tidy_wider, y = confint2_out_wider, )
-confint2_out_wider %>% dplyr::glimpse()
-confint2_out_tidy_wider %>% dplyr::glimpse()
-colnames(confint2_out_wider) == colnames(confint2_out_tidy_wider)
-
 # get_confint3 tidy version
 confint3_out_tidy <- get_confint3(mod_fit = mms_fit2,
                                   level = 0.95,
@@ -99,23 +62,12 @@ confint3_out_tidy <- get_confint3(mod_fit = mms_fit2,
                                   tidy = TRUE)
 confint3_out_tidy
 
-# Manually get the wider (non-tidy) version
+# Manually get the wider (non-tidy) version - for vignette Table 1 like output
 confint3_out_tidy_wider <- confint3_out_tidy %>%
     tidyr::pivot_wider(data = .,
                        names_from = c(stat_type, var_type_abb),
                        names_glue = "{stat_type}.{var_type_abb}",
                        values_from = stat_val)
-
-# get_confint3 wider (non-tidy) version
-confint3_out_wider <- get_confint3(mod_fit = mms_fit2,
-                                   level = 0.95,
-                                   sand = TRUE,
-                                   boot_emp = TRUE,
-                                   boot_mul = FALSE,
-                                   boot_res = FALSE,
-                                   well_specified = FALSE,
-                                   tidy = FALSE)
-confint3_out_wider
 
 # Check: confint3 manual wider check
 # It fails, but it is just a column ordering issue
@@ -150,4 +102,14 @@ confint(mms_fit2, boot_emp = TRUE, boot_mul = TRUE)
 
 print(mms_fit1)
 confint(mms_fit1, boot_emp = TRUE, boot_mul = TRUE, well_specified = TRUE)
-confint(lm_fit)
+test <- confint(lm_fit)
+
+sum <- summary(mms_fit2)
+sum2 <- summary(lm_fit)
+summary(lm_fit)
+
+
+# Remove old confit3, get_summary3
+# Remove the left_join from these
+# Move the lm summary statistics to bottom of summary
+# parm issue
