@@ -73,6 +73,12 @@
     <loc>https://shamindras.github.io/maars/reference/diag_nl_detect.html</loc>
   </url>
   <url>
+    <loc>https://shamindras.github.io/maars/reference/fetch_mms_comp_var_attr.html</loc>
+  </url>
+  <url>
+    <loc>https://shamindras.github.io/maars/reference/fetch_mms_emoji_title.html</loc>
+  </url>
+  <url>
     <loc>https://shamindras.github.io/maars/reference/fit_reg.html</loc>
   </url>
   <url>
@@ -82,16 +88,37 @@
     <loc>https://shamindras.github.io/maars/reference/get_assumptions.html</loc>
   </url>
   <url>
+    <loc>https://shamindras.github.io/maars/reference/get_assumptions2.html</loc>
+  </url>
+  <url>
     <loc>https://shamindras.github.io/maars/reference/get_boot_summary.html</loc>
   </url>
   <url>
     <loc>https://shamindras.github.io/maars/reference/get_confint.html</loc>
   </url>
   <url>
+    <loc>https://shamindras.github.io/maars/reference/get_mms_assumptions_cli.html</loc>
+  </url>
+  <url>
+    <loc>https://shamindras.github.io/maars/reference/get_mms_print_cli.html</loc>
+  </url>
+  <url>
+    <loc>https://shamindras.github.io/maars/reference/get_mms_summary_joined_cli.html</loc>
+  </url>
+  <url>
+    <loc>https://shamindras.github.io/maars/reference/get_mms_summary_print_lm_style.html</loc>
+  </url>
+  <url>
+    <loc>https://shamindras.github.io/maars/reference/get_mms_summary_split_cli.html</loc>
+  </url>
+  <url>
     <loc>https://shamindras.github.io/maars/reference/get_ols_diag_plots.html</loc>
   </url>
   <url>
     <loc>https://shamindras.github.io/maars/reference/get_summary.html</loc>
+  </url>
+  <url>
+    <loc>https://shamindras.github.io/maars/reference/get_summary2.html</loc>
   </url>
   <url>
     <loc>https://shamindras.github.io/maars/reference/get_summary_ind.html</loc>

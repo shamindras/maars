@@ -6,8 +6,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Get the tidy variance summary from a fitted OLS maars_lm, lm
-class object — get_summary • maars</title>
+<title>Retrieve the assumptions for the variance estimators to be consistent for a
+a fitted OLS maars_lm, lm class object — get_assumptions2 • maars</title>
 
 
 <!-- jquery -->
@@ -40,10 +40,10 @@ class object — get_summary • maars</title>
 
 
 
-<meta property="og:title" content="Get the tidy variance summary from a fitted OLS maars_lm, lm
-class object — get_summary" />
-<meta property="og:description" content="Get the tidy variance summary from a fitted OLS maars_lm, lm
-class object" />
+<meta property="og:title" content="Retrieve the assumptions for the variance estimators to be consistent for a
+a fitted OLS maars_lm, lm class object — get_assumptions2" />
+<meta property="og:description" content="Retrieve the assumptions for the variance estimators to be consistent for a
+a fitted OLS maars_lm, lm class object." />
 
 
 
@@ -135,18 +135,18 @@ class object" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Get the tidy variance summary from a fitted OLS <code>maars_lm, lm</code>
-class object</h1>
+    <h1>Retrieve the assumptions for the variance estimators to be consistent for a
+a fitted OLS <code>maars_lm, lm</code> class object</h1>
     <small class="dont-index">Source: <a href='https://github.com/shamindras/maars/blob/master/R/ols-summary.R'><code>R/ols-summary.R</code></a></small>
-    <div class="hidden name"><code>get_summary.Rd</code></div>
+    <div class="hidden name"><code>get_assumptions2.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Get the tidy variance summary from a fitted OLS <code>maars_lm, lm</code>
-class object</p>
+    <p>Retrieve the assumptions for the variance estimators to be consistent for a
+a fitted OLS <code>maars_lm, lm</code> class object.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_summary</span><span class='op'>(</span>
+    <pre class="usage"><span class='fu'>get_assumptions2</span><span class='op'>(</span>
   <span class='va'>mod_fit</span>,
   sand <span class='op'>=</span> <span class='cn'>TRUE</span>,
   boot_emp <span class='op'>=</span> <span class='cn'>FALSE</span>,
@@ -192,8 +192,8 @@ from the request</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>(tibble) : Combined standard error summary from a fitted
-OLS <code>maars_lm, lm</code> class object</p>
+    <p>(vector) : Vectors containing the assumptions under which each estimator
+of the variance is consistent.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
@@ -223,7 +223,7 @@ OLS <code>maars_lm, lm</code> class object</p>
 
 <span class='co'># This returns everything but boot_mul, since we didn't run it in the original</span>
 <span class='co'># original maars_lm model</span>
-<span class='fu'>get_summary</span><span class='op'>(</span>
+<span class='fu'><a href='get_assumptions.html'>get_assumptions</a></span><span class='op'>(</span>
   mod_fit <span class='op'>=</span> <span class='va'>comp_var1</span>, sand <span class='op'>=</span> <span class='cn'>TRUE</span>,
   boot_emp <span class='op'>=</span> <span class='cn'>TRUE</span>, boot_res <span class='op'>=</span> <span class='cn'>TRUE</span>, boot_mul <span class='op'>=</span> <span class='cn'>FALSE</span>,
   well_specified <span class='op'>=</span> <span class='cn'>TRUE</span>

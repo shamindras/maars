@@ -90,6 +90,111 @@ comp_var <- function(mod_fit,
   return(mod_fit)
 }
 
+#' Print summary in the style of `lm`
+#'
+#' @param var_summary TODO: Add later
+#' @param digits TODO: Add later
+#'
+#' @keywords internal
+#'
+#' @return TODO: Add later
+#'
+#' @examples
+#' \dontrun{
+#' # TODO: Add later
+#' }
+get_mms_summary_print_lm_style <- function(var_summary, digits) {
+  out_summ <- var_summary %>%
+    dplyr::mutate(sig = dplyr::case_when(
+      p.value <= 0.001 ~ "***",
+      p.value <= 0.01 ~ "**",
+      p.value <= 0.05 ~ "*",
+      TRUE ~ "."
+    ))
+  colnames(out_summ) <- c(
+    'Term', 'Estimate', 'Std. Error ',
+    't value', 'Pr(>|t|)', 'Significance'
+  )
+
+  cat('Coefficients:\n')
+  print.data.frame(out_summ, row.names = FALSE, digits = digits)
+  # name_width <- max(sapply(names(out_summ), nchar))
+  # format(out_summ, width = name_width, justify = "centre", digits = digits)
+  cli::cli_text("\n---")
+  cli::cli_h3(cli::col_blue(glue::glue("Signif. codes:")))
+  cli::cli_text("\n")
+  cli::cli_text("0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1")
+}
+
+#' Print interleaved summary for a \code{maars_lm, lm} object, for a
+#' specific variance type
+#'
+#' @param title TODO: Add later
+#' @param summary TODO: Add later
+#' @param assumptions TODO: Add later
+#' @param digits TODO: Add later
+#'
+#' @keywords internal
+#'
+#' @return TODO: Add later
+#'
+#' @examples
+#' \dontrun{
+#' # TODO: Add later
+#' }
+get_mms_summary_split_cli <- function(title,
+                                      summary,
+                                      assumptions,
+                                      digits = 3) {
+  cli::cli_end()
+  cli::cli_h1(cli::col_yellow(glue::glue("{title} Standard Errors")))
+  cli::cli_text("\n")
+  cli::cli_end()
+  get_mms_summary_print_lm_style(var_summary = summary, digits = digits)
+  cli::cli_end()
+  cli::cli_ul()
+  cli::cli_h2(cli::col_green(glue::glue("{title} Assumptions")))
+  # cli::cli_h2(cli::col_green(glue::glue("Assumptions")))
+  cli::cli_ul()
+  cli::cli_li(assumptions)
+  cli::cli_end()
+}
+
+
+#' Print interleaved summary for a \code{maars_lm, lm} object, for all
+#' variance types
+#'
+#' @param summary_joined TODO: Add later
+#' @param digits TODO: Add later
+#' @param all_emoji_titles TODO: Add later
+#' @param all_assumptions TODO: Add later
+#'
+#' @keywords internal
+#'
+#' @return TODO: Add later
+#'
+#' @examples
+#' \dontrun{
+#' # TODO: Add later
+#' }
+get_mms_summary_joined_cli <- function(all_emoji_titles,
+                                       all_assumptions,
+                                       summary_joined,
+                                       digits = 3) {
+  cli::cli_end()
+  cli::cli_h1(cli::col_yellow(glue::glue("Fitted OLS Model:")))
+  print.data.frame(x = summary_joined, digits = digits)
+  cli::cli_h1(cli::col_cyan(glue::glue("Assumptions")))
+  purrr::iwalk(
+    all_emoji_titles,
+    ~ get_mms_assumptions_cli(
+      title = all_emoji_titles[[.y]],
+      assumptions = all_assumptions[[.y]]
+    )
+  )
+  cli::cli_end()
+}
+
 #' Summary of `maars_lm` object
 #'
 #' Summary method for class "maars_lm".
@@ -107,6 +212,7 @@ comp_var <- function(mod_fit,
 #'   (well specified) output is required, \code{FALSE} to exclude this output
 #'   from the request.
 #' @param digits (integer) : Rounding digits used in some of the function's output.
+#' @param split (logical) : TODO: Add later
 #' @param ... Additional arguments.
 #'
 #' @method summary maars_lm
@@ -117,88 +223,79 @@ summary.maars_lm <- function(object,
                              boot_res = FALSE,
                              boot_mul = FALSE,
                              well_specified = FALSE,
-                             digits = 3, ...) {
+                             digits = 3,
+                             split = TRUE,
+                             ...) {
 
-  out_summ <- get_summary(mod_fit = object,
-                          sand = sand,
-                          boot_emp = boot_emp,
-                          boot_res = boot_res,
-                          boot_mul = boot_mul,
-                          well_specified = well_specified
+  # Get the variance types the user has requested. This performs assertion
+  # Checking, so if there is no error it will return the required names,
+  # else it will throw an error
+  req_var_nms <- check_fn_args_summary(
+    mod_fit = object,
+    sand = sand,
+    boot_emp = boot_emp,
+    boot_res = boot_res,
+    boot_mul = boot_mul,
+    well_specified = well_specified
   )
 
-  # add asterisks for statistical significance in a separate tibble
-  significance_ast <- out_summ %>%
-    dplyr::select(dplyr::starts_with('p.value')) %>%
-    dplyr::mutate(dplyr::across(dplyr::everything(),
-                                ~dplyr::case_when(round(.x,3) == 0.000 ~ '***',
-                                                  .x < 0.001 ~ '**',
-                                                  .x < 0.01 ~ '*',
-                                                  .x < 0.05 ~ '.',
-                                                  TRUE ~ ' '))) %>%
-    stats::setNames(object = .,
-                    nm = paste0('signif.', stringr::str_sub(names(.), start=9)))
+  # Filter the comp_mms_var output from the fitted maars_lm object for the
+  # requested variance types from the user
+  comp_var_ind_filt <- req_var_nms %>%
+    purrr::map(.x = ., ~ purrr::pluck(object$var, .x))
 
-  # join asterisks with out_summ
-  out_summ <- out_summ %>% dplyr::bind_cols(significance_ast)
-
-  # reorder columns - we could change the order
-  cols_prefix_order <- c('term', 'estimate', 'std.error',
-                         'statistic', 'p.value', 'signif')
-  out_summ <- out_summ[,cols_prefix_order %>%
-                         purrr::map(~ names(out_summ)[grepl(., names(out_summ))]) %>%
-                         unlist()]
-
-  # format p values
-  out_summ <- out_summ %>%
-    dplyr::mutate(dplyr::across(
-      dplyr::starts_with("p.value"),
-      ~ format.pval(.x, digits = 1)
+  # Get emoji titles for all variance types
+  all_emoji_titles <- comp_var_ind_filt %>%
+    purrr::map(.x = ., .f = ~ fetch_mms_comp_var_attr(
+      comp_var_ind = .x,
+      req_type = "emoji_title"
     ))
 
-  cat("\nCall:\n",
-      stringr::str_c(rlang::expr_deparse(x = object$call),
-                     sep = "\n",
-                     collapse = "\n"
-      ),
-      "\n\n",
-      sep = ""
-  )
-  cat("Coefficients:\n")
-  print.data.frame(out_summ, row.names = FALSE, digits = digits, right = TRUE)
-  cat("\n---\n")
-  cat("Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1")
-
-  summ_lm <- summary.lm(object)
-  cat(
-    "\n\nResidual standard error:",
-    formatC(signif(summ_lm$sigma, digits = digits)), "on",
-    object$df.residual, "degrees of freedom"
-  )
-  cat(
-    "\nMultiple R-squared:", formatC(summ_lm$r.squared, digits = digits),
-    ",\tAdjusted R-squared:", formatC(summ_lm$adj.r.squared, digits = digits)
-  )
-  cat(
-    "\nF-statistic:", summ_lm$fstatistic[1L],
-    " on ", summ_lm$fstatistic[2L], " and ", summ_lm$fstatistic[3L],
-    "DF,  p-value:",
-    format.pval(pf(summ_lm$fstatistic[1L],
-                   summ_lm$fstatistic[2L],
-                   summ_lm$fstatistic[3L],
-                   lower.tail = FALSE
+  # Get all assumptions for all variance types
+  all_assumptions <- comp_var_ind_filt %>%
+    purrr::map(.x = ., .f = ~ fetch_mms_comp_var_attr(
+      comp_var_ind = .x,
+      req_type = "var_assumptions"
     ))
-  )
 
-  cat("\n---\nAssumptions:\n")
-  cat(paste0(utf8::utf8_format('\U001F96A'),
-             get_assumptions(mod_fit = object,
-                             sand = sand, boot_emp = boot_emp,
-                             boot_res = boot_res,
-                             boot_mul = boot_mul,
-                             well_specified = well_specified
-             )) %>% paste0(., collapse = '\n'))
-  cat('\n')
+  if(split){
+    # Get variance summaries for all variance types
+    all_summaries <- comp_var_ind_filt %>%
+      purrr::map(.x = ., .f = ~ fetch_mms_comp_var_attr(
+        comp_var_ind = .x,
+        req_type = "var_summary"
+      ))
+
+    # Get the printed summary table interleaved with assumptions
+    # We just run an index over all_summaries, since it has the same
+    # length as all_emoji_titles and all_assumptions and the same variance
+    # type ordering
+    purrr::iwalk(
+      all_summaries,
+      ~ get_mms_summary_split_cli(
+        title = all_emoji_titles[[.y]],
+        summary = all_summaries[[.y]],
+        assumptions = all_assumptions[[.y]],
+        digits = digits
+      )
+    )
+  } else{
+    # Summary table with the abbreviated variance type as a suffix
+    all_summaries_nmd_joined <- get_summary2(mod_fit = object,
+                                             sand = sand,
+                                             boot_emp = boot_emp,
+                                             boot_res = boot_res,
+                                             boot_mul = boot_mul,
+                                             well_specified = well_specified,
+                                             tidy = FALSE)
+
+    # Get the printed joined summary table with assumptions
+    get_mms_summary_joined_cli(all_emoji_titles,
+                               all_assumptions,
+                               summary_joined = all_summaries_nmd_joined,
+                               digits = digits)
+  }
+
 }
 
 # tidy.maars_lm <- function(x, ...){
@@ -206,6 +303,63 @@ summary.maars_lm <- function(object,
 #                  'The tidy method on the lm object will be returned.'))
 #   NextMethod("tidy")
 # }
+
+#' Get assumptions for a \code{maars_lm, lm} object, for a specific
+#' variance type
+#'
+#' @param title TODO: Add later
+#' @param assumptions TODO: Add later
+#'
+#' @keywords internal
+#'
+#' @return TODO: Add later
+#'
+#' @examples
+#' \dontrun{
+#' # TODO: Add later
+#' }
+get_mms_assumptions_cli <- function(title, assumptions) {
+  cli::cli_end()
+  cli::cli_h1(cli::col_green(glue::glue("{title} Assmp.")))
+  cli::cli_ul()
+  cli::cli_li(assumptions)
+  cli::cli_end()
+}
+
+#' Print method display for a \code{maars_lm, lm} object
+#'
+#' @param mod_fit TODO: Add later
+#' @param all_emoji_titles TODO: Add later
+#' @param all_assumptions TODO: Add later
+#'
+#' @keywords internal
+#'
+#' @return TODO: Add later
+#'
+#' @examples
+#' \dontrun{
+#' # TODO: Add later
+#' }
+get_mms_print_cli <- function(mod_fit,
+                              all_emoji_titles,
+                              all_assumptions) {
+  cli::cli_end()
+  cli::cli_h1(cli::col_yellow(glue::glue("Fitted OLS Model:")))
+  mod_fit_lm <- mod_fit
+  # Need this to UseNextMethod to print lm formula directly
+  # TODO: Get the formula manually and avoid this new "lm" class creation
+  class(mod_fit_lm) <- c("lm")
+  print(mod_fit_lm)
+  cli::cli_text(glue::glue_collapse("\n\nClass:\n{class(mod_fit)}\n", sep = ", ", last = ""))
+  purrr::iwalk(
+    all_emoji_titles,
+    ~ get_mms_assumptions_cli(
+      title = all_emoji_titles[[.y]],
+      assumptions = all_assumptions[[.y]]
+    )
+  )
+  cli::cli_end()
+}
 
 #' Print `maars_lm` object
 #'
@@ -218,8 +372,30 @@ summary.maars_lm <- function(object,
 #' @method print maars_lm
 #' @export
 print.maars_lm <- function(x, ...) {
-  # this function is not really needed, but let's keep it for now
-  NextMethod("print")
+
+  # Get emoji titles for all variance types
+  all_emoji_titles <- x$var %>%
+    purrr::compact(.x = .) %>%
+    purrr::map(.x = ., .f = ~ fetch_mms_comp_var_attr(
+      comp_var_ind = .x,
+      req_type = "emoji_title"
+    ))
+
+  # Get all assumptions for all variance types
+  all_assumptions <- x$var %>%
+    purrr::map(.x = ., .f = ~ fetch_mms_comp_var_attr(
+      comp_var_ind = .x,
+      req_type = "var_assumptions"
+    ))
+
+  get_mms_print_cli(mod_fit = x,
+                    all_emoji_titles = all_emoji_titles,
+                    all_assumptions = all_assumptions)
+
+  # TODO: Revise the output of this code to perhaps just print the variance
+  #       types available for the object
+
+  # NextMethod("print")
 }
 
 #' Convert an object to an object that can be handled by the "maars" package

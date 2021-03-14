@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Get the tidy variance summary from a fitted OLS maars_lm, lm
-class object — get_summary • maars</title>
+class object — get_summary2 • maars</title>
 
 
 <!-- jquery -->
@@ -41,7 +41,7 @@ class object — get_summary • maars</title>
 
 
 <meta property="og:title" content="Get the tidy variance summary from a fitted OLS maars_lm, lm
-class object — get_summary" />
+class object — get_summary2" />
 <meta property="og:description" content="Get the tidy variance summary from a fitted OLS maars_lm, lm
 class object" />
 
@@ -138,7 +138,7 @@ class object" />
     <h1>Get the tidy variance summary from a fitted OLS <code>maars_lm, lm</code>
 class object</h1>
     <small class="dont-index">Source: <a href='https://github.com/shamindras/maars/blob/master/R/ols-summary.R'><code>R/ols-summary.R</code></a></small>
-    <div class="hidden name"><code>get_summary.Rd</code></div>
+    <div class="hidden name"><code>get_summary2.Rd</code></div>
     </div>
 
     <div class="ref-description">
@@ -146,13 +146,14 @@ class object</h1>
 class object</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_summary</span><span class='op'>(</span>
+    <pre class="usage"><span class='fu'>get_summary2</span><span class='op'>(</span>
   <span class='va'>mod_fit</span>,
   sand <span class='op'>=</span> <span class='cn'>TRUE</span>,
   boot_emp <span class='op'>=</span> <span class='cn'>FALSE</span>,
   boot_mul <span class='op'>=</span> <span class='cn'>FALSE</span>,
   boot_res <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  well_specified <span class='op'>=</span> <span class='cn'>FALSE</span>
+  well_specified <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  tidy <span class='op'>=</span> <span class='cn'>TRUE</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -187,6 +188,16 @@ output is required, <code>FALSE</code> to exclude this output from the request</
       <td><p>(logical) : <code>TRUE</code> if lm standard errors
 (well specified) output is required, <code>FALSE</code> to exclude this output
 from the request</p></td>
+    </tr>
+    <tr>
+      <th>tidy</th>
+      <td><p>(logical) : <code>TRUE</code> if user requires a
+<code><a href='https://generics.r-lib.org/reference/tidy.html'>tidy</a></code> style variance summary, <code>FALSE</code> if the user
+requires the compressed variance summary joined by the common
+"term", "estimate" values for the OLS fit. In this output each variance
+type has the required standard error term as a separate column with the
+variance type abbreviation as the suffix. That is, for sandwich estimator
+the 'p.value' column is renamed to 'p.value.sand'.</p></td>
     </tr>
     </table>
 
@@ -223,7 +234,7 @@ OLS <code>maars_lm, lm</code> class object</p>
 
 <span class='co'># This returns everything but boot_mul, since we didn't run it in the original</span>
 <span class='co'># original maars_lm model</span>
-<span class='fu'>get_summary</span><span class='op'>(</span>
+<span class='fu'><a href='get_summary.html'>get_summary</a></span><span class='op'>(</span>
   mod_fit <span class='op'>=</span> <span class='va'>comp_var1</span>, sand <span class='op'>=</span> <span class='cn'>TRUE</span>,
   boot_emp <span class='op'>=</span> <span class='cn'>TRUE</span>, boot_res <span class='op'>=</span> <span class='cn'>TRUE</span>, boot_mul <span class='op'>=</span> <span class='cn'>FALSE</span>,
   well_specified <span class='op'>=</span> <span class='cn'>TRUE</span>

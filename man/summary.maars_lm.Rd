@@ -12,6 +12,7 @@
   boot_mul = FALSE,
   well_specified = FALSE,
   digits = 3,
+  split = TRUE,
   ...
 )
 }
@@ -35,6 +36,8 @@ output is required, \code{FALSE} to exclude this output from the request}
 from the request.}
 
 \item{digits}{(integer) : Rounding digits used in some of the function's output.}
+
+\item{split}{(logical) : TODO: Add later}
 
 \item{...}{Additional arguments.}
 }
