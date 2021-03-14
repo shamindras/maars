@@ -6,8 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Get the tidy variance summary from a fitted OLS maars_lm, lm
-class object — get_summary2 • maars</title>
+<title>Confidence interval of maars_lm object — confint.maars_lm • maars</title>
 
 
 <!-- jquery -->
@@ -40,10 +39,8 @@ class object — get_summary2 • maars</title>
 
 
 
-<meta property="og:title" content="Get the tidy variance summary from a fitted OLS maars_lm, lm
-class object — get_summary2" />
-<meta property="og:description" content="Get the tidy variance summary from a fitted OLS maars_lm, lm
-class object" />
+<meta property="og:title" content="Confidence interval of maars_lm object — confint.maars_lm" />
+<meta property="og:description" content="confint method for class &quot;maars_lm&quot;." />
 
 
 
@@ -135,43 +132,49 @@ class object" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Get the tidy variance summary from a fitted OLS <code>maars_lm, lm</code>
-class object</h1>
-    <small class="dont-index">Source: <a href='https://github.com/shamindras/maars/blob/master/R/ols-summary.R'><code>R/ols-summary.R</code></a></small>
-    <div class="hidden name"><code>get_summary2.Rd</code></div>
+    <h1>Confidence interval of <code>maars_lm</code> object</h1>
+    <small class="dont-index">Source: <a href='https://github.com/shamindras/maars/blob/master/R/maars-lm.R'><code>R/maars-lm.R</code></a></small>
+    <div class="hidden name"><code>confint.maars_lm.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Get the tidy variance summary from a fitted OLS <code>maars_lm, lm</code>
-class object</p>
+    <p><code>confint</code> method for class "maars_lm".</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_summary2</span><span class='op'>(</span>
-  <span class='va'>mod_fit</span>,
+    <pre class="usage"><span class='co'># S3 method for maars_lm</span>
+<span class='fu'><a href='https://rdrr.io/r/stats/confint.html'>confint</a></span><span class='op'>(</span>
+  <span class='va'>object</span>,
   sand <span class='op'>=</span> <span class='cn'>TRUE</span>,
   boot_emp <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  boot_mul <span class='op'>=</span> <span class='cn'>FALSE</span>,
   boot_res <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  boot_mul <span class='op'>=</span> <span class='cn'>FALSE</span>,
   well_specified <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  tidy <span class='op'>=</span> <span class='cn'>TRUE</span>
+  digits <span class='op'>=</span> <span class='fl'>3</span>,
+  level <span class='op'>=</span> <span class='fl'>0.95</span>,
+  <span class='va'>...</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>mod_fit</th>
-      <td><p>(maars_lm, lm) A fitted OLS <code>maars_lm, lm</code> class object</p></td>
+      <th>object</th>
+      <td><p>A fitted "maars_lm" object.</p></td>
     </tr>
     <tr>
       <th>sand</th>
       <td><p>(logical) : <code>TRUE</code> if sandwich estimator output is required,
-<code>FALSE</code> to exclude this output from the request</p></td>
+<code>FALSE</code> to exclude this output from the request.</p></td>
     </tr>
     <tr>
       <th>boot_emp</th>
       <td><p>(logical) : <code>TRUE</code> if empirical bootstrap standard error
-output is required, <code>FALSE</code> to exclude this output from the request</p></td>
+output is required, <code>FALSE</code> to exclude this output from the request.</p></td>
+    </tr>
+    <tr>
+      <th>boot_res</th>
+      <td><p>(logical) : <code>TRUE</code> if residual bootstrap standard error
+output is required, <code>FALSE</code> to exclude this output from the request.</p></td>
     </tr>
     <tr>
       <th>boot_mul</th>
@@ -179,62 +182,26 @@ output is required, <code>FALSE</code> to exclude this output from the request</
 output is required, <code>FALSE</code> to exclude this output from the request</p></td>
     </tr>
     <tr>
-      <th>boot_res</th>
-      <td><p>(logical) : <code>TRUE</code> if residual bootstrap standard error
-output is required, <code>FALSE</code> to exclude this output from the request</p></td>
-    </tr>
-    <tr>
       <th>well_specified</th>
-      <td><p>(logical) : <code>TRUE</code> if lm standard errors
+      <td><p>(logical) : <code>TRUE</code> if lm standard errors.
 (well specified) output is required, <code>FALSE</code> to exclude this output
-from the request</p></td>
+from the request.</p></td>
     </tr>
     <tr>
-      <th>tidy</th>
-      <td><p>(logical) : <code>TRUE</code> if user requires a
-<code><a href='https://generics.r-lib.org/reference/tidy.html'>tidy</a></code> style variance summary, <code>FALSE</code> if the user
-requires the compressed variance summary joined by the common
-"term", "estimate" values for the OLS fit. In this output each variance
-type has the required standard error term as a separate column with the
-variance type abbreviation as the suffix. That is, for sandwich estimator
-the 'p.value' column is renamed to 'p.value.sand'.</p></td>
+      <th>digits</th>
+      <td><p>(integer) : Rounding digits used in some of the function's output.</p></td>
+    </tr>
+    <tr>
+      <th>level</th>
+      <td><p>(numeric) : TODO: Add later</p></td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Additional arguments.</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>(tibble) : Combined standard error summary from a fitted
-OLS <code>maars_lm, lm</code> class object</p>
-
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>1243434</span><span class='op'>)</span>
-
-<span class='co'># generate data</span>
-<span class='va'>n</span> <span class='op'>&lt;-</span> <span class='fl'>1e3</span>
-<span class='va'>X_1</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>
-<span class='va'>X_2</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>10</span>, <span class='fl'>20</span><span class='op'>)</span>
-<span class='va'>eps</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>
-
-<span class='co'># OLS data and model</span>
-<span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fl'>2</span> <span class='op'>+</span> <span class='va'>X_1</span> <span class='op'>*</span> <span class='fl'>1</span> <span class='op'>+</span> <span class='va'>X_2</span> <span class='op'>*</span> <span class='fl'>5</span> <span class='op'>+</span> <span class='va'>eps</span>
-<span class='va'>lm_fit</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>y</span> <span class='op'>~</span> <span class='va'>X_1</span> <span class='op'>+</span> <span class='va'>X_2</span><span class='op'>)</span>
-
-<span class='co'># DEFINE common column names - these stay the same across all</span>
-<span class='co'># reported error types</span>
-<span class='va'>common_vars</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"term"</span>, <span class='st'>"estimate"</span><span class='op'>)</span>
-
-<span class='co'># Empirical Bootstrap check</span>
-<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>454354534</span><span class='op'>)</span>
-<span class='va'>comp_var1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='comp_var.html'>comp_var</a></span><span class='op'>(</span>
-  mod_fit <span class='op'>=</span> <span class='va'>lm_fit</span>, boot_emp <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>B <span class='op'>=</span> <span class='fl'>20</span>, m <span class='op'>=</span> <span class='fl'>200</span><span class='op'>)</span>,
-  boot_res <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>B <span class='op'>=</span> <span class='fl'>30</span><span class='op'>)</span>,
-  boot_mul <span class='op'>=</span> <span class='cn'>NULL</span>
-<span class='op'>)</span>
-
-<span class='co'># TODO: Add here</span>
-<span class='op'>}</span>
-</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

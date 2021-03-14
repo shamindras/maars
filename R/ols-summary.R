@@ -1,3 +1,5 @@
+# FUNCTIONS: Assertion checking helper function ----
+
 #' Assertion Checks for individual \code{\link{get_boot_summary}} function inputs
 #'
 #' \code{check_fn_args_comp_mms_var_boot_ind} is used to assess whether the arguments
@@ -147,6 +149,36 @@ check_fn_args_summary <- function(mod_fit,
   return(comm_nms)
 }
 
+# FUNCTIONS: variance summary columns suffix renaming helper function ----
+
+#' Adds a variance type abbreviation suffix to variance summary tibbles
+#'
+#' @param var_summary TODO: Add later
+#' @param var_type_abb TODO: Add later
+#'
+#' @return (\code{tibble}) : TODO Add later
+#'
+#' @keywords internal
+#'
+#' @examples
+#' \dontrun{
+#' # TODO: Add here
+#' }
+get_mms_rnm_cols_suff <- function(var_summary, var_type_abb) {
+
+  # Append suffix to variable names
+  cols_common <- c("term", "estimate")
+  cols_with_suffix <- setdiff(colnames(var_summary), cols_common) %>%
+    stringr::str_c(., var_type_abb, sep = ".")
+  cols_renamed <- c(cols_common, cols_with_suffix)
+
+  # Apply new names
+  var_summary <- var_summary %>%
+    dplyr::rename_with(~cols_renamed, dplyr::everything())
+
+  return(var_summary)
+}
+
 # FUNCTIONS: emoji and title builder helper function ----
 
 #' An emoji and title builder helper function for a specific variance type
@@ -200,7 +232,8 @@ fetch_mms_emoji_title <- function(var_type_abb, title_type) {
   return(out)
 }
 
-# FUNCTIONS: Get the individual variance summary ----
+# FUNCTIONS: Get the individual variance summary attribute from comp_var ----
+# This function works off our common list output from comp_var
 
 #' Get the individual variance summary for a specific attribute in the
 #' \code{var} element
@@ -269,6 +302,247 @@ fetch_mms_comp_var_attr <- function(comp_var_ind, req_type) {
   )
   return(out)
 }
+
+# FUNCTIONS: get_summary2, TODO: delete after review of get_summary3 ----
+
+#' Get the tidy variance summary from a fitted OLS \code{maars_lm, lm}
+#' class object
+#'
+#' Get the tidy variance summary from a fitted OLS \code{maars_lm, lm}
+#' class object
+#'
+#' @param mod_fit (maars_lm, lm) A fitted OLS \code{maars_lm, lm} class object
+#' @param sand (logical) : \code{TRUE} if sandwich estimator output is required,
+#'   \code{FALSE} to exclude this output from the request
+#' @param boot_emp (logical) : \code{TRUE} if empirical bootstrap standard error
+#'   output is required, \code{FALSE} to exclude this output from the request
+#' @param boot_res (logical) : \code{TRUE} if residual bootstrap standard error
+#'   output is required, \code{FALSE} to exclude this output from the request
+#' @param boot_mul (logical) : \code{TRUE} if multiplier bootstrap standard error
+#'   output is required, \code{FALSE} to exclude this output from the request
+#' @param well_specified (logical) : \code{TRUE} if lm standard errors
+#'   (well specified) output is required, \code{FALSE} to exclude this output
+#'   from the request
+#' @param tidy (logical) : \code{TRUE} if user requires a
+#'   \code{\link[broom]{tidy}} style variance summary, \code{FALSE} if the user
+#'   requires the compressed variance summary joined by the common
+#'   "term", "estimate" values for the OLS fit. In this output each variance
+#'   type has the required standard error term as a separate column with the
+#'   variance type abbreviation as the suffix. That is, for sandwich estimator
+#'   the 'p.value' column is renamed to 'p.value.sand'.
+#'
+#' @return (tibble) : Combined standard error summary from a fitted
+#' OLS \code{maars_lm, lm} class object
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' set.seed(1243434)
+#'
+#' # generate data
+#' n <- 1e3
+#' X_1 <- stats::rnorm(n, 0, 1)
+#' X_2 <- stats::rnorm(n, 10, 20)
+#' eps <- stats::rnorm(n, 0, 1)
+#'
+#' # OLS data and model
+#' y <- 2 + X_1 * 1 + X_2 * 5 + eps
+#' lm_fit <- stats::lm(y ~ X_1 + X_2)
+#'
+#' # DEFINE common column names - these stay the same across all
+#' # reported error types
+#' common_vars <- c("term", "estimate")
+#'
+#' # Empirical Bootstrap check
+#' set.seed(454354534)
+#' comp_var1 <- comp_var(
+#'   mod_fit = lm_fit, boot_emp = list(B = 20, m = 200),
+#'   boot_res = list(B = 30),
+#'   boot_mul = NULL
+#' )
+#'
+#' # TODO: Add here
+#' }
+get_summary2 <- function(mod_fit,
+                         sand = TRUE,
+                         boot_emp = FALSE,
+                         boot_mul = FALSE,
+                         boot_res = FALSE,
+                         well_specified = FALSE,
+                         tidy = TRUE) {
+
+  # Check that joined is a logical value
+  assertthat::assert_that(
+    is.logical(tidy),
+    msg = glue::glue("joined must only be of class: ['logical']")
+  )
+
+  # Get the variance types the user has requested. This performs assertion
+  # Checking, so if there is no error it will return the required names,
+  # else it will throw an error
+  req_var_nms <- check_fn_args_summary(
+    mod_fit = mod_fit,
+    sand = sand,
+    boot_emp = boot_emp,
+    boot_res = boot_res,
+    boot_mul = boot_mul,
+    well_specified = well_specified
+  )
+
+  # Filter the comp_mms_var output from the fitted maars_lm object for the
+  # requested variance types from the user
+  comp_var_ind_filt <- req_var_nms %>%
+    purrr::map(.x = ., ~ purrr::pluck(mod_fit$var, .x))
+
+  # Obtain the required variance summary tibble
+  if (tidy) {
+    # Tidy summary
+    out <- comp_var_ind_filt %>%
+      purrr::map_df(.x = ., .f = ~ fetch_mms_comp_var_attr(
+        comp_var_ind = .x,
+        req_type = "var_summary_mod"
+      ))
+  } else {
+    # Modified summary table with the abbreviated variance type as a suffix
+    all_summary_nmd <- comp_var_ind_filt %>%
+      purrr::map(.x = ., .f = ~ fetch_mms_comp_var_attr(
+        comp_var_ind = .x,
+        req_type = "var_summary_nmd"
+      ))
+
+    # Now return the left_join output of all tables
+    out <- all_summary_nmd %>%
+      purrr::reduce(
+        .x = ., dplyr::left_join,
+        by = c("term", "estimate")
+      )
+  }
+
+  return(out)
+}
+
+# FUNCTIONS: get_summary3 ----
+# TODO: delete get_summary_ind, get_summary, get_summary2 after review
+
+#' Get the tidy variance summary from a fitted OLS \code{maars_lm, lm}
+#' class object
+#'
+#' Get the tidy variance summary from a fitted OLS \code{maars_lm, lm}
+#' class object
+#'
+#' @param mod_fit (maars_lm, lm) A fitted OLS \code{maars_lm, lm} class object
+#' @param sand (logical) : \code{TRUE} if sandwich estimator output is required,
+#'   \code{FALSE} to exclude this output from the request
+#' @param boot_emp (logical) : \code{TRUE} if empirical bootstrap standard error
+#'   output is required, \code{FALSE} to exclude this output from the request
+#' @param boot_res (logical) : \code{TRUE} if residual bootstrap standard error
+#'   output is required, \code{FALSE} to exclude this output from the request
+#' @param boot_mul (logical) : \code{TRUE} if multiplier bootstrap standard error
+#'   output is required, \code{FALSE} to exclude this output from the request
+#' @param well_specified (logical) : \code{TRUE} if lm standard errors
+#'   (well specified) output is required, \code{FALSE} to exclude this output
+#'   from the request
+#' @param tidy (logical) : \code{TRUE} if user requires a
+#'   \code{\link[broom]{tidy}} style variance summary, \code{FALSE} if the user
+#'   requires the compressed variance summary joined by the common
+#'   "term", "estimate" values for the OLS fit. In this output each variance
+#'   type has the required standard error term as a separate column with the
+#'   variance type abbreviation as the suffix. That is, for sandwich estimator
+#'   the 'p.value' column is renamed to 'p.value.sand'.
+#'
+#' @return (tibble) : Combined standard error summary from a fitted
+#' OLS \code{maars_lm, lm} class object
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' set.seed(1243434)
+#'
+#' # generate data
+#' n <- 1e3
+#' X_1 <- stats::rnorm(n, 0, 1)
+#' X_2 <- stats::rnorm(n, 10, 20)
+#' eps <- stats::rnorm(n, 0, 1)
+#'
+#' # OLS data and model
+#' y <- 2 + X_1 * 1 + X_2 * 5 + eps
+#' lm_fit <- stats::lm(y ~ X_1 + X_2)
+#'
+#' # DEFINE common column names - these stay the same across all
+#' # reported error types
+#' common_vars <- c("term", "estimate")
+#'
+#' # Empirical Bootstrap check
+#' set.seed(454354534)
+#' comp_var1 <- comp_var(
+#'   mod_fit = lm_fit, boot_emp = list(B = 20, m = 200),
+#'   boot_res = list(B = 30),
+#'   boot_mul = NULL
+#' )
+#'
+#' # TODO: Add here
+#' }
+get_summary3 <- function(mod_fit,
+                         sand = TRUE,
+                         boot_emp = FALSE,
+                         boot_mul = FALSE,
+                         boot_res = FALSE,
+                         well_specified = FALSE,
+                         tidy = TRUE) {
+
+  # Check that joined is a logical value
+  assertthat::assert_that(
+    is.logical(tidy),
+    msg = glue::glue("joined must only be of class: ['logical']")
+  )
+
+  # Get the variance types the user has requested. This performs assertion
+  # Checking, so if there is no error it will return the required names,
+  # else it will throw an error
+  req_var_nms <- check_fn_args_summary(
+    mod_fit = mod_fit,
+    sand = sand,
+    boot_emp = boot_emp,
+    boot_res = boot_res,
+    boot_mul = boot_mul,
+    well_specified = well_specified
+  )
+
+  # Filter the comp_mms_var output from the fitted maars_lm object for the
+  # requested variance types from the user
+  comp_var_ind_filt <- req_var_nms %>%
+    purrr::map(.x = ., ~ purrr::pluck(mod_fit$var, .x))
+
+  # Obtain the required variance summary tibble
+  if (tidy) {
+    # Tidy summary
+    out <- comp_var_ind_filt %>%
+      purrr::map_df(.x = ., .f = ~ fetch_mms_comp_var_attr(
+        comp_var_ind = .x,
+        req_type = "var_summary_mod"
+      ))
+  } else {
+    # Modified summary table with the abbreviated variance type as a suffix
+    all_summary_nmd <- comp_var_ind_filt %>%
+      purrr::map(.x = ., .f = ~ fetch_mms_comp_var_attr(
+        comp_var_ind = .x,
+        req_type = "var_summary_nmd"
+      ))
+
+    # Now return the left_join output of all tables
+    out <- all_summary_nmd %>%
+      purrr::reduce(
+        .x = ., dplyr::left_join,
+        by = c("term", "estimate")
+      )
+  }
+
+  return(out)
+}
+
+# FUNCTIONS: Previous get_summary related, TODO: delete after review ----
 
 #' An individual variance table summary function that adds the variance type
 #' suffix to the table columns
@@ -395,129 +669,7 @@ get_summary <- function(mod_fit,
   return(out)
 }
 
-
-#' Get the tidy variance summary from a fitted OLS \code{maars_lm, lm}
-#' class object
-#'
-#' Get the tidy variance summary from a fitted OLS \code{maars_lm, lm}
-#' class object
-#'
-#' @param mod_fit (maars_lm, lm) A fitted OLS \code{maars_lm, lm} class object
-#' @param sand (logical) : \code{TRUE} if sandwich estimator output is required,
-#'   \code{FALSE} to exclude this output from the request
-#' @param boot_emp (logical) : \code{TRUE} if empirical bootstrap standard error
-#'   output is required, \code{FALSE} to exclude this output from the request
-#' @param boot_res (logical) : \code{TRUE} if residual bootstrap standard error
-#'   output is required, \code{FALSE} to exclude this output from the request
-#' @param boot_mul (logical) : \code{TRUE} if multiplier bootstrap standard error
-#'   output is required, \code{FALSE} to exclude this output from the request
-#' @param well_specified (logical) : \code{TRUE} if lm standard errors
-#'   (well specified) output is required, \code{FALSE} to exclude this output
-#'   from the request
-#' @param tidy (logical) : \code{TRUE} if user requires a
-#'   \code{\link[broom]{tidy}} style variance summary, \code{FALSE} if the user
-#'   requires the compressed variance summary joined by the common
-#'   "term", "estimate" values for the OLS fit. In this output each variance
-#'   type has the required standard error term as a separate column with the
-#'   variance type abbreviation as the suffix. That is, for sandwich estimator
-#'   the 'p.value' column is renamed to 'p.value.sand'.
-#'
-#' @return (tibble) : Combined standard error summary from a fitted
-#' OLS \code{maars_lm, lm} class object
-#'
-#' @export
-#'
-#' @examples
-#' \dontrun{
-#' set.seed(1243434)
-#'
-#' # generate data
-#' n <- 1e3
-#' X_1 <- stats::rnorm(n, 0, 1)
-#' X_2 <- stats::rnorm(n, 10, 20)
-#' eps <- stats::rnorm(n, 0, 1)
-#'
-#' # OLS data and model
-#' y <- 2 + X_1 * 1 + X_2 * 5 + eps
-#' lm_fit <- stats::lm(y ~ X_1 + X_2)
-#'
-#' # DEFINE common column names - these stay the same across all
-#' # reported error types
-#' common_vars <- c("term", "estimate")
-#'
-#' # Empirical Bootstrap check
-#' set.seed(454354534)
-#' comp_var1 <- comp_var(
-#'   mod_fit = lm_fit, boot_emp = list(B = 20, m = 200),
-#'   boot_res = list(B = 30),
-#'   boot_mul = NULL
-#' )
-#'
-#' # This returns everything but boot_mul, since we didn't run it in the original
-#' # original maars_lm model
-#' get_summary(
-#'   mod_fit = comp_var1, sand = TRUE,
-#'   boot_emp = TRUE, boot_res = TRUE, boot_mul = FALSE,
-#'   well_specified = TRUE
-#' )
-#' }
-get_summary2 <- function(mod_fit,
-                         sand = TRUE,
-                         boot_emp = FALSE,
-                         boot_mul = FALSE,
-                         boot_res = FALSE,
-                         well_specified = FALSE,
-                         tidy = TRUE) {
-
-  # Check that joined is a logical value
-  assertthat::assert_that(
-    is.logical(tidy),
-    msg = glue::glue("joined must only be of class: ['logical']")
-  )
-
-  # Get the variance types the user has requested. This performs assertion
-  # Checking, so if there is no error it will return the required names,
-  # else it will throw an error
-  req_var_nms <- check_fn_args_summary(
-    mod_fit = mod_fit,
-    sand = sand,
-    boot_emp = boot_emp,
-    boot_res = boot_res,
-    boot_mul = boot_mul,
-    well_specified = well_specified
-  )
-
-  # Filter the comp_mms_var output from the fitted maars_lm object for the
-  # requested variance types from the user
-  comp_var_ind_filt <- req_var_nms %>%
-    purrr::map(.x = ., ~ purrr::pluck(mod_fit$var, .x))
-
-  # Obtain the required variance summary tibble
-  if (tidy) {
-    # Tidy summary
-    out <- comp_var_ind_filt %>%
-      purrr::map_df(.x = ., .f = ~ fetch_mms_comp_var_attr(
-        comp_var_ind = .x,
-        req_type = "var_summary_mod"
-      ))
-  } else {
-    # Modified summary table with the abbreviated variance type as a suffix
-    all_summary_nmd <- comp_var_ind_filt %>%
-      purrr::map(.x = ., .f = ~ fetch_mms_comp_var_attr(
-        comp_var_ind = .x,
-        req_type = "var_summary_nmd"
-      ))
-
-    # Now return the left_join output of all tables
-    out <- all_summary_nmd %>%
-      purrr::reduce(
-        .x = ., dplyr::left_join,
-        by = c("term", "estimate")
-      )
-  }
-
-  return(out)
-}
+# FUNCTIONS: get_summary2, TODO: delete after review of get_summary3 ----
 
 #' Retrieve the assumptions for the variance estimators to be consistent for a
 #' a fitted OLS \code{maars_lm, lm} class object

@@ -55,6 +55,9 @@
     <loc>https://shamindras.github.io/maars/reference/comp_var.html</loc>
   </url>
   <url>
+    <loc>https://shamindras.github.io/maars/reference/confint.maars_lm.html</loc>
+  </url>
+  <url>
     <loc>https://shamindras.github.io/maars/reference/diag_boot_emp_qqn.html</loc>
   </url>
   <url>
@@ -97,10 +100,22 @@
     <loc>https://shamindras.github.io/maars/reference/get_confint.html</loc>
   </url>
   <url>
+    <loc>https://shamindras.github.io/maars/reference/get_confint2.html</loc>
+  </url>
+  <url>
+    <loc>https://shamindras.github.io/maars/reference/get_confint3.html</loc>
+  </url>
+  <url>
     <loc>https://shamindras.github.io/maars/reference/get_mms_assumptions_cli.html</loc>
   </url>
   <url>
     <loc>https://shamindras.github.io/maars/reference/get_mms_print_cli.html</loc>
+  </url>
+  <url>
+    <loc>https://shamindras.github.io/maars/reference/get_mms_rnm_cols_suff.html</loc>
+  </url>
+  <url>
+    <loc>https://shamindras.github.io/maars/reference/get_mms_summary_confint_split_cli.html</loc>
   </url>
   <url>
     <loc>https://shamindras.github.io/maars/reference/get_mms_summary_joined_cli.html</loc>
@@ -119,6 +134,9 @@
   </url>
   <url>
     <loc>https://shamindras.github.io/maars/reference/get_summary2.html</loc>
+  </url>
+  <url>
+    <loc>https://shamindras.github.io/maars/reference/get_summary3.html</loc>
   </url>
   <url>
     <loc>https://shamindras.github.io/maars/reference/get_summary_ind.html</loc>
