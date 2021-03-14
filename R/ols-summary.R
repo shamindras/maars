@@ -692,7 +692,5 @@ get_assumptions2 <- function(mod_fit,
       )) %>%
       purrr::set_names(x = ., nm = req_var_nms)
 
-  # out <- unlist(out)
-
   return(out)
 }
