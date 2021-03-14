@@ -36,6 +36,11 @@ get_ols_diag_plots <- function(mod_fit) {
     msg = glue::glue("mod_fit must only be of class: ['maars_lm', 'lm']")
   )
 
+  # Compute values from OLS fit which will be use across several plots
+  cooks_distance <- stats::cooks.distance(model = mms_fit)
+  hat <- stats::lm.influence(mod_fit)$hat
+  fitted_values <- mod_fit$fitted.values
+
   # Compute the standardized residuals from the model in both vector and
   # tibble format
   std_resid <- rstandard(mod_fit)
@@ -45,7 +50,7 @@ get_ols_diag_plots <- function(mod_fit) {
   # Fitted vs. Residuals
   p1 <- ggplot2::ggplot(
     mod_fit,
-    ggplot2::aes(x = mod_fit$fitted.values, mod_fit$residuals)
+    ggplot2::aes(x = fitted_values, mod_fit$residuals)
   ) +
     ggplot2::geom_point(na.rm = TRUE) +
     ggplot2::stat_smooth(formula = y ~ x, method = "loess", na.rm = TRUE) +
@@ -75,7 +80,7 @@ get_ols_diag_plots <- function(mod_fit) {
   # Fitted vs. Standardized Residuals
   p3 <- ggplot2::ggplot(
     mod_fit,
-    ggplot2::aes(x = mod_fit$fitted.values, sqrt(abs(std_resid)))
+    ggplot2::aes(x = fitted_values, sqrt(abs(std_resid)))
   ) +
     ggplot2::geom_point(na.rm = TRUE) +
     ggplot2::stat_smooth(formula = y ~ x, method = "loess", na.rm = TRUE) +
@@ -86,8 +91,30 @@ get_ols_diag_plots <- function(mod_fit) {
     ) +
     ggplot2::theme_bw()
 
-  # Residual vs. Leverage Plot
+  # Cook’s distance vs. observation number
   p4 <- ggplot2::ggplot(
+    mod_fit,
+    ggplot2::aes(
+      x = seq_along(cooks_distance),
+      y = cooks_distance
+    )
+  ) +
+    ggplot2::geom_bar(
+      stat = "identity",
+      position = "identity"
+    ) +
+    ggplot2::labs(
+      title = "Cook's Distance",
+      x = "Obs. Number",
+      y = "Cook's Distance"
+    ) +
+    ggplot2::scale_size_continuous("Cook's Distance", range = c(0, 4)) +
+    ggplot2::theme_bw() +
+    ggplot2::theme(legend.position = "bottom") +
+    NULL
+
+  # Residual vs. Leverage Plot
+  p5 <- ggplot2::ggplot(
     mod_fit,
     ggplot2::aes(x = stats::lm.influence(mod_fit)$hat, std_resid)
   ) +
@@ -104,6 +131,26 @@ get_ols_diag_plots <- function(mod_fit) {
     ggplot2::theme_bw() +
     ggplot2::theme(legend.position = "bottom")
 
-  out <- list(p1 = p1, p2 = p2, p3 = p3, p4 = p4)
+  # Cook’s distance against (leverage)/(1 – leverage)
+  p6 <- ggplot2::ggplot(
+    mod_fit,
+    ggplot2::aes(x = hat, y = cooks_distance)
+  ) +
+    ggplot2::geom_point(na.rm = TRUE) +
+    ggplot2::geom_smooth(formula = y ~ x, method = "loess", na.rm = TRUE) +
+    ggplot2::labs(
+      title = "Cook's dist vs Leverage hii/(1-hii)",
+      x = "Leverage hii",
+      y = "Cook's Distance"
+    ) +
+    ggplot2::geom_abline(
+      slope = seq(0, 3, 0.5),
+      color = "gray",
+      linetype = "dashed"
+    ) +
+    ggplot2::theme_bw() +
+    NULL
+
+  out <- list(p1 = p1, p2 = p2, p3 = p3, p4 = p4, p5 = p5, p6 = p6)
   base::return(out)
 }
