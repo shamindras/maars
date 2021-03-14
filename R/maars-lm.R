@@ -105,12 +105,10 @@ comp_var <- function(mod_fit,
 #' }
 get_mms_summary_print_lm_style <- function(var_summary, digits) {
   out_summ <- var_summary %>%
-    dplyr::mutate(sig = dplyr::case_when(
-      p.value <= 0.001 ~ "***",
-      p.value <= 0.01 ~ "**",
-      p.value <= 0.05 ~ "*",
-      TRUE ~ "."
-    ))
+    dplyr::mutate(sig = symnum(p.value, corr = FALSE, na = FALSE,
+                               legend = FALSE,
+                               cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),
+                               symbols = c("***", "**", "*", ".", " ")))
   colnames(out_summ) <- c(
     'Term', 'Estimate', 'Std. Error ',
     't value', 'Pr(>|t|)', 'Significance'
@@ -275,7 +273,7 @@ summary.maars_lm <- function(object,
         digits = digits
       )
     )
-    cli::cli_h3(cli::col_blue(glue::glue("Signif. codes:")))
+    cli::cli_h3(cli::col_blue(glue::glue("Significance codes:")))
     cli::cli_text("\n")
     cli::cli_text("0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1")
   } else{
@@ -357,11 +355,6 @@ get_mms_print_cli <- function(mod_fit,
       assumptions = all_assumptions[[.y]]
     )
   )
-  cli::cli_text("\n---")
-  cli::cli_h3(cli::col_blue(glue::glue("Signif. codes:")))
-  cli::cli_text("\n")
-  cli::cli_text("0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1")
-  cli::cli_end()
 }
 
 #' Print `maars_lm` object
