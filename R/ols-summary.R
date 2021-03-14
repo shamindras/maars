@@ -171,7 +171,7 @@ fetch_mms_emoji_title <- function(var_type_abb, title_type) {
   # Get the title only for the specific variance type
   var_title <- dplyr::case_when(
     var_type_abb == "lm" ~ "Well Specified Model",
-    var_type_abb == "sand" ~ "Sandwich Estimator",
+    var_type_abb == "sand" ~ "Sandwich",
     var_type_abb == "emp" ~ "Empirical Bootstrap",
     var_type_abb == "res" ~ "Residual Bootstrap",
     var_type_abb == "mul" ~ "Multiplier Bootstrap"

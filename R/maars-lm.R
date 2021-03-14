@@ -141,14 +141,13 @@ get_mms_summary_split_cli <- function(title,
                                       assumptions,
                                       digits = 3) {
   cli::cli_end()
-  cli::cli_h1(cli::col_yellow(glue::glue("{title} Standard Errors")))
+  cli::cli_h1(cli::col_yellow(glue::glue("{title} Summary")))
   cli::cli_text("\n")
   cli::cli_end()
   get_mms_summary_print_lm_style(var_summary = summary, digits = digits)
   cli::cli_end()
   cli::cli_ul()
   cli::cli_h2(cli::col_green(glue::glue("{title} Assumptions")))
-  # cli::cli_h2(cli::col_green(glue::glue("Assumptions")))
   cli::cli_ul()
   cli::cli_li(assumptions)
   cli::cli_end()
@@ -273,9 +272,6 @@ summary.maars_lm <- function(object,
         digits = digits
       )
     )
-    cli::cli_h3(cli::col_blue(glue::glue("Significance codes:")))
-    cli::cli_text("\n")
-    cli::cli_text("0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1")
   } else{
     # Summary table with the abbreviated variance type as a suffix
     all_summaries_nmd_joined <- get_summary2(mod_fit = object,
@@ -292,6 +288,9 @@ summary.maars_lm <- function(object,
                                summary_joined = all_summaries_nmd_joined,
                                digits = digits)
   }
+  cli::cli_h3(cli::col_blue(glue::glue("Significance codes:")))
+  cli::cli_text("\n")
+  cli::cli_text("0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1")
 
 }
 
@@ -317,7 +316,7 @@ summary.maars_lm <- function(object,
 #' }
 get_mms_assumptions_cli <- function(title, assumptions) {
   cli::cli_end()
-  cli::cli_h1(cli::col_green(glue::glue("{title} Assmp.")))
+  cli::cli_h1(cli::col_green(glue::glue("{title} Assumptions")))
   cli::cli_ul()
   cli::cli_li(assumptions)
   cli::cli_end()
@@ -347,7 +346,9 @@ get_mms_print_cli <- function(mod_fit,
   # TODO: Get the formula manually and avoid this new "lm" class creation
   class(mod_fit_lm) <- c("lm")
   print(mod_fit_lm)
-  cli::cli_text(glue::glue_collapse("\n\nClass:\n{class(mod_fit)}\n", sep = ", ", last = ""))
+  cli::cli_text(glue::glue_collapse("\n\nClass:\n{class(mod_fit)}\n",
+                                    sep = ", ",
+                                    last = ""))
   purrr::iwalk(
     all_emoji_titles,
     ~ get_mms_assumptions_cli(
