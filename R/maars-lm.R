@@ -151,41 +151,7 @@ get_mms_summary_split_cli <- function(title,
   cli::cli_end()
 }
 
-#' Print interleaved summary for a \code{maars_lm, lm} object, for all
-#' variance types
-#'
-#' @param summary_joined TODO: Add later
-#' @param digits TODO: Add later
-#' @param all_emoji_titles TODO: Add later
-#' @param all_assumptions TODO: Add later
-#'
-#' @keywords internal
-#'
-#' @return TODO: Add later
-#'
-#' @examples
-#' \dontrun{
-#' # TODO: Add later
-#' }
-get_mms_summary_joined_cli <- function(all_emoji_titles,
-                                       all_assumptions,
-                                       summary_joined,
-                                       digits = 3) {
-  cli::cli_end()
-  cli::cli_h1(cli::col_yellow(glue::glue("Fitted OLS Model:")))
-  print.data.frame(x = summary_joined, digits = digits)
-  cli::cli_h1(cli::col_cyan(glue::glue("Assumptions")))
-  purrr::iwalk(
-    all_emoji_titles,
-    ~ get_mms_assumptions_cli(
-      title = all_emoji_titles[[.y]],
-      assumptions = all_assumptions[[.y]]
-    )
-  )
-  cli::cli_end()
-}
-
-#' Summary of `maars_lm` object
+#' Summary of \code{maars_lm} object
 #'
 #' Summary method for class "maars_lm".
 #'
@@ -248,47 +214,82 @@ summary.maars_lm <- function(object,
       req_type = "var_assumptions"
     ))
 
-  if(split){
-    # Get variance summaries for all variance types
-    all_summaries <- comp_var_ind_filt %>%
-      purrr::map(.x = ., .f = ~ fetch_mms_comp_var_attr(
-        comp_var_ind = .x,
-        req_type = "var_summary"
-      ))
+  # Get variance summaries for all variance types
+  all_summaries <- comp_var_ind_filt %>%
+    purrr::map(.x = ., .f = ~ fetch_mms_comp_var_attr(
+      comp_var_ind = .x,
+      req_type = "var_summary"
+    ))
 
-    # Get the printed summary table interleaved with assumptions
-    # We just run an index over all_summaries, since it has the same
-    # length as all_emoji_titles and all_assumptions and the same variance
-    # type ordering
-    purrr::iwalk(
-      all_summaries,
-      ~ get_mms_summary_split_cli(
-        title = all_emoji_titles[[.y]],
-        summary = all_summaries[[.y]],
-        assumptions = all_assumptions[[.y]],
-        digits = digits
-      )
+  # Add detailed assumptions for the well-specified linear model
+  # This is to design the specific string at the bottom of the
+  # standard out put of the summary.lm with F-statistics, p-value etc
+  summ_lm <- stats::summary.lm(object)
+
+  # Default output to be with 4 digits. Manually set by maars developers
+  FMT_NUM_DIGITS <- 4
+
+  # TODO: This "assumptions_lm" variable should perhaps be called
+  #       "common_assumptions" or something similar, to make it more
+  #       descriptive in the list output eventually returned by summary
+  assumptions_lm <-
+    c(glue::glue("Residual standard error:",
+                 "{formatC(signif(summ_lm$sigma, digits = FMT_NUM_DIGITS))}",
+                 "on",
+                 "{object$df.residual}",
+                 "degrees of freedom",
+                 .sep = " "
+    ),
+    glue::glue("Multiple R-squared:",
+               "{formatC(summ_lm$r.squared, digits = FMT_NUM_DIGITS)},",
+               "Adjusted R-squared:",
+               "{formatC(summ_lm$adj.r.squared, digits = FMT_NUM_DIGITS)}",
+               .sep = " "
+    ),
+    glue::glue("F-statistic:",
+               "{formatC(summ_lm$fstatistic[1L], digits = FMT_NUM_DIGITS)}",
+               "on",
+               "{summ_lm$fstatistic[2L]} and {summ_lm$fstatistic[3L]} DF,",
+               "p-value:",
+               "{format.pval(stats::pf(summ_lm$fstatistic[1L],
+                       summ_lm$fstatistic[2L],
+                       summ_lm$fstatistic[3L],
+                       lower.tail = FALSE))}",
+               .sep = " "
+    ))
+
+  # Get the printed summary table interleaved with assumptions
+  # We just run an index over all_summaries, since it has the same
+  # length as all_emoji_titles and all_assumptions and the same variance
+  # type ordering
+  purrr::iwalk(
+    unname(all_summaries),
+    ~ get_mms_summary_split_cli(
+      title = all_emoji_titles[[.y]],
+      summary = all_summaries[[.y]],
+      assumptions = all_assumptions[[.y]],
+      digits = digits
     )
-  } else{
-    # Summary table with the abbreviated variance type as a suffix
-    all_summaries_nmd_joined <- get_summary2(mod_fit = object,
-                                             sand = sand,
-                                             boot_emp = boot_emp,
-                                             boot_res = boot_res,
-                                             boot_mul = boot_mul,
-                                             well_specified = well_specified,
-                                             tidy = FALSE)
-
-    # Get the printed joined summary table with assumptions
-    get_mms_summary_joined_cli(all_emoji_titles,
-                               all_assumptions,
-                               summary_joined = all_summaries_nmd_joined,
-                               digits = digits)
-  }
+  )
   cli::cli_h3(cli::col_blue(glue::glue("Significance codes:")))
   cli::cli_text("\n")
   cli::cli_text("0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1")
+  cli::cli_h3(cli::col_magenta(glue::glue("lm Assumptions:"))) # Placeholder title
+  cli::cli_ul()
+  cli::cli_li(assumptions_lm)
 
+  # Return a summary object
+  # TODO: Use the output of this to write a print.summary.maars_lm later
+  #       as discussed.
+  #       We will also refine these output names, but for now it is easier to
+  #       keep them, so that cut-paste code to other print methods is faster
+  #       We can change names across functions later quickly in one pass.
+  # TODO: The following lines can be uncommented and then taken as an input
+  #       to the print.summary.maars_lm function
+  # out <- list(all_summaries = all_summaries,
+  #             all_emoji_titles = all_emoji_titles,
+  #             all_assumptions = all_assumptions,
+  #             assumptions_lm = assumptions_lm)
 }
 
 # tidy.maars_lm <- function(x, ...){
@@ -403,8 +404,6 @@ print.maars_lm <- function(x, ...) {
 
   # TODO: Revise the output of this code to perhaps just print the variance
   #       types available for the object
-
-  # NextMethod("print")
 }
 
 #' Convert an object to an object that can be handled by the "maars" package
@@ -624,9 +623,12 @@ confint.maars_lm <- function(object,
   # We just run an index over all_summaries, since it has the same
   # length as all_emoji_titles and all_assumptions and the same variance
   # type ordering
-  # TODO: This only works if the list we walk over is unnamed
-  #       We can modify the percentages i.e. low 2.5%, high 97.5% in above
-  #       tibbles
+  # TODO: As discussed, the output could just come from get_confint() rather
+  #       than the above code, and we can get the all_summary_confint list as
+  #       a purrr::group_split() on the var_type_abb of the get_confint() output.
+  #       However, one must be careful to group_keys() first. See this relevant
+  #       example which we should follow if we go down this route:
+  #       https://stackoverflow.com/a/57275733/4687531
   purrr::iwalk(
     unname(all_emoji_titles),
     ~ get_mms_summary_confint_split_cli(

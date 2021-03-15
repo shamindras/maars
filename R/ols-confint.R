@@ -87,7 +87,7 @@ get_confint <- function(mod_fit,
   df_residual <- mod_fit[["df.residual"]]
 
   all_summary_confint <- all_summary_mod %>%
-    purrr::map(
+    purrr::map_df(
       .x = .,
       .f = ~ dplyr::mutate(
         .data = .,
@@ -96,19 +96,19 @@ get_confint <- function(mod_fit,
         conf.high = .data$estimate +
           stats::qt(p = 1 - (1 - level) / 2, df = df_residual) * .data$std.error
       )
-    ) %>%
-    purrr::map_df(.x = ., .f = ~ dplyr::relocate(
-      .data = .x,
-      .data$var_type_abb,
-      .after = dplyr::last_col()
-    ))
+    )
 
   # Produce the tidy confint summary
   out <- all_summary_confint %>%
     tidyr::pivot_longer(data = .,
                         cols = -c("term", "estimate", "var_type_abb"),
                         names_to = "stat_type",
-                        values_to = "stat_val")
+                        values_to = "stat_val") %>%
+    dplyr::relocate(
+      .data = .,
+      .data$var_type_abb,
+      .after = dplyr::last_col()
+    )
 
   return(out)
 }

@@ -49,7 +49,11 @@ summary(object = mms_fit2, boot_emp = TRUE, boot_mul = TRUE) # Error, with helpf
 summary(object = mms_fit2, boot_emp = TRUE, boot_mul = TRUE, boot_res = TRUE) # Error, with helpful warning
 
 # assumptions - let's test out the assumptions method for both objects ----
-get_assumptions2(mod_fit = mms_fit2, boot_emp = TRUE)
+get_assumptions(mod_fit = mms_fit2, boot_emp = TRUE)
+
+# Get summary test
+get_summary(mod_fit = mms_fit2, boot_emp = TRUE)
+summary(object = mms_fit2, boot_emp = TRUE)
 
 # get_confint tidy version
 confint_out_tidy <- get_confint(mod_fit = mms_fit2,
@@ -83,7 +87,6 @@ test <- confint(lm_fit)
 sum <- summary(mms_fit2)
 sum2 <- summary(lm_fit)
 summary(lm_fit)
-
 
 # Remove old confit3, get_summary3
 # parm issue
