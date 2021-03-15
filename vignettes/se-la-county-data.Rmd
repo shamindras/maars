@@ -36,7 +36,7 @@ new in an `R` session before running the vignette code below:
 
 ``` {r install_maar, eval=FALSE}
 install.packages(pkgs = c("tidyverse", "vroom", "glue", "magrittr", 
-                          "knitr", "kableExtra", "remotes", "devtool"))
+                          "knitr", "kableExtra", "remotes", "devtools"))
 remotes::install_github('shamindras/maars', force = TRUE)
 ```
 ```{r load_all, include = FALSE}
