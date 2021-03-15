@@ -31,7 +31,8 @@ Imports:
     ggplot2,
     stringr,
     utf8,
-    cli
+    cli,
+    devtools
 Suggests: 
     bench,
     kableExtra,
