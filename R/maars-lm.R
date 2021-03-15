@@ -105,10 +105,10 @@ comp_var <- function(mod_fit,
 #' }
 get_mms_summary_print_lm_style <- function(var_summary, digits) {
   out_summ <- var_summary %>%
-    dplyr::mutate(sig = symnum(p.value, corr = FALSE, na = FALSE,
-                               legend = FALSE,
-                               cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),
-                               symbols = c("***", "**", "*", ".", " ")))
+    dplyr::mutate(sig = stats::symnum(p.value, corr = FALSE, na = FALSE,
+                                      legend = FALSE,
+                                      cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),
+                                      symbols = c("***", "**", "*", ".", " ")))
   colnames(out_summ) <- c(
     'Term', 'Estimate', 'Std. Error ',
     't value', 'Pr(>|t|)', 'Significance'
@@ -116,8 +116,6 @@ get_mms_summary_print_lm_style <- function(var_summary, digits) {
 
   cat('Coefficients:\n')
   print.data.frame(out_summ, row.names = FALSE, digits = digits)
-  # name_width <- max(sapply(names(out_summ), nchar))
-  # format(out_summ, width = name_width, justify = "centre", digits = digits)
 }
 
 #' Print interleaved summary for a \code{maars_lm, lm} object, for a
@@ -512,11 +510,17 @@ get_mms_summary_confint_split_cli <- function(title,
   cli::cli_end()
 }
 
-#' Confidence interval of `maars_lm` object
+#' Confidence interval of \code{maars_lm, lm} object
 #'
-#' \code{confint} method for class "maars_lm".
+#' \code{confint} method for an object of class \code{maars_lm, lm}.
 #'
 #' @param object A fitted "maars_lm" object.
+#' @param parm (\code{NULL}) : a specification of which parameters are to be
+#'   given confidence intervals, either a vector of numbers or a vector of
+#'   names. If missing, all parameters are considered. Currently only allowed
+#'   value is \code{NULL}.
+#' @param level (double) : numeric value between 0 and 1 indicating the
+#'   confidence level (e.g., 0.95)
 #' @param sand (logical) : \code{TRUE} if sandwich estimator output is required,
 #'   \code{FALSE} to exclude this output from the request.
 #' @param boot_emp (logical) : \code{TRUE} if empirical bootstrap standard error
@@ -535,14 +539,26 @@ get_mms_summary_confint_split_cli <- function(title,
 #' @method confint maars_lm
 #' @export
 confint.maars_lm <- function(object,
+                             parm = NULL,
+                             level = 0.95,
                              sand = TRUE,
                              boot_emp = FALSE,
                              boot_res = FALSE,
                              boot_mul = FALSE,
                              well_specified = FALSE,
                              digits = 3,
-                             level = 0.95,
                              ...) {
+
+  # Check parm is NULL valued
+  # TODO: Allow this to be a vector of numbers or a vector of names to filter
+  #       for the term variable
+  assertthat::assert_that(is.null(parm),
+                          msg = glue::glue("parm must be NULL valued")
+  )
+
+  assertthat::assert_that(level > 0 & level < 1,
+                          msg = glue::glue("level must be between 0 and 1")
+  )
 
   # Get the variance types the user has requested. This performs assertion
   # Checking, so if there is no error it will return the required names,
@@ -554,9 +570,6 @@ confint.maars_lm <- function(object,
     boot_res = boot_res,
     boot_mul = boot_mul,
     well_specified = well_specified
-  )
-  assertthat::assert_that(level > 0 & level < 1,
-                          msg = glue::glue("level must be between 0 and 1")
   )
 
   # Filter the comp_mms_var output from the fitted maars_lm object for the

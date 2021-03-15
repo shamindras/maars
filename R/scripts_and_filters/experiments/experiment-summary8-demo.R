@@ -51,48 +51,24 @@ summary(object = mms_fit2, boot_emp = TRUE, boot_mul = TRUE, boot_res = TRUE) # 
 # assumptions - let's test out the assumptions method for both objects ----
 get_assumptions2(mod_fit = mms_fit2, boot_emp = TRUE)
 
-# get_confint3 tidy version
-confint3_out_tidy <- get_confint3(mod_fit = mms_fit2,
-                                  level = 0.95,
-                                  sand = TRUE,
-                                  boot_emp = TRUE,
-                                  boot_mul = FALSE,
-                                  boot_res = FALSE,
-                                  well_specified = FALSE,
-                                  tidy = TRUE)
-confint3_out_tidy
+# get_confint tidy version
+confint_out_tidy <- get_confint(mod_fit = mms_fit2,
+                                parm = NULL,
+                                level = 0.95,
+                                sand = TRUE,
+                                boot_emp = TRUE,
+                                boot_mul = FALSE,
+                                boot_res = FALSE,
+                                well_specified = FALSE)
+confint_out_tidy
 
 # Manually get the wider (non-tidy) version - for vignette Table 1 like output
-confint3_out_tidy_wider <- confint3_out_tidy %>%
+confint_out_tidy_wider <- confint_out_tidy %>%
     tidyr::pivot_wider(data = .,
                        names_from = c(stat_type, var_type_abb),
                        names_glue = "{stat_type}.{var_type_abb}",
                        values_from = stat_val)
-
-# Check: confint3 manual wider check
-# It fails, but it is just a column ordering issue
-identical(x = confint3_out_tidy_wider, y = confint3_out_wider)
-confint3_out_wider %>% dplyr::glimpse()
-confint3_out_tidy_wider %>% dplyr::glimpse()
-colnames(confint3_out_wider) == colnames(confint3_out_tidy_wider)
-
-# Main difference is that we output more columns
-# But this is an easy thing to correct for using dplyr::select in a
-# clean way
-# TODO: Discuss which columns we should output for confint
-
-# Check confint3 to the original
-get_confint(mod_fit = mms_fit2,
-            level = 0.95,
-            sand = TRUE,
-            boot_emp = TRUE,
-            boot_mul = FALSE,
-            boot_res = FALSE,
-            well_specified = FALSE) %>%
-    dplyr::glimpse()
-
-# Compare this to
-confint3_out_wider %>% dplyr::glimpse()
+confint_out_tidy_wider
 
 # CONFINT: Test out confint functionality ----
 print(mms_fit2)
@@ -110,6 +86,6 @@ summary(lm_fit)
 
 
 # Remove old confit3, get_summary3
+# parm issue
 # Remove the left_join from these
 # Move the lm summary statistics to bottom of summary
-# parm issue

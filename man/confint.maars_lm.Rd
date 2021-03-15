@@ -2,22 +2,30 @@
 % Please edit documentation in R/maars-lm.R
 \name{confint.maars_lm}
 \alias{confint.maars_lm}
-\title{Confidence interval of \code{maars_lm} object}
+\title{Confidence interval of \code{maars_lm, lm} object}
 \usage{
 \method{confint}{maars_lm}(
   object,
+  parm = NULL,
+  level = 0.95,
   sand = TRUE,
   boot_emp = FALSE,
   boot_res = FALSE,
   boot_mul = FALSE,
   well_specified = FALSE,
   digits = 3,
-  level = 0.95,
   ...
 )
 }
 \arguments{
 \item{object}{A fitted "maars_lm" object.}
+
+\item{parm}{(\code{NULL}) : a specification of which parameters are to be
+given confidence intervals, either a vector of numbers or a vector of
+names. If missing, all parameters are considered. Currently only allowed
+value is \code{NULL}.}
+
+\item{level}{(numeric) : TODO: Add later}
 
 \item{sand}{(logical) : \code{TRUE} if sandwich estimator output is required,
 \code{FALSE} to exclude this output from the request.}
@@ -37,10 +45,8 @@ from the request.}
 
 \item{digits}{(integer) : Rounding digits used in some of the function's output.}
 
-\item{level}{(numeric) : TODO: Add later}
-
 \item{...}{Additional arguments.}
 }
 \description{
-\code{confint} method for class "maars_lm".
+\code{confint} method for an object of class \code{maars_lm, lm}.
 }
