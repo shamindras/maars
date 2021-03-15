@@ -31,8 +31,7 @@ Imports:
     ggplot2,
     stringr,
     utf8,
-    cli,
-    devtools
+    cli
 Suggests: 
     bench,
     kableExtra,
@@ -43,7 +42,8 @@ Suggests:
     testthat,
     roxygen2,
     covr,
-    rmarkdown
+    rmarkdown,
+    devtools
 RdMacros: Rdpack
 Encoding: UTF-8
 Language: en-US
