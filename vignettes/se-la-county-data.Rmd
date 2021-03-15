@@ -30,18 +30,17 @@ source(here::here("R", "scripts_and_filters", "wrap-lines.R"))
 
 ## Setup and Installation
 
-```{r load_pkg_local, include = FALSE}
-devtools::load_all()
-```
-
 First, we'll load the `maars` package, and other `tidyverse` analysis packages.
 If you are a new user, you will need to manually run the following commands in a
 new in an `R` session before running the vignette code below:
 
 ``` {r install_maar, eval=FALSE}
 install.packages(pkgs = c("tidyverse", "vroom", "glue", "magrittr", 
-                          "knitr", "kableExtra", "remotes", "magick"))
+                          "knitr", "kableExtra", "remotes", "devtool"))
 remotes::install_github('shamindras/maars', force = TRUE)
+```
+```{r load_all, include = FALSE}
+devtools::load_all()
 ```
 
 
