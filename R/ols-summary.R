@@ -363,12 +363,6 @@ get_summary <- function(mod_fit,
                         boot_res = FALSE,
                         well_specified = FALSE) {
 
-  # Check that joined is a logical value
-  assertthat::assert_that(
-    is.logical(tidy),
-    msg = glue::glue("joined must only be of class: ['logical']")
-  )
-
   # Get the variance types the user has requested. This performs assertion
   # Checking, so if there is no error it will return the required names,
   # else it will throw an error
