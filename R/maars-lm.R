@@ -226,13 +226,36 @@ summary.maars_lm <- function(object,
   # standard out put of the summary.lm with F-statistics, p-value etc
   summ_lm <- stats::summary.lm(object)
 
+
+  # Compute chi squared statistics under H0: all coefficients are equal to 0
+  # based on the sandwich estimate of the variance
+  coefs <- coef(object)
+  n <- nrow(model.frame(object))
+  d <- length(coefs)
+  cov_mat <- purrr::pluck(object, 'var', 'var_sand', 'cov_mat')
+  # TODO: fix the following code because this case only deals with cases in which
+  # users code the intercept as "(Intercept)" in the regression data or the
+  # intercept is handled directly in lm
+  if('(Intercept)' %in% colnames(cov_mat)){
+    is_intercept <- (colnames(cov_mat)=='(Intercept)')
+    cov_mat <- cov_mat[!is_intercept, !is_intercept]
+    coefs <- coefs[!is_intercept]
+    d <- d - 1
+  }
+
+  # Compute the statistic
+  chi2_stat <- n * (t(coefs) %*%
+     cov_mat %*% coefs)
+  identical(update(formula(object), 0 ~ .), 0 ~ 1)
+  chi2_p_value <- pchisq(q = chi2_stat, df = d, lower.tail = FALSE)
+
   # Default output to be with 4 digits. Manually set by maars developers
   FMT_NUM_DIGITS <- 4
 
   # TODO: This "assumptions_lm" variable should perhaps be called
   #       "common_assumptions" or something similar, to make it more
   #       descriptive in the list output eventually returned by summary
-  assumptions_lm <-
+  stats_lm <-
     c(glue::glue("Residual standard error:",
                  "{formatC(signif(summ_lm$sigma, digits = FMT_NUM_DIGITS))}",
                  "on",
@@ -258,6 +281,24 @@ summary.maars_lm <- function(object,
                .sep = " "
     ))
 
+  ## TODO: Need to decide how to display the statistics generated from lm vs.
+  # those from sandwich
+  stats_sand <-
+    c(glue::glue("Multiple R-squared:",
+               "{formatC(summ_lm$r.squared, digits = FMT_NUM_DIGITS)},",
+               "Adjusted R-squared:",
+               "{formatC(summ_lm$adj.r.squared, digits = FMT_NUM_DIGITS)}",
+               .sep = " "
+    ),
+    glue::glue("Chi-squared statistic based on sandwich variance:",
+               "{formatC(chi2_stat, digits = FMT_NUM_DIGITS)}",
+               "on",
+               "{d} DF,",
+               "p-value:",
+               "{format.pval(chi2_p_value)}",
+               .sep = " "
+    ))
+
   # Get the printed summary table interleaved with assumptions
   # We just run an index over all_summaries, since it has the same
   # length as all_emoji_titles and all_assumptions and the same variance
@@ -274,9 +315,9 @@ summary.maars_lm <- function(object,
   cli::cli_h3(cli::col_blue(glue::glue("Significance codes:")))
   cli::cli_text("\n")
   cli::cli_text("0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1")
-  cli::cli_h3(cli::col_magenta(glue::glue("lm Assumptions:"))) # Placeholder title
+  cli::cli_h3(cli::col_magenta(glue::glue("Summary statistics:"))) # Placeholder title
   cli::cli_ul()
-  cli::cli_li(assumptions_lm)
+  cli::cli_li(stats_sand)
 
   # Return a summary object
   # TODO: Use the output of this to write a print.summary.maars_lm later
