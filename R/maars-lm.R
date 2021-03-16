@@ -477,6 +477,8 @@ as.maars.lm <- function(x, ...) {
 #' Plot \code{maars_lm, lm} object
 #'
 #' @param x (\code{maars_lm, lm}) : A fitted \code{maars_lm, lm} OLS object
+#' @param x (numeric vector) : if a subset of the plots is required, specify a
+#'   subset of the numbers 1:6.
 #'
 #' @param ... Additional arguments passed to methods.
 #'
@@ -507,9 +509,14 @@ as.maars.lm <- function(x, ...) {
 #' # Plot our maars_lm object
 #' plot(comp_var1)
 #' }
-plot.maars_lm <- function(x, ...){
+plot.maars_lm <- function(x, which = c(1,2,3,4,5,6), ...){
+
   mms_diag_plots <- get_ols_diag_plots(mod_fit = x)
-  for (i in base::seq_along(mms_diag_plots)) {
+
+  if(!is.numeric(which) || any(which < 1) || any(which > 6))
+    stop("'which' must be in 1:6")
+
+  for (i in which) {
     if (i == 1) {
       # For the first plot, don't ask the user for prompt
       graphics::par(ask = FALSE)

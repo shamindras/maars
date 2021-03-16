@@ -184,6 +184,8 @@ mms_summary %>%
   kableExtra::kable_styling(position = "center")
 ```
 
+We can obtain the additional variance
+
 
 
 ## References
