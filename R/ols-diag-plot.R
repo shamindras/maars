@@ -52,7 +52,7 @@ get_ols_diag_plots <- function(mod_fit) {
     mod_fit,
     ggplot2::aes(x = fitted_values, mod_fit$residuals)
   ) +
-    ggplot2::geom_point(na.rm = TRUE) +
+    ggplot2::geom_point(na.rm = TRUE, size = 0.5) +
     ggplot2::stat_smooth(formula = y ~ x, method = "loess", na.rm = TRUE) +
     ggplot2::geom_hline(yintercept = 0, col = "red", linetype = "dashed") +
     ggplot2::labs(
@@ -67,8 +67,8 @@ get_ols_diag_plots <- function(mod_fit) {
     data = std_resid_tbl,
     ggplot2::aes(sample = std_residuals)
   ) +
-    ggplot2::stat_qq(shape = 1, size = 0.2) + # open circles
     ggplot2::stat_qq_line(linetype = 'dashed') +
+    ggplot2::stat_qq(shape = 1, size = 0.5) + # open circles
     ggplot2::theme_bw() +
     ggplot2::labs(
       title = "Normal Q-Q", # plot title
@@ -82,7 +82,7 @@ get_ols_diag_plots <- function(mod_fit) {
     mod_fit,
     ggplot2::aes(x = fitted_values, sqrt(abs(std_resid)))
   ) +
-    ggplot2::geom_point(na.rm = TRUE) +
+    ggplot2::geom_point(na.rm = TRUE, size = 0.5) +
     ggplot2::stat_smooth(formula = y ~ x, method = "loess", na.rm = TRUE) +
     ggplot2::labs(
       title = "Scale-Location",
@@ -108,7 +108,8 @@ get_ols_diag_plots <- function(mod_fit) {
       x = "Obs. Number",
       y = "Cook's Distance"
     ) +
-    ggplot2::scale_size_continuous("Cook's Distance", range = c(0, 4)) +
+    ggplot2::scale_size_continuous("Cook's Distance", range = c(0, 4),
+                                   size = 0.5) +
     ggplot2::theme_bw() +
     ggplot2::theme(legend.position = "bottom") +
     NULL
@@ -119,7 +120,8 @@ get_ols_diag_plots <- function(mod_fit) {
     ggplot2::aes(x = stats::lm.influence(mod_fit)$hat, std_resid)
   ) +
     ggplot2::geom_point(ggplot2::aes(size = stats::cooks.distance(mod_fit)),
-      na.rm = TRUE
+      na.rm = TRUE,
+      size = 0.5
     ) +
     ggplot2::stat_smooth(formula = y ~ x, method = "loess", na.rm = TRUE) +
     ggplot2::labs(
@@ -136,7 +138,7 @@ get_ols_diag_plots <- function(mod_fit) {
     data = tibble::tibble(hat = hat, cooks_distance = cooks_distance),
     ggplot2::aes(x = hat, y = cooks_distance)
   ) +
-    ggplot2::geom_point(na.rm = TRUE, size = 0.2) +
+    ggplot2::geom_point(na.rm = TRUE, size = 0.5) +
     ggplot2::geom_smooth(formula = y ~ x, method = "loess", na.rm = TRUE) +
     ggplot2::labs(
       title = "Cook's dist vs Leverage hii/(1-hii)",
@@ -259,11 +261,11 @@ diag_boot_qqn <- function(boot_out, boot_type) {
       data = .,
       ggplot2::aes(sample = .data$estimate)
     ) +
-    ggplot2::stat_qq(size = 0.2) +
+    ggplot2::stat_qq(size = 0.5) +
     ggplot2::stat_qq_line(linetype = 'dashed') +
     ggplot2::facet_wrap(~term, ncol = 3, scales = "free_y") +
     ggplot2::labs(
-      title = glue::glue('Normal Q-Q plot - {boot_title}'),
+      title = glue::glue('Normal Q-Q plot: {boot_title}'),
       x = "Theoretical quantiles",
       y = "Sample quantiles"
     ) +
