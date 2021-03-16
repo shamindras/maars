@@ -70,22 +70,20 @@ knitr::include_graphics(path = "figures/buja1_table1.png")
 ## Loading the data
 
 Let's load the LA County Homeless persons data as used in
-[@buja2019modelsasapproximationspart1] and briefly examine it.
+[@buja2019modelsasapproximationspart1] and briefly examine it. 
+The dataset is already included in the package. 
 
 ``` {r load_data}
 # LA County source data url, use glue to split string in easy to read format
-url_la_county_dat <- glue::glue("http://www-stat.wharton.upenn.edu/~buja",
-                                "STAT-961/Homeless_LA_by_Census_Tracts.csv",
-                                .sep = "/")
-
-la_county_df <- vroom::vroom(file = url_la_county_dat) # %>% dplyr::rename("MedianInc1000" = "MedianInc ($1000)")
-la_county_df %>% dim(x = .)
+# let's load 
+data('la_county', package = 'maars')
+la_county %>% dim(x = .)
 ```
 
 Let's view the first few rows to understand the structure of the data frame.
 
 ``` {r load_data_rows}
-la_county_df %>% 
+la_county %>% 
   head(x = .) %>% 
   knitr::kable(x = ., format = "html", digits = 2, align = "c") %>% 
   kableExtra::kable_styling(position = "center")
@@ -101,7 +99,7 @@ the response variable, against the other covariates using Ordinary Least Squares
 (OLS).
 
 ``` {r mod_fit_lm}
-mod_fit <- stats::lm(formula = StreetTotal ~ ., data = la_county_df)
+mod_fit <- stats::lm(formula = StreetTotal ~ ., data = la_county)
 ```
 
 
