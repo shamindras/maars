@@ -151,6 +151,39 @@ get_ols_diag_plots <- function(mod_fit) {
     ggplot2::theme_bw() +
     NULL
 
+  # Add plot for confidence intervals
+  available_var_nms <- mod_fit$var %>%
+    purrr::compact(.x = .) %>%
+    purrr::map(~ purrr::pluck(.x, 'var_type_abb'))
+  p7 <- get_confint(mod_fit, level = 0.95,
+              sand = TRUE,
+              boot_emp = ('emp' %in% available_var_nms),
+              boot_mul = ('mul' %in% available_var_nms),
+              boot_res = ('res' %in% available_var_nms),
+              well_specified = TRUE) %>%
+  dplyr::filter(stat_type == "conf.low" | stat_type == "conf.high") %>%
+    tidyr::pivot_wider(names_from = stat_type,
+                       values_from = stat_val) %>%
+    dplyr::mutate(Type = fetch_mms_emoji_title(var_type_abb = var_type_abb,
+                                               title_type = "title")) %>%
+    ggplot2::ggplot(ggplot2::aes(x = term, y = estimate, col = Type)) +
+    ggplot2::geom_point(position = ggplot2::position_dodge(width = 0.5)) +
+    ggplot2::labs(
+      x = "Regressor",
+      y = "Estimate",
+      title = "95% confidence intervals for regression coefficients") +
+    ggplot2::geom_hline(yintercept = 0, linetype = "dashed") +
+    ggplot2::geom_errorbar(ggplot2::aes(
+      ymin = conf.low,
+      ymax = conf.high),
+      position = ggplot2::position_dodge(width = 0.5),
+      width = 0.1
+    ) +
+    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 30, hjust = 1)) +
+    ggplot2::guides(col = ggplot2::guide_legend(title = "Type of standard error")) +
+    ggplot2::theme_bw() +
+    NULL
+
   # QQnorm of the estimates of the regression coefficients based on
   # one of the bootstraps available.
   # First try with empirical. If not available, use multiplier. If not available,
@@ -160,12 +193,13 @@ get_ols_diag_plots <- function(mod_fit) {
     purrr::keep(~ !is.null(.x))
   if(length(boot_out)>0){
     p8 <- diag_boot_qqn(boot_out = purrr::pluck(boot_vars, 1, 'boot_out'),
-                        boot_type = purrr::pluck(boot_vars, 1, 'var_type_abb'))
+                        boot_type = purrr::pluck(boot_vars, 1, 'var_type_abb')) +
+      NULL
   } else{
-    p7 <- NULL
+    p8 <- NULL
   }
 
-  out <- list(p1 = p1, p2 = p2, p3 = p3, p4 = p4, p5 = p5, p6 = p6, p7 = p7)
+  out <- list(p1 = p1, p2 = p2, p3 = p3, p4 = p4, p5 = p5, p6 = p6, p7 = p7, p8 = p8)
   base::return(out)
 }
 
