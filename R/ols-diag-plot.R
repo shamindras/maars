@@ -108,8 +108,7 @@ get_ols_diag_plots <- function(mod_fit) {
       x = "Obs. Number",
       y = "Cook's Distance"
     ) +
-    ggplot2::scale_size_continuous("Cook's Distance", range = c(0, 4),
-                                   size = 0.5) +
+    ggplot2::scale_size_continuous("Cook's Distance", range = c(0, 1)) +
     ggplot2::theme_bw() +
     ggplot2::theme(legend.position = "bottom") +
     NULL
@@ -129,7 +128,7 @@ get_ols_diag_plots <- function(mod_fit) {
       x = "Leverage",
       y = "Standardized Residuals"
     ) +
-    ggplot2::scale_size_continuous("Cook's Distance", range = c(1, 5)) +
+    ggplot2::scale_size_continuous("Cook's Distance", range = c(0, 1)) +
     ggplot2::theme_bw() +
     ggplot2::theme(legend.position = "bottom")
 
