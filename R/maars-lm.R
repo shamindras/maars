@@ -509,12 +509,12 @@ as.maars.lm <- function(x, ...) {
 #' # Plot our maars_lm object
 #' plot(comp_var1)
 #' }
-plot.maars_lm <- function(x, which = c(1,2,3,4,5,6), ...){
+plot.maars_lm <- function(x, which = c(1,2,3,4,5,6,7), ...){
 
   mms_diag_plots <- get_ols_diag_plots(mod_fit = x)
 
-  if(!is.numeric(which) || any(which < 1) || any(which > 6))
-    stop("'which' must be in 1:6")
+  if(!is.numeric(which) || any(which < 1) || any(which > 7))
+    stop("'which' must be in 1:7")
 
   for (i in which) {
     if (i == 1) {
