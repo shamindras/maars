@@ -71,7 +71,7 @@ get_ols_diag_plots <- function(mod_fit) {
     ggplot2::stat_qq(shape = 1, size = 0.5) + # open circles
     ggplot2::theme_bw() +
     ggplot2::labs(
-      title = "Normal Q-Q", # plot title
+      title = "Normal Q-Q plot of residuals", # plot title
       x = "Theoretical Quantiles", # x-axis label
       y = "Standardized Residuals"
     ) +
@@ -264,7 +264,7 @@ diag_boot_qqn <- function(boot_out, boot_type) {
     ggplot2::stat_qq_line(linetype = 'dashed') +
     ggplot2::facet_wrap(~term, ncol = 3, scales = "free_y") +
     ggplot2::labs(
-      title = glue::glue('Normal Q-Q plot: {boot_title}'),
+      title = glue::glue('Normal Q-Q plot coefficients: {boot_title}'),
       x = "Theoretical quantiles",
       y = "Sample quantiles"
     ) +
