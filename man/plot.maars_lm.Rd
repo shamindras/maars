@@ -4,15 +4,18 @@
 \alias{plot.maars_lm}
 \title{Plot \code{maars_lm, lm} object}
 \usage{
-\method{plot}{maars_lm}(x, ...)
+\method{plot}{maars_lm}(x, which = NULL, ...)
 }
 \arguments{
 \item{x}{(\code{maars_lm, lm}) : A fitted \code{maars_lm, lm} OLS object}
 
+\item{which}{(numeric vector) : if a subset of the plots is required, specify a
+subset of the numbers 1:6.}
+
 \item{...}{Additional arguments passed to methods.}
 }
 \value{
-
+TODO: Describe plots
 }
 \description{
 Plot \code{maars_lm, lm} object

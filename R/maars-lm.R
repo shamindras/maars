@@ -477,12 +477,12 @@ as.maars.lm <- function(x, ...) {
 #' Plot \code{maars_lm, lm} object
 #'
 #' @param x (\code{maars_lm, lm}) : A fitted \code{maars_lm, lm} OLS object
-#' @param x (numeric vector) : if a subset of the plots is required, specify a
+#' @param which (numeric vector) : if a subset of the plots is required, specify a
 #'   subset of the numbers 1:6.
 #'
 #' @param ... Additional arguments passed to methods.
 #'
-#' @return
+#' @return TODO: Describe plots
 #' @export
 #'
 #' @examples
@@ -509,7 +509,7 @@ as.maars.lm <- function(x, ...) {
 #' # Plot our maars_lm object
 #' plot(comp_var1)
 #' }
-plot.maars_lm <- function(x, which = 1:8, ...){
+plot.maars_lm <- function(x, which = NULL, ...){
 
   # Reminder: p8 is not NULL only if one type of bootstrap estimates
   # are available
@@ -517,9 +517,10 @@ plot.maars_lm <- function(x, which = 1:8, ...){
 
   ### NEED TO FIX THIS ISSUE
   n_plots <- length(mms_diag_plots %>% purrr::keep(~ !is.null(.)))
-  if(identical(which, 1:8))
-  if(!is.numeric(which) || any(which < 1) || any(which > n_plots))
-    glue::glue("'which' must be in 1:{n_plots}")
+  if(is.null(which)) which <- 1:n_plots
+  assertthat::assert_that(is.numeric(which) & !any(which < 1) & !any(which > n_plots),
+                           msg = glue::glue("'which' must be in 1:{n_plots}")
+  )
 
   for (i in which) {
     if (i == 1) {

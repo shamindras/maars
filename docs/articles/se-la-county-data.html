@@ -131,19 +131,16 @@ Table 1 from <span class="citation">(Buja et al. 2019)</span>
 <div id="loading-the-data" class="section level2">
 <h2 class="hasAnchor">
 <a href="#loading-the-data" class="anchor"></a>Loading the data</h2>
-<p>Let’s load the LA County Homeless persons data as used in <span class="citation">(Buja et al. 2019)</span> and briefly examine it.</p>
+<p>Let’s load the LA County Homeless persons data as used in <span class="citation">(Buja et al. 2019)</span> and briefly examine it. The dataset is already included in the package.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># LA County source data url, use glue to split string in easy to read format</span>
-<span class="va">url_la_county_dat</span> <span class="op">&lt;-</span> <span class="fu">glue</span><span class="fu">::</span><span class="fu"><a href="https://glue.tidyverse.org/reference/glue.html">glue</a></span><span class="op">(</span><span class="st">"http://www-stat.wharton.upenn.edu/~buja"</span>,
-                                <span class="st">"STAT-961/Homeless_LA_by_Census_Tracts.csv"</span>,
-                                .sep <span class="op">=</span> <span class="st">"/"</span><span class="op">)</span>
-
-<span class="va">la_county_df</span> <span class="op">&lt;-</span> <span class="fu">vroom</span><span class="fu">::</span><span class="fu"><a href="https://vroom.r-lib.org/reference/vroom.html">vroom</a></span><span class="op">(</span>file <span class="op">=</span> <span class="va">url_la_county_dat</span><span class="op">)</span> <span class="co"># %&gt;% dplyr::rename("MedianInc1000" = "MedianInc ($1000)")</span>
-<span class="va">la_county_df</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">.</span><span class="op">)</span>
+<span class="co"># let's load </span>
+<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">'la_county'</span>, package <span class="op">=</span> <span class="st">'maars'</span><span class="op">)</span>
+<span class="va">la_county</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">.</span><span class="op">)</span>
 <span class="co">#&gt; [1] 505   7</span></code></pre></div>
 <p>Let’s view the first few rows to understand the structure of the data frame.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">la_county_df</span> <span class="op">%&gt;%</span> 
+<code class="sourceCode R"><span class="va">la_county</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">.</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">.</span>, format <span class="op">=</span> <span class="st">"html"</span>, digits <span class="op">=</span> <span class="fl">2</span>, align <span class="op">=</span> <span class="st">"c"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu">kableExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/kable_styling.html">kable_styling</a></span><span class="op">(</span>position <span class="op">=</span> <span class="st">"center"</span><span class="op">)</span></code></pre></div>
@@ -153,7 +150,7 @@ Table 1 from <span class="citation">(Buja et al. 2019)</span>
 StreetTotal
 </th>
 <th style="text-align:center;">
-MedianInc ($1000)
+MedianInc1000
 </th>
 <th style="text-align:center;">
 PercVacant
@@ -319,7 +316,7 @@ PercIndustrial
 <a href="#fitting-the-ols-model" class="anchor"></a>Fitting the OLS model</h2>
 <p>We now fit an linear model of the count of homeless people (<code>StreetTotal</code>) as the response variable, against the other covariates using Ordinary Least Squares (OLS).</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">mod_fit</span> <span class="op">&lt;-</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="va">StreetTotal</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">la_county_df</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="va">mod_fit</span> <span class="op">&lt;-</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="va">StreetTotal</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">la_county</span><span class="op">)</span></code></pre></div>
 <div id="estimating-the-variance" class="section level3">
 <h3 class="hasAnchor">
 <a href="#estimating-the-variance" class="anchor"></a>Estimating the variance</h3>
@@ -415,7 +412,7 @@ lm
 </tr>
 <tr>
 <td style="text-align:center;">
-<code>MedianInc ($1000)</code>
+MedianInc1000
 </td>
 <td style="text-align:center;">
 -0.18
@@ -432,7 +429,7 @@ lm
 </tr>
 <tr>
 <td style="text-align:center;">
-<code>MedianInc ($1000)</code>
+MedianInc1000
 </td>
 <td style="text-align:center;">
 -0.18
@@ -449,7 +446,7 @@ lm
 </tr>
 <tr>
 <td style="text-align:center;">
-<code>MedianInc ($1000)</code>
+MedianInc1000
 </td>
 <td style="text-align:center;">
 -0.18
@@ -575,7 +572,7 @@ Term
 </tr>
 <tr>
 <td style="text-align:center;">
-<code>MedianInc ($1000)</code>
+MedianInc1000
 </td>
 <td style="text-align:center;">
 -0.18
@@ -785,6 +782,153 @@ PercIndustrial
 </tr>
 </tbody>
 </table>
+<p>We can obtain the other estimates of the variance (i.e., from residual and multiplier bootstraps) that we computed in <code>comp_var</code> in tidy format by specifying these additional arguments within <code>get_summary</code>.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">mms_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_summary.html">get_summary</a></span><span class="op">(</span><span class="va">mms_fit</span>, 
+                           boot_emp <span class="op">=</span> <span class="cn">TRUE</span>,
+                           boot_res <span class="op">=</span> <span class="cn">TRUE</span>,
+                           boot_mul <span class="op">=</span> <span class="cn">TRUE</span>,
+                           well_specified <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">mms_summary</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">.</span>, format <span class="op">=</span> <span class="st">"html"</span>, digits <span class="op">=</span> <span class="fl">2</span>, align <span class="op">=</span> <span class="st">"c"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu">kableExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/kable_styling.html">kable_styling</a></span><span class="op">(</span>position <span class="op">=</span> <span class="st">"center"</span><span class="op">)</span></code></pre></div>
+<table class="table table">
+<thead><tr>
+<th style="text-align:center;">
+term
+</th>
+<th style="text-align:center;">
+estimate
+</th>
+<th style="text-align:center;">
+stat_type
+</th>
+<th style="text-align:center;">
+stat_val
+</th>
+<th style="text-align:center;">
+var_type_abb
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:center;">
+(Intercept)
+</td>
+<td style="text-align:center;">
+0.76
+</td>
+<td style="text-align:center;">
+std.error
+</td>
+<td style="text-align:center;">
+22.77
+</td>
+<td style="text-align:center;">
+lm
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+(Intercept)
+</td>
+<td style="text-align:center;">
+0.76
+</td>
+<td style="text-align:center;">
+statistic
+</td>
+<td style="text-align:center;">
+0.03
+</td>
+<td style="text-align:center;">
+lm
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+(Intercept)
+</td>
+<td style="text-align:center;">
+0.76
+</td>
+<td style="text-align:center;">
+p.value
+</td>
+<td style="text-align:center;">
+0.97
+</td>
+<td style="text-align:center;">
+lm
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+MedianInc1000
+</td>
+<td style="text-align:center;">
+-0.18
+</td>
+<td style="text-align:center;">
+std.error
+</td>
+<td style="text-align:center;">
+0.19
+</td>
+<td style="text-align:center;">
+lm
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+MedianInc1000
+</td>
+<td style="text-align:center;">
+-0.18
+</td>
+<td style="text-align:center;">
+statistic
+</td>
+<td style="text-align:center;">
+-0.98
+</td>
+<td style="text-align:center;">
+lm
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+MedianInc1000
+</td>
+<td style="text-align:center;">
+-0.18
+</td>
+<td style="text-align:center;">
+p.value
+</td>
+<td style="text-align:center;">
+0.33
+</td>
+<td style="text-align:center;">
+lm
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="visualizing-the-estimates" class="section level3">
+<h3 class="hasAnchor">
+<a href="#visualizing-the-estimates" class="anchor"></a>Visualizing the estimates</h3>
+<p>We may want to compare some of the estimates that we obtained through <code>comp_var</code> in a plot. Confidence intervals and normality of the (bootstrap) estimates reprent two (arguably) interesting statistics the data scientist/researcher may want to analyze. The corresponding plots are returned by default when <code>plot</code> is called on a <code>maars</code> object, together with six other “typical” <code>lm</code> plots. The plots can be visualized sequentially calling <code>plot</code> on an object of class maars_lm, lm (e.g., <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot(mms_fit, which=c(1,2,7))</a></code>. Alternatively, we can store them in a list via <code>get_ols_diag_plots</code>, as we do below.</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">mms_plots</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_ols_diag_plots.html">get_ols_diag_plots</a></span><span class="op">(</span><span class="va">mms_fit</span><span class="op">)</span></code></pre></div>
+<p>Let’s now visually compare the various types of (95%) confidence intervals.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/pluck.html">pluck</a></span><span class="op">(</span><span class="va">mms_plots</span>, <span class="st">'p7'</span><span class="op">)</span></code></pre></div>
+<p><img src="se-la-county-data_files/figure-html/compare_confint-1.png" width="576" style="display: block; margin: auto;"> Let’s now visualize the distribution of the bootstrap estimate to check whether it well approximates the normal distribution.</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/pluck.html">pluck</a></span><span class="op">(</span><span class="va">mms_plots</span>, <span class="st">'p8'</span><span class="op">)</span></code></pre></div>
+<p><img src="se-la-county-data_files/figure-html/visualize_boot_estimates-1.png" width="576" style="display: block; margin: auto;"></p>
 </div>
 </div>
 <div id="references" class="section level2 unnumbered">

@@ -37,7 +37,7 @@ get_ols_diag_plots <- function(mod_fit) {
   )
 
   # Compute values from OLS fit which will be use across several plots
-  cooks_distance <- stats::cooks.distance(model = mms_fit)
+  cooks_distance <- stats::cooks.distance(model = mod_fit)
   hat <- stats::lm.influence(mod_fit)$hat
   fitted_values <- mod_fit$fitted.values
 
@@ -67,8 +67,8 @@ get_ols_diag_plots <- function(mod_fit) {
     data = std_resid_tbl,
     ggplot2::aes(sample = std_residuals)
   ) +
-    ggplot2::stat_qq(shape = 1, size = 3) + # open circles
-    ggplot2::stat_qq_line() +
+    ggplot2::stat_qq(shape = 1, size = 0.2) + # open circles
+    ggplot2::stat_qq_line(linetype = 'dashed') +
     ggplot2::theme_bw() +
     ggplot2::labs(
       title = "Normal Q-Q", # plot title
@@ -93,7 +93,7 @@ get_ols_diag_plots <- function(mod_fit) {
 
   # Cook’s distance vs. observation number
   p4 <- ggplot2::ggplot(
-    mod_fit,
+   data = tibble::tibble(cooks_distance),
     ggplot2::aes(
       x = seq_along(cooks_distance),
       y = cooks_distance
@@ -133,10 +133,10 @@ get_ols_diag_plots <- function(mod_fit) {
 
   # Cook’s distance against (leverage)/(1 – leverage)
   p6 <- ggplot2::ggplot(
-    mod_fit,
+    data = tibble::tibble(hat = hat, cooks_distance = cooks_distance),
     ggplot2::aes(x = hat, y = cooks_distance)
   ) +
-    ggplot2::geom_point(na.rm = TRUE) +
+    ggplot2::geom_point(na.rm = TRUE, size = 0.2) +
     ggplot2::geom_smooth(formula = y ~ x, method = "loess", na.rm = TRUE) +
     ggplot2::labs(
       title = "Cook's dist vs Leverage hii/(1-hii)",
@@ -166,10 +166,13 @@ get_ols_diag_plots <- function(mod_fit) {
                        values_from = stat_val) %>%
     dplyr::mutate(Type = fetch_mms_emoji_title(var_type_abb = var_type_abb,
                                                title_type = "title")) %>%
-    ggplot2::ggplot(ggplot2::aes(x = term, y = estimate, col = Type)) +
+    ggplot2::ggplot(ggplot2::aes(x = Type, y = estimate, col = Type)) +
     ggplot2::geom_point(position = ggplot2::position_dodge(width = 0.5)) +
+    ggplot2::theme_bw() +
+    ggplot2::theme(axis.ticks.x = ggplot2::element_blank(),
+                   axis.text.x = ggplot2::element_blank()) +
     ggplot2::labs(
-      x = "Regressor",
+      #x = "Regressor",
       y = "Estimate",
       title = "95% confidence intervals for regression coefficients") +
     ggplot2::geom_hline(yintercept = 0, linetype = "dashed") +
@@ -179,9 +182,9 @@ get_ols_diag_plots <- function(mod_fit) {
       position = ggplot2::position_dodge(width = 0.5),
       width = 0.1
     ) +
-    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 30, hjust = 1)) +
+    ggplot2::facet_wrap(~term, ncol = 3, scales = "free_y") +
+    #ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 30, hjust = 1)) +
     ggplot2::guides(col = ggplot2::guide_legend(title = "Type of standard error")) +
-    ggplot2::theme_bw() +
     NULL
 
   # QQnorm of the estimates of the regression coefficients based on
@@ -191,7 +194,7 @@ get_ols_diag_plots <- function(mod_fit) {
   boot_names <- c('var_boot_emp', 'var_boot_mul', 'var_boot_res')
   boot_vars <- boot_names %>% purrr::map(~ purrr::pluck(mod_fit, 'var', .)) %>%
     purrr::keep(~ !is.null(.x))
-  if(length(boot_out)>0){
+  if(length(boot_vars)>0){
     p8 <- diag_boot_qqn(boot_out = purrr::pluck(boot_vars, 1, 'boot_out'),
                         boot_type = purrr::pluck(boot_vars, 1, 'var_type_abb')) +
       NULL
@@ -256,8 +259,8 @@ diag_boot_qqn <- function(boot_out, boot_type) {
       data = .,
       ggplot2::aes(sample = .data$estimate)
     ) +
-    ggplot2::stat_qq() +
-    ggplot2::stat_qq_line() +
+    ggplot2::stat_qq(size = 0.2) +
+    ggplot2::stat_qq_line(linetype = 'dashed') +
     ggplot2::facet_wrap(~term, ncol = 3, scales = "free_y") +
     ggplot2::labs(
       title = glue::glue('Normal Q-Q plot - {boot_title}'),

@@ -184,7 +184,50 @@ mms_summary %>%
   kableExtra::kable_styling(position = "center")
 ```
 
-We can obtain the additional variance
+
+We can obtain the other estimates of the variance (i.e., from 
+residual and multiplier bootstraps) that we computed in `comp_var` 
+in tidy format by specifying these additional arguments within `get_summary`.
+
+```{r get_summary_all_estimates}
+mms_summary <- get_summary(mms_fit, 
+                           boot_emp = TRUE,
+                           boot_res = TRUE,
+                           boot_mul = TRUE,
+                           well_specified = TRUE)
+head(mms_summary) %>%
+  knitr::kable(x = ., format = "html", digits = 2, align = "c") %>% 
+  kableExtra::kable_styling(position = "center")
+```
+
+
+
+### Visualizing the estimates
+
+We may want to compare some of the estimates that we obtained through `comp_var` 
+in a plot. 
+Confidence intervals and normality of the (bootstrap) estimates 
+reprent two (arguably) interesting statistics the data scientist/researcher may
+want to analyze. The corresponding plots are returned by default when `plot` is
+called on a `maars` object, together with six other "typical" `lm` plots. 
+The plots can be visualized sequentially calling `plot` on an object of class 
+`r class(mms_fit)` (e.g., `plot(mms_fit, which=c(1,2,7))`. 
+Alternatively, we can store them in a list via `get_ols_diag_plots`, 
+as we do below.
+
+```{r obtain_plots}
+mms_plots <- get_ols_diag_plots(mms_fit)
+```
+
+Let's now visually compare the various types of (95%) confidence intervals.
+```{r compare_confint, fig.dim = c(6,5)}
+purrr::pluck(mms_plots, 'p7')
+```
+Let's now visualize the distribution of the bootstrap estimate to check whether it well 
+approximates the normal distribution.
+```{r visualize_boot_estimates, fig.dim = c(6,5)}
+purrr::pluck(mms_plots, 'p8')
+```
 
 
 
