@@ -299,17 +299,38 @@ summary.maars_lm <- function(object,
                .sep = " "
     ))
 
+  summary_out <- list(all_summaries = all_summaries,
+                      all_emoji_titles = all_emoji_titles,
+                      all_assumptions =  all_assumptions,
+                      stats_sand = stats_sand,
+                      digits = digits)
+  class(summary_out) <- 'summary.maars_lm'
+  return(summary_out)
+}
+
+
+#' Print summary of `maars_lm` object
+#'
+#' Calls \code{print.summary.maars_lm} on a \code{summary} of a `maars_lm` object.
+#'
+#' @param x A `maars_lm` object.
+#' @param ... Additional arguments
+#'
+#' @method print summary.maars_lm
+#' @export
+print.summary.maars_lm <- function(x, ...){
+
   # Get the printed summary table interleaved with assumptions
   # We just run an index over all_summaries, since it has the same
   # length as all_emoji_titles and all_assumptions and the same variance
   # type ordering
   purrr::iwalk(
-    unname(all_summaries),
+    unname(purrr::pluck(x, 'all_summaries')),
     ~ get_mms_summary_split_cli(
-      title = all_emoji_titles[[.y]],
-      summary = all_summaries[[.y]],
-      assumptions = all_assumptions[[.y]],
-      digits = digits
+      title = purrr::pluck(x, 'all_emoji_titles')[[.y]],
+      summary = purrr::pluck(x, 'all_summaries')[[.y]],
+      assumptions = purrr::pluck(x, 'all_assumptions')[[.y]],
+      digits = purrr::pluck(x, 'digits')
     )
   )
   cli::cli_h3(cli::col_blue(glue::glue("Significance codes:")))
@@ -317,7 +338,7 @@ summary.maars_lm <- function(object,
   cli::cli_text("0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1")
   cli::cli_h3(cli::col_magenta(glue::glue("Summary statistics:"))) # Placeholder title
   cli::cli_ul()
-  cli::cli_li(stats_sand)
+  cli::cli_li(purrr::pluck(x, 'stats_sand'))
 
   # Return a summary object
   # TODO: Use the output of this to write a print.summary.maars_lm later

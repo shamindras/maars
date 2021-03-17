@@ -39,6 +39,7 @@ reference:
     contents:
     - print.maars_lm
     - summary.maars_lm
+    - print.summary.maars_lm
     - plot.maars_lm
     - confint.maars_lm
   - title: Other utilities
