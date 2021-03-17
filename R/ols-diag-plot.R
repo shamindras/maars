@@ -30,7 +30,7 @@
 #' # Produce and sequentially display diagnostic plots
 #' plot(mms_fit)
 #' }
-get_ols_diag_plots <- function(mod_fit) {
+get_plot <- function(mod_fit) {
   # Assertion checking for mod_fit is of class "maars_lm", "lm"
   assertthat::assert_that(all(c("maars_lm", "lm") == class(mod_fit)),
     msg = glue::glue("mod_fit must only be of class: ['maars_lm', 'lm']")

@@ -513,7 +513,7 @@ plot.maars_lm <- function(x, which = NULL, ...){
 
   # Reminder: p8 is not NULL only if one type of bootstrap estimates
   # are available
-  mms_diag_plots <- get_ols_diag_plots(mod_fit = x)
+  mms_diag_plots <- get_plot(mod_fit = x)
 
   ### NEED TO FIX THIS ISSUE
   n_plots <- length(mms_diag_plots %>% purrr::keep(~ !is.null(.)))

@@ -212,11 +212,11 @@ want to analyze. The corresponding plots are returned by default when `plot` is
 called on a `maars` object, together with six other "typical" `lm` plots. 
 The plots can be visualized sequentially calling `plot` on an object of class 
 `r class(mms_fit)` (e.g., `plot(mms_fit, which=c(1,2,7))`. 
-Alternatively, we can store them in a list via `get_ols_diag_plots`, 
+Alternatively, we can store them in a list via `get_plot`, 
 as we do below.
 
 ```{r obtain_plots}
-mms_plots <- get_ols_diag_plots(mms_fit)
+mms_plots <- get_plot(mms_fit)
 ```
 
 Let's now visually compare the various types of (95%) confidence intervals.
