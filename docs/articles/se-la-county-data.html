@@ -110,7 +110,8 @@
 <p>First, we’ll load the <code>maars</code> package, and other <code>tidyverse</code> analysis packages. If you are a new user, you will need to manually run the following commands in a new in an <code>R</code> session before running the vignette code below:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span>pkgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"tidyverse"</span>, <span class="st">"vroom"</span>, <span class="st">"glue"</span>, <span class="st">"magrittr"</span>, 
-                          <span class="st">"knitr"</span>, <span class="st">"kableExtra"</span>, <span class="st">"remotes"</span><span class="op">)</span><span class="op">)</span>
+                          <span class="st">"knitr"</span>, <span class="st">"kableExtra"</span>, <span class="st">"remotes"</span>,
+                          <span class="st">"patchwork"</span><span class="op">)</span><span class="op">)</span>
 <span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">'shamindras/maars'</span>, force <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p>We will explicitly load the <code>tidyverse</code> set of packages to get access to the <code>magrittr</code> pipe (<code><a href="../reference/%&gt;%.html">%&gt;%</a></code>) operator. We will also set a global random seed for reproducibility purposes.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
@@ -922,11 +923,18 @@ lm
 <p>We may want to compare some of the estimates that we obtained through <code>comp_var</code> in a plot. Confidence intervals and normality of the (bootstrap) estimates reprent two (arguably) interesting statistics the data scientist/researcher may want to analyze. The corresponding plots are returned by default when <code>plot</code> is called on a <code>maars</code> object, together with six other “typical” <code>lm</code> plots. The plots can be visualized sequentially calling <code>plot</code> on an object of class maars_lm, lm (e.g., <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot(mms_fit, which=c(1,2,7))</a></code>. Alternatively, we can store them in a list via <code>get_plot</code>, as we do below.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">mms_plots</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_plot.html">get_plot</a></span><span class="op">(</span><span class="va">mms_fit</span><span class="op">)</span></code></pre></div>
-<p>Let’s now visually compare the various types of (95%) confidence intervals.</p>
+<p>Let’s first look at the six “typical” <code>lm</code> plots.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/pluck.html">pluck</a></span><span class="op">(</span><span class="va">mms_plots</span>, <span class="st">'p7'</span><span class="op">)</span></code></pre></div>
-<p><img src="se-la-county-data_files/figure-html/compare_confint-1.png" width="576" style="display: block; margin: auto;"> Let’s now visualize the distribution of the bootstrap estimate to check whether it well approximates the normal distribution.</p>
+<code class="sourceCode R"><span class="fu">patchwork</span><span class="fu">::</span><span class="fu"><a href="https://patchwork.data-imaginist.com/reference/wrap_plots.html">wrap_plots</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span> <span class="op">%&gt;%</span> <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="op">~</span> <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/pluck.html">pluck</a></span><span class="op">(</span><span class="va">mms_plots</span>, <span class="va">.</span><span class="op">)</span><span class="op">)</span>, 
+                      ncol <span class="op">=</span> <span class="fl">3</span>, 
+                      nrow <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></code></pre></div>
+<p><img src="se-la-county-data_files/figure-html/compare_lm-1.png" width="700" style="display: block; margin: auto;"></p>
+<p>Let’s compare confidence intervals for the regression coefficients based on the different types of estimators of the variance.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/pluck.html">pluck</a></span><span class="op">(</span><span class="va">mms_plots</span>, <span class="st">'p7'</span><span class="op">)</span></code></pre></div>
+<p><img src="se-la-county-data_files/figure-html/compare_confint-1.png" width="576" style="display: block; margin: auto;"></p>
+<p>Let’s now visualize the distribution of the bootstrap estimate to check whether it well approximates the normal distribution.</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/pluck.html">pluck</a></span><span class="op">(</span><span class="va">mms_plots</span>, <span class="st">'p8'</span><span class="op">)</span></code></pre></div>
 <p><img src="se-la-county-data_files/figure-html/visualize_boot_estimates-1.png" width="576" style="display: block; margin: auto;"></p>
 </div>

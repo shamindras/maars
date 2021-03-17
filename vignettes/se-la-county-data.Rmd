@@ -36,9 +36,11 @@ new in an `R` session before running the vignette code below:
 
 ``` {r install_maar, eval=FALSE}
 install.packages(pkgs = c("tidyverse", "vroom", "glue", "magrittr", 
-                          "knitr", "kableExtra", "remotes"))
+                          "knitr", "kableExtra", "remotes",
+                          "patchwork"))
 remotes::install_github('shamindras/maars', force = TRUE)
 ```
+
 ```{r load_all, include = FALSE}
 devtools::load_all()
 ```
@@ -219,10 +221,19 @@ as we do below.
 mms_plots <- get_plot(mms_fit)
 ```
 
-Let's now visually compare the various types of (95%) confidence intervals.
+Let's first look at the six "typical" `lm` plots. 
+```{r compare_lm}
+patchwork::wrap_plots(1:6 %>% purrr::map(~ purrr::pluck(mms_plots, .)), 
+                      ncol = 3, 
+                      nrow = 2)
+```
+
+Let's compare confidence intervals for the regression coefficients based on the 
+different types of estimators of the variance.
 ```{r compare_confint, fig.dim = c(6,5)}
 purrr::pluck(mms_plots, 'p7')
 ```
+
 Let's now visualize the distribution of the bootstrap estimate to check whether it well 
 approximates the normal distribution.
 ```{r visualize_boot_estimates, fig.dim = c(6,5)}

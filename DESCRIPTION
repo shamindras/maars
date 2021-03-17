@@ -43,7 +43,8 @@ Suggests:
     roxygen2,
     covr,
     rmarkdown,
-    devtools
+    devtools,
+    patchwork
 RdMacros: Rdpack
 Encoding: UTF-8
 Language: en-US

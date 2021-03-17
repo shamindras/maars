@@ -173,9 +173,9 @@ get_plot <- function(mod_fit) {
     ggplot2::theme(axis.ticks.x = ggplot2::element_blank(),
                    axis.text.x = ggplot2::element_blank()) +
     ggplot2::labs(
-      #x = "Regressor",
+      x = "",
       y = "Estimate",
-      title = "95% confidence intervals for regression coefficients") +
+      title = "95% confidence intervals for coefficients") +
     ggplot2::geom_hline(yintercept = 0, linetype = "dashed") +
     ggplot2::geom_errorbar(ggplot2::aes(
       ymin = conf.low,
