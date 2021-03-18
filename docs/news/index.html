@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">maars</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
       </span>
     </div>
 
@@ -135,6 +135,35 @@
       <small>Source: <a href='https://github.com/shamindras/maars/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="maars-100" class="section level1">
+<h1 class="page-header" data-toc-text="1.0.0">
+<a href="#maars-100" class="anchor"></a>maars 1.0.0</h1>
+<ul>
+<li>Set the default <code>digits = 3</code> formatting in <code>summary.maars_lm</code> printed output</li>
+<li>Move <code>summary.maars_lm</code>, <code>print.maars_lm</code>, <code>plot.maars_lm</code> methods into <code>maars-lm.R</code> file</li>
+<li>Merge <code>lm-var.R</code> code into into <code>sandwich-var.R</code> since they are both default estimators</li>
+<li>Use the <code>la_county</code> tibble directly from <code>maars</code> in our vignette</li>
+<li>Re-write vignette to produce Table 1 from Buja et. al. 1 to include new <code><a href="../reference/get_summary.html">get_summary()</a></code> function</li>
+<li>Write <code><a href="../reference/get_plot.html">get_plot()</a></code>, <code><a href="../reference/get_summary.html">get_summary()</a></code>, <code><a href="../reference/summary.maars_lm.html">summary.maars_lm()</a></code>, and <code><a href="../reference/get_confint.html">get_confint()</a></code>, <code><a href="../reference/confint.maars_lm.html">confint.maars_lm()</a></code> functionality for <code>maars_lm()</code> objects</li>
+<li>Change the statistic based on the F-distribution to one based on the Chi-square</li>
+<li>Write <code>plots</code> function with default options and wrap around <code><a href="../reference/get_plot.html">get_plot()</a></code>
+</li>
+<li>Add more Cook’s distance plots similar to <code><a href="https://rdrr.io/r/stats/lm.html">lm()</a></code> output</li>
+<li>Add confidence interval plots to the <code>maars_lm</code> plot output</li>
+<li>Print assumptions i.e. for all run <code>maars</code> standard errors. So <code>sand</code>, <code>well_specified</code> assumptions are printed by default, and other standard errors</li>
+<li>Add assumption string for <code>comp_lm_var</code> using <code><a href="https://glue.tidyverse.org/reference/glue.html">glue::glue()</a></code> and improve formatting</li>
+<li>Amend <code><a href="../reference/get_confint.html">get_confint()</a></code> to return tidy tibble output</li>
+<li>Just show <code>term</code>, <code>conf.low</code>, <code>conf.high</code> for <code><a href="https://rdrr.io/r/stats/confint.html">confint(maars_lm)</a></code>. Fix it to be the same as <code><a href="https://rdrr.io/r/stats/confint.html">confint(lm)</a></code>
+</li>
+<li>Add <code>la_county</code> <code>tibble</code> to our package</li>
+<li>Change <code>README.Rmd</code> to use <code>devtools</code> rather than <code>remotes</code> as the preferred package installation</li>
+<li>Add <code>devtools</code> to <code>Suggests</code> in <code>DESCRIPTION</code> so that vignettes use our latest code</li>
+<li>Ensure that the <code>la_county</code> <code>tibble</code> is documented method</li>
+<li>Write residual bootstrap assumptions to be the same as the well specified <code><a href="https://rdrr.io/r/stats/lm.html">lm()</a></code> model</li>
+<li>Include <code>weights</code> type in assumptions for multiplier bootstrap</li>
+<li>Include <code>n</code> in assumptions for empirical bootstrap</li>
+</ul>
+</div>
     <div id="maars-070" class="section level1">
 <h1 class="page-header" data-toc-text="0.7.0">
 <a href="#maars-070" class="anchor"></a>maars 0.7.0</h1>

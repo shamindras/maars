@@ -1,5 +1,28 @@
 # maars 1.0.0
 
+- Set the default `digits = 3` formatting in `summary.maars_lm` printed output
+- Move `summary.maars_lm`, `print.maars_lm`, `plot.maars_lm` methods into `maars-lm.R` file
+- Merge `lm-var.R` code into into `sandwich-var.R` since they are both default estimators
+- Use the `la_county` tibble directly from `maars` in our vignette
+- Re-write vignette to produce Table 1 from Buja et. al. 1 to include new `get_summary()` function
+- Write `get_plot()`, `get_summary()`, `summary.maars_lm()`, and `get_confint()`, `confint.maars_lm()` functionality for `maars_lm()` objects
+- Change the statistic based on the F-distribution to one based on the Chi-square
+- Write `plots` function with default options and wrap around `get_plot()`
+- Add more Cook's distance plots similar to `lm()` output
+- Add confidence interval plots to the `maars_lm` plot output
+- Print assumptions i.e. for all run `maars` standard errors. So `sand`, `well_specified` assumptions are printed by default, and other standard errors
+- Add assumption string for `comp_lm_var` using `glue::glue()` and improve formatting
+- Amend `get_confint()` to return tidy tibble output
+- Just show `term`, `conf.low`, `conf.high` for `confint(maars_lm)`. Fix it to be the same as `confint(lm)`
+- Add `la_county` `tibble` to our package
+- Change `README.Rmd` to use `devtools` rather than `remotes` as the preferred package installation
+- Add `devtools` to `Suggests` in `DESCRIPTION` so that vignettes use our latest code
+- Ensure that the `la_county` `tibble` is documented
+method
+- Write residual bootstrap assumptions to be the same as the well specified `lm()` model
+- Include `weights` type in assumptions for multiplier bootstrap
+- Include `n` in assumptions for empirical bootstrap
+
 # maars 0.7.0
 
 * Write function to create `maars_lm` object from `comp_var`
