@@ -244,8 +244,8 @@ summary.maars_lm <- function(object,
   }
 
   # Compute the statistic
-  chi2_stat <- n * (t(coefs) %*%
-     cov_mat %*% coefs)
+  chi2_stat <- (t(coefs) %*%
+     solve(cov_mat, coefs))
   identical(update(formula(object), 0 ~ .), 0 ~ 1)
   chi2_p_value <- pchisq(q = chi2_stat, df = d, lower.tail = FALSE)
 

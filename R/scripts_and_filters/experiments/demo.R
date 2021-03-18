@@ -40,6 +40,7 @@ broom::tidy(lm_fit)
 broom::augment(lm_fit)
 broom::glance(lm_fit)
 
+### TALK ABOUT NUMBERS!!!!!!!!!!!
 
 # Fit our first maars_lm object ----
 # Here we return an object of class ["maars_lm", "lm"], which contains all the
@@ -49,12 +50,15 @@ broom::glance(lm_fit)
 # and (iv) residual bootstrap. Sandwich is always returned by default.
 # Let's now get the variance estimates based on empirical bootstrap via
 set.seed(454354534)
+mms_fit0 <- comp_var(mod_fit = lm_fit)
+class(mms_fit0)
+print(mms_fit0)
+summary(mms_fit0)
+
+set.seed(454354534)
 mms_fit1 <- comp_var(
     mod_fit = lm_fit,
-    boot_emp = list(B = 100, m = 50),
-    boot_res = NULL,
-    boot_mul = NULL
-)
+    boot_emp = list(B = 100, m = 50))
 # Take a look at the class of the object
 class(mms_fit1)
 
@@ -80,7 +84,8 @@ print(mms_fit2)
 # If we call print on summary on a maars_lm object. or equivalently
 # run the following line of code, the several estimates of the variance
 # are shown, together with the corresponding assumptions
-summary(mms_fit1, boot_emp = TRUE)
+#summary(mms_fit0)
+#summary(mms_fit1, boot_emp = TRUE)
 summary(mms_fit2, boot_emp = TRUE, boot_mul = TRUE, boo_res = TRUE)
 # we also store summary in a list!
 summ_out <- summary(mms_fit1)
@@ -120,13 +125,14 @@ summ_out %>%
 confint(mms_fit2, level = 0.99, boot_emp = TRUE, boot_mul = TRUE)
 confint(mms_fit2, level = 0.8, boot_emp = TRUE, boot_mul = TRUE)
 
-# ALternatively we can
+# Alternatively we can
 mms_fit2_conf <- get_confint(mod_fit = mms_fit2, level = 0.95,
                              sand = TRUE, boot_emp = TRUE)
 mms_fit2_conf
 
 # Manually get the wider (non-tidy) version - for vignette Table 1 like output
 mms_fit2_conf %>%
+    # add
     tidyr::pivot_wider(data = .,
                        names_from = c(stat_type, var_type_abb),
                        names_glue = "{stat_type}.{var_type_abb}",
