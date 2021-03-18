@@ -1,3 +1,4 @@
+# A demo on simple linear regression!
 # Comp var examples ----
 devtools::load_all()
 set.seed(1243434)
@@ -5,7 +6,7 @@ set.seed(1243434)
 # generate modeling data ----
 n <- 1e3
 x <- stats::rnorm(n, 0, 1)
-y <- 2 + x * 1 + 1 * x^{2} + exp(gamma * x) * rnorm(n)
+y <- 2 + x * 1 + 1 * x^{2} + exp(0.2 * x) * rnorm(n)
 
 # let's first look at the data: Let's go the "ggplot" way!
 # This is what we like to call the "modern" statistician (as we will
@@ -27,8 +28,8 @@ print(lm_fit)
 # or get more detailed information by calling summary
 summary(lm_fit)
 
-# Inspecting lm with the "modern" statistician's workflow ----
-# An analogous way to inspect the lm object, which the "modern" statistician
+# Inspecting lm with the (modern) tidy toolkit  ----
+# An analogous way to inspect the lm object, which the statistician
 # might prefer, is to leverage the functions provided by the "broom" package!
 # This package follows the philosophy of the "tidyverse", a way to interact
 # and visualize objects in R that we also follow as a design principle in maars.
@@ -197,3 +198,4 @@ diag_foc_rwgt(mod_fit = lm_fit,
 
 # ... See the documentation for more information on these plots!
 ?diag_foc_rwgt
+
