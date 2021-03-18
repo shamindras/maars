@@ -1,7 +1,7 @@
 Package: maars
 Title: An implementation of the Models As Approximations series
     of statistics papers
-Version: 0.7.0
+Version: 1.0.0
 Authors@R: 
     c(person(given = "Shamindra",
              family = "Shrotriya",

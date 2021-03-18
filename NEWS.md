@@ -1,3 +1,5 @@
+# maars 1.0.0
+
 # maars 0.7.0
 
 * Write function to create `maars_lm` object from `comp_var`
