@@ -9,8 +9,6 @@ x <- stats::rnorm(n, 0, 1)
 y <- 2 + x * 1 + 1 * x^{2} + exp(0.2 * x) * rnorm(n)
 
 # let's first look at the data: Let's go the "ggplot" way!
-# This is what we like to call the "modern" statistician (as we will
-# repeatedly argue next)
 ggplot2::ggplot(data = tibble::tibble(x = x, y = y),
                 ggplot2::aes(x = x, y = y)) +
     ggplot2::geom_point() +
@@ -40,27 +38,28 @@ broom::tidy(lm_fit)
 broom::augment(lm_fit)
 broom::glance(lm_fit)
 
-### TALK ABOUT NUMBERS!!!!!!!!!!!
-
 # Fit our first maars_lm object ----
+
 # Here we return an object of class ["maars_lm", "lm"], which contains all the
 # attributes contained in lm, plus additional estimates of the variance.
 # Currently, comp_var supports the computations of standard errors based on
 # (i) sandwich, (ii) m-out-of-n empirical bootstrap, (iii) multiplier bootstrap,
 # and (iv) residual bootstrap. Sandwich is always returned by default.
-# Let's now get the variance estimates based on empirical bootstrap via
+# Let's now get the sandwich variance
 set.seed(454354534)
 mms_fit0 <- comp_var(mod_fit = lm_fit)
+# Take a look at the class of the object
 class(mms_fit0)
+# and its output
 print(mms_fit0)
 summary(mms_fit0)
 
+# Let's now get the variance estimates based on empirical bootstrap via
 set.seed(454354534)
 mms_fit1 <- comp_var(
     mod_fit = lm_fit,
     boot_emp = list(B = 100, m = 50))
-# Take a look at the class of the object
-class(mms_fit1)
+
 
 # Let's get another set of estimates, now also asking for residual and multiplier
 # bootstraps.
@@ -86,7 +85,7 @@ print(mms_fit2)
 # are shown, together with the corresponding assumptions
 #summary(mms_fit0)
 #summary(mms_fit1, boot_emp = TRUE)
-summary(mms_fit2, boot_emp = TRUE, boot_mul = TRUE, boo_res = TRUE)
+summary(mms_fit2, boot_emp = TRUE, boot_mul = TRUE, boot_res = TRUE)
 # we also store summary in a list!
 summ_out <- summary(mms_fit1)
 
@@ -94,7 +93,7 @@ summ_out <- summary(mms_fit1)
 # In this case we'll just obtain the summaries for sandwich and lm
 summary(mms_fit2)
 # and here only sadnwich and empirical bootstrap (but not the others)
-summary(mms_fit2, boot_emp = TRUE)
+summary(mms_fit2, boot_emp = TRUE, boot_res = TRUE)
 
 # Let's see whether summary can handle the user's mistakes
 # Here we request multiplier bootstrap even though it's not available

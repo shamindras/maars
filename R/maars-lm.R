@@ -104,11 +104,13 @@ comp_var <- function(mod_fit,
 #' # TODO: Add later
 #' }
 get_mms_summary_print_lm_style <- function(var_summary, digits) {
+  browser()
   out_summ <- var_summary %>%
     dplyr::mutate(sig = stats::symnum(p.value, corr = FALSE, na = FALSE,
                                       legend = FALSE,
                                       cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),
-                                      symbols = c("***", "**", "*", ".", " ")))
+                                      symbols = c("***", "**", "*", ".", " "))) %>%
+    dplyr::mutate(p.value = base::format.pval(p.value))
   colnames(out_summ) <- c(
     'Term', 'Estimate', 'Std. Error ',
     't value', 'Pr(>|t|)', 'Significance'
