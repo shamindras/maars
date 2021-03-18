@@ -6,7 +6,7 @@ set.seed(1243434)
 # generate modeling data ----
 n <- 1e3
 x <- stats::rnorm(n, 0, 1)
-y <- 2 + x * 1 + 1 * x^{2} + exp(0.2 * x) * rnorm(n)
+y <- 2 + x * 1 + 1 * x^{2} + exp(0.2 * abs(x)) * rnorm(n)
 
 # let's first look at the data: Let's go the "ggplot" way!
 ggplot2::ggplot(data = tibble::tibble(x = x, y = y),
@@ -18,6 +18,13 @@ ggplot2::ggplot(data = tibble::tibble(x = x, y = y),
 # We are highly trained statisticians and we decide to fit an lm model...
 # which is obviously misspecified
 lm_fit <- stats::lm(y ~ x)
+
+# let's plot the fitted values of our model
+ggplot2::ggplot(data = tibble::tibble(x = x, y = y),
+                ggplot2::aes(x = x, y = y)) +
+    ggplot2::geom_point() +
+    ggplot2::theme_bw() +
+    ggplot2::geom_smooth(method='lm', formula= y~x)
 
 # Inspecting lm ----
 # There are several ways in which we can inspect the output of "lm"
@@ -53,6 +60,13 @@ class(mms_fit0)
 # and its output
 print(mms_fit0)
 summary(mms_fit0)
+# let's compare the standard errors from lm vs. sandwich s.e.
+get_summary(mms_fit0, well_specified = TRUE) %>%
+    dplyr::filter(stat_type == 'std.error') %>%
+    tidyr::pivot_wider(names_from = var_type_abb, values_from = stat_val)
+
+
+# Fit more maars_lm objects ----
 
 # Let's now get the variance estimates based on empirical bootstrap via
 set.seed(454354534)
@@ -68,8 +82,7 @@ mms_fit2 <- comp_var(
     mod_fit = lm_fit,
     boot_emp = list(B = 50, m = 200),
     boot_res = list(B = 70),
-    boot_mul = list(B = 60)
-)
+    boot_mul = list(B = 60))
 
 # Inspecting the maars_lm object ----
 # print - let's test out the print method for both objects ----
@@ -80,12 +93,14 @@ print(mms_fit1)
 print(mms_fit2)
 
 # summary - let's test out the summary method for both objects ----
+
 # If we call print on summary on a maars_lm object. or equivalently
 # run the following line of code, the several estimates of the variance
 # are shown, together with the corresponding assumptions
 #summary(mms_fit0)
 #summary(mms_fit1, boot_emp = TRUE)
 summary(mms_fit2, boot_emp = TRUE, boot_mul = TRUE, boot_res = TRUE)
+
 # we also store summary in a list!
 summ_out <- summary(mms_fit1)
 
@@ -104,10 +119,12 @@ summary(mms_fit1, boot_res = TRUE)
 
 
 # extract assumptions ----
+
 # The output of the assumptions will be revised in the (very) near future
 get_assumptions(mod_fit = mms_fit2, boot_emp = TRUE)
 
 # extract summary in tidy format ----
+
 # We can also extract the variance estimates (and other statistics) in a tidy
 # format. Here it is!
 summ_out <- get_summary(mod_fit = mms_fit2, boot_emp = TRUE)
@@ -118,7 +135,9 @@ summ_out %>%
     dplyr::filter(stat_type == 'std.error') %>%
     tidyr::pivot_wider(names_from = var_type_abb, values_from = stat_val)
 
+
 # Compute confidence intervals ----
+
 # Let's now compute confidence intervals. We can call the confint method on
 # a maars_lm object
 confint(mms_fit2, level = 0.99, boot_emp = TRUE, boot_mul = TRUE)
@@ -146,17 +165,17 @@ mms_fit2_conf %>%
 # based on the different types of standard errors that are computed and (ii) the
 # QQ norm of the bootstrap coefficients estimates, when they are available.
 # Let's first look at plot()
-plot(mms_fit1)
+# plot(mms_fit1)
 
 # We can also return the plots in a list by calling
-mms_fit1_plots <- get_plot(mms_fit1)
+mms_fit2_plots <- get_plot(mms_fit2)
 # Let's first look at the six lm plots
 patchwork::wrap_plots(1:6 %>%
-                         purrr::map(~ purrr::pluck(mms_fit1_plots, .)),
+                         purrr::map(~ purrr::pluck(mms_fit2_plots, .)),
                      ncol = 3)
 # and then at the two additional plots
-purrr::pluck(mms_fit1_plots, 7)
-purrr::pluck(mms_fit1_plots, 8)
+purrr::pluck(mms_fit2_plots, 7)
+purrr::pluck(mms_fit2_plots, 8)
 
 
 # Experimental feature: Model diagnostics ----

@@ -104,7 +104,6 @@ comp_var <- function(mod_fit,
 #' # TODO: Add later
 #' }
 get_mms_summary_print_lm_style <- function(var_summary, digits) {
-  browser()
   out_summ <- var_summary %>%
     dplyr::mutate(sig = stats::symnum(p.value, corr = FALSE, na = FALSE,
                                       legend = FALSE,
