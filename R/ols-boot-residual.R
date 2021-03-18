@@ -32,7 +32,7 @@
 #'   bootstrap repetition (\code{b}). In case of empirical bootstrap, it will
 #'   also contain the size of each bootstrapped dataset (\code{m}).
 #'
-#' @export
+#' @keywords internal
 #'
 #' @importFrom rlang .data
 #'

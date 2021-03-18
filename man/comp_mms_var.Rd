@@ -70,3 +70,4 @@ out <- comp_mms_var(mod_fit, boot_mul = list(B = 100, weights_type = "rademacher
 print(out)
 }
 }
+\keyword{internal}

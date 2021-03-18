@@ -56,3 +56,4 @@ out <- comp_boot_res(lm_fit, B = 100)
 print(out)
 }
 }
+\keyword{internal}

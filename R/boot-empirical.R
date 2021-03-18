@@ -284,7 +284,7 @@ comp_boot_emp <- function(mod_fit, B = 100, m = NULL) {
 #' @return A tibble containing the quantiles (\code{x}) and the
 #'   probabilities (\code{q}) for each group as specified by \code{group_vars}.
 #'
-#' @export
+#' @keywords internal
 #'
 #' @importFrom rlang .data
 #'
