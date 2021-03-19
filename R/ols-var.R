@@ -300,7 +300,7 @@ get_boot_summary <- function(mod_fit, boot_out, boot_type) {
     ) %>%
     dplyr::mutate(statistic = .data$estimate / .data$std.error) %>%
     dplyr::arrange(.data = ., .data$term) %>%
-    dplyr::relocate(.data$statistic, .after = estimate)
+    dplyr::relocate(.data$statistic, .after = .data$estimate)
   return(out)
 }
 
@@ -346,7 +346,7 @@ get_boot_summary <- function(mod_fit, boot_out, boot_type) {
 #'   by the  user, including the sandwich and the the variance returned by
 #'   \code{\link[stats]{lm}}.
 #'
-#' @export
+#' @keywords internal
 #'
 #' @examples
 #' \dontrun{

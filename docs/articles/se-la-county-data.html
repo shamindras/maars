@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">maars</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.7.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
       </span>
     </div>
 
@@ -88,7 +88,8 @@
 
       
 
-      </header><script src="se-la-county-data_files/header-attrs-2.7/header-attrs.js"></script><div class="row">
+      </header><script src="se-la-county-data_files/header-attrs-2.7.2/header-attrs.js"></script><script src="se-la-county-data_files/kePrint-0.0.1/kePrint.js"></script><link href="se-la-county-data_files/lightable-0.0.1/lightable.css" rel="stylesheet">
+<div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Reproducing LA County Standard Errors from <span class="citation">(Buja et al. 2019)</span>
@@ -109,7 +110,8 @@
 <p>First, we’ll load the <code>maars</code> package, and other <code>tidyverse</code> analysis packages. If you are a new user, you will need to manually run the following commands in a new in an <code>R</code> session before running the vignette code below:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span>pkgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"tidyverse"</span>, <span class="st">"vroom"</span>, <span class="st">"glue"</span>, <span class="st">"magrittr"</span>, 
-                          <span class="st">"knitr"</span>, <span class="st">"kableExtra"</span>, <span class="st">"remotes"</span>, <span class="st">"magick"</span><span class="op">)</span><span class="op">)</span>
+                          <span class="st">"knitr"</span>, <span class="st">"kableExtra"</span>, <span class="st">"remotes"</span>,
+                          <span class="st">"patchwork"</span><span class="op">)</span><span class="op">)</span>
 <span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">'shamindras/maars'</span>, force <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></code></pre></div>
 <p>We will explicitly load the <code>tidyverse</code> set of packages to get access to the <code>magrittr</code> pipe (<code><a href="../reference/%&gt;%.html">%&gt;%</a></code>) operator. We will also set a global random seed for reproducibility purposes.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
@@ -121,25 +123,193 @@
 <h2 class="hasAnchor">
 <a href="#goal-of-analysis" class="anchor"></a>Goal of Analysis</h2>
 <p>We try to replicate the results of Table 1 in <span class="citation">(Buja et al. 2019)</span>, as shown below:</p>
+<div class="figure" style="text-align: center">
+<img src="figures/buja1_table1.png" alt="Table 1 from [@buja2019modelsasapproximationspart1]" width="90%"><p class="caption">
+Table 1 from <span class="citation">(Buja et al. 2019)</span>
+</p>
+</div>
 </div>
 <div id="loading-the-data" class="section level2">
 <h2 class="hasAnchor">
 <a href="#loading-the-data" class="anchor"></a>Loading the data</h2>
-<p>Let’s load the LA County Homeless persons data as used in <span class="citation">(Buja et al. 2019)</span> and briefly examine it.</p>
+<p>Let’s load the LA County Homeless persons data as used in <span class="citation">(Buja et al. 2019)</span> and briefly examine it. The dataset is already included in the package.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># LA County source data url, use glue to split string in easy to read format</span>
-<span class="va">url_la_county_dat</span> <span class="op">&lt;-</span> <span class="fu">glue</span><span class="fu">::</span><span class="fu"><a href="https://glue.tidyverse.org/reference/glue.html">glue</a></span><span class="op">(</span><span class="st">"http://www-stat.wharton.upenn.edu/~buja"</span>,
-                                <span class="st">"STAT-961/Homeless_LA_by_Census_Tracts.csv"</span>,
-                                .sep <span class="op">=</span> <span class="st">"/"</span><span class="op">)</span>
-
-<span class="va">la_county_df</span> <span class="op">&lt;-</span> <span class="fu">vroom</span><span class="fu">::</span><span class="fu"><a href="https://vroom.r-lib.org/reference/vroom.html">vroom</a></span><span class="op">(</span>file <span class="op">=</span> <span class="va">url_la_county_dat</span><span class="op">)</span> <span class="co"># %&gt;% dplyr::rename("MedianInc1000" = "MedianInc ($1000)")</span>
-<span class="va">la_county_df</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">.</span><span class="op">)</span></code></pre></div>
+<span class="co"># let's load </span>
+<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">'la_county'</span>, package <span class="op">=</span> <span class="st">'maars'</span><span class="op">)</span>
+<span class="va">la_county</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">.</span><span class="op">)</span>
+<span class="co">#&gt; [1] 505   7</span></code></pre></div>
 <p>Let’s view the first few rows to understand the structure of the data frame.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">la_county_df</span> <span class="op">%&gt;%</span> 
+<code class="sourceCode R"><span class="va">la_county</span> <span class="op">%&gt;%</span> 
   <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">.</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">.</span>, format <span class="op">=</span> <span class="st">"html"</span>, digits <span class="op">=</span> <span class="fl">2</span>, align <span class="op">=</span> <span class="st">"c"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu">kableExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/kable_styling.html">kable_styling</a></span><span class="op">(</span>position <span class="op">=</span> <span class="st">"center"</span><span class="op">)</span></code></pre></div>
+<table class="table table">
+<thead><tr>
+<th style="text-align:center;">
+StreetTotal
+</th>
+<th style="text-align:center;">
+MedianInc1000
+</th>
+<th style="text-align:center;">
+PercVacant
+</th>
+<th style="text-align:center;">
+PercMinority
+</th>
+<th style="text-align:center;">
+PercResidential
+</th>
+<th style="text-align:center;">
+PercCommercial
+</th>
+<th style="text-align:center;">
+PercIndustrial
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:center;">
+2
+</td>
+<td style="text-align:center;">
+41.58
+</td>
+<td style="text-align:center;">
+2.58
+</td>
+<td style="text-align:center;">
+30.47
+</td>
+<td style="text-align:center;">
+86.68
+</td>
+<td style="text-align:center;">
+12.23
+</td>
+<td style="text-align:center;">
+0.00
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+0
+</td>
+<td style="text-align:center;">
+53.48
+</td>
+<td style="text-align:center;">
+2.84
+</td>
+<td style="text-align:center;">
+16.92
+</td>
+<td style="text-align:center;">
+12.09
+</td>
+<td style="text-align:center;">
+0.26
+</td>
+<td style="text-align:center;">
+0.00
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+6
+</td>
+<td style="text-align:center;">
+35.24
+</td>
+<td style="text-align:center;">
+2.03
+</td>
+<td style="text-align:center;">
+64.39
+</td>
+<td style="text-align:center;">
+15.83
+</td>
+<td style="text-align:center;">
+5.66
+</td>
+<td style="text-align:center;">
+4.31
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+4
+</td>
+<td style="text-align:center;">
+36.68
+</td>
+<td style="text-align:center;">
+3.13
+</td>
+<td style="text-align:center;">
+63.71
+</td>
+<td style="text-align:center;">
+29.81
+</td>
+<td style="text-align:center;">
+3.69
+</td>
+<td style="text-align:center;">
+4.68
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+5
+</td>
+<td style="text-align:center;">
+30.87
+</td>
+<td style="text-align:center;">
+1.58
+</td>
+<td style="text-align:center;">
+61.50
+</td>
+<td style="text-align:center;">
+72.81
+</td>
+<td style="text-align:center;">
+20.37
+</td>
+<td style="text-align:center;">
+0.00
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+18
+</td>
+<td style="text-align:center;">
+50.71
+</td>
+<td style="text-align:center;">
+2.54
+</td>
+<td style="text-align:center;">
+46.61
+</td>
+<td style="text-align:center;">
+42.66
+</td>
+<td style="text-align:center;">
+19.33
+</td>
+<td style="text-align:center;">
+0.00
+</td>
+</tr>
+</tbody>
+</table>
 <p>It is already in tidy format <span class="citation">(Wickham 2014)</span>. So we have imported the data correctly, given that we match the column names in Table 1 of the <span class="citation">(Buja et al. 2019)</span> paper.</p>
 </div>
 <div id="fitting-the-ols-model" class="section level2">
@@ -147,203 +317,643 @@
 <a href="#fitting-the-ols-model" class="anchor"></a>Fitting the OLS model</h2>
 <p>We now fit an linear model of the count of homeless people (<code>StreetTotal</code>) as the response variable, against the other covariates using Ordinary Least Squares (OLS).</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">mod_fit</span> <span class="op">&lt;-</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="va">StreetTotal</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">la_county_df</span><span class="op">)</span></code></pre></div>
-</div>
-<div id="computing-standard-errors-from-ols-assuming-well-specification" class="section level2">
-<h2 class="hasAnchor">
-<a href="#computing-standard-errors-from-ols-assuming-well-specification" class="anchor"></a>Computing standard errors from OLS (Assuming Well Specification)</h2>
-<p>Let’s first obtain the standard errors for the fitted coefficients returned from the <code>lm</code> object. We can do this in a tidy manner using the <code><a href="https://generics.r-lib.org/reference/tidy.html">broom::tidy</a></code> function applied to our fitted <code>lm</code> object, and selecting only the required columns.</p>
+<code class="sourceCode R"><span class="va">mod_fit</span> <span class="op">&lt;-</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="va">StreetTotal</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">la_county</span><span class="op">)</span></code></pre></div>
+<div id="estimating-the-variance" class="section level3">
+<h3 class="hasAnchor">
+<a href="#estimating-the-variance" class="anchor"></a>Estimating the variance</h3>
+<p>Let’s estimate the variance of the regression coefficients for the fitted model via</p>
+<ul>
+<li>sandwich estimator (see <span class="citation">(White 1980a, @white1980usinglsapproxunknownregfuncs)</span>).</li>
+<li>(n-out-of-n) empirical bootstrap with <span class="math inline">\(B=10^{3}\)</span> replications.</li>
+<li>multiplier bootstrap with <span class="math inline">\(B=10^{3}\)</span> replications with Rademacher weights.</li>
+<li>residual bootstrap with <span class="math inline">\(B=10^{3}\)</span> replications.</li>
+</ul>
+<p>To do so, we will use <code>comp_var</code>. The sandwich estimator of the variance is always computed by default.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">se_lm</span> <span class="op">&lt;-</span> <span class="fu">broom</span><span class="fu">::</span><span class="fu"><a href="https://generics.r-lib.org/reference/tidy.html">tidy</a></span><span class="op">(</span><span class="va">mod_fit</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-          <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">term</span>, <span class="va">std.error</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-          <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span>.data <span class="op">=</span> <span class="va">.</span>, std.error.lm <span class="op">=</span> <span class="va">std.error</span><span class="op">)</span>
-<span class="va">se_lm</span> <span class="op">%&gt;%</span> 
-  <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/set_names.html">set_names</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">.</span>, 
-                   nm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'Term'</span>, <span class="st">'$SE_{\\text{lin}}$'</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">.</span>, format <span class="op">=</span> <span class="st">"html"</span>, digits <span class="op">=</span> <span class="fl">2</span>, 
-               align <span class="op">=</span> <span class="st">"c"</span>, escape <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu">kableExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/kable_styling.html">kable_styling</a></span><span class="op">(</span>position <span class="op">=</span> <span class="st">"center"</span><span class="op">)</span></code></pre></div>
-</div>
-<div id="computing-standard-errors-from-ols-using-empirical-bootstrap" class="section level2">
-<h2 class="hasAnchor">
-<a href="#computing-standard-errors-from-ols-using-empirical-bootstrap" class="anchor"></a>Computing standard errors from OLS using Empirical Bootstrap</h2>
-<p>We now compute the standard errors via <span class="math inline">\(B = 10^{3}\)</span> bootstrap replications of the dataset of the same size as the original dataset i.e. of the <span class="math inline">\(B\)</span> replications samples with replacement <span class="math inline">\(n = 505\)</span> observations from the entire data (which contains <span class="math inline">\(n = 505\)</span> observations).</p>
-<p>Let’s first get the OLS estimates.</p>
+<code class="sourceCode R"><span class="va">mms_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/comp_var.html">comp_var</a></span><span class="op">(</span>mod_fit <span class="op">=</span> <span class="va">mod_fit</span>,
+                    boot_emp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>B<span class="op">=</span><span class="fl">10</span><span class="op">^</span><span class="fl">3</span><span class="op">)</span>,
+                    boot_mul <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>B<span class="op">=</span><span class="fl">10</span><span class="op">^</span><span class="fl">3</span>, weights_type<span class="op">=</span><span class="st">'rademacher'</span><span class="op">)</span>,
+                    boot_res <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>B<span class="op">=</span><span class="fl">10</span><span class="op">^</span><span class="fl">3</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p>We have obtained an object of class maars_lm, lm We also have all the ingredients necessary to reproduce table 1 of the <span class="citation">(Buja et al. 2019)</span> paper. Technically, we will only need the empirical bootstrap and sandiwch estimates. In <code>maars</code>, the estimates, standard errors, t-statistics, and p-values can be obtained in a <code>tidy</code> output via <code>get_summary</code>. This function returns the sandwich, again, returned by default, unless specified otherwise. Let’s first extract the summary of <code>mms_fit</code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">coef_emp_boot</span> <span class="op">&lt;-</span> <span class="fu">maars</span><span class="fu">::</span><span class="fu">comp_empirical_bootstrap</span><span class="op">(</span>mod_fit <span class="op">=</span> <span class="va">mod_fit</span>, B <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span>
-<span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/glimpse.html">glimpse</a></span><span class="op">(</span><span class="va">coef_emp_boot</span><span class="op">)</span></code></pre></div>
-<p>We can visualize the distribution of the variance to check whether it well approximates the normal distribution.</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">qnorm_boot</span> <span class="op">&lt;-</span> <span class="fu">maars</span><span class="fu">::</span><span class="fu">qqnorm_bootstrap</span><span class="op">(</span><span class="va">coef_emp_boot</span><span class="op">)</span>
-<span class="va">qnorm_boot</span></code></pre></div>
-<p>The distribution of the OLS coefficients estimates appears to be approximately normal. Thanks to the fairly large sample size, we can assume to be in the asymptotic regime.</p>
-<p>Let’s now compute the standard errors from the outcome of the bootstrap. This can be done through the following function.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">se_emp</span> <span class="op">&lt;-</span> <span class="fu">maars</span><span class="fu">::</span><span class="fu">comp_bootstrap_summary</span><span class="op">(</span>mod_fit <span class="op">=</span> <span class="va">mod_fit</span>, 
-                                       boot_out <span class="op">=</span> <span class="va">coef_emp_boot</span>, 
-                                       boot_type <span class="op">=</span> <span class="st">'emp'</span><span class="op">)</span> <span class="op">%&gt;%</span>
-            <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">std.error</span>, <span class="op">-</span><span class="va">statistic</span>, <span class="op">-</span><span class="va">p.value</span><span class="op">)</span></code></pre></div>
-<p>This now fits, the <span class="math inline">\(B = 10^{3}\)</span> replications. let’s view the output.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">se_emp</span> <span class="op">%&gt;%</span> 
-  <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/set_names.html">set_names</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">.</span>, 
-                   nm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'Term'</span>, <span class="st">'$\\widehat{\\beta}_{j}$'</span>,
-                          <span class="st">'$SE_{\\text{boot}}$'</span>, <span class="st">'$t_{\\text{boot}}$'</span>,
-                          <span class="st">'$p_{\\text{boot}}$'</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">.</span>, format <span class="op">=</span> <span class="st">"html"</span>, digits <span class="op">=</span> <span class="fl">2</span>, 
-               align <span class="op">=</span> <span class="st">"c"</span>, escape <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu">kableExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/kable_styling.html">kable_styling</a></span><span class="op">(</span>position <span class="op">=</span> <span class="st">"center"</span><span class="op">)</span></code></pre></div>
-<p>As we can see, the output is in tidy format as a <code>tibble</code> object. This makes it much more readily amenable for additional transformations using the <code>tidyverse</code> set of packages.</p>
-<p>Last, let’s compute the confidence intervals for the coefficients estimated on the bootstrapped data sets via the percentile method.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">coef_emp_boot</span> <span class="op">%&gt;%</span> 
-  <span class="fu">maars</span><span class="fu">::</span><span class="fu">comp_conf_int_bootstrap</span><span class="op">(</span>probs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.025</span>, <span class="fl">0.975</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">pivot_wider</a></span><span class="op">(</span>names_from <span class="op">=</span> <span class="va">q</span>, values_from <span class="op">=</span> <span class="va">x</span><span class="op">)</span></code></pre></div>
-</div>
-<div id="computing-standard-errors-from-ols-using-multiplier-bootstrap" class="section level2">
-<h2 class="hasAnchor">
-<a href="#computing-standard-errors-from-ols-using-multiplier-bootstrap" class="anchor"></a>Computing standard errors from OLS using Multiplier Bootstrap</h2>
-<p>We now compute the standard errors via <span class="math inline">\(B = 10^{3}\)</span> multiplier bootstrap replications. This can be done through the following function.</p>
-<p>Let’s first get the OLS estimates.</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">coef_mult_boot</span> <span class="op">&lt;-</span> <span class="fu">maars</span><span class="fu">::</span><span class="fu">comp_multiplier_bootstrap_var</span><span class="op">(</span>mod_fit <span class="op">=</span> <span class="va">mod_fit</span>, 
-                                                      B <span class="op">=</span> <span class="fl">1000</span>, 
-                                                      weights_type <span class="op">=</span> <span class="st">"std_gaussian"</span><span class="op">)</span>
-<span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/glimpse.html">glimpse</a></span><span class="op">(</span><span class="va">coef_mult_boot</span><span class="op">)</span></code></pre></div>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># se_mult &lt;- maars::comp_bootstrap_summary(mod_fit = mod_fit, </span>
-<span class="co">#                                        boot_out = coef_mult_boot, </span>
-<span class="co">#                                        boot_type = 'mult') %&gt;%</span>
-<span class="co">#             dplyr::select(-std.error, -statistic, -p.value)</span></code></pre></div>
-</div>
-<div id="computing-standard-errors-from-ols-using-sandwich-estimator" class="section level2">
-<h2 class="hasAnchor">
-<a href="#computing-standard-errors-from-ols-using-sandwich-estimator" class="anchor"></a>Computing standard errors from OLS using Sandwich Estimator</h2>
-<p>Then we obtain the standard errors using the White sandwich estimator see <span class="citation">White (1980b)</span>.</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">se_sand</span> <span class="op">&lt;-</span> <span class="fu">maars</span><span class="fu">::</span><span class="fu">comp_sandwich_qr_var</span><span class="op">(</span>mod_fit <span class="op">=</span> <span class="va">mod_fit</span><span class="op">)</span>
-<span class="va">se_sand</span></code></pre></div>
-<p>We can also visually compare the two types of confidence intervals.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">comp_se</span> <span class="op">&lt;-</span> <span class="va">se_sand</span> <span class="op">%&gt;%</span> 
-  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">term</span>, <span class="va">estimate</span>, <span class="va">std.error.sand</span>, <span class="va">std.error</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">term</span> <span class="op">!=</span> <span class="st">'(Intercept)'</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">inner_join</a></span><span class="op">(</span><span class="va">se_emp</span> <span class="op">%&gt;%</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">term</span>, <span class="va">std.error.boot.emp</span><span class="op">)</span>, 
-                    by <span class="op">=</span> <span class="st">'term'</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer</a></span><span class="op">(</span>cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">std.error</span>, <span class="va">std.error.sand</span>, <span class="va">std.error.boot.emp</span><span class="op">)</span>,
-                      names_to <span class="op">=</span> <span class="st">'Type'</span>, 
-                      values_to <span class="op">=</span> <span class="st">'std.error'</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Type <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html">case_when</a></span><span class="op">(</span>
-                          <span class="va">Type</span> <span class="op">==</span> <span class="st">"std.error"</span> <span class="op">~</span> <span class="st">"lm"</span>,
-                          <span class="va">Type</span> <span class="op">==</span> <span class="st">"std.error.sand"</span> <span class="op">~</span> <span class="st">"sandwich"</span>,
-                          <span class="va">Type</span> <span class="op">==</span> <span class="st">"std.error.boot.emp"</span> <span class="op">~</span> <span class="st">"emp.boot."</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Type <span class="op">=</span> 
-                  <span class="fu">forcats</span><span class="fu">::</span><span class="fu"><a href="https://forcats.tidyverse.org/reference/fct_relevel.html">fct_relevel</a></span><span class="op">(</span><span class="va">Type</span>, 
-                                       <span class="st">"lm"</span>, <span class="st">"sandwich"</span>, <span class="st">"emp.boot."</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span><span class="va">term</span>, <span class="va">estimate</span>, col <span class="op">=</span> <span class="va">Type</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_bw</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span>position<span class="op">=</span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/position_dodge.html">position_dodge</a></span><span class="op">(</span>width<span class="op">=</span><span class="fl">0.5</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">'Regressor'</span>, y <span class="op">=</span> <span class="st">'Estimate'</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">0</span>, linetype <span class="op">=</span> <span class="st">'dashed'</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_linerange.html">geom_errorbar</a></span><span class="op">(</span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>ymin <span class="op">=</span> <span class="va">estimate</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">qnorm</a></span><span class="op">(</span>p <span class="op">=</span> <span class="fl">0.975</span>, 
-                                                              mean <span class="op">=</span> <span class="fl">0</span>, 
-                                                              sd <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">*</span><span class="va">std.error</span>, 
-                                      ymax <span class="op">=</span> <span class="va">estimate</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html">qnorm</a></span><span class="op">(</span>p <span class="op">=</span> <span class="fl">0.975</span>, 
-                                                              mean <span class="op">=</span> <span class="fl">0</span>, 
-                                                              sd <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">*</span><span class="va">std.error</span><span class="op">)</span>,
-                         position <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/position_dodge.html">position_dodge</a></span><span class="op">(</span>width<span class="op">=</span><span class="fl">0.5</span><span class="op">)</span>, 
-                         width <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span> <span class="op">+</span> 
-  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>axis.text.x <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>angle <span class="op">=</span> <span class="fl">30</span>, hjust <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
-  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guides.html">guides</a></span><span class="op">(</span>col<span class="op">=</span><span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guide_legend.html">guide_legend</a></span><span class="op">(</span>title<span class="op">=</span><span class="st">"Type of standard errors"</span><span class="op">)</span><span class="op">)</span>
-<span class="va">comp_se</span></code></pre></div>
-</div>
-<div id="comparing-standard-errors" class="section level2">
-<h2 class="hasAnchor">
-<a href="#comparing-standard-errors" class="anchor"></a>Comparing standard errors</h2>
-<p>We combine the standard errors into one tibble.</p>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">se_comb</span> <span class="op">&lt;-</span> <span class="va">se_sand</span> <span class="op">%&gt;%</span> 
-      <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">.</span>, 
-                       y <span class="op">=</span> <span class="va">se_emp</span> <span class="op">%&gt;%</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">estimate</span><span class="op">)</span>, 
-                       by <span class="op">=</span> <span class="st">"term"</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">mms_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_summary.html">get_summary</a></span><span class="op">(</span><span class="va">mms_fit</span>, boot_emp <span class="op">=</span> <span class="cn">TRUE</span>, well_specified <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 
-<span class="va">se_comb</span> <span class="op">%&gt;%</span>
-  <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/set_names.html">set_names</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">.</span>, 
-                   nm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'Term'</span>, <span class="st">'$\\widehat{\\beta}_{j}$'</span>, 
-                          <span class="st">'$SE_{\\text{lin}}$'</span>,
-                          <span class="st">'$t_{\\text{lin}}$'</span>,
-                          <span class="st">'$p_{\\text{lin}}$'</span>,
-                          <span class="st">'$SE_{\\text{sand}}$'</span>, 
-                          <span class="st">'$t_{\\text{sand}}$'</span>,
-                          <span class="st">'$p_{\\text{sand}}$'</span>,
-                          <span class="st">'$SE_{\\text{boot}}$'</span>,
-                          <span class="st">'$t_{\\text{boot}}$'</span>,
-                          <span class="st">'$p_{\\text{boot}}$'</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">.</span>, format <span class="op">=</span> <span class="st">"html"</span>, digits <span class="op">=</span> <span class="fl">2</span>, 
-               align <span class="op">=</span> <span class="st">"c"</span>, escape <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">mms_summary</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">.</span>, format <span class="op">=</span> <span class="st">"html"</span>, digits <span class="op">=</span> <span class="fl">2</span>, align <span class="op">=</span> <span class="st">"c"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
   <span class="fu">kableExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/kable_styling.html">kable_styling</a></span><span class="op">(</span>position <span class="op">=</span> <span class="st">"center"</span><span class="op">)</span></code></pre></div>
+<table class="table table">
+<thead><tr>
+<th style="text-align:center;">
+term
+</th>
+<th style="text-align:center;">
+estimate
+</th>
+<th style="text-align:center;">
+stat_type
+</th>
+<th style="text-align:center;">
+stat_val
+</th>
+<th style="text-align:center;">
+var_type_abb
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:center;">
+(Intercept)
+</td>
+<td style="text-align:center;">
+0.76
+</td>
+<td style="text-align:center;">
+std.error
+</td>
+<td style="text-align:center;">
+22.77
+</td>
+<td style="text-align:center;">
+lm
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+(Intercept)
+</td>
+<td style="text-align:center;">
+0.76
+</td>
+<td style="text-align:center;">
+statistic
+</td>
+<td style="text-align:center;">
+0.03
+</td>
+<td style="text-align:center;">
+lm
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+(Intercept)
+</td>
+<td style="text-align:center;">
+0.76
+</td>
+<td style="text-align:center;">
+p.value
+</td>
+<td style="text-align:center;">
+0.97
+</td>
+<td style="text-align:center;">
+lm
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+MedianInc1000
+</td>
+<td style="text-align:center;">
+-0.18
+</td>
+<td style="text-align:center;">
+std.error
+</td>
+<td style="text-align:center;">
+0.19
+</td>
+<td style="text-align:center;">
+lm
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+MedianInc1000
+</td>
+<td style="text-align:center;">
+-0.18
+</td>
+<td style="text-align:center;">
+statistic
+</td>
+<td style="text-align:center;">
+-0.98
+</td>
+<td style="text-align:center;">
+lm
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+MedianInc1000
+</td>
+<td style="text-align:center;">
+-0.18
+</td>
+<td style="text-align:center;">
+p.value
+</td>
+<td style="text-align:center;">
+0.33
+</td>
+<td style="text-align:center;">
+lm
+</td>
+</tr>
+</tbody>
+</table>
+<p>As we can see, the output is in tidy format as a <code>tibble</code> object. This makes it much more readily amenable for additional transformations using the <code>tidyverse</code> set of packages.</p>
+<p>We can now reformat the output of <code>get_summary</code> to make it more easily comparable to table 1 in the paper. This can be achieved by first dropping the p-values (which are not needed), followed by the computation of the ratios of the variances, and last by a <code>pivot_wider</code>.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">mms_summary</span> <span class="op">%&gt;%</span>
+  <span class="co"># drop the p-values</span>
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">stat_type</span> <span class="op">!=</span> <span class="st">'p.value'</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="co"># compute the variances</span>
+  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">pivot_wider</a></span><span class="op">(</span>names_from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">stat_type</span>, <span class="va">var_type_abb</span><span class="op">)</span>, 
+                     values_from <span class="op">=</span> <span class="va">stat_val</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="co"># compute the ratios</span>
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>ratio_emp_vs_lm <span class="op">=</span> <span class="va">std.error_emp</span><span class="op">/</span><span class="va">std.error_lm</span>,
+                ratio_sand_vs_lm <span class="op">=</span> <span class="va">std.error_sand</span><span class="op">/</span><span class="va">std.error_emp</span>,
+                ratio_sand_vs_emp <span class="op">=</span> <span class="va">std.error_sand</span><span class="op">/</span><span class="va">std.error_emp</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="co"># reorder the variables</span>
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">term</span>, 
+                <span class="va">estimate</span>, 
+                <span class="fu">starts_with</span><span class="op">(</span><span class="st">"std.error"</span><span class="op">)</span>, 
+                <span class="fu">starts_with</span><span class="op">(</span><span class="st">"ratio"</span><span class="op">)</span>, 
+                <span class="fu">starts_with</span><span class="op">(</span><span class="st">"statistic"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="co"># rename the variables</span>
+  <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/set_names.html">set_names</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">.</span>, nm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Term"</span>, <span class="st">"$\\widehat{\\beta}_{j}$"</span>, 
+                                 <span class="st">"$SE_{\\text{lin}}$"</span>, 
+                                 <span class="st">"$SE_{\\text{boot}}$"</span>, 
+                                 <span class="st">"$SE_{\\text{sand}}$"</span>,
+                                 <span class="st">"$\\frac{SE_{\\text{boot}}}{SE_{\\text{lin}}}$"</span>,
+                                 <span class="st">"$\\frac{SE_{\\text{sand}}}{SE_{\\text{lin}}}$"</span>, 
+                                 <span class="st">"$\\frac{SE_{\\text{sand}}}{SE_{\\text{boot}}}$"</span>,
+                                 <span class="st">"$t_{\\text{lin}}$"</span>, 
+                                 <span class="st">"$t_{\\text{boot}}$"</span>,
+                                 <span class="st">"$t_{\\text{sand}}$"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span>
+    x <span class="op">=</span> <span class="va">.</span>, format <span class="op">=</span> <span class="st">"html"</span>, digits <span class="op">=</span> <span class="fl">2</span>,
+    align <span class="op">=</span> <span class="st">"c"</span>, escape <span class="op">=</span> <span class="cn">TRUE</span>
+  <span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">kableExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/kable_styling.html">kable_styling</a></span><span class="op">(</span>position <span class="op">=</span> <span class="st">"center"</span><span class="op">)</span></code></pre></div>
+<table class="table table">
+<thead><tr>
+<th style="text-align:center;">
+Term
+</th>
+<th style="text-align:center;">
+<span class="math inline">\(\widehat{\beta}_{j}\)</span>
+</th>
+<th style="text-align:center;">
+<span class="math inline">\(SE_{\text{lin}}\)</span>
+</th>
+<th style="text-align:center;">
+<span class="math inline">\(SE_{\text{boot}}\)</span>
+</th>
+<th style="text-align:center;">
+<span class="math inline">\(SE_{\text{sand}}\)</span>
+</th>
+<th style="text-align:center;">
+<span class="math inline">\(\frac{SE_{\text{boot}}}{SE_{\text{lin}}}\)</span>
+</th>
+<th style="text-align:center;">
+<span class="math inline">\(\frac{SE_{\text{sand}}}{SE_{\text{lin}}}\)</span>
+</th>
+<th style="text-align:center;">
+<span class="math inline">\(\frac{SE_{\text{sand}}}{SE_{\text{boot}}}\)</span>
+</th>
+<th style="text-align:center;">
+<span class="math inline">\(t_{\text{lin}}\)</span>
+</th>
+<th style="text-align:center;">
+<span class="math inline">\(t_{\text{boot}}\)</span>
+</th>
+<th style="text-align:center;">
+<span class="math inline">\(t_{\text{sand}}\)</span>
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:center;">
+(Intercept)
+</td>
+<td style="text-align:center;">
+0.76
+</td>
+<td style="text-align:center;">
+22.77
+</td>
+<td style="text-align:center;">
+15.91
+</td>
+<td style="text-align:center;">
+16.63
+</td>
+<td style="text-align:center;">
+0.73
+</td>
+<td style="text-align:center;">
+0.96
+</td>
+<td style="text-align:center;">
+0.96
+</td>
+<td style="text-align:center;">
+0.03
+</td>
+<td style="text-align:center;">
+0.05
+</td>
+<td style="text-align:center;">
+0.05
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+MedianInc1000
+</td>
+<td style="text-align:center;">
+-0.18
+</td>
+<td style="text-align:center;">
+0.19
+</td>
+<td style="text-align:center;">
+0.10
+</td>
+<td style="text-align:center;">
+0.11
+</td>
+<td style="text-align:center;">
+0.61
+</td>
+<td style="text-align:center;">
+0.92
+</td>
+<td style="text-align:center;">
+0.92
+</td>
+<td style="text-align:center;">
+-0.98
+</td>
+<td style="text-align:center;">
+-1.75
+</td>
+<td style="text-align:center;">
+-1.61
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+PercVacant
+</td>
+<td style="text-align:center;">
+4.63
+</td>
+<td style="text-align:center;">
+0.90
+</td>
+<td style="text-align:center;">
+1.29
+</td>
+<td style="text-align:center;">
+1.41
+</td>
+<td style="text-align:center;">
+1.56
+</td>
+<td style="text-align:center;">
+0.92
+</td>
+<td style="text-align:center;">
+0.92
+</td>
+<td style="text-align:center;">
+5.14
+</td>
+<td style="text-align:center;">
+3.60
+</td>
+<td style="text-align:center;">
+3.29
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+PercMinority
+</td>
+<td style="text-align:center;">
+0.12
+</td>
+<td style="text-align:center;">
+0.18
+</td>
+<td style="text-align:center;">
+0.16
+</td>
+<td style="text-align:center;">
+0.16
+</td>
+<td style="text-align:center;">
+0.92
+</td>
+<td style="text-align:center;">
+1.00
+</td>
+<td style="text-align:center;">
+1.00
+</td>
+<td style="text-align:center;">
+0.70
+</td>
+<td style="text-align:center;">
+0.76
+</td>
+<td style="text-align:center;">
+0.76
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+PercResidential
+</td>
+<td style="text-align:center;">
+-0.05
+</td>
+<td style="text-align:center;">
+0.17
+</td>
+<td style="text-align:center;">
+0.11
+</td>
+<td style="text-align:center;">
+0.11
+</td>
+<td style="text-align:center;">
+0.65
+</td>
+<td style="text-align:center;">
+0.97
+</td>
+<td style="text-align:center;">
+0.97
+</td>
+<td style="text-align:center;">
+-0.29
+</td>
+<td style="text-align:center;">
+-0.46
+</td>
+<td style="text-align:center;">
+-0.45
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+PercCommercial
+</td>
+<td style="text-align:center;">
+0.74
+</td>
+<td style="text-align:center;">
+0.27
+</td>
+<td style="text-align:center;">
+0.39
+</td>
+<td style="text-align:center;">
+0.40
+</td>
+<td style="text-align:center;">
+1.45
+</td>
+<td style="text-align:center;">
+0.98
+</td>
+<td style="text-align:center;">
+0.98
+</td>
+<td style="text-align:center;">
+2.70
+</td>
+<td style="text-align:center;">
+1.90
+</td>
+<td style="text-align:center;">
+1.86
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+PercIndustrial
+</td>
+<td style="text-align:center;">
+0.91
+</td>
+<td style="text-align:center;">
+0.32
+</td>
+<td style="text-align:center;">
+0.58
+</td>
+<td style="text-align:center;">
+0.59
+</td>
+<td style="text-align:center;">
+1.82
+</td>
+<td style="text-align:center;">
+0.99
+</td>
+<td style="text-align:center;">
+0.99
+</td>
+<td style="text-align:center;">
+2.82
+</td>
+<td style="text-align:center;">
+1.56
+</td>
+<td style="text-align:center;">
+1.55
+</td>
+</tr>
+</tbody>
+</table>
+<p>We can obtain the other estimates of the variance (i.e., from residual and multiplier bootstraps) that we computed in <code>comp_var</code> in tidy format by specifying these additional arguments within <code>get_summary</code>.</p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">mms_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_summary.html">get_summary</a></span><span class="op">(</span><span class="va">mms_fit</span>, 
+                           boot_emp <span class="op">=</span> <span class="cn">TRUE</span>,
+                           boot_res <span class="op">=</span> <span class="cn">TRUE</span>,
+                           boot_mul <span class="op">=</span> <span class="cn">TRUE</span>,
+                           well_specified <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">mms_summary</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">.</span>, format <span class="op">=</span> <span class="st">"html"</span>, digits <span class="op">=</span> <span class="fl">2</span>, align <span class="op">=</span> <span class="st">"c"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu">kableExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/kable_styling.html">kable_styling</a></span><span class="op">(</span>position <span class="op">=</span> <span class="st">"center"</span><span class="op">)</span></code></pre></div>
+<table class="table table">
+<thead><tr>
+<th style="text-align:center;">
+term
+</th>
+<th style="text-align:center;">
+estimate
+</th>
+<th style="text-align:center;">
+stat_type
+</th>
+<th style="text-align:center;">
+stat_val
+</th>
+<th style="text-align:center;">
+var_type_abb
+</th>
+</tr></thead>
+<tbody>
+<tr>
+<td style="text-align:center;">
+(Intercept)
+</td>
+<td style="text-align:center;">
+0.76
+</td>
+<td style="text-align:center;">
+std.error
+</td>
+<td style="text-align:center;">
+22.77
+</td>
+<td style="text-align:center;">
+lm
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+(Intercept)
+</td>
+<td style="text-align:center;">
+0.76
+</td>
+<td style="text-align:center;">
+statistic
+</td>
+<td style="text-align:center;">
+0.03
+</td>
+<td style="text-align:center;">
+lm
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+(Intercept)
+</td>
+<td style="text-align:center;">
+0.76
+</td>
+<td style="text-align:center;">
+p.value
+</td>
+<td style="text-align:center;">
+0.97
+</td>
+<td style="text-align:center;">
+lm
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+MedianInc1000
+</td>
+<td style="text-align:center;">
+-0.18
+</td>
+<td style="text-align:center;">
+std.error
+</td>
+<td style="text-align:center;">
+0.19
+</td>
+<td style="text-align:center;">
+lm
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+MedianInc1000
+</td>
+<td style="text-align:center;">
+-0.18
+</td>
+<td style="text-align:center;">
+statistic
+</td>
+<td style="text-align:center;">
+-0.98
+</td>
+<td style="text-align:center;">
+lm
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+MedianInc1000
+</td>
+<td style="text-align:center;">
+-0.18
+</td>
+<td style="text-align:center;">
+p.value
+</td>
+<td style="text-align:center;">
+0.33
+</td>
+<td style="text-align:center;">
+lm
+</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div id="reproduce-table-1-from-buja2019modelsasapproximationspart1" class="section level2">
-<h2 class="hasAnchor">
-<a href="#reproduce-table-1-from-buja2019modelsasapproximationspart1" class="anchor"></a>Reproduce Table 1 from <span class="citation">(Buja et al. 2019)</span>
-</h2>
-<p>We can also compute the ratios of the standard errors and the t-statistics as in Table 1 from <span class="citation">(Buja et al. 2019)</span>.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># t_stats &lt;- se_comb %&gt;%</span>
-<span class="co">#             dplyr::mutate(</span>
-<span class="co">#               rat.boot.vs.lm = std.error.boot / std.error.lm,</span>
-<span class="co">#               rat.sand.vs.lm = std.error.sand / std.error.lm,</span>
-<span class="co">#               rat.sand.vs.boot = std.error.sand / std.error.boot,</span>
-<span class="co">#               t.lm = estimate / std.error.lm,</span>
-<span class="co">#               t.boot = estimate / std.error.boot,</span>
-<span class="co">#               t.sand = estimate / std.error.sand</span>
-<span class="co">#             )</span>
-<span class="co"># t_stats %&gt;%</span>
-<span class="co">#   purrr::set_names(x = ., </span>
-<span class="co">#                    nm = c("Term", '$\\widehat{\\beta}_{j}$', </span>
-<span class="co">#                           '$SE_{\\text{lin}}$', '$SE_{\\text{boot}}$',</span>
-<span class="co">#                           '$SE_{\\text{sand}}$',</span>
-<span class="co">#                           "$\\frac{SE_{\\text{boot}}}{SE_{\\text{lin}}}$",</span>
-<span class="co">#                           "$\\frac{SE_{\\text{sand}}}{SE_{\\text{lin}}}$", </span>
-<span class="co">#                           "$\\frac{SE_{\\text{sand}}}{SE_{\\text{boot}}}$",</span>
-<span class="co">#                           "$t_{\\text{lin}}$", "$t_{\\text{boot}}$", </span>
-<span class="co">#                           "$t_{\\text{sand}}$")) %&gt;%</span>
-<span class="co">#   knitr::kable(x = ., format = "html", digits = 2, </span>
-<span class="co">#                align = "c", escape = TRUE) %&gt;% </span>
-<span class="co">#   kableExtra::kable_styling(position = "center")</span></code></pre></div>
+<div id="visualizing-the-estimates" class="section level3">
+<h3 class="hasAnchor">
+<a href="#visualizing-the-estimates" class="anchor"></a>Visualizing the estimates</h3>
+<p>We may want to compare some of the estimates that we obtained through <code>comp_var</code> in a plot. Confidence intervals and normality of the (bootstrap) estimates reprent two (arguably) interesting statistics the data scientist/researcher may want to analyze. The corresponding plots are returned by default when <code>plot</code> is called on a <code>maars</code> object, together with six other “typical” <code>lm</code> plots. The plots can be visualized sequentially calling <code>plot</code> on an object of class maars_lm, lm (e.g., <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot(mms_fit, which=c(1,2,7))</a></code>. Alternatively, we can store them in a list via <code>get_plot</code>, as we do below.</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">mms_plots</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_plot.html">get_plot</a></span><span class="op">(</span><span class="va">mms_fit</span><span class="op">)</span></code></pre></div>
+<p>Let’s first look at the six “typical” <code>lm</code> plots.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">patchwork</span><span class="fu">::</span><span class="fu"><a href="https://patchwork.data-imaginist.com/reference/wrap_plots.html">wrap_plots</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span> <span class="op">%&gt;%</span> <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="op">~</span> <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/pluck.html">pluck</a></span><span class="op">(</span><span class="va">mms_plots</span>, <span class="va">.</span><span class="op">)</span><span class="op">)</span>, 
+                      ncol <span class="op">=</span> <span class="fl">3</span>, 
+                      nrow <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></code></pre></div>
+<p><img src="se-la-county-data_files/figure-html/compare_lm-1.png" width="700" style="display: block; margin: auto;"></p>
+<p>Let’s compare confidence intervals for the regression coefficients based on the different types of estimators of the variance.</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/pluck.html">pluck</a></span><span class="op">(</span><span class="va">mms_plots</span>, <span class="st">'p7'</span><span class="op">)</span></code></pre></div>
+<p><img src="se-la-county-data_files/figure-html/compare_confint-1.png" width="576" style="display: block; margin: auto;"></p>
+<p>Let’s now visualize the distribution of the bootstrap estimate to check whether it well approximates the normal distribution.</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/pluck.html">pluck</a></span><span class="op">(</span><span class="va">mms_plots</span>, <span class="st">'p8'</span><span class="op">)</span></code></pre></div>
+<p><img src="se-la-county-data_files/figure-html/visualize_boot_estimates-1.png" width="576" style="display: block; margin: auto;"></p>
 </div>
-<div id="model-diagnostics-from-buja2019modelsasapproximationspart1" class="section level2">
-<h2 class="hasAnchor">
-<a href="#model-diagnostics-from-buja2019modelsasapproximationspart1" class="anchor"></a>Model diagnostics from <span class="citation">(Buja et al. 2019)</span>
-</h2>
-<p>When the model is misspecified, regression coefficients should be seen as statistical functionals rather than fixed quantities. These parameters depend on the distribution of the regressors and it is therefore important to study across the regions of the parameter space.</p>
-<p>Let’s then first get OLS estimates under the default reweighting schema implemented in the <code>maars</code> package.</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">coef_rwgt</span> <span class="op">&lt;-</span> <span class="va">mod_fit</span> <span class="op">%&gt;%</span> 
-  <span class="fu">maars</span><span class="fu">::</span><span class="fu">comp_coef_rwgt</span><span class="op">(</span>mod_fit <span class="op">=</span> <span class="va">.</span>,
-                 terms_to_rwgt <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">la_county_df</span><span class="op">)</span><span class="op">[</span><span class="op">-</span><span class="fl">1</span><span class="op">]</span>,
-                 B <span class="op">=</span> <span class="fl">300</span><span class="op">)</span>
-<span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/glimpse.html">glimpse</a></span><span class="op">(</span><span class="va">coef_rwgt</span><span class="op">)</span></code></pre></div>
-<p>To facilitate the interpretation of the results, we rely on graphical model diagnostics. Here, we show the “focal slope” model diagnostics. The <code>focal_slope</code> plot shows how one coefficient of interests varies under reweighting of each of the regressors. In the plot below we consider the case of “PercVacant.”</p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">fs</span> <span class="op">&lt;-</span> <span class="fu">maars</span><span class="fu">::</span><span class="fu">focal_slope</span><span class="op">(</span><span class="va">mod_fit</span>, <span class="va">coef_rwgt</span>, <span class="st">'PercVacant'</span><span class="op">)</span>
-<span class="va">fs</span></code></pre></div>
 </div>
 <div id="references" class="section level2 unnumbered">
 <h2 class="hasAnchor">
 <a href="#references" class="anchor"></a>References</h2>
-<div id="refs" class="references csl-bib-body hanging-indent">
-<div id="ref-buja2019modelsasapproximationspart1" class="csl-entry">
-Buja, Andreas, Lawrence Brown, Richard Berk, Edward George, Emil Pitkin, Mikhail Traskin, Kai Zhang, and Linda Zhao. 2019. <span>“Models as Approximations <span>I</span>: Consequences Illustrated with Linear Regression.”</span> <em>Statist. Sci.</em> 34 (4): 523–44. <a href="https://doi.org/10.1214/18-STS693">https://doi.org/10.1214/18-STS693</a>.
+<div id="refs" class="references hanging-indent">
+<div id="ref-buja2019modelsasapproximationspart1">
+<p>Buja, Andreas, Lawrence Brown, Richard Berk, Edward George, Emil Pitkin, Mikhail Traskin, Kai Zhang, and Linda Zhao. 2019. “Models as Approximations I: Consequences Illustrated with Linear Regression.” <em>Statist. Sci.</em> 34 (4): 523–44. <a href="https://doi.org/10.1214/18-STS693">https://doi.org/10.1214/18-STS693</a>.</p>
 </div>
-<div id="ref-white1980heteroskedasticconsistentcovest" class="csl-entry">
-White, Halbert. 1980a. <span>“A Heteroskedasticity-Consistent Covariance Matrix Estimator and a Direct Test for Heteroskedasticity.”</span> <em>Econometrica</em> 48 (4): 817–38. <a href="https://doi.org/10.2307/1912934">https://doi.org/10.2307/1912934</a>.
+<div id="ref-white1980heteroskedasticconsistentcovest">
+<p>White, Halbert. 1980a. “A Heteroskedasticity-Consistent Covariance Matrix Estimator and a Direct Test for Heteroskedasticity.” <em>Econometrica</em> 48 (4): 817–38. <a href="https://doi.org/10.2307/1912934">https://doi.org/10.2307/1912934</a>.</p>
 </div>
-<div id="ref-white1980usinglsapproxunknownregfuncs" class="csl-entry">
-———. 1980b. <span>“Using Least Squares to Approximate Unknown Regression Functions.”</span> <em>Internat. Econom. Rev.</em> 21 (1): 149–70. <a href="https://doi.org/10.2307/2526245">https://doi.org/10.2307/2526245</a>.
+<div id="ref-white1980usinglsapproxunknownregfuncs">
+<p>———. 1980b. “Using Least Squares to Approximate Unknown Regression Functions.” <em>Internat. Econom. Rev.</em> 21 (1): 149–70. <a href="https://doi.org/10.2307/2526245">https://doi.org/10.2307/2526245</a>.</p>
 </div>
-<div id="ref-wickham2014tidydata" class="csl-entry">
-Wickham, Hadley. 2014. <span>“Tidy Data.”</span> <em>Journal of Statistical Software</em> 59 (10). <a href="https://doi.org/10.18637/jss.v059.i10">https://doi.org/10.18637/jss.v059.i10</a>.
+<div id="ref-wickham2014tidydata">
+<p>Wickham, Hadley. 2014. “Tidy Data.” <em>Journal of Statistical Software</em> 59 (10). <a href="https://doi.org/10.18637/jss.v059.i10">https://doi.org/10.18637/jss.v059.i10</a>.</p>
 </div>
 </div>
 </div>

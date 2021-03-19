@@ -35,13 +35,20 @@ reference:
     - starts_with("diag_", internal = FALSE)
   - title: Print, summarize, and plot data
     desc: >
-      **Print, summarize, and plot** maars objects
+      **Print, summarize, and plot** `maars` objects
     contents:
     - print.maars_lm
     - summary.maars_lm
+    - print.summary.maars_lm
     - plot.maars_lm
+    - confint.maars_lm
   - title: Other utilities
     desc: >
         Other utilities
     contents:
       - as.maars
+  - title: Datasets
+    desc: >
+        **Datasets** included in the `maars` package
+    contents:
+      - la_county

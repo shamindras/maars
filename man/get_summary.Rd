@@ -15,7 +15,8 @@ get_summary(
 )
 }
 \arguments{
-\item{mod_fit}{(maars_lm, lm) A fitted OLS \code{maars_lm, lm} class object}
+\item{mod_fit}{(\code{maars_lm, lm}) A fitted OLS \code{maars_lm, lm} class
+object}
 
 \item{sand}{(logical) : \code{TRUE} if sandwich estimator output is required,
 \code{FALSE} to exclude this output from the request}
@@ -61,14 +62,12 @@ common_vars <- c("term", "estimate")
 
 # Empirical Bootstrap check
 set.seed(454354534)
-comp_var1 <- comp_var(mod_fit = lm_fit, boot_emp = list(B = 20, m = 200),
-                    boot_res = list(B = 30),
-                    boot_mul = NULL)
+comp_var1 <- comp_var(
+  mod_fit = lm_fit, boot_emp = list(B = 20, m = 200),
+  boot_res = list(B = 30),
+  boot_mul = NULL
+)
 
-# This returns everything but boot_mul, since we didn't run it in the original
-# original maars_lm model
-get_summary(mod_fit = comp_var1, sand = TRUE,
-                     boot_emp = TRUE, boot_res = TRUE, boot_mul = FALSE,
-                     well_specified = TRUE)
+# TODO: Add here
 }
 }

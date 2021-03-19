@@ -90,13 +90,421 @@ comp_var <- function(mod_fit,
   return(mod_fit)
 }
 
+#' Print summary in the style of `lm`
+#'
+#' @param var_summary TODO: Add later
+#' @param digits TODO: Add later
+#'
+#' @keywords internal
+#'
+#' @return TODO: Add later
+#'
+#' @examples
+#' \dontrun{
+#' # TODO: Add later
+#' }
+get_mms_summary_print_lm_style <- function(var_summary, digits) {
+  out_summ <- var_summary %>%
+    dplyr::mutate(sig = stats::symnum(p.value, corr = FALSE, na = FALSE,
+                                      legend = FALSE,
+                                      cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),
+                                      symbols = c("***", "**", "*", ".", " "))) %>%
+    dplyr::mutate(p.value = base::format.pval(p.value))
+  colnames(out_summ) <- c(
+    'Term', 'Estimate', 'Std. Error ',
+    't value', 'Pr(>|t|)', 'Significance'
+  )
+
+  cat('Coefficients:\n')
+  print.data.frame(out_summ, row.names = FALSE, digits = digits)
+}
+
+#' Print interleaved summary for a \code{maars_lm, lm} object, for a
+#' specific variance type
+#'
+#' @param title TODO: Add later
+#' @param summary TODO: Add later
+#' @param assumptions TODO: Add later
+#' @param digits TODO: Add later
+#'
+#' @keywords internal
+#'
+#' @return TODO: Add later
+#'
+#' @examples
+#' \dontrun{
+#' # TODO: Add later
+#' }
+get_mms_summary_split_cli <- function(title,
+                                      summary,
+                                      assumptions,
+                                      digits = 3) {
+  cli::cli_end()
+  cli::cli_h1(cli::col_yellow(glue::glue("{title} Summary")))
+  cli::cli_text("\n")
+  cli::cli_end()
+  get_mms_summary_print_lm_style(var_summary = summary, digits = digits)
+  cli::cli_end()
+  cli::cli_ul()
+  cli::cli_h2(cli::col_green(glue::glue("{title} Assumptions")))
+  cli::cli_ul()
+  cli::cli_li(assumptions)
+  cli::cli_end()
+}
+
+#' Summary of \code{maars_lm} object
+#'
+#' Summary method for class "maars_lm".
+#'
+#' @param object A fitted "maars_lm" object.
+#' @param sand (logical) : \code{TRUE} if sandwich estimator output is required,
+#'   \code{FALSE} to exclude this output from the request.
+#' @param boot_emp (logical) : \code{TRUE} if empirical bootstrap standard error
+#'   output is required, \code{FALSE} to exclude this output from the request.
+#' @param boot_res (logical) : \code{TRUE} if residual bootstrap standard error
+#'   output is required, \code{FALSE} to exclude this output from the request.
+#' @param boot_mul (logical) : \code{TRUE} if multiplier bootstrap standard error
+#'   output is required, \code{FALSE} to exclude this output from the request
+#' @param well_specified (logical) : \code{TRUE} if lm standard errors.
+#'   (well specified) output is required, \code{FALSE} to exclude this output
+#'   from the request.
+#' @param digits (integer) : Rounding digits used in some of the function's output.
+#' @param split (logical) : TODO: Add later
+#' @param ... Additional arguments.
+#'
+#' @method summary maars_lm
+#' @export
+summary.maars_lm <- function(object,
+                             sand = TRUE,
+                             boot_emp = FALSE,
+                             boot_res = FALSE,
+                             boot_mul = FALSE,
+                             well_specified = FALSE,
+                             digits = 3,
+                             split = TRUE,
+                             ...) {
+
+  # Get the variance types the user has requested. This performs assertion
+  # Checking, so if there is no error it will return the required names,
+  # else it will throw an error
+  req_var_nms <- check_fn_args_summary(
+    mod_fit = object,
+    sand = sand,
+    boot_emp = boot_emp,
+    boot_res = boot_res,
+    boot_mul = boot_mul,
+    well_specified = well_specified
+  )
+
+  # Filter the comp_mms_var output from the fitted maars_lm object for the
+  # requested variance types from the user
+  comp_var_ind_filt <- req_var_nms %>%
+    purrr::map(.x = ., ~ purrr::pluck(object$var, .x))
+
+  # Get emoji titles for all variance types
+  all_emoji_titles <- comp_var_ind_filt %>%
+    purrr::map(.x = ., .f = ~ fetch_mms_comp_var_attr(
+      comp_var_ind = .x,
+      req_type = "emoji_title"
+    ))
+
+  # Get all assumptions for all variance types
+  all_assumptions <- comp_var_ind_filt %>%
+    purrr::map(.x = ., .f = ~ fetch_mms_comp_var_attr(
+      comp_var_ind = .x,
+      req_type = "var_assumptions"
+    ))
+
+  # Get variance summaries for all variance types
+  all_summaries <- comp_var_ind_filt %>%
+    purrr::map(.x = ., .f = ~ fetch_mms_comp_var_attr(
+      comp_var_ind = .x,
+      req_type = "var_summary"
+    ))
+
+  # Add detailed assumptions for the well-specified linear model
+  # This is to design the specific string at the bottom of the
+  # standard out put of the summary.lm with F-statistics, p-value etc
+  summ_lm <- stats::summary.lm(object)
+
+
+  # Compute chi squared statistics under H0: all coefficients are equal to 0
+  # based on the sandwich estimate of the variance
+  coefs <- coef(object)
+  n <- nrow(model.frame(object))
+  d <- length(coefs)
+  cov_mat <- purrr::pluck(object, 'var', 'var_sand', 'cov_mat')
+  # TODO: fix the following code because this case only deals with cases in which
+  # users code the intercept as "(Intercept)" in the regression data or the
+  # intercept is handled directly in lm
+  if('(Intercept)' %in% colnames(cov_mat)){
+    is_intercept <- (colnames(cov_mat)=='(Intercept)')
+    cov_mat <- cov_mat[!is_intercept, !is_intercept]
+    coefs <- coefs[!is_intercept]
+    d <- d - 1
+  }
+
+  # Compute the statistic
+  chi2_stat <- (t(coefs) %*%
+     solve(cov_mat, coefs))
+  identical(update(formula(object), 0 ~ .), 0 ~ 1)
+  chi2_p_value <- pchisq(q = chi2_stat, df = d, lower.tail = FALSE)
+
+  # Default output to be with 4 digits. Manually set by maars developers
+  FMT_NUM_DIGITS <- 4
+
+  # TODO: This "assumptions_lm" variable should perhaps be called
+  #       "common_assumptions" or something similar, to make it more
+  #       descriptive in the list output eventually returned by summary
+  stats_lm <-
+    c(glue::glue("Residual standard error:",
+                 "{formatC(signif(summ_lm$sigma, digits = FMT_NUM_DIGITS))}",
+                 "on",
+                 "{object$df.residual}",
+                 "degrees of freedom",
+                 .sep = " "
+    ),
+    glue::glue("Multiple R-squared:",
+               "{formatC(summ_lm$r.squared, digits = FMT_NUM_DIGITS)},",
+               "Adjusted R-squared:",
+               "{formatC(summ_lm$adj.r.squared, digits = FMT_NUM_DIGITS)}",
+               .sep = " "
+    ),
+    glue::glue("F-statistic:",
+               "{formatC(summ_lm$fstatistic[1L], digits = FMT_NUM_DIGITS)}",
+               "on",
+               "{summ_lm$fstatistic[2L]} and {summ_lm$fstatistic[3L]} DF,",
+               "p-value:",
+               "{format.pval(stats::pf(summ_lm$fstatistic[1L],
+                       summ_lm$fstatistic[2L],
+                       summ_lm$fstatistic[3L],
+                       lower.tail = FALSE))}",
+               .sep = " "
+    ))
+
+  ## TODO: Need to decide how to display the statistics generated from lm vs.
+  # those from sandwich
+  stats_sand <-
+    c(glue::glue("Multiple R-squared:",
+               "{formatC(summ_lm$r.squared, digits = FMT_NUM_DIGITS)},",
+               "Adjusted R-squared:",
+               "{formatC(summ_lm$adj.r.squared, digits = FMT_NUM_DIGITS)}",
+               .sep = " "
+    ),
+    glue::glue("Chi-squared statistic based on sandwich variance:",
+               "{formatC(chi2_stat, digits = FMT_NUM_DIGITS)}",
+               "on",
+               "{d} DF,",
+               "p-value:",
+               "{format.pval(chi2_p_value)}",
+               .sep = " "
+    ))
+
+  summary_out <- list(all_summaries = all_summaries,
+                      all_emoji_titles = all_emoji_titles,
+                      all_assumptions =  all_assumptions,
+                      stats_sand = stats_sand,
+                      digits = digits)
+  class(summary_out) <- 'summary.maars_lm'
+  return(summary_out)
+}
+
+
+#' Print summary of `maars_lm` object
+#'
+#' Calls \code{print.summary.maars_lm} on a \code{summary} of a `maars_lm` object.
+#'
+#' @param x A `maars_lm` object.
+#' @param ... Additional arguments
+#'
+#' @method print summary.maars_lm
+#' @export
+print.summary.maars_lm <- function(x, ...){
+
+  # Get the printed summary table interleaved with assumptions
+  # We just run an index over all_summaries, since it has the same
+  # length as all_emoji_titles and all_assumptions and the same variance
+  # type ordering
+  purrr::iwalk(
+    unname(purrr::pluck(x, 'all_summaries')),
+    ~ get_mms_summary_split_cli(
+      title = purrr::pluck(x, 'all_emoji_titles')[[.y]],
+      summary = purrr::pluck(x, 'all_summaries')[[.y]],
+      assumptions = purrr::pluck(x, 'all_assumptions')[[.y]],
+      digits = purrr::pluck(x, 'digits')
+    )
+  )
+  cli::cli_h3(cli::col_blue(glue::glue("Significance codes:")))
+  cli::cli_text("\n")
+  cli::cli_text("0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1")
+  cli::cli_h3(cli::col_magenta(glue::glue("Summary statistics:"))) # Placeholder title
+  cli::cli_ul()
+  cli::cli_li(purrr::pluck(x, 'stats_sand'))
+
+  # Return a summary object
+  # TODO: Use the output of this to write a print.summary.maars_lm later
+  #       as discussed.
+  #       We will also refine these output names, but for now it is easier to
+  #       keep them, so that cut-paste code to other print methods is faster
+  #       We can change names across functions later quickly in one pass.
+  # TODO: The following lines can be uncommented and then taken as an input
+  #       to the print.summary.maars_lm function
+  # out <- list(all_summaries = all_summaries,
+  #             all_emoji_titles = all_emoji_titles,
+  #             all_assumptions = all_assumptions,
+  #             assumptions_lm = assumptions_lm)
+}
+
+# tidy.maars_lm <- function(x, ...){
+#   warning(paste('The "tidy.maars_lm" method has not been implemented yet!',
+#                  'The tidy method on the lm object will be returned.'))
+#   NextMethod("tidy")
+# }
+
+#' Get assumptions for a \code{maars_lm, lm} object, for a specific
+#' variance type
+#'
+#' @param title TODO: Add later
+#' @param assumptions TODO: Add later
+#'
+#' @keywords internal
+#'
+#' @return TODO: Add later
+#'
+#' @examples
+#' \dontrun{
+#' # TODO: Add later
+#' }
+get_mms_assumptions_cli <- function(title, assumptions) {
+  cli::cli_end()
+  cli::cli_h1(cli::col_green(glue::glue("{title} Assumptions")))
+  cli::cli_ul()
+  cli::cli_li(assumptions)
+  cli::cli_end()
+}
+
+#' Print method display for a \code{maars_lm, lm} object
+#'
+#' @param mod_fit TODO: Add later
+#' @param all_emoji_titles TODO: Add later
+#' @param all_assumptions TODO: Add later
+#'
+#' @keywords internal
+#'
+#' @return TODO: Add later
+#'
+#' @examples
+#' \dontrun{
+#' # TODO: Add later
+#' }
+get_mms_print_cli <- function(mod_fit,
+                              all_emoji_titles,
+                              all_assumptions) {
+  cli::cli_end()
+  cli::cli_h1(cli::col_yellow(glue::glue("Fitted OLS Model:")))
+  mod_fit_lm <- mod_fit
+  # Need this to UseNextMethod to print lm formula directly
+  # TODO: Get the formula manually and avoid this new "lm" class creation
+  class(mod_fit_lm) <- c("lm")
+  print(mod_fit_lm)
+  cli::cli_text(glue::glue_collapse("\n\nClass:\n{class(mod_fit)}\n",
+                                    sep = ", ",
+                                    last = ""))
+  purrr::iwalk(
+    unname(all_emoji_titles),
+    ~ get_mms_assumptions_cli(
+      title = all_emoji_titles[[.y]],
+      assumptions = all_assumptions[[.y]]
+    )
+  )
+}
+
+#' Print `maars_lm` object
+#'
+#' Calls \code{print} on a \code{\link[stats]{lm}} object.
+#'
+#' @param x A `maars_lm` object.
+#' @param ... Additional arguments passed to `print.lm()` to print the
+#'   object.
+#'
+#' @method print maars_lm
+#' @export
+print.maars_lm <- function(x, ...) {
+
+  # Get the variance types the user has requested. This performs assertion
+  # Checking, so if there is no error it will return the required names,
+  # else it will throw an error
+  # TODO: For print.maars_lm, this is different. We print everything that
+  #       is available by default, not what variance types the user passes
+  #       in. So just extract all the non-null value of our
+  #       variance list output from the maars_lm, lm object
+  req_var_nms <- x$var %>%
+    purrr::compact(.x = .) %>%
+    names(x = .)
+
+  # Filter the comp_mms_var output from the fitted maars_lm object for the
+  # requested variance types from the user
+  comp_var_ind_filt <- req_var_nms %>%
+    purrr::map(.x = ., ~ purrr::pluck(x$var, .x))
+
+  # Get emoji titles for all variance types
+  all_emoji_titles <- comp_var_ind_filt %>%
+    purrr::map(.x = ., .f = ~ fetch_mms_comp_var_attr(
+      comp_var_ind = .x,
+      req_type = "emoji_title"
+    ))
+
+  # Get all assumptions for all variance types
+  all_assumptions <- comp_var_ind_filt %>%
+    purrr::map(.x = ., .f = ~ fetch_mms_comp_var_attr(
+      comp_var_ind = .x,
+      req_type = "var_assumptions"
+    ))
+
+  get_mms_print_cli(mod_fit = x,
+                    all_emoji_titles = all_emoji_titles,
+                    all_assumptions = all_assumptions)
+
+  # TODO: Revise the output of this code to perhaps just print the variance
+  #       types available for the object
+}
+
+#' Convert an object to an object that can be handled by the "maars" package
+#'
+#' Several methods are provided to convert common objects
+#' (such as "lm") into "maars" objects,
+#' which can be used with the various functions in the package.
+#'
+#' @param x Object to be converted. See Methods section below for details on
+#'   formatting of each input type.
+#' @param ... Additional arguments passed to methods.
+#'
+#' @export
+as.maars <- function(x, ...) {
+  attr(x, "class") <- c("maars_lm", "lm")
+  return(x)
+}
+
+
+#' @method as.maars lm
+#' @describeIn as.maars The input object \code{x} must be of class
+#'   "lm". The function returns an object of class
+#'   ("maars_lm, "lm").
+#'
+#' @export
+as.maars.lm <- function(x, ...) {
+  UseMethod("as.maars")
+}
+
 #' Plot \code{maars_lm, lm} object
 #'
 #' @param x (\code{maars_lm, lm}) : A fitted \code{maars_lm, lm} OLS object
+#' @param which (numeric vector) : if a subset of the plots is required, specify a
+#'   subset of the numbers 1:6.
 #'
 #' @param ... Additional arguments passed to methods.
 #'
-#' @return
+#' @return TODO: Describe plots
 #' @export
 #'
 #' @examples
@@ -123,19 +531,186 @@ comp_var <- function(mod_fit,
 #' # Plot our maars_lm object
 #' plot(comp_var1)
 #' }
-plot.maars_lm <- function(x, ...){
-  mms_diag_plots <- get_ols_diag_plots(mod_fit = x)
-  for (i in base::seq_along(mms_diag_plots)) {
+plot.maars_lm <- function(x, which = NULL, ...){
+
+  # Reminder: p8 is not NULL only if one type of bootstrap estimates
+  # are available
+  mms_diag_plots <- get_plot(mod_fit = x)
+
+  ### NEED TO FIX THIS ISSUE
+  n_plots <- length(mms_diag_plots %>% purrr::keep(~ !is.null(.)))
+  if(is.null(which)) which <- 1:n_plots
+  assertthat::assert_that(is.numeric(which) & !any(which < 1) & !any(which > n_plots),
+                           msg = glue::glue("'which' must be in 1:{n_plots}")
+  )
+
+  for (i in which) {
     if (i == 1) {
       # For the first plot, don't ask the user for prompt
-      par(ask = FALSE)
+      graphics::par(ask = FALSE)
       print(mms_diag_plots[[i]])
     } else {
       # For subsequent plots, ask the user for prompts to display
       # the plots sequentially
-      par(ask = TRUE)
+      graphics::par(ask = TRUE)
       print(mms_diag_plots[[i]])
     }
-    par(ask = FALSE)
+    graphics::par(ask = FALSE)
   }
+}
+
+#' Print interleaved Confidence Interval summary for a \code{maars_lm, lm}
+#' object, for a specific variance type
+#'
+#' @param title TODO: Add later
+#' @param summary_confint TODO: Add later
+#' @param digits TODO: Add later
+#'
+#' @keywords internal
+#'
+#' @return TODO: Add later
+#'
+#' @examples
+#' \dontrun{
+#' # TODO: Add later
+#' }
+get_mms_summary_confint_split_cli <- function(title,
+                                              summary_confint,
+                                              digits = 3) {
+  cli::cli_end()
+  cli::cli_h1(cli::col_yellow(glue::glue("{title} Confint Summary")))
+  cli::cli_text("\n")
+  cli::cli_end()
+  print.data.frame(x = summary_confint, digits = digits)
+  cli::cli_end()
+}
+
+#' Confidence interval of \code{maars_lm, lm} object
+#'
+#' \code{confint} method for an object of class \code{maars_lm, lm}.
+#'
+#' @param object A fitted "maars_lm" object.
+#' @param parm (\code{NULL}) : a specification of which parameters are to be
+#'   given confidence intervals, either a vector of numbers or a vector of
+#'   names. If missing, all parameters are considered. Currently only allowed
+#'   value is \code{NULL}.
+#' @param level (double) : numeric value between 0 and 1 indicating the
+#'   confidence level (e.g., 0.95)
+#' @param sand (logical) : \code{TRUE} if sandwich estimator output is required,
+#'   \code{FALSE} to exclude this output from the request.
+#' @param boot_emp (logical) : \code{TRUE} if empirical bootstrap standard error
+#'   output is required, \code{FALSE} to exclude this output from the request.
+#' @param boot_res (logical) : \code{TRUE} if residual bootstrap standard error
+#'   output is required, \code{FALSE} to exclude this output from the request.
+#' @param boot_mul (logical) : \code{TRUE} if multiplier bootstrap standard error
+#'   output is required, \code{FALSE} to exclude this output from the request
+#' @param well_specified (logical) : \code{TRUE} if lm standard errors.
+#'   (well specified) output is required, \code{FALSE} to exclude this output
+#'   from the request.
+#' @param digits (integer) : Rounding digits used in some of the function's output.
+#' @param level (numeric) : TODO: Add later
+#' @param ... Additional arguments.
+#'
+#' @method confint maars_lm
+#' @export
+confint.maars_lm <- function(object,
+                             parm = NULL,
+                             level = 0.95,
+                             sand = TRUE,
+                             boot_emp = FALSE,
+                             boot_res = FALSE,
+                             boot_mul = FALSE,
+                             well_specified = FALSE,
+                             digits = 3,
+                             ...) {
+
+  # Check parm is NULL valued
+  # TODO: Allow this to be a vector of numbers or a vector of names to filter
+  #       for the term variable
+  assertthat::assert_that(is.null(parm),
+                          msg = glue::glue("parm must be NULL valued")
+  )
+
+  assertthat::assert_that(level > 0 & level < 1,
+                          msg = glue::glue("level must be between 0 and 1")
+  )
+
+  # Get the variance types the user has requested. This performs assertion
+  # Checking, so if there is no error it will return the required names,
+  # else it will throw an error
+  req_var_nms <- check_fn_args_summary(
+    mod_fit = object,
+    sand = sand,
+    boot_emp = boot_emp,
+    boot_res = boot_res,
+    boot_mul = boot_mul,
+    well_specified = well_specified
+  )
+
+  # Filter the comp_mms_var output from the fitted maars_lm object for the
+  # requested variance types from the user
+  comp_var_ind_filt <- req_var_nms %>%
+    purrr::map(.x = ., ~ purrr::pluck(object$var, .x))
+
+  # Get emoji titles for all variance types
+  all_emoji_titles <- comp_var_ind_filt %>%
+    purrr::map(.x = ., .f = ~ fetch_mms_comp_var_attr(
+      comp_var_ind = .x,
+      req_type = "emoji_title"
+    ))
+
+  # Modified summary table with the broom standard column names and
+  # variance type column
+  all_summary_mod <- comp_var_ind_filt %>%
+    purrr::map(.x = ., .f = ~ fetch_mms_comp_var_attr(
+      comp_var_ind = .x,
+      req_type = "var_summary_mod"
+    ))
+
+  all_var_type_abb <- comp_var_ind_filt %>%
+    purrr::map(.x = ., .f = ~ fetch_mms_comp_var_attr(
+      comp_var_ind = .x,
+      req_type = "var_type_abb"
+    ))
+
+  # Get fitted OLS residual degrees of freedom
+  df_residual <- object[["df.residual"]]
+
+  all_summary_confint <- all_summary_mod %>%
+    purrr::map(
+      .x = .,
+      .f = ~ dplyr::mutate(
+        .data = .,
+        conf.low = .data$estimate +
+          qt((1 - level) / 2, df_residual) * .data$std.error,
+        conf.high = .data$estimate +
+          qt(1 - (1 - level) / 2, df_residual) * .data$std.error
+      )
+    ) %>%
+    purrr::set_names(x = ., nm = req_var_nms) %>%
+    purrr::map(.x = ., .f = ~ dplyr::select(
+      .data = dplyr::ungroup(.x),
+      .data$term,
+      .data$conf.low,
+      .data$conf.high
+    ))
+
+  # Get the printed summary table interleaved with assumptions
+  # We just run an index over all_summaries, since it has the same
+  # length as all_emoji_titles and all_assumptions and the same variance
+  # type ordering
+  # TODO: As discussed, the output could just come from get_confint() rather
+  #       than the above code, and we can get the all_summary_confint list as
+  #       a purrr::group_split() on the var_type_abb of the get_confint() output.
+  #       However, one must be careful to group_keys() first. See this relevant
+  #       example which we should follow if we go down this route:
+  #       https://stackoverflow.com/a/57275733/4687531
+  purrr::iwalk(
+    unname(all_emoji_titles),
+    ~ get_mms_summary_confint_split_cli(
+      title = all_emoji_titles[[.y]],
+      summary_confint = all_summary_confint[[.y]],
+      digits = digits
+    )
+  )
 }

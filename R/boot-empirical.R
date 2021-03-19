@@ -40,8 +40,8 @@
 #' print(boot)
 #' }
 comp_boot_emp_samples <- function(data,
-                                 B = 1,
-                                 m = NULL) {
+                                  B = 1,
+                                  m = NULL) {
   n <- nrow(data)
   if (is.null(m)) {
     m <- n
@@ -52,7 +52,7 @@ comp_boot_emp_samples <- function(data,
 
   out <- tibble::tibble(
     b = as.integer(paste0(1:length(indices))),
-    data = purrr::map(indices, ~ data[.x, ]),
+    data = purrr::map(indices, ~ dplyr::slice(data, .x)),
     indices = indices
   )
 
@@ -104,11 +104,17 @@ comp_boot_emp_samples <- function(data,
 #' X <- stats::rnorm(n, 0, 1)
 #' y <- 2 + X * 1 + stats::rnorm(n, 0, 1)
 #' mod_fit <- lm(y ~ X)
+#'
+#' # fit weighted regression
 #' df <- tibble::tibble(y = y, X = X, weights = 1:length(X))
 #' mod <- fit_reg(mod_fit, df, "weights")
-#'
-#' # Display the output
 #' print(mod)
+#'
+#' # fit unweighted regression
+#' mod <- fit_reg(mod_fit, df)
+#' print(mod)
+#' # compare this output with the output from lm
+#' coef(lm(y ~ X, df))
 #' }
 fit_reg <- function(mod_fit, data, weights = NULL) {
   if (all("lm" == class(mod_fit))) {
@@ -197,7 +203,7 @@ fit_reg <- function(mod_fit, data, weights = NULL) {
 #' X <- stats::rnorm(n, 0, 1)
 #' y <- 2 + X * 1 + stats::rnorm(n, 0, 1)
 #' lm_fit <- stats::lm(y ~ X)
-#' out <- comp_boot_emp(lm_fit, B = 100, m = 300)
+#' out <- comp_boot_emp(lm_fit, B = 100, m = 1000)
 #'
 #' print(out)
 #' }
@@ -205,7 +211,7 @@ comp_boot_emp <- function(mod_fit, B = 100, m = NULL) {
   assertthat::assert_that(all("lm" == class(mod_fit)) | any("glm" == class(mod_fit)),
     msg = glue::glue("mod_fit must only be of class lm or glm")
   )
-  check_fn_args(B=B,m=m)
+  check_fn_args(B = B, m = m)
 
   data <- stats::model.frame(mod_fit)
   n <- nrow(data)
@@ -213,25 +219,45 @@ comp_boot_emp <- function(mod_fit, B = 100, m = NULL) {
     m <- n
   }
 
-  boot_out <- purrr::map(1:B,
-                         ~ fit_reg(mod_fit = mod_fit,
-                                   data = comp_boot_emp_samples(data,B=1,m)$data[[1]]))
+  boot_out <- lapply(
+    1:B,
+    function(x) {
+      fit_reg(
+        mod_fit = mod_fit,
+        data = comp_boot_emp_samples(data, B = 1, m)$data[[1]]
+      )
+    }
+  )
+
+  cov_mat <- boot_out %>%
+    purrr::map(~ .x %>% dplyr::pull(estimate)) %>%
+    dplyr::bind_rows(data = ., .id = NULL) %>%
+    cov(.) * m / n
 
   boot_out <- boot_out %>%
-    dplyr::bind_rows(.id = 'b') %>%
+    dplyr::bind_rows(.id = "b") %>%
     tidyr::nest(boot_out = c(estimate, term)) %>%
     tibble::add_column(m = m, n = n)
 
-  summary_boot <- get_boot_summary(mod_fit = mod_fit,
-                              boot_out = boot_out,
-                              boot_type = 'emp')
+  summary_boot <- get_boot_summary(
+    mod_fit = mod_fit,
+    boot_out = boot_out,
+    boot_type = "emp"
+  )
 
-  out <- list(var_type = "boot_emp",
-              var_type_abb = "emp",
-              var_summary =  summary_boot,
-              var_assumptions = "The observations must be independent.",
-              cov_mat = NULL,
-              boot_out = boot_out)
+  out <- list(
+    var_type = "boot_emp",
+    var_type_abb = "emp",
+    var_summary = summary_boot,
+    var_assumptions = c(
+      glue::glue("Observations are assumed to be independent",
+        .sep = " "
+      ),
+      glue::glue("Parameters: B = {B}, m = {m}, n = {n}")
+    ),
+    cov_mat = cov_mat,
+    boot_out = boot_out
+  )
 
   return(out)
 }
@@ -258,7 +284,7 @@ comp_boot_emp <- function(mod_fit, B = 100, m = NULL) {
 #' @return A tibble containing the quantiles (\code{x}) and the
 #'   probabilities (\code{q}) for each group as specified by \code{group_vars}.
 #'
-#' @export
+#' @keywords internal
 #'
 #' @importFrom rlang .data
 #'
@@ -279,70 +305,19 @@ comp_boot_emp <- function(mod_fit, B = 100, m = NULL) {
 #' print(conf_int)
 #' }
 comp_ci_boot <- function(boot_out, probs = c(0.025, 0.975),
-                                    group_vars = "term") {
+                         group_vars = "term") {
   out <- boot_out %>%
     tidyr::unnest(boot_out) %>%
     dplyr::group_by(dplyr::across(dplyr::all_of(group_vars))) %>%
-    dplyr::summarise(x = stats::quantile(sqrt(m / n) * (estimate-mean(estimate)) + mean(estimate),
-                                         probs = probs),
-                     q = probs,
-                     .groups = "keep")
+    dplyr::summarise(
+      x = stats::quantile(sqrt(m / n) * (estimate - mean(estimate)) + mean(estimate),
+        probs = probs
+      ),
+      q = probs,
+      .groups = "keep"
+    )
   return(out)
 }
 
 
-#' Normal QQ plot of the terms in an output of the bootstrap function
-#'
-#' \code{diag_boot_emp_qqn} produces a normal QQPlot for each regressors included
-#' in the estimates on the bootstrapped datasets. This function is a wrapper
-#' for the \code{\link[ggplot2]{stat_qq}} function.
-#'
-#' @param boot_out A tibble of the model's coefficients estimated (\code{term}
-#'   and \code{estimate}) on the bootstrapped datasets, the size of each
-#'   bootstrapped dataset (\code{m}), the size of the original dataset
-#'   (\code{n}), and the number of the bootstrap repetition (\code{b}).
-#'
-#' @return A ggplot2 object containing normal QQ plot for each regressor in
-#'   \code{boot_out}. Each panel corresponds to a different coefficient,
-#'   whose name appears in the panel's titles.
-#'
-#' @export
-#'
-#' @importFrom rlang .data
-#'
-#' @examples
-#' \dontrun{
-#' # Obtain normal QQ plot of the
-#' n <- 1e3
-#' X1 <- stats::rnorm(n, 0, 1)
-#' X2 <- stats::rnorm(n, 0, 3)
-#' y <- 2 + X1 + X2 * 0.3 + stats::rnorm(n, 0, 1)
-#' df <- tibble::tibble(y = y, X1 = X1, X2 = X2, n_obs = 1:length(X1))
-#'
-#' # Fit a linear model (OLS) to the data
-#' mod_fit <- stats::lm(y ~ X1 + X2, df)
-#' boot_out <- comp_boot_emp(mod_fit)
-#'
-#' # Display the output
-#' diag_boot_emp_qqn(boot_out)
-#' }
-diag_boot_emp_qqn <- function(boot_out) {
-  out <- boot_out %>%
-    tidyr::unnest(
-      data = .,
-      .data$boot_out
-    ) %>%
-    ggplot2::ggplot(
-      data = .,
-      ggplot2::aes(sample = .data$estimate)
-    ) +
-    ggplot2::stat_qq() +
-    ggplot2::stat_qq_line() +
-    ggplot2::facet_wrap(~term, ncol = 3, scales = "free_y") +
-    ggplot2::labs(
-      x = "Theoretical quantiles",
-      y = "Sample quantiles"
-    ) %>%
-    set_mms_ggplot2_theme(ggplot_obj = .)
-  return(out)
-}
+

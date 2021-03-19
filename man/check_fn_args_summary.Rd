@@ -57,16 +57,20 @@ lm_fit <- stats::lm(y ~ X_1 + X_2)
 
 # Create a maars_lm model with empirical bootstrap, sandwich, and
 # well-specified variance estimates
-comp_var1 <- comp_var(mod_fit = lm_fit, boot_emp = list(B = 20, m = 200),
-                    boot_res = NULL,
-                    boot_mul = NULL)
+comp_var1 <- comp_var(
+  mod_fit = lm_fit, boot_emp = list(B = 20, m = 200),
+  boot_res = NULL,
+  boot_mul = NULL
+)
 
 # Let the user request only the empirical bootstrap variance estimates
 # This function should return "boot_emp" since the user only requested it
 # and it is available in the fitted maars_lm model
-check_fn_args_summary(mod_fit = comp_var1, sand = FALSE,
-                      boot_emp = TRUE, boot_res = FALSE, boot_mul = FALSE,
-                      well_specified = FALSE)
+check_fn_args_summary(
+  mod_fit = comp_var1, sand = FALSE,
+  boot_emp = TRUE, boot_res = FALSE, boot_mul = FALSE,
+  well_specified = FALSE
+)
 }
 }
 \keyword{internal}

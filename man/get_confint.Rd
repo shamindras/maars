@@ -7,6 +7,7 @@ an object of class "maars_lm"}
 \usage{
 get_confint(
   mod_fit,
+  parm = NULL,
   level = 0.95,
   sand = TRUE,
   boot_emp = FALSE,
@@ -17,6 +18,11 @@ get_confint(
 }
 \arguments{
 \item{mod_fit}{(maars_lm, lm) A fitted OLS \code{maars_lm, lm} class object}
+
+\item{parm}{(\code{NULL}) : a specification of which parameters are to be
+given confidence intervals, either a vector of numbers or a vector of
+names. If missing, all parameters are considered. Currently only allowed
+value is \code{NULL}.}
 
 \item{level}{(double) : numeric value between 0 and 1 indicating the
 confidence level (e.g., 0.95)}
@@ -53,27 +59,6 @@ argument.
 }
 \examples{
 \dontrun{
-set.seed(1243434)
-
-# generate data
-n <- 1e3
-X_1 <- stats::rnorm(n, 0, 1)
-X_2 <- stats::rnorm(n, 10, 20)
-eps <- stats::rnorm(n, 0, 1)
-
-# OLS data and model
-y <- 2 + X_1 * 1 + X_2 * 5 + eps
-lm_fit <- stats::lm(y ~ X_1 + X_2)
-
-# Empirical Bootstrap check
-set.seed(454354534)
-comp_var1 <- comp_var(mod_fit = lm_fit, boot_emp = list(B = 20, m = 200),
-                    boot_res = list(B = 30),
-                    boot_mul = NULL)
-
-# Return the summary with the confidence intervals
-get_confint(mod_fit = comp_var1, sand = TRUE,
-                     boot_emp = TRUE, boot_res = TRUE, boot_mul = FALSE,
-                     well_specified = TRUE)
+# TODO: Add here
 }
 }

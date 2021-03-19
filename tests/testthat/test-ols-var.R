@@ -1,15 +1,23 @@
 set.seed(1243434)
 
-# generate data
-n <- 1e3
-X <- stats::rnorm(n, 0, 1)
-# OLS data and model
-y <- 2 + X * 1 + stats::rnorm(n, 0, 1)
-lm_fit <- stats::lm(y ~ X)
-# glm data and model
-y <- dplyr::if_else(runif(n, 0, 1) < 1 / (1 + exp(-y)), 1, 0)
-glm_fit <- stats::glm(y ~ X, family = binomial())
+# thanks to Arun K. for providing the following function
+gen_reg_data <- function(n,
+                         gamma){ # gamma ~ "degree of misspecification"
+    beta0 <- 1
+    beta1 <- 2
+    X <- runif(n, 0, 10)
+    Y <- beta0 + beta1*X + gamma*X^{1.7} + exp(gamma*X)*rnorm(n)
+    data <- tibble::tibble(X = X, Y = Y)
+    return(data)
+}
 
+# generate regression data on which we'll fit a correctly specified reg. model
+n <- 1e3
+df <- gen_reg_data(n = n, gamma = 0)
+lm_fit <- stats::lm(Y ~ X, data = df)
+
+
+# ----
 test_that("Empirical Bootstrap input list assertion checking explicitly", {
     # valid since the named arguments are B, m
     testthat::expect_true(check_fn_args_comp_mms_var_boot_ind(inp_list = list(B = 10, m = 100), boot_type = "boot_emp"))
@@ -93,21 +101,6 @@ test_that("Multiplier Bootstrap input list assertion checking explicitly", {
     testthat::expect_error(check_fn_args_comp_mms_var_boot_ind(inp_list = list(B = 200, weights_type = 400, z = NULL), boot_type = "boot_mul"))
 })
 
-test_that("test estimate variance from empirical bootstrap matches comp_mms_var", {
-    # Empirical Bootstrap check
-    set.seed(454354534)
-    boot_out_emp1 <- comp_boot_emp(lm_fit, B = 1e4, m = 600)
-    set.seed(454354534)
-    boot_out_emp_comp1 <- comp_mms_var(mod_fit = lm_fit,
-                                   boot_emp = list(B = 1e4, m = 600),
-                                   boot_res = NULL,
-                                   boot_mul = NULL)
-
-    expect_equal(
-        boot_out_emp_comp1[["var_boot_emp"]][["var_summary"]][, "std.error"],
-        boot_out_emp1[["var_summary"]][, "std.error"], tol = 1e-7)
-})
-
 test_that("test empirical bootstrap assertion checking in comp_mms_var", {
     # invalid due to extra z parameter
     testthat::expect_error(comp_mms_var(mod_fit = lm_fit,
@@ -136,20 +129,6 @@ test_that("test empirical bootstrap assertion checking in comp_mms_var", {
                                     boot_mul = NULL))
 })
 
-test_that("test estimate variance from residual bootstrap matches comp_mms_var", {
-    # Residual Bootstrap check
-    set.seed(67242)
-    boot_out_res1 <- comp_boot_res(lm_fit, B = 1e4)
-    set.seed(67242)
-    boot_out_res_comp1 <- comp_mms_var(mod_fit = lm_fit,
-                                   boot_emp = NULL,
-                                   boot_res = list(B = 1e4),
-                                   boot_mul = NULL)
-
-    expect_equal(
-        boot_out_res_comp1[["var_boot_res"]][["var_summary"]][, "std.error"],
-        boot_out_res1[["var_summary"]][, "std.error"], tol = 1e-7)
-})
 
 test_that("test residual bootstrap assertion checking in comp_mms_var", {
 
@@ -220,21 +199,6 @@ test_that("test residual bootstrap assertion checking in comp_mms_var", {
                                     boot_mul = NULL))
 })
 
-test_that("test estimate variance from multiplier bootstrap matches comp_mms_var", {
-    # Multiplier Bootstrap check
-    set.seed(542525)
-    boot_out_mul1 <- comp_boot_mul(lm_fit, B = 1e4, weights_type = "rademacher")
-    set.seed(542525)
-    boot_out_mul_comp1 <- comp_mms_var(mod_fit = lm_fit,
-                                   boot_emp = NULL,
-                                   boot_res = NULL,
-                                   boot_mul = list(B = 1e4,
-                                                   weights_type = "rademacher"))
-
-    expect_equal(
-        boot_out_mul_comp1[["var_boot_mul"]][["var_summary"]][, "std.error"],
-        boot_out_mul1[["var_summary"]][, "std.error"], tol = 1e-7)
-})
 
 test_that("test multiplier bootstrap assertion checking in comp_mms_var", {
     # invalid due to extra z parameter
@@ -260,3 +224,78 @@ test_that("test multiplier bootstrap assertion checking in comp_mms_var", {
                                     boot_res = NULL,
                                     boot_mul = list(B = 200, WEIGHTS_TYPE = 400)))
 })
+
+
+
+test_that("test estimate variance from empirical bootstrap matches comp_mms_var", {
+    # Empirical Bootstrap check
+    set.seed(454354534)
+    boot_out_emp1 <- comp_boot_emp(lm_fit, B = 1e2, m = 600)
+    set.seed(454354534)
+    boot_out_emp_comp1 <- comp_mms_var(mod_fit = lm_fit,
+                                       boot_emp = list(B = 1e2, m = 600),
+                                       boot_res = NULL,
+                                       boot_mul = NULL)
+    expect_equal(
+        boot_out_emp_comp1[["var_boot_emp"]][["cov_mat"]],
+        boot_out_emp1[["cov_mat"]], tol = 1e-5)
+})
+
+test_that("test estimate variance from residual bootstrap matches comp_mms_var", {
+    # Residual Bootstrap check
+    set.seed(67242)
+    boot_out_res1 <- comp_boot_res(lm_fit, B = 1e2)
+    set.seed(67242)
+    boot_out_res_comp1 <- comp_mms_var(mod_fit = lm_fit,
+                                       boot_emp = NULL,
+                                       boot_res = list(B = 1e2),
+                                       boot_mul = NULL)
+    expect_equal(
+        boot_out_res1[["var_boot_res"]][["cov_mat"]],
+        boot_out_res_comp1[["cov_mat"]], tol = 1e-4)
+})
+
+test_that("test estimate variance from multiplier bootstrap matches comp_mms_var", {
+    # Multiplier Bootstrap check
+    set.seed(542525)
+    boot_out_mul1 <- comp_boot_mul(lm_fit, B = 1e2, weights_type = "rademacher")
+    set.seed(542525)
+    boot_out_mul_comp1 <- comp_mms_var(mod_fit = lm_fit,
+                                       boot_emp = NULL,
+                                       boot_res = NULL,
+                                       boot_mul = list(B = 1e2,
+                                                       weights_type = "rademacher"))
+    expect_equal(
+        boot_out_mul1[["var_boot_res"]][["cov_mat"]],
+        boot_out_mul_comp1[["cov_mat"]], tol = 1e-4)
+})
+
+
+
+# ----
+
+
+test_that("test estimate covariance matrices from multiplier and empirical bootstraps match", {
+
+    set.seed(1342)
+    # generate misspecified model
+    df <- gen_reg_data(100, gamma = 0.1)
+    lm_fit <- lm(Y ~ X, data = df)
+
+    # Multiplier Bootstrap
+    boot_out_mul <- comp_boot_mul(lm_fit, B = 1e4, weights_type = "rademacher")
+    # Empirical bootstrap
+    boot_out_emp <- comp_boot_emp(lm_fit, B = 1e4)
+
+    # check covariance matrix
+    expect_equal(
+        boot_out_mul[["cov_mat"]],
+        boot_out_emp[["cov_mat"]],
+        tol = 1e-2)
+    expect_equal(
+        boot_out_mul[["var_summary"]],
+        boot_out_emp[["var_summary"]],
+        tol = 1e-1)
+})
+
+

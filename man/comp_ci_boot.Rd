@@ -49,3 +49,4 @@ conf_int <- comp_ci_boot(boot_out, c(0.05, 0.95)) \%>\%
 print(conf_int)
 }
 }
+\keyword{internal}

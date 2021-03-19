@@ -7,11 +7,11 @@ a fitted OLS \code{maars_lm, lm} class object}
 \usage{
 get_assumptions(
   mod_fit,
-  sand = sand,
-  boot_emp = boot_emp,
-  boot_res = boot_res,
-  boot_mul = boot_mul,
-  well_specified = well_specified
+  sand = TRUE,
+  boot_emp = FALSE,
+  boot_mul = FALSE,
+  boot_res = FALSE,
+  well_specified = FALSE
 )
 }
 \arguments{
@@ -23,10 +23,10 @@ get_assumptions(
 \item{boot_emp}{(logical) : \code{TRUE} if empirical bootstrap standard error
 output is required, \code{FALSE} to exclude this output from the request}
 
-\item{boot_res}{(logical) : \code{TRUE} if residual bootstrap standard error
+\item{boot_mul}{(logical) : \code{TRUE} if multiplier bootstrap standard error
 output is required, \code{FALSE} to exclude this output from the request}
 
-\item{boot_mul}{(logical) : \code{TRUE} if multiplier bootstrap standard error
+\item{boot_res}{(logical) : \code{TRUE} if residual bootstrap standard error
 output is required, \code{FALSE} to exclude this output from the request}
 
 \item{well_specified}{(logical) : \code{TRUE} if lm standard errors
@@ -61,14 +61,18 @@ common_vars <- c("term", "estimate")
 
 # Empirical Bootstrap check
 set.seed(454354534)
-comp_var1 <- comp_var(mod_fit = lm_fit, boot_emp = list(B = 20, m = 200),
-                    boot_res = list(B = 30),
-                    boot_mul = NULL)
+comp_var1 <- comp_var(
+  mod_fit = lm_fit, boot_emp = list(B = 20, m = 200),
+  boot_res = list(B = 30),
+  boot_mul = NULL
+)
 
 # This returns everything but boot_mul, since we didn't run it in the original
 # original maars_lm model
-get_assumptions(mod_fit = comp_var1, sand = TRUE,
-                     boot_emp = TRUE, boot_res = TRUE, boot_mul = FALSE,
-                     well_specified = TRUE)
+get_assumptions(
+  mod_fit = comp_var1, sand = TRUE,
+  boot_emp = TRUE, boot_res = TRUE, boot_mul = FALSE,
+  well_specified = TRUE
+)
 }
 }

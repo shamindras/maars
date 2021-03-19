@@ -1,0 +1,23 @@
+#' LA County Census tract data from \insertCite{@see @buja2019modelsasapproximationspart1;textual}{maars}
+#'
+#' This dataset has 505 observations, each representing a sampled metropolitan
+#' LA County Census tract. It also has 7 numeric variables measuring different
+#' quantities of interest in each tract. This dataset was used and sourced
+#' from the paper \insertCite{@see @buja2019modelsasapproximationspart1;textual}{maars}.
+#'
+#' @importFrom Rdpack reprompt
+#'
+#' @references \insertAllCited{}
+#'
+#' @format A \code{tibble} with 505 rows and 7 variables:
+#' \describe{
+#'   \item{StreetTotal}{count, of the homeless people in each census tract}
+#'   \item{MedianInc1000}{income, median income of households in each census tract}
+#'   \item{PercVacant}{proportion, share of vacant lots in each census tract}
+#'   \item{PercMinority}{proportion, share of non-Caucasian residents in each census tract}
+#'   \item{PercResidential}{proportion, share of residential lots in each census tract}
+#'   \item{PercCommercial}{proportion, share of commercial lots in each census tract}
+#'   \item{PercIndustrial}{proportion, share of industrial lots in each census tract}
+#' }
+#' @source \url{http://www-stat.wharton.upenn.edu/~buja/STAT-961/Homeless_LA_by_Census_Tracts.csv}
+"la_county"

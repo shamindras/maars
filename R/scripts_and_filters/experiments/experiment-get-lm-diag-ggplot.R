@@ -107,7 +107,53 @@ mms_fit <- lm_fit %>% comp_var(mod_fit = .,
                               boot_emp = list(B = 100, m = 50),
                               boot_res = list(B = 50))
 
-mms_fit
+mod_fit <- mms_fit
+cooks_distance <- stats::cooks.distance(model = mms_fit)
+hat <- stats::lm.influence(mod_fit)$hat
+
+# Cook’s distance vs. observation number
+p4 <- ggplot2::ggplot(
+  mod_fit,
+  aes(
+    x = seq_along(cooks_distance),
+    y = cooks_distance
+  )
+) +
+  ggplot2::geom_bar(
+    stat = "identity",
+    position = "identity"
+  ) +
+  ggplot2::labs(
+    title = "Cook's Distance",
+    x = "Obs. Number",
+    y = "Cook's Distance"
+  ) +
+  ggplot2::scale_size_continuous("Cook's Distance", range = c(0, 4)) +
+  ggplot2::theme_bw() +
+  ggplot2::theme(legend.position = "bottom") +
+  NULL
+p4
+
+# Cook’s distance against (leverage)/(1 – leverage)
+p6 <- ggplot2::ggplot(
+  mod_fit,
+  aes(x = hat, y = cooks_distance)
+) +
+  ggplot2::geom_point(na.rm = TRUE) +
+  ggplot2::geom_smooth(formula = y ~ x, method = "loess", na.rm = TRUE) +
+  ggplot2::labs(
+    title = "Cook's dist vs Leverage hii/(1-hii)",
+    x = "Leverage hii",
+    y = "Cook's Distance"
+  ) +
+  ggplot2::geom_abline(
+    slope = seq(0, 3, 0.5),
+    color = "gray",
+    linetype = "dashed"
+  ) +
+  ggplot2::theme_bw() +
+  NULL
+p6
 
 # Clear all existing plots - may throw a error if there are no plots to clear
 # Uncomment the following line to clear plots

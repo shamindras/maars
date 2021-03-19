@@ -55,7 +55,10 @@
     <loc>https://shamindras.github.io/maars/reference/comp_var.html</loc>
   </url>
   <url>
-    <loc>https://shamindras.github.io/maars/reference/diag_boot_emp_qqn.html</loc>
+    <loc>https://shamindras.github.io/maars/reference/confint.maars_lm.html</loc>
+  </url>
+  <url>
+    <loc>https://shamindras.github.io/maars/reference/diag_boot_qqn.html</loc>
   </url>
   <url>
     <loc>https://shamindras.github.io/maars/reference/diag_fit_reg_rwgt.html</loc>
@@ -73,6 +76,12 @@
     <loc>https://shamindras.github.io/maars/reference/diag_nl_detect.html</loc>
   </url>
   <url>
+    <loc>https://shamindras.github.io/maars/reference/fetch_mms_comp_var_attr.html</loc>
+  </url>
+  <url>
+    <loc>https://shamindras.github.io/maars/reference/fetch_mms_emoji_title.html</loc>
+  </url>
+  <url>
     <loc>https://shamindras.github.io/maars/reference/fit_reg.html</loc>
   </url>
   <url>
@@ -88,13 +97,31 @@
     <loc>https://shamindras.github.io/maars/reference/get_confint.html</loc>
   </url>
   <url>
-    <loc>https://shamindras.github.io/maars/reference/get_ols_diag_plots.html</loc>
+    <loc>https://shamindras.github.io/maars/reference/get_mms_assumptions_cli.html</loc>
+  </url>
+  <url>
+    <loc>https://shamindras.github.io/maars/reference/get_mms_print_cli.html</loc>
+  </url>
+  <url>
+    <loc>https://shamindras.github.io/maars/reference/get_mms_rnm_cols_suff.html</loc>
+  </url>
+  <url>
+    <loc>https://shamindras.github.io/maars/reference/get_mms_summary_confint_split_cli.html</loc>
+  </url>
+  <url>
+    <loc>https://shamindras.github.io/maars/reference/get_mms_summary_print_lm_style.html</loc>
+  </url>
+  <url>
+    <loc>https://shamindras.github.io/maars/reference/get_mms_summary_split_cli.html</loc>
+  </url>
+  <url>
+    <loc>https://shamindras.github.io/maars/reference/get_plot.html</loc>
   </url>
   <url>
     <loc>https://shamindras.github.io/maars/reference/get_summary.html</loc>
   </url>
   <url>
-    <loc>https://shamindras.github.io/maars/reference/get_summary_ind.html</loc>
+    <loc>https://shamindras.github.io/maars/reference/la_county.html</loc>
   </url>
   <url>
     <loc>https://shamindras.github.io/maars/reference/pipe.html</loc>
@@ -104,6 +131,9 @@
   </url>
   <url>
     <loc>https://shamindras.github.io/maars/reference/print.maars_lm.html</loc>
+  </url>
+  <url>
+    <loc>https://shamindras.github.io/maars/reference/print.summary.maars_lm.html</loc>
   </url>
   <url>
     <loc>https://shamindras.github.io/maars/reference/set_mms_ggplot2_theme.html</loc>

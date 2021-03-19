@@ -44,9 +44,9 @@ X <- qr.X(lm_fit$qr)
 res <- residuals(lm_fit)
 n <- length(res)
 J_inv_X_res <-
-   1:nrow(X) \%>\%
-     purrr::map(~ t(J_inv \%*\% X[.x, ] * res[.x])) \%>\%
-     do.call(rbind, .)
+  1:nrow(X) \%>\%
+  purrr::map(~ t(J_inv \%*\% X[.x, ] * res[.x])) \%>\%
+  do.call(rbind, .)
 
 # Generate a single random vector of length n, containing
 # mean 0, variance 1 random variables
@@ -54,9 +54,11 @@ e <- rnorm(n, 0, 1)
 
 # Run a single replication of the multiplier bootstrap
 mult_boot_single_rep <-
-comp_boot_mul_ind(n = n,
-                                     J_inv_X_res = J_inv_X_res,
-                                     e = e)
+  comp_boot_mul_ind(
+    n = n,
+    J_inv_X_res = J_inv_X_res,
+    e = e
+  )
 # Display the output
 print(mult_boot)
 }

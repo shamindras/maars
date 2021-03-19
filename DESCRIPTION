@@ -1,7 +1,7 @@
 Package: maars
 Title: An implementation of the Models As Approximations series
     of statistics papers
-Version: 0.7.0
+Version: 1.0.0
 Authors@R: 
     c(person(given = "Shamindra",
              family = "Shrotriya",
@@ -30,7 +30,8 @@ Imports:
     Rdpack,
     ggplot2,
     stringr,
-    utf8
+    utf8,
+    cli
 Suggests: 
     bench,
     kableExtra,
@@ -41,7 +42,9 @@ Suggests:
     testthat,
     roxygen2,
     covr,
-    rmarkdown
+    rmarkdown,
+    devtools,
+    patchwork
 RdMacros: Rdpack
 Encoding: UTF-8
 Language: en-US
@@ -51,3 +54,5 @@ RoxygenNote: 7.1.1
 VignetteBuilder: knitr
 URL: https://github.com/shamindras/maars, https://shamindras.github.io/maars/
 BugReports: https://github.com/shamindras/maars/issues
+Depends: 
+    R (>= 2.10)

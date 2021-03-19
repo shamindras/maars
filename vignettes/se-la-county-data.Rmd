@@ -36,9 +36,15 @@ new in an `R` session before running the vignette code below:
 
 ``` {r install_maar, eval=FALSE}
 install.packages(pkgs = c("tidyverse", "vroom", "glue", "magrittr", 
-                          "knitr", "kableExtra", "remotes", "magick"))
+                          "knitr", "kableExtra", "remotes",
+                          "patchwork"))
 remotes::install_github('shamindras/maars', force = TRUE)
 ```
+
+```{r load_all, include = FALSE}
+devtools::load_all()
+```
+
 
 We will explicitly load the `tidyverse` set of packages to get access to the
 `magrittr` pipe (`%>%`) operator. We will also set a global random seed for
@@ -58,7 +64,7 @@ the specific function used (to avoid function name conflicts).
 We try to replicate the results of Table 1 in
 [@buja2019modelsasapproximationspart1], as shown below:
 
-``` {r table1_img, echo=FALSE, fig.cap="Table 1 from [@buja2019modelsasapproximationspart1]", out.width = '90%', eval=FALSE}
+``` {r table1_img, echo=FALSE, fig.cap="Table 1 from [@buja2019modelsasapproximationspart1]", out.width = '90%'}
 # knitr::include_graphics(here::here("vignettes", "figures", "buja1_table1.png"))
 knitr::include_graphics(path = "figures/buja1_table1.png")
 ```
@@ -66,22 +72,20 @@ knitr::include_graphics(path = "figures/buja1_table1.png")
 ## Loading the data
 
 Let's load the LA County Homeless persons data as used in
-[@buja2019modelsasapproximationspart1] and briefly examine it.
+[@buja2019modelsasapproximationspart1] and briefly examine it. 
+The dataset is already included in the package. 
 
-``` {r load_data, eval=FALSE}
+``` {r load_data}
 # LA County source data url, use glue to split string in easy to read format
-url_la_county_dat <- glue::glue("http://www-stat.wharton.upenn.edu/~buja",
-                                "STAT-961/Homeless_LA_by_Census_Tracts.csv",
-                                .sep = "/")
-
-la_county_df <- vroom::vroom(file = url_la_county_dat) # %>% dplyr::rename("MedianInc1000" = "MedianInc ($1000)")
-la_county_df %>% dim(x = .)
+# let's load 
+data('la_county', package = 'maars')
+la_county %>% dim(x = .)
 ```
 
 Let's view the first few rows to understand the structure of the data frame.
 
-``` {r load_data_rows, eval=FALSE}
-la_county_df %>% 
+``` {r load_data_rows}
+la_county %>% 
   head(x = .) %>% 
   knitr::kable(x = ., format = "html", digits = 2, align = "c") %>% 
   kableExtra::kable_styling(position = "center")
@@ -96,387 +100,146 @@ We now fit an linear model of the count of homeless people (`StreetTotal`) as
 the response variable, against the other covariates using Ordinary Least Squares
 (OLS).
 
-``` {r mod_fit_lm, eval=FALSE}
-mod_fit <- stats::lm(formula = StreetTotal ~ ., data = la_county_df)
+``` {r mod_fit_lm}
+mod_fit <- stats::lm(formula = StreetTotal ~ ., data = la_county)
 ```
 
-## Computing standard errors from OLS (Assuming Well Specification)
 
-Let's first obtain the standard errors for the fitted coefficients returned from
-the `lm` object. We can do this in a tidy manner using the `broom::tidy`
-function applied to our fitted `lm` object, and selecting only the required
-columns.
+### Estimating the variance
 
-``` {r se_fit_lm, eval=FALSE}
-se_lm <- broom::tidy(mod_fit) %>% 
-          dplyr::select(term, std.error) %>% 
-          dplyr::rename(.data = ., std.error.lm = std.error)
-se_lm %>% 
-  purrr::set_names(x = ., 
-                   nm = c('Term', '$SE_{\\text{lin}}$')) %>% 
-  knitr::kable(x = ., format = "html", digits = 2, 
-               align = "c", escape = TRUE) %>% 
+Let's estimate the variance of the regression coefficients for the fitted model via 
+
+* sandwich estimator (see
+[@white1980heteroskedasticconsistentcovest,
+@white1980usinglsapproxunknownregfuncs]). 
+* (n-out-of-n) empirical bootstrap with $B=10^{3}$ replications.
+* multiplier bootstrap with $B=10^{3}$ replications with Rademacher weights.
+* residual bootstrap with $B=10^{3}$ replications.
+
+To do so, we will use `comp_var`. 
+The sandwich estimator of the variance is always computed by default.
+
+```{r comp_var}
+mms_fit <- comp_var(mod_fit = mod_fit,
+                    boot_emp = list(B=10^3),
+                    boot_mul = list(B=10^3, weights_type='rademacher'),
+                    boot_res = list(B=10^3))
+```
+
+We have obtained an object of class `r class(mms_fit)`
+We also have all the ingredients necessary to reproduce table 1 of the 
+[@buja2019modelsasapproximationspart1] paper. 
+Technically, we will only need the empirical bootstrap and sandiwch estimates.
+In `maars`, the estimates, standard errors, t-statistics, and p-values can be 
+obtained in a `tidy` output via `get_summary`. 
+This function returns the sandwich, again, returned by default, unless specified otherwise. 
+Let's first extract the summary of `mms_fit`.
+
+```{r mms_summary}
+mms_summary <- get_summary(mms_fit, boot_emp = TRUE, well_specified = TRUE)
+
+head(mms_summary) %>%
+  knitr::kable(x = ., format = "html", digits = 2, align = "c") %>% 
   kableExtra::kable_styling(position = "center")
 ```
-
-```{r se_fit_lm_save_table, include=FALSE, eval=FALSE}
-broom::tidy(mod_fit) %>%
-  dplyr::select(term, estimate, std.error) %>%
-  purrr::set_names(x = .,
-                   nm = c('Term', '$\\widehat{\\beta}_{j}$',
-                          '$SE_{\\text{lin}}$')) %>%
-  xtable::xtable(x = ., digits = 2,
-                 caption = 'Summary output from lm()') %>%
-  print(include.rownames = FALSE, sanitize.text.function=function(x){x},
-        file = here::here("vignettes","figures",
-                          "output", "r00_mod_lm_fit.tex"),
-        comment = FALSE)
-```
-
-
-## Computing standard errors from OLS using Empirical Bootstrap
-
-We now compute the standard errors via $B = 10^{3}$ bootstrap replications of the
-dataset of the same size as the original dataset i.e. of the $B$ replications
-samples with replacement $n = 505$ observations from the entire data (which 
-contains $n = 505$ observations).
-
-Let's first get the OLS estimates. 
-``` {r emp_fit_lm, message=FALSE, warning=FALSE, eval=FALSE}
-coef_emp_boot <- maars::comp_empirical_bootstrap(mod_fit = mod_fit, B = 1000)
-dplyr::glimpse(coef_emp_boot)
-```
-
-We can visualize the distribution of the variance to check whether it well 
-approximates the normal distribution.
-
-``` {r emp_qqnorm, message=FALSE, warning=FALSE, eval=FALSE}
-qnorm_boot <- maars::qqnorm_bootstrap(coef_emp_boot)
-qnorm_boot
-```
-
-```{r emp_qqnorm_save_image, include = FALSE, eval=FALSE}
-qnorm_boot <- maars::qqnorm_bootstrap(coef_emp_boot %>% tidyr::unnest(boot_out) %>% 
-                                       dplyr::filter(term != '(Intercept)') %>%
-                                       tidyr::nest(boot_out = c(term, estimate)))
-qnorm_boot +
-      ggplot2::theme(
-    axis.text = ggplot2::element_text(size = 17),
-    axis.title = ggplot2::element_text(size = 17),
-    strip.text.x = ggplot2::element_text(size = 17),
-    legend.text = ggplot2::element_text(size = 17),
-    legend.title = ggplot2::element_text(size = 17),
-    legend.position="bottom"
-  ) +
-  ggplot2::ggsave(filename = here::here("vignettes","figures",
-                                        "output", "r_qqnorm_emp.png"), 
-                  height = 6, width = 10)
-```
-
-
-The distribution of the OLS coefficients estimates appears to be approximately 
-normal. Thanks to the fairly large sample size, we can assume to be in the asymptotic
-regime. 
-
-Let's now compute the standard errors from the outcome of the bootstrap. 
-This can be done through the following function.
-``` {r se_emp_fit_lm, message=FALSE, warning=FALSE, eval=FALSE}
-se_emp <- maars::comp_bootstrap_summary(mod_fit = mod_fit, 
-                                       boot_out = coef_emp_boot, 
-                                       boot_type = 'emp') %>%
-            dplyr::select(-std.error, -statistic, -p.value)
-```
-
-
-This now fits, the $B =  10^{3}$ replications. let's view the output.
-
-``` {r se_emp_fit_lm_table, eval=FALSE}
-se_emp %>% 
-  purrr::set_names(x = ., 
-                   nm = c('Term', '$\\widehat{\\beta}_{j}$',
-                          '$SE_{\\text{boot}}$', '$t_{\\text{boot}}$',
-                          '$p_{\\text{boot}}$')) %>% 
-  knitr::kable(x = ., format = "html", digits = 2, 
-               align = "c", escape = TRUE) %>% 
-  kableExtra::kable_styling(position = "center")
-```
-
-```{r se_emp_save_table, include=FALSE, eval=FALSE}
-se_emp %>%
-  purrr::set_names(x = ., 
-                   nm = c('Term', '$\\widehat{\\beta}_{j}$',
-                          '$SE_{\\text{boot}}$', '$t_{\\text{boot}}$',
-                          '$p_{\\text{boot}}$')) %>% 
-  xtable::xtable(x = ., digits = 2,
-                 caption = 'Empirical Bootstrap Standard Errors') %>% 
-  print(include.rownames = FALSE, sanitize.text.function=function(x){x},
-        file = here::here("vignettes","figures",
-                          "output", "r02b_se_emp.tex"),
-        comment = FALSE)
-```
-
 As we can see, the output is in tidy format as a `tibble` object. This makes it
 much more readily amenable for additional transformations using the `tidyverse`
 set of packages.
 
-Last, let's compute the confidence intervals for the 
-coefficients estimated on the bootstrapped data sets via the percentile method.
-```{r qqnorm, eval=FALSE}
-coef_emp_boot %>% 
-  maars::comp_conf_int_bootstrap(probs = c(0.025, 0.975)) %>%
-  tidyr::pivot_wider(names_from = q, values_from = x)
-```
+We can now reformat the output of `get_summary` to make it more easily 
+comparable to table 1 in the paper.
+This can be achieved by first dropping the p-values (which are not needed),
+followed by the computation of the ratios of the variances, and last by a `pivot_wider`.
 
-## Computing standard errors from OLS using Multiplier Bootstrap
-
-We now compute the standard errors via $B = 10^{3}$ multiplier bootstrap 
-replications. This can be done through the following function.
-
-Let's first get the OLS estimates. 
-``` {r mult_fit_lm, message=FALSE, warning=FALSE, eval=FALSE}
-coef_mult_boot <- maars::comp_multiplier_bootstrap_var(mod_fit = mod_fit, 
-                                                      B = 1000, 
-                                                      weights_type = "std_gaussian")
-dplyr::glimpse(coef_mult_boot)
-```
-
-``` {r se_mult_fit_lm, message=FALSE, warning=FALSE, eval=FALSE}
-# se_mult <- maars::comp_bootstrap_summary(mod_fit = mod_fit, 
-#                                        boot_out = coef_mult_boot, 
-#                                        boot_type = 'mult') %>%
-#             dplyr::select(-std.error, -statistic, -p.value)
-```
-
-## Computing standard errors from OLS using Sandwich Estimator
-
-Then we obtain the standard errors using the White sandwich estimator see
-[@white1980heteroskedasticconsistentcovest,
-@white1980usinglsapproxunknownregfuncs].
-
-``` {r se_sand_fit_lm, eval=FALSE}
-se_sand <- maars::comp_sandwich_qr_var(mod_fit = mod_fit)
-se_sand
-```
-
-```{r se_sand_save_table, include=FALSE, eval=FALSE}
-se_sand %>%
-  dplyr::select(-statistic, -p.value) %>%
-  purrr::set_names(x = .,
-                   nm = c('Term', '$\\widehat{\\beta}_{j}$',
-                          '$SE_{\\text{lin}}$', 
-                          '$SE_{\\text{sand}}$', 
-                          '$t_{\\text{sand}}$', '$p_{\\text{sand}}$')) %>%
-  xtable::xtable(x = ., digits = 2,
-                 caption = 'Sandwich Estimator Standard Errors') %>% 
-  print(include.rownames = FALSE, sanitize.text.function=function(x){x},
-        file = here::here("vignettes","figures",
-                          "output", "r01_se_sand.tex"),
-        comment = FALSE)
-```
-
-
-We can also visually compare the two types of confidence intervals.
-```{r plot_std_sand, eval=FALSE}
-comp_se <- se_sand %>% 
-  dplyr::select(term, estimate, std.error.sand, std.error) %>%
-  dplyr::filter(term != '(Intercept)') %>%
-  dplyr::inner_join(se_emp %>% dplyr::select(term, std.error.boot.emp), 
-                    by = 'term') %>% 
-  tidyr::pivot_longer(cols = c(std.error, std.error.sand, std.error.boot.emp),
-                      names_to = 'Type', 
-                      values_to = 'std.error') %>%
-  dplyr::mutate(Type = dplyr::case_when(
-                          Type == "std.error" ~ "lm",
-                          Type == "std.error.sand" ~ "sandwich",
-                          Type == "std.error.boot.emp" ~ "emp.boot.")) %>%
-  dplyr::mutate(Type = 
-                  forcats::fct_relevel(Type, 
-                                       "lm", "sandwich", "emp.boot.")) %>% 
-  ggplot2::ggplot(ggplot2::aes(term, estimate, col = Type)) + 
-  ggplot2::theme_bw() + 
-  ggplot2::geom_point(position=ggplot2::position_dodge(width=0.5)) + 
-  ggplot2::labs(x = 'Regressor', y = 'Estimate') +
-  ggplot2::geom_hline(yintercept = 0, linetype = 'dashed') +
-  ggplot2::geom_errorbar(ggplot2::aes(ymin = estimate - qnorm(p = 0.975, 
-                                                              mean = 0, 
-                                                              sd = 1)*std.error, 
-                                      ymax = estimate + qnorm(p = 0.975, 
-                                                              mean = 0, 
-                                                              sd = 1)*std.error),
-                         position = ggplot2::position_dodge(width=0.5), 
-                         width = 0.1) + 
-  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 30, hjust = 1)) +
-  ggplot2::guides(col=ggplot2::guide_legend(title="Type of standard errors"))
-comp_se
-```
-
-```{r plot_std_sand_save_image, include = FALSE, eval=FALSE}
-comp_se +
-  ggplot2::theme(
-    #axis.text.x = ggplot2::element_blank(),
-    #axis.ticks = ggplot2::element_blank(),
-    axis.text.y = ggplot2::element_text(size = 20),
-    axis.text.x = ggplot2::element_text(size = 13),
-    axis.title = ggplot2::element_text(size = 20),
-    strip.text = ggplot2::element_text(size = 20),
-    legend.text = ggplot2::element_text(size = 20),
-    legend.title = ggplot2::element_text(size = 20),
-    legend.position="bottom"
-  ) +
-  ggplot2::labs(x = "Regressor", y = "OLS estimate") 
-ggplot2::ggsave(
-    filename = here::here(
-      "vignettes", "figures",
-      "output", "conf_int_comparison.png"
-    ),
-    height = 6, width = 10
-  )
-```
-
-
-
-## Comparing standard errors
-
-We combine the standard errors into one tibble.
-
-``` {r se_comb, eval=FALSE}
-se_comb <- se_sand %>% 
-      dplyr::left_join(x = ., 
-                       y = se_emp %>% dplyr::select(-estimate), 
-                       by = "term")
-
-se_comb %>%
-  purrr::set_names(x = ., 
-                   nm = c('Term', '$\\widehat{\\beta}_{j}$', 
-                          '$SE_{\\text{lin}}$',
-                          '$t_{\\text{lin}}$',
-                          '$p_{\\text{lin}}$',
-                          '$SE_{\\text{sand}}$', 
-                          '$t_{\\text{sand}}$',
-                          '$p_{\\text{sand}}$',
-                          '$SE_{\\text{boot}}$',
-                          '$t_{\\text{boot}}$',
-                          '$p_{\\text{boot}}$')) %>% 
-  knitr::kable(x = ., format = "html", digits = 2, 
-               align = "c", escape = TRUE) %>% 
+```{r reproduce_table1}
+mms_summary %>%
+  # drop the p-values
+  dplyr::filter(stat_type != 'p.value') %>%
+  # compute the variances
+  tidyr::pivot_wider(names_from = c(stat_type, var_type_abb), 
+                     values_from = stat_val) %>%
+  # compute the ratios
+  dplyr::mutate(ratio_emp_vs_lm = std.error_emp/std.error_lm,
+                ratio_sand_vs_lm = std.error_sand/std.error_emp,
+                ratio_sand_vs_emp = std.error_sand/std.error_emp) %>%
+  # reorder the variables
+  dplyr::select(term, 
+                estimate, 
+                starts_with("std.error"), 
+                starts_with("ratio"), 
+                starts_with("statistic")) %>%
+  # rename the variables
+  purrr::set_names(x = ., nm = c("Term", "$\\widehat{\\beta}_{j}$", 
+                                 "$SE_{\\text{lin}}$", 
+                                 "$SE_{\\text{boot}}$", 
+                                 "$SE_{\\text{sand}}$",
+                                 "$\\frac{SE_{\\text{boot}}}{SE_{\\text{lin}}}$",
+                                 "$\\frac{SE_{\\text{sand}}}{SE_{\\text{lin}}}$", 
+                                 "$\\frac{SE_{\\text{sand}}}{SE_{\\text{boot}}}$",
+                                 "$t_{\\text{lin}}$", 
+                                 "$t_{\\text{boot}}$",
+                                 "$t_{\\text{sand}}$")) %>%
+  knitr::kable(
+    x = ., format = "html", digits = 2,
+    align = "c", escape = TRUE
+  ) %>%
   kableExtra::kable_styling(position = "center")
 ```
 
-```{r se_comb_save_table, include=FALSE, eval=FALSE}
-se_comb %>%
-  dplyr::select(-statistic, -p.value) %>% 
-  purrr::set_names(x = ., 
-                   nm = c('Term', '$\\widehat{\\beta}_{j}$', 
-                          '$SE_{\\text{lin}}$',
-                          # '$t_{\\text{lin}}$',
-                          # '$p_{\\text{lin}}$',
-                          '$SE_{\\text{sand}}$', 
-                          '$t_{\\text{sand}}$',
-                          '$p_{\\text{sand}}$',
-                          '$SE_{\\text{boot}}$',
-                          '$t_{\\text{boot}}$',
-                          '$p_{\\text{boot}}$')) %>% 
-  xtable::xtable(x = ., digits = 2,
-                 caption = 'Summary - Sandwich Estimator and Empirical Bootstrap') %>% 
-  print(include.rownames = FALSE, sanitize.text.function=function(x){x},
-        file = here::here("vignettes","figures",
-                          "output", "r05_se_comb.tex"),
-        comment = FALSE)
-```
 
-## Reproduce Table 1 from [@buja2019modelsasapproximationspart1]
+We can obtain the other estimates of the variance (i.e., from 
+residual and multiplier bootstraps) that we computed in `comp_var` 
+in tidy format by specifying these additional arguments within `get_summary`.
 
-We can also compute the ratios of the standard errors and the t-statistics 
-as in Table 1 from [@buja2019modelsasapproximationspart1].
-
-``` {r se_comb_t_stats, eval=FALSE}
-# t_stats <- se_comb %>%
-#             dplyr::mutate(
-#               rat.boot.vs.lm = std.error.boot / std.error.lm,
-#               rat.sand.vs.lm = std.error.sand / std.error.lm,
-#               rat.sand.vs.boot = std.error.sand / std.error.boot,
-#               t.lm = estimate / std.error.lm,
-#               t.boot = estimate / std.error.boot,
-#               t.sand = estimate / std.error.sand
-#             )
-# t_stats %>%
-#   purrr::set_names(x = ., 
-#                    nm = c("Term", '$\\widehat{\\beta}_{j}$', 
-#                           '$SE_{\\text{lin}}$', '$SE_{\\text{boot}}$',
-#                           '$SE_{\\text{sand}}$',
-#                           "$\\frac{SE_{\\text{boot}}}{SE_{\\text{lin}}}$",
-#                           "$\\frac{SE_{\\text{sand}}}{SE_{\\text{lin}}}$", 
-#                           "$\\frac{SE_{\\text{sand}}}{SE_{\\text{boot}}}$",
-#                           "$t_{\\text{lin}}$", "$t_{\\text{boot}}$", 
-#                           "$t_{\\text{sand}}$")) %>%
-#   knitr::kable(x = ., format = "html", digits = 2, 
-#                align = "c", escape = TRUE) %>% 
-#   kableExtra::kable_styling(position = "center")
-```
-
-```{r se_comb_t_stats_save_image, include=FALSE, eval=FALSE}
-# t_stats %>%
-#   purrr::set_names(x = .,
-#                    nm = c("Term", '$\\widehat{\\beta}_{j}$',
-#                           '$SE_{\\text{lin}}$', '$SE_{\\text{boot}}$',
-#                           '$SE_{\\text{sand}}$',
-#                           "$\\frac{SE_{\\text{boot}}}{SE_{\\text{lin}}}$",
-#                           "$\\frac{SE_{\\text{sand}}}{SE_{\\text{lin}}}$",
-#                           "$\\frac{SE_{\\text{sand}}}{SE_{\\text{boot}}}$",
-#                           "$t_{\\text{lin}}$", "$t_{\\text{boot}}$",
-#                           "$t_{\\text{sand}}$")) %>%
-#   knitr::kable(x = ., format = "latex", digits = 2,
-#                align = "c", escape = FALSE) %>%
-#   kableExtra::kable_styling(position = "center", latex_options = "striped") %>%
-#   kableExtra::as_image(x = ., width = 11,
-#                        file = here::here("vignettes","figures",
-#                                           "output", "r06_se_comb_t_stats.png"),
-#                        density = 1000)
+```{r get_summary_all_estimates}
+mms_summary <- get_summary(mms_fit, 
+                           boot_emp = TRUE,
+                           boot_res = TRUE,
+                           boot_mul = TRUE,
+                           well_specified = TRUE)
+head(mms_summary) %>%
+  knitr::kable(x = ., format = "html", digits = 2, align = "c") %>% 
+  kableExtra::kable_styling(position = "center")
 ```
 
 
-## Model diagnostics from [@buja2019modelsasapproximationspart1]
 
-When the model is misspecified, regression coefficients should be seen as 
-statistical functionals rather than fixed quantities. 
-These parameters depend on the distribution of the regressors and it is
-therefore important to study across the regions of the parameter space. 
+### Visualizing the estimates
 
-Let's then first get OLS estimates under the default reweighting schema 
-implemented in the `maars` package. 
-```{r model_diag, eval=FALSE}
-coef_rwgt <- mod_fit %>% 
-  maars::comp_coef_rwgt(mod_fit = .,
-                 terms_to_rwgt = names(la_county_df)[-1],
-                 B = 300)
-dplyr::glimpse(coef_rwgt)
+We may want to compare some of the estimates that we obtained through `comp_var` 
+in a plot. 
+Confidence intervals and normality of the (bootstrap) estimates 
+reprent two (arguably) interesting statistics the data scientist/researcher may
+want to analyze. The corresponding plots are returned by default when `plot` is
+called on a `maars` object, together with six other "typical" `lm` plots. 
+The plots can be visualized sequentially calling `plot` on an object of class 
+`r class(mms_fit)` (e.g., `plot(mms_fit, which=c(1,2,7))`. 
+Alternatively, we can store them in a list via `get_plot`, 
+as we do below.
+
+```{r obtain_plots}
+mms_plots <- get_plot(mms_fit)
+```
+
+Let's first look at the six "typical" `lm` plots. 
+```{r compare_lm}
+patchwork::wrap_plots(1:6 %>% purrr::map(~ purrr::pluck(mms_plots, .)), 
+                      ncol = 3, 
+                      nrow = 2)
+```
+
+Let's compare confidence intervals for the regression coefficients based on the 
+different types of estimators of the variance.
+```{r compare_confint, fig.dim = c(6,5)}
+purrr::pluck(mms_plots, 'p7')
+```
+
+Let's now visualize the distribution of the bootstrap estimate to check whether it well 
+approximates the normal distribution.
+```{r visualize_boot_estimates, fig.dim = c(6,5)}
+purrr::pluck(mms_plots, 'p8')
 ```
 
 
-To facilitate the interpretation of the results, we rely on graphical model 
-diagnostics. Here, we show the "focal slope" model diagnostics. 
-The `focal_slope` plot shows how one coefficient of interests varies 
-under reweighting of each of the regressors. 
-In the plot below we consider the case of "PercVacant".
-```{r  model_diag_focal_slope, eval=FALSE}
-fs <- maars::focal_slope(mod_fit, coef_rwgt, 'PercVacant')
-fs
-```
-
-```{r model_diag_focal_slope_save_image, include = FALSE, eval=FALSE}
-fs + 
-    ggplot2::theme(
-    axis.text = ggplot2::element_text(size = 17),
-    axis.title = ggplot2::element_text(size = 17),
-    strip.text.x = ggplot2::element_text(size = 17),
-    legend.text = ggplot2::element_text(size = 17),
-    legend.title = ggplot2::element_text(size = 17),
-    legend.position="bottom"
-  ) +
-ggplot2::labs(x = "Grid of centers on the regressor") +
-ggplot2::ggsave(filename = here::here("vignettes","figures",
-                                          "output", "r_focal_slope.png"), 
-              height = 6, width = 10)
-```
 
 ## References

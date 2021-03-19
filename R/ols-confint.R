@@ -5,6 +5,10 @@
 #' class object
 #'
 #' @param mod_fit (maars_lm, lm) A fitted OLS \code{maars_lm, lm} class object
+#' @param parm (\code{NULL}) : a specification of which parameters are to be
+#'   given confidence intervals, either a vector of numbers or a vector of
+#'   names. If missing, all parameters are considered. Currently only allowed
+#'   value is \code{NULL}.
 #' @param level (double) : numeric value between 0 and 1 indicating the
 #'   confidence level (e.g., 0.95)
 #' @param sand (logical) : \code{TRUE} if sandwich estimator output is required,
@@ -31,36 +35,32 @@
 #'
 #' @examples
 #' \dontrun{
-#' set.seed(1243434)
-#'
-#' # generate data
-#' n <- 1e3
-#' X_1 <- stats::rnorm(n, 0, 1)
-#' X_2 <- stats::rnorm(n, 10, 20)
-#' eps <- stats::rnorm(n, 0, 1)
-#'
-#' # OLS data and model
-#' y <- 2 + X_1 * 1 + X_2 * 5 + eps
-#' lm_fit <- stats::lm(y ~ X_1 + X_2)
-#'
-#' # Empirical Bootstrap check
-#' set.seed(454354534)
-#' comp_var1 <- comp_var(mod_fit = lm_fit, boot_emp = list(B = 20, m = 200),
-#'                     boot_res = list(B = 30),
-#'                     boot_mul = NULL)
-#'
-#' # Return the summary with the confidence intervals
-#' get_confint(mod_fit = comp_var1, sand = TRUE,
-#'                      boot_emp = TRUE, boot_res = TRUE, boot_mul = FALSE,
-#'                      well_specified = TRUE)
+#' # TODO: Add here
 #' }
 get_confint <- function(mod_fit,
+                        parm = NULL,
                         level = 0.95,
                         sand = TRUE,
                         boot_emp = FALSE,
                         boot_mul = FALSE,
                         boot_res = FALSE,
                         well_specified = FALSE) {
+
+  # Check parm is NULL valued
+  # TODO: Allow this to be a vector of numbers or a vector of names to filter
+  #       for the term variable
+  assertthat::assert_that(is.null(parm),
+                          msg = glue::glue("parm must be NULL valued")
+  )
+
+  # Check alpha level is valid
+  assertthat::assert_that(level > 0 & level < 1,
+                          msg = glue::glue("level must be between 0 and 1")
+  )
+
+  # Get the variance types the user has requested. This performs assertion
+  # Checking, so if there is no error it will return the required names,
+  # else it will throw an error
   req_var_nms <- check_fn_args_summary(
     mod_fit = mod_fit,
     sand = sand,
@@ -70,26 +70,45 @@ get_confint <- function(mod_fit,
     well_specified = well_specified
   )
 
-  assertthat::assert_that(level > 0 & level < 1,
-    msg = glue::glue("level must be between 0 and 1")
-  )
+  # Filter the comp_mms_var output from the fitted maars_lm object for the
+  # requested variance types from the user
+  comp_var_ind_filt <- req_var_nms %>%
+    purrr::map(.x = ., ~ purrr::pluck(mod_fit$var, .x))
 
-  out_comp_mms_var_filt <- req_var_nms %>%
-      purrr::map(.x = ., ~purrr::pluck(mod_fit$var, .x))
+  # Modified summary table with the broom standard column names and
+  # variance type column
+  all_summary_mod <- comp_var_ind_filt %>%
+    purrr::map(.x = ., .f = ~ fetch_mms_comp_var_attr(
+      comp_var_ind = .x,
+      req_type = "var_summary_mod"
+    ))
 
-  out_comp_mms_var_filt <- out_comp_mms_var_filt %>%
-      purrr::modify_in(.x = ., list(1,'var_summary'),
-                       .f = ~ .x %>%
-                        dplyr::mutate(
-          conf.low = estimate + qt((1-level)/2, mod_fit$df.residual) * std.error,
-          conf.high = estimate + qt(1 - (1-level)/2, mod_fit$df.residual) * std.error
-      ))
+  # Get fitted OLS residual degrees of freedom
+  df_residual <- mod_fit[["df.residual"]]
 
-  out_comp_mms_var_filt_mod <- out_comp_mms_var_filt %>%
-      purrr::map(.x = ., .f = ~get_summary_ind(comp_mms_var_dat = .x))
+  all_summary_confint <- all_summary_mod %>%
+    purrr::map_df(
+      .x = .,
+      .f = ~ dplyr::mutate(
+        .data = .,
+        conf.low = .data$estimate +
+          stats::qt(p = (1 - level) / 2, df = df_residual) * .data$std.error,
+        conf.high = .data$estimate +
+          stats::qt(p = 1 - (1 - level) / 2, df = df_residual) * .data$std.error
+      )
+    )
 
-  out <- out_comp_mms_var_filt_mod %>%
-      purrr::reduce(.x = ., dplyr::left_join, by = c("term", "estimate"))
+  # Produce the tidy confint summary
+  out <- all_summary_confint %>%
+    tidyr::pivot_longer(data = .,
+                        cols = -c("term", "estimate", "var_type_abb"),
+                        names_to = "stat_type",
+                        values_to = "stat_val") %>%
+    dplyr::relocate(
+      .data = .,
+      .data$var_type_abb,
+      .after = dplyr::last_col()
+    )
 
   return(out)
 }
