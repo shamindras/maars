@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Summary of maars_lm object — summary.maars_lm • maars</title>
+<title>Print summary of maars_lm object — print.summary.maars_lm • maars</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Summary of maars_lm object — summary.maars_lm" />
-<meta property="og:description" content="Summary method for class &quot;maars_lm&quot;." />
+<meta property="og:title" content="Print summary of maars_lm object — print.summary.maars_lm" />
+<meta property="og:description" content="Calls print.summary.maars_lm on a summary of a maars_lm object." />
 
 
 
@@ -132,72 +132,28 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Summary of <code>maars_lm</code> object</h1>
+    <h1>Print summary of <code>maars_lm</code> object</h1>
     <small class="dont-index">Source: <a href='https://github.com/shamindras/maars/blob/master/R/maars-lm.R'><code>R/maars-lm.R</code></a></small>
-    <div class="hidden name"><code>summary.maars_lm.Rd</code></div>
+    <div class="hidden name"><code>print.summary.maars_lm.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Summary method for class "maars_lm".</p>
+    <p>Calls <code>print.summary.maars_lm</code> on a <code>summary</code> of a <code>maars_lm</code> object.</p>
     </div>
 
-    <pre class="usage"><span class='co'># S3 method for maars_lm</span>
-<span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span><span class='op'>(</span>
-  <span class='va'>object</span>,
-  sand <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  boot_emp <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  boot_res <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  boot_mul <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  well_specified <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  digits <span class='op'>=</span> <span class='fl'>3</span>,
-  split <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  <span class='va'>...</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='co'># S3 method for summary.maars_lm</span>
+<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>object</th>
-      <td><p>A fitted "maars_lm" object.</p></td>
-    </tr>
-    <tr>
-      <th>sand</th>
-      <td><p>(logical) : <code>TRUE</code> if sandwich estimator output is required,
-<code>FALSE</code> to exclude this output from the request.</p></td>
-    </tr>
-    <tr>
-      <th>boot_emp</th>
-      <td><p>(logical) : <code>TRUE</code> if empirical bootstrap standard error
-output is required, <code>FALSE</code> to exclude this output from the request.</p></td>
-    </tr>
-    <tr>
-      <th>boot_res</th>
-      <td><p>(logical) : <code>TRUE</code> if residual bootstrap standard error
-output is required, <code>FALSE</code> to exclude this output from the request.</p></td>
-    </tr>
-    <tr>
-      <th>boot_mul</th>
-      <td><p>(logical) : <code>TRUE</code> if multiplier bootstrap standard error
-output is required, <code>FALSE</code> to exclude this output from the request</p></td>
-    </tr>
-    <tr>
-      <th>well_specified</th>
-      <td><p>(logical) : <code>TRUE</code> if lm standard errors.
-(well specified) output is required, <code>FALSE</code> to exclude this output
-from the request.</p></td>
-    </tr>
-    <tr>
-      <th>digits</th>
-      <td><p>(integer) : Rounding digits used in some of the function's output.</p></td>
-    </tr>
-    <tr>
-      <th>split</th>
-      <td><p>(logical) : TODO: Add later</p></td>
+      <th>x</th>
+      <td><p>A <code>maars_lm</code> object.</p></td>
     </tr>
     <tr>
       <th>...</th>
-      <td><p>Additional arguments.</p></td>
+      <td><p>Additional arguments</p></td>
     </tr>
     </table>
 

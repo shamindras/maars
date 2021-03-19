@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Summary of maars_lm object — summary.maars_lm • maars</title>
+<title>An emoji and title builder helper function for a specific variance type — fetch_mms_emoji_title • maars</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Summary of maars_lm object — summary.maars_lm" />
-<meta property="og:description" content="Summary method for class &quot;maars_lm&quot;." />
+<meta property="og:title" content="An emoji and title builder helper function for a specific variance type — fetch_mms_emoji_title" />
+<meta property="og:description" content="An emoji and title builder helper function for a specific variance type" />
 
 
 
@@ -132,76 +132,44 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Summary of <code>maars_lm</code> object</h1>
-    <small class="dont-index">Source: <a href='https://github.com/shamindras/maars/blob/master/R/maars-lm.R'><code>R/maars-lm.R</code></a></small>
-    <div class="hidden name"><code>summary.maars_lm.Rd</code></div>
+    <h1>An emoji and title builder helper function for a specific variance type</h1>
+    <small class="dont-index">Source: <a href='https://github.com/shamindras/maars/blob/master/R/ols-summary.R'><code>R/ols-summary.R</code></a></small>
+    <div class="hidden name"><code>fetch_mms_emoji_title.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Summary method for class "maars_lm".</p>
+    <p>An emoji and title builder helper function for a specific variance type</p>
     </div>
 
-    <pre class="usage"><span class='co'># S3 method for maars_lm</span>
-<span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span><span class='op'>(</span>
-  <span class='va'>object</span>,
-  sand <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  boot_emp <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  boot_res <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  boot_mul <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  well_specified <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  digits <span class='op'>=</span> <span class='fl'>3</span>,
-  split <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  <span class='va'>...</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>fetch_mms_emoji_title</span><span class='op'>(</span><span class='va'>var_type_abb</span>, <span class='va'>title_type</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>object</th>
-      <td><p>A fitted "maars_lm" object.</p></td>
+      <th>var_type_abb</th>
+      <td><p>(<code>character</code>) : The abbreviated variance type.
+Must be one of the following values
+<code>"lm", "sand" , "emp" , "res" , "mul"</code></p></td>
     </tr>
     <tr>
-      <th>sand</th>
-      <td><p>(logical) : <code>TRUE</code> if sandwich estimator output is required,
-<code>FALSE</code> to exclude this output from the request.</p></td>
-    </tr>
-    <tr>
-      <th>boot_emp</th>
-      <td><p>(logical) : <code>TRUE</code> if empirical bootstrap standard error
-output is required, <code>FALSE</code> to exclude this output from the request.</p></td>
-    </tr>
-    <tr>
-      <th>boot_res</th>
-      <td><p>(logical) : <code>TRUE</code> if residual bootstrap standard error
-output is required, <code>FALSE</code> to exclude this output from the request.</p></td>
-    </tr>
-    <tr>
-      <th>boot_mul</th>
-      <td><p>(logical) : <code>TRUE</code> if multiplier bootstrap standard error
-output is required, <code>FALSE</code> to exclude this output from the request</p></td>
-    </tr>
-    <tr>
-      <th>well_specified</th>
-      <td><p>(logical) : <code>TRUE</code> if lm standard errors.
-(well specified) output is required, <code>FALSE</code> to exclude this output
-from the request.</p></td>
-    </tr>
-    <tr>
-      <th>digits</th>
-      <td><p>(integer) : Rounding digits used in some of the function's output.</p></td>
-    </tr>
-    <tr>
-      <th>split</th>
-      <td><p>(logical) : TODO: Add later</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p>Additional arguments.</p></td>
+      <th>title_type</th>
+      <td><p>(<code>character</code>) : The type of title required.
+Must be one of the following values
+<code>"title", "emoji", "emoji_title"</code></p></td>
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
+    <p>(<code>"glue", "character"</code>) : The title and/or emoji of
+the requested variance type</p>
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+<span class='co'># TODO: Add here</span>
+<span class='op'>}</span>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

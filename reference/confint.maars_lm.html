@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Summary of maars_lm object — summary.maars_lm • maars</title>
+<title>Confidence interval of maars_lm, lm object — confint.maars_lm • maars</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Summary of maars_lm object — summary.maars_lm" />
-<meta property="og:description" content="Summary method for class &quot;maars_lm&quot;." />
+<meta property="og:title" content="Confidence interval of maars_lm, lm object — confint.maars_lm" />
+<meta property="og:description" content="confint method for an object of class maars_lm, lm." />
 
 
 
@@ -132,25 +132,26 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Summary of <code>maars_lm</code> object</h1>
+    <h1>Confidence interval of <code>maars_lm, lm</code> object</h1>
     <small class="dont-index">Source: <a href='https://github.com/shamindras/maars/blob/master/R/maars-lm.R'><code>R/maars-lm.R</code></a></small>
-    <div class="hidden name"><code>summary.maars_lm.Rd</code></div>
+    <div class="hidden name"><code>confint.maars_lm.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Summary method for class "maars_lm".</p>
+    <p><code>confint</code> method for an object of class <code>maars_lm, lm</code>.</p>
     </div>
 
     <pre class="usage"><span class='co'># S3 method for maars_lm</span>
-<span class='fu'><a href='https://rdrr.io/r/base/summary.html'>summary</a></span><span class='op'>(</span>
+<span class='fu'><a href='https://rdrr.io/r/stats/confint.html'>confint</a></span><span class='op'>(</span>
   <span class='va'>object</span>,
+  parm <span class='op'>=</span> <span class='cn'>NULL</span>,
+  level <span class='op'>=</span> <span class='fl'>0.95</span>,
   sand <span class='op'>=</span> <span class='cn'>TRUE</span>,
   boot_emp <span class='op'>=</span> <span class='cn'>FALSE</span>,
   boot_res <span class='op'>=</span> <span class='cn'>FALSE</span>,
   boot_mul <span class='op'>=</span> <span class='cn'>FALSE</span>,
   well_specified <span class='op'>=</span> <span class='cn'>FALSE</span>,
   digits <span class='op'>=</span> <span class='fl'>3</span>,
-  split <span class='op'>=</span> <span class='cn'>TRUE</span>,
   <span class='va'>...</span>
 <span class='op'>)</span></pre>
 
@@ -160,6 +161,17 @@
     <tr>
       <th>object</th>
       <td><p>A fitted "maars_lm" object.</p></td>
+    </tr>
+    <tr>
+      <th>parm</th>
+      <td><p>(<code>NULL</code>) : a specification of which parameters are to be
+given confidence intervals, either a vector of numbers or a vector of
+names. If missing, all parameters are considered. Currently only allowed
+value is <code>NULL</code>.</p></td>
+    </tr>
+    <tr>
+      <th>level</th>
+      <td><p>(numeric) : TODO: Add later</p></td>
     </tr>
     <tr>
       <th>sand</th>
@@ -190,10 +202,6 @@ from the request.</p></td>
     <tr>
       <th>digits</th>
       <td><p>(integer) : Rounding digits used in some of the function's output.</p></td>
-    </tr>
-    <tr>
-      <th>split</th>
-      <td><p>(logical) : TODO: Add later</p></td>
     </tr>
     <tr>
       <th>...</th>
