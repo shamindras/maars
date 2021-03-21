@@ -109,11 +109,15 @@ get_mms_summary_print_lm_style <- function(var_summary, digits) {
                                       legend = FALSE,
                                       cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),
                                       symbols = c("***", "**", "*", ".", " "))) %>%
-    dplyr::mutate(p.value = base::format.pval(p.value))
-  colnames(out_summ) <- c(
-    'Term', 'Estimate', 'Std. Error ',
-    't value', 'Pr(>|t|)', 'Significance'
-  )
+    dplyr::mutate(p.value = base::format.pval(p.value, digits = 2)) %>%
+    dplyr::rename(
+      Term = term,
+      Estimate = estimate,
+      `Std. Error` = std.error,
+      `t value` = statistic,
+      `Pr(>|t|)` = p.value,
+      `Signif.` = sig
+    )
 
   cat('Coefficients:\n')
   print.data.frame(out_summ, row.names = FALSE, digits = digits)
@@ -139,17 +143,12 @@ get_mms_summary_split_cli <- function(title,
                                       summary,
                                       assumptions,
                                       digits = 3) {
-  cli::cli_end()
+
   cli::cli_h1(cli::col_yellow(glue::glue("{title} Summary")))
   cli::cli_text("\n")
-  cli::cli_end()
   get_mms_summary_print_lm_style(var_summary = summary, digits = digits)
-  cli::cli_end()
-  cli::cli_ul()
   cli::cli_h2(cli::col_green(glue::glue("{title} Assumptions")))
-  cli::cli_ul()
   cli::cli_li(assumptions)
-  cli::cli_end()
 }
 
 #' Summary of \code{maars_lm} object
@@ -296,7 +295,7 @@ summary.maars_lm <- function(object,
                "on",
                "{d} DF,",
                "p-value:",
-               "{format.pval(chi2_p_value)}",
+               "{format.pval(chi2_p_value, digits = 2)}",
                .sep = " "
     ))
 
@@ -334,11 +333,9 @@ print.summary.maars_lm <- function(x, ...){
       digits = purrr::pluck(x, 'digits')
     )
   )
-  cli::cli_h3(cli::col_blue(glue::glue("Significance codes:")))
-  cli::cli_text("\n")
-  cli::cli_text("0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1")
-  cli::cli_h3(cli::col_magenta(glue::glue("Summary statistics:"))) # Placeholder title
-  cli::cli_ul()
+  cli::cli_h2(cli::col_blue(glue::glue("Signif. codes:")))
+  cli::cli_li("0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1")
+  cli::cli_h2(cli::col_magenta(glue::glue("Summary statistics:"))) # Placeholder title
   cli::cli_li(purrr::pluck(x, 'stats_sand'))
 
   # Return a summary object
