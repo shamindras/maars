@@ -399,7 +399,10 @@ get_mms_print_cli <- function(mod_fit,
                               all_assumptions) {
   cli::cli_end()
   cli::cli_h1(cli::col_yellow(glue::glue("Fitted OLS Model:")))
-  stats:::print.lm(mod_fit)
+  mod_fit_lm <- mod_fit
+  # Need this to UseNextMethod to print lm formula directly
+  class(mod_fit_lm) <- c("lm")
+  print(mod_fit_lm)
   purrr::iwalk(
     unname(all_emoji_titles),
     ~ get_mms_assumptions_cli(
