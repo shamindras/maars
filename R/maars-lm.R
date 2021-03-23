@@ -399,14 +399,7 @@ get_mms_print_cli <- function(mod_fit,
                               all_assumptions) {
   cli::cli_end()
   cli::cli_h1(cli::col_yellow(glue::glue("Fitted OLS Model:")))
-  mod_fit_lm <- mod_fit
-  # Need this to UseNextMethod to print lm formula directly
-  # TODO: Get the formula manually and avoid this new "lm" class creation
-  class(mod_fit_lm) <- c("lm")
-  print(mod_fit_lm)
-  cli::cli_text(glue::glue_collapse("\n\nClass:\n{class(mod_fit)}\n",
-                                    sep = ", ",
-                                    last = ""))
+  stats:::print.lm(mod_fit)
   purrr::iwalk(
     unname(all_emoji_titles),
     ~ get_mms_assumptions_cli(
@@ -428,13 +421,10 @@ get_mms_print_cli <- function(mod_fit,
 #' @export
 print.maars_lm <- function(x, ...) {
 
-  # Get the variance types the user has requested. This performs assertion
-  # Checking, so if there is no error it will return the required names,
-  # else it will throw an error
-  # TODO: For print.maars_lm, this is different. We print everything that
-  #       is available by default, not what variance types the user passes
-  #       in. So just extract all the non-null value of our
-  #       variance list output from the maars_lm, lm object
+  #  For print.maars_lm, this is different. We print everything that
+  #  is available by default, not what variance types the user passes
+  #  in. So just extract all the non-null value of our variance list
+  #  output from the maars_lm, lm object
   req_var_nms <- x$var %>%
     purrr::compact(.x = .) %>%
     names(x = .)
@@ -461,9 +451,6 @@ print.maars_lm <- function(x, ...) {
   get_mms_print_cli(mod_fit = x,
                     all_emoji_titles = all_emoji_titles,
                     all_assumptions = all_assumptions)
-
-  # TODO: Revise the output of this code to perhaps just print the variance
-  #       types available for the object
 }
 
 #' Convert an object to an object that can be handled by the "maars" package
