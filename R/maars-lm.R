@@ -109,7 +109,7 @@ get_mms_summary_print_lm_style <- function(var_summary, digits) {
                                       legend = FALSE,
                                       cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),
                                       symbols = c("***", "**", "*", ".", " "))) %>%
-    dplyr::mutate(p.value = base::format.pval(p.value, digits = 2)) %>%
+    dplyr::mutate(p.value = format.pval(p.value, digits = 2)) %>%
     dplyr::rename(
       Term = term,
       Estimate = estimate,

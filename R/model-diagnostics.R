@@ -45,9 +45,9 @@ gen_grid_cent_rwgt <- function(x, grid_method, n_grid) {
   if (grid_method == "regular") {
     lb <- stats::quantile(x, probs = 0)
     ub <- stats::quantile(x, probs = 1)
-    out <- base::seq(lb, ub, length = n_grid)
+    out <- seq(lb, ub, length = n_grid)
   } else if (grid_method == "quantiles") {
-    out <- stats::quantile(x, probs = base::seq(0.1, 0.9, length = n_grid))
+    out <- stats::quantile(x, probs = seq(0.1, 0.9, length = n_grid))
   }
   return(unname(out))
 }

@@ -90,7 +90,7 @@ check_fn_args_summary <- function(mod_fit,
   # make future assertion checking easier
   var_param_vals_lgl <- var_param_vals %>%
     purrr::map_lgl(.x = ., ~.x) %>%
-    base::unname(obj = .)
+    unname(obj = .)
 
   # If all parameters are FALSE, return a warning, and the table containing
   # only the sandwich variance
