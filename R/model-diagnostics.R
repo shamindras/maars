@@ -96,9 +96,9 @@ gen_grid_cent_rwgt <- function(x, grid_method, n_grid) {
 #' X1 <- stats::rnorm(n, 0, 1)
 #' X2 <- stats::rnorm(n, 0, 3)
 #' y <- 2 + X1 + X2 * 0.3 + stats::rnorm(n, 0, 1)
-#' df <- tibble::tibble(y = y, X1 = X1, X2 = X2, n_obs = 1:length(X1))
-#' mod_fit <- stats::lm(y ~ X1 + X2, df)
-#' boot_samples <- comp_boot_emp_samples(df, B = 100)
+#' reg_df <- tibble::tibble(y = y, X1 = X1, X2 = X2, n_obs = 1:length(X1))
+#' mod_fit <- stats::lm(y ~ X1 + X2, reg_df)
+#' boot_samples <- comp_boot_emp_samples(reg_df, B = 100)
 #' ols_rwgt_X1 <- diag_fit_reg_rwgt_single(mod_fit, "X1", boot_samples, c(-1, 0, 1, 2))
 #'
 #' # Display the output
@@ -189,8 +189,8 @@ diag_fit_reg_rwgt_single <- function(mod_fit, term_to_rwgt, boot_samples, term_t
 #' X1 <- stats::rnorm(n, 0, 1)
 #' X2 <- stats::rnorm(n, 0, 3)
 #' y <- 2 + X1 + X2 * 0.3 + stats::rnorm(n, 0, 1)
-#' df <- tibble::tibble(y = y, X1 = X1, X2 = X2, n_obs = 1:length(X1))
-#' mod_fit <- stats::lm(y ~ X1 + X2, df)
+#' reg_df <- tibble::tibble(y = y, X1 = X1, X2 = X2, n_obs = 1:length(X1))
+#' mod_fit <- stats::lm(y ~ X1 + X2, reg_df)
 #' ols_rwgt <- diag_fit_reg_rwgt(mod_fit, c("X1", "X2"))
 #'
 #' # Display the output
@@ -324,8 +324,8 @@ diag_fit_reg_rwgt <- function(mod_fit,
 #' X1 <- stats::rnorm(n, 0, 1)
 #' X2 <- stats::rnorm(n, 0, 3)
 #' y <- 2 + X1 + X2 * 0.3 + stats::rnorm(n, 0, 1)
-#' df <- tibble::tibble(y = y, X1 = X1, X2 = X2, n_obs = 1:length(X1))
-#' mod_fit <- stats::lm(y ~ X1 + X2, df)
+#' reg_df <- tibble::tibble(y = y, X1 = X1, X2 = X2, n_obs = 1:length(X1))
+#' mod_fit <- stats::lm(y ~ X1 + X2, reg_df)
 #' ols_rwgt <- diag_fit_reg_rwgt(mod_fit, c("X1", "X2"), B = 300)
 #'
 #' # Display the output
@@ -479,8 +479,8 @@ diag_foc_slope <- function(mod_fit, coef_rwgt, term_chosen) {
 #' X1 <- stats::rnorm(n, 0, 1)
 #' X2 <- stats::rnorm(n, 0, 3)
 #' y <- 2 + X1 + X2 * 0.3 + stats::rnorm(n, 0, 1)
-#' df <- tibble::tibble(y = y, X1 = X1, X2 = X2, n_obs = 1:length(X1))
-#' mod_fit <- stats::lm(y ~ X1 + X2, df)
+#' reg_df <- tibble::tibble(y = y, X1 = X1, X2 = X2, n_obs = 1:length(X1))
+#' mod_fit <- stats::lm(y ~ X1 + X2, reg_df)
 #' ols_rwgt <- diag_fit_reg_rwgt(mod_fit, c("X1", "X2"), B = 300)
 #'
 #' # Display the output
@@ -637,8 +637,8 @@ diag_nl_detect <- function(mod_fit, coef_rwgt) {
 #' X1 <- stats::rnorm(n, 0, 1)
 #' X2 <- stats::rnorm(n, 0, 3)
 #' y <- 2 + X1 + X2 * 0.3 + stats::rnorm(n, 0, 1)
-#' df <- tibble::tibble(y = y, X1 = X1, X2 = X2, n_obs = 1:length(X1))
-#' mod_fit <- stats::lm(y ~ X1 + X2, df)
+#' reg_df <- tibble::tibble(y = y, X1 = X1, X2 = X2, n_obs = 1:length(X1))
+#' mod_fit <- stats::lm(y ~ X1 + X2, reg_df)
 #' ols_rwgt <- diag_fit_reg_rwgt(mod_fit, c("X1", "X2"), B = 300)
 #'
 #' # Display the output

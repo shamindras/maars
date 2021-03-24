@@ -39,8 +39,8 @@ n <- 1e3
 X1 <- stats::rnorm(n, 0, 1)
 X2 <- stats::rnorm(n, 0, 3)
 y <- 2 + X1 + X2 * 0.3 + stats::rnorm(n, 0, 1)
-df <- tibble::tibble(y = y, X1 = X1, X2 = X2, n_obs = 1:length(X1))
-mod_fit <- stats::lm(y ~ X1 + X2, df)
+reg_df <- tibble::tibble(y = y, X1 = X1, X2 = X2, n_obs = 1:length(X1))
+mod_fit <- stats::lm(y ~ X1 + X2, reg_df)
 boot_out <- comp_boot_emp(mod_fit)
 conf_int <- comp_ci_boot(boot_out, c(0.05, 0.95)) \%>\%
   tidyr::pivot_wider(names_from = q, values_from = x)

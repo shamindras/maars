@@ -241,10 +241,10 @@ get_plot <- function(mod_fit) {
 #' X1 <- stats::rnorm(n, 0, 1)
 #' X2 <- stats::rnorm(n, 0, 3)
 #' y <- 2 + X1 + X2 * 0.3 + stats::rnorm(n, 0, 1)
-#' df <- tibble::tibble(y = y, X1 = X1, X2 = X2, n_obs = 1:length(X1))
+#' reg_df <- tibble::tibble(y = y, X1 = X1, X2 = X2, n_obs = 1:length(X1))
 #'
 #' # Fit a linear model (OLS) to the data
-#' mod_fit <- stats::lm(y ~ X1 + X2, df)
+#' mod_fit <- stats::lm(y ~ X1 + X2, reg_df)
 #' mms_fit <- comp_var(mod_fit, boot_emp = list(B = 50))
 #' boot_var <- purrr::pluck(mms_fit, 'var', 'var_boot_emp')
 #' # Display the output
