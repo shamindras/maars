@@ -21,3 +21,17 @@
 #' }
 #' @source \url{http://www-stat.wharton.upenn.edu/~buja/STAT-961/Homeless_LA_by_Census_Tracts.csv}
 "la_county"
+
+
+
+
+
+
+
+
+
+
+
+
+
+

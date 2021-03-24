@@ -52,3 +52,4 @@ reference:
         **Datasets** included in the `maars` package
     contents:
       - la_county
+      - boston_housing
