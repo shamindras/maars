@@ -270,7 +270,10 @@ get_boot_summary <- function(mod_fit, boot_out, boot_type) {
   )
 
   if (boot_type %in% c("mul", "res")) {
-    boot_out <- boot_out %>% dplyr::mutate(m = nrow(model.frame(mod_fit)), n = m)
+    boot_out <- boot_out %>%
+      dplyr::mutate(.data = .,
+                    m = nrow(stats::model.frame(mod_fit)),
+                    n = .data$m)
   }
 
   out <- boot_out %>%

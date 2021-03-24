@@ -558,7 +558,7 @@ diag_nl_detect <- function(mod_fit, coef_rwgt) {
   p_oriest <- broom::tidy(mod_fit) %>%
     dplyr::rename(
       .data = .,
-      term_rwgt = term
+      term_rwgt = .data$term
     ) %>%
     dplyr::inner_join(
       x = .,

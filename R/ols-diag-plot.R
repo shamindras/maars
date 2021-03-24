@@ -163,7 +163,7 @@ get_plot <- function(mod_fit) {
                     boot_res = ('res' %in% available_var_nms),
                     well_specified = TRUE) %>%
     dplyr::filter(.data = .,
-                  .data$stat_type == "conf.low" | stat_type == "conf.high") %>%
+                  .data$stat_type == "conf.low" | .data$stat_type == "conf.high") %>%
     tidyr::pivot_wider(names_from = stat_type,
                        values_from = stat_val) %>%
     dplyr::mutate(.data = .,

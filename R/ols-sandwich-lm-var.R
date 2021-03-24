@@ -53,7 +53,9 @@ comp_sand_var <- function(mod_fit) {
 
   summary_sand <- mod_fit %>%
     broom::tidy(x = .) %>%
-    dplyr::select(term, estimate) %>%
+    dplyr::select(.data = .,
+                  .data$term,
+                  .data$estimate) %>%
     dplyr::left_join(
       x = .,
       y = std_error_sand,
