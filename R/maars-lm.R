@@ -110,13 +110,13 @@ get_mms_summary_print_lm_style <- function(var_summary, digits) {
                                       cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),
                                       symbols = c("***", "**", "*", ".", " "))) %>%
     dplyr::mutate(p.value = format.pval(p.value, digits = 2)) %>%
-    dplyr::rename(
-      Term = term,
-      Estimate = estimate,
-      `Std. Error` = std.error,
-      `t value` = statistic,
-      `Pr(>|t|)` = p.value,
-      `Signif.` = sig
+    dplyr::rename(.data = .,
+      Term = .data$term,
+      Estimate = .data$estimate,
+      `Std. Error` = .data$std.error,
+      `t value` = .data$statistic,
+      `Pr(>|t|)` = .data$p.value,
+      `Signif.` = .data$sig
     )
 
   cat('Coefficients:\n')
@@ -230,7 +230,7 @@ summary.maars_lm <- function(object,
   # Compute chi squared statistics under H0: all coefficients are equal to 0
   # based on the sandwich estimate of the variance
   coefs <- coef(object)
-  n <- nrow(model.frame(object))
+  n <- nrow(stats::model.frame(object))
   d <- length(coefs)
   cov_mat <- purrr::pluck(object, 'var', 'var_sand', 'cov_mat')
   # TODO: fix the following code because this case only deals with cases in which
@@ -246,8 +246,9 @@ summary.maars_lm <- function(object,
   # Compute the statistic
   chi2_stat <- (t(coefs) %*%
      solve(cov_mat, coefs))
-  identical(update(formula(object), 0 ~ .), 0 ~ 1)
-  chi2_p_value <- pchisq(q = chi2_stat, df = d, lower.tail = FALSE)
+  # TODO: Do we need this following line?
+  identical(stats::update(stats::formula(object), 0 ~ .), 0 ~ 1)
+  chi2_p_value <- stats::pchisq(q = chi2_stat, df = d, lower.tail = FALSE)
 
   # Default output to be with 4 digits. Manually set by maars developers
   FMT_NUM_DIGITS <- 4
