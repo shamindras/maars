@@ -58,7 +58,7 @@ comp_boot_res <- function(mod_fit, B = 100) {
   mod_pred <- mod_fit$fitted.values
   n <- length(mod_res)
   data <- stats::model.frame(mod_fit)
-  response_name <- as.character(formula(mod_fit)[2])
+  response_name <- as.character(stats::formula(mod_fit)[2])
 
   boot_out <- 1:B %>% purrr::map(.x = ., .f = ~ fit_reg(
     mod_fit = mod_fit,
@@ -70,12 +70,13 @@ comp_boot_res <- function(mod_fit, B = 100) {
   cov_mat <- boot_out %>%
     purrr::map(.x = ., .f = ~ .x %>% dplyr::pull(estimate)) %>%
     dplyr::bind_rows(data = ., .id = NULL) %>%
-    cov(.)
+    stats::cov(x = .)
 
   boot_out <- boot_out %>%
     dplyr::bind_rows(.id = 'b')  %>%
     # consolidate tibble
-    tidyr::nest(data = c(term, estimate)) %>%
+    tidyr::nest(.data = .,
+                data = c(.data$term, .data$estimate)) %>%
     dplyr::rename(boot_out = data) %>%
     dplyr::mutate(n = n) %>%
     dplyr::relocate(n)

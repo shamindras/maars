@@ -232,11 +232,12 @@ comp_boot_emp <- function(mod_fit, B = 100, m = NULL) {
   cov_mat <- boot_out %>%
     purrr::map(~ .x %>% dplyr::pull(estimate)) %>%
     dplyr::bind_rows(data = ., .id = NULL) %>%
-    cov(.) * m / n
+    stats::cov(x = .) * m / n
 
   boot_out <- boot_out %>%
     dplyr::bind_rows(.id = "b") %>%
-    tidyr::nest(boot_out = c(estimate, term)) %>%
+    tidyr::nest(.data = .,
+                boot_out = c(.data$estimate, .data$term)) %>%
     tibble::add_column(m = m, n = n)
 
   summary_boot <- get_boot_summary(
@@ -309,8 +310,8 @@ comp_ci_boot <- function(boot_out, probs = c(0.025, 0.975),
   out <- boot_out %>%
     tidyr::unnest(boot_out) %>%
     dplyr::group_by(dplyr::across(dplyr::all_of(group_vars))) %>%
-    dplyr::summarise(
-      x = stats::quantile(sqrt(m / n) * (estimate - mean(estimate)) + mean(estimate),
+    dplyr::summarise(.data = .,
+      x = stats::quantile(sqrt(.data$m / .data$n) * (.data$estimate - mean(.data$estimate)) + mean(.data$estimate),
         probs = probs
       ),
       q = probs,

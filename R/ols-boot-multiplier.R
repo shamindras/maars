@@ -249,8 +249,8 @@ comp_boot_mul <- function(mod_fit, B, weights_type = "rademacher") {
   # compute covariance matrix
   cov_mat <- boot_out %>%
     do.call(cbind, .) %>%
-    t(.) %>%
-    cov(.)
+    t(x = .) %>%
+    stats::cov(x = .)
 
   # convert output to tibble
   boot_out <- boot_out %>%
@@ -261,7 +261,7 @@ comp_boot_mul <- function(mod_fit, B, weights_type = "rademacher") {
     estimate = boot_out[, 1]
   ) %>%
     # consolidate tibble
-    tidyr::nest(boot_out = c(term, estimate))
+    tidyr::nest(.data = ., boot_out = c(.data$term, .data$estimate))
 
   summary_boot <- get_boot_summary(
     mod_fit = mod_fit,

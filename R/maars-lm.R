@@ -229,7 +229,7 @@ summary.maars_lm <- function(object,
 
   # Compute chi squared statistics under H0: all coefficients are equal to 0
   # based on the sandwich estimate of the variance
-  coefs <- coef(object)
+  coefs <- stats::coef(object)
   n <- nrow(stats::model.frame(object))
   d <- length(coefs)
   cov_mat <- purrr::pluck(object, 'var', 'var_sand', 'cov_mat')
@@ -436,7 +436,7 @@ print.maars_lm <- function(x, ...) {
   # Filter the comp_mms_var output from the fitted maars_lm object for the
   # requested variance types from the user
   comp_var_ind_filt <- req_var_nms %>%
-    purrr::map(.x = ., ~ purrr::pluck(x$var, .x))
+    purrr::map(.x = ., .f = ~ purrr::pluck(x$var, .x))
 
   # Get emoji titles for all variance types
   all_emoji_titles <- comp_var_ind_filt %>%
