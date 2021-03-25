@@ -70,36 +70,62 @@ comp_boot_mul_wgt <- function(n, weights_type) {
     msg = glue::glue("weights_type must only be a single value")
   )
 
-  if (weights_type == "rademacher") {
-    out <- sample(
+  out <- switch(
+    weights_type,
+    "rademacher" = sample(
       x = c(-1, 1),
       size = n,
       replace = TRUE # ,
       # prob = rep(x = 1 / 2, times = 2)
-    )
-  } else if (weights_type == "mammen") {
-    phi <- (1 + sqrt(5)) / 2 # Golden ratio
-    out <- sample(
-      x = c(1 - phi, phi),
+    ),
+    "mammen" = sample(
+      x = c(1 - (1 + sqrt(5)) / 2, (1 + sqrt(5)) / 2),
       size = n,
       replace = TRUE,
-      prob = c(phi / sqrt(5), 1 - phi / sqrt(5))
-    )
-  } else if (weights_type == "webb") {
-    webb_neg_supp <- c(-sqrt(3 / 2), -1, -sqrt(1 / 2)) # Negative Webb weights
-    out <- sample(
-      x = c(webb_neg_supp, -webb_neg_supp),
+      prob = c((1 + sqrt(5)) / 2 / sqrt(5), 1 - (1 + sqrt(5)) / 2 / sqrt(5))
+    ),
+    "webb" = sample(
+      x = c(c(-sqrt(3 / 2), -1, -sqrt(1 / 2)), -c(-sqrt(3 / 2), -1, -sqrt(1 / 2))),
       size = n,
       replace = TRUE,
       prob = rep(x = 1 / 6, times = 6)
-    )
-  } else if (weights_type == "std_gaussian") {
-    out <- stats::rnorm(n = n, mean = 0, sd = 1)
-  } else if (weights_type == "gamma") {
-    out <- stats::rgamma(n = n, shape = 4, scale = 1 / 2)
-  }
-  return(out)
+    ),
+    "std_gaussian" = stats::rnorm(n = n, mean = 0, sd = 1),
+    "gamma" = stats::rgamma(n = n, shape = 4, scale = 1 / 2)
+  )
 }
+
+  # old code, leaving it here for the moment
+#   if (weights_type == "rademacher") {
+#     out <- sample(
+#       x = c(-1, 1),
+#       size = n,
+#       replace = TRUE # ,
+#       # prob = rep(x = 1 / 2, times = 2)
+#     )
+#   } else if (weights_type == "mammen") {
+#     phi <- (1 + sqrt(5)) / 2 # Golden ratio
+#     out <- sample(
+#       x = c(1 - phi, phi),
+#       size = n,
+#       replace = TRUE,
+#       prob = c(phi / sqrt(5), 1 - phi / sqrt(5))
+#     )
+#   } else if (weights_type == "webb") {
+#     webb_neg_supp <- c(-sqrt(3 / 2), -1, -sqrt(1 / 2)) # Negative Webb weights
+#     out <- sample(
+#       x = c(webb_neg_supp, -webb_neg_supp),
+#       size = n,
+#       replace = TRUE,
+#       prob = rep(x = 1 / 6, times = 6)
+#     )
+#   } else if (weights_type == "std_gaussian") {
+#     out <- stats::rnorm(n = n, mean = 0, sd = 1)
+#   } else if (weights_type == "gamma") {
+#     out <- stats::rgamma(n = n, shape = 4, scale = 1 / 2)
+#   }
+#   return(out)
+# }
 
 #' Calculate a single replication of the multiplier bootstrap for an OLS
 #' fitted dataset
