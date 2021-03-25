@@ -114,7 +114,7 @@ check_fn_args_summary <- function(mod_fit,
     #     stringr::str_replace_all(string = ., pattern = "var_", "")
 
     # Filter out the non-NULL variance values
-    out_comp_mms_var_filt <- out_comp_mms_var %>% purrr::compact(.x = .)
+    out_comp_mms_var_filt <- purrr::compact(.x = out_comp_mms_var)
     # Get the abbreviated names i.e. with the "_var" prefix removed
     out_comp_mms_var_filt_nms_abb <- names(out_comp_mms_var_filt) %>%
       stringr::str_replace_all(string = ., pattern = "var_", "")
@@ -143,7 +143,7 @@ check_fn_args_summary <- function(mod_fit,
     # Add the "var_" prefix to the requested variance terms, so that we
     # match the names in the variance estimates from the model i.e. from the
     # comp_mms_var output
-    comm_nms <- comm_nms_abb %>% stringr::str_c("var_", ., sep = "")
+    comm_nms <- stringr::str_c("var_", comm_nms_abb, sep = "")
   }
 
   return(comm_nms)
@@ -173,8 +173,9 @@ get_mms_rnm_cols_suff <- function(var_summary, var_type_abb) {
   cols_renamed <- c(cols_common, cols_with_suffix)
 
   # Apply new names
-  var_summary <- var_summary %>%
-    dplyr::rename_with(~cols_renamed, dplyr::everything())
+  var_summary <- dplyr::rename_with(.data = var_summary,
+                                    .fn = ~ cols_renamed,
+                                    .cols = dplyr::everything())
 
   return(var_summary)
 }
@@ -276,8 +277,8 @@ fetch_mms_comp_var_attr <- function(comp_var_ind, req_type) {
     title_type = "emoji_title"
   )
   # cv_emoji_title <- glue::glue("{cv_emoji}: {cv_title}:")
-  cv_summary_mod <- cv_summary %>%
-    dplyr::mutate(var_type_abb = cv_type_abb)
+  cv_summary_mod <- dplyr::mutate(.data = cv_summary,
+                                  var_type_abb = cv_type_abb)
 
   # Append suffix to variable names
   cols_common <- c("term", "estimate")
@@ -286,8 +287,9 @@ fetch_mms_comp_var_attr <- function(comp_var_ind, req_type) {
   cols_renamed <- c(cols_common, cols_with_suffix)
 
   # Apply new names
-  cv_summary_nmd <- cv_summary %>%
-    dplyr::rename_with(~cols_renamed, dplyr::everything())
+  cv_summary_nmd <- dplyr::rename_with(.data = cv_summary,
+                       .fn = ~cols_renamed,
+                       .cols = dplyr::everything())
 
   # Get the specific type of individual variance variable
   out <- switch(req_type,
@@ -377,8 +379,8 @@ get_summary <- function(mod_fit,
 
   # Filter the comp_mms_var output from the fitted maars_lm object for the
   # requested variance types from the user
-  comp_var_ind_filt <- req_var_nms %>%
-    purrr::map(.x = ., ~ purrr::pluck(mod_fit$var, .x))
+  comp_var_ind_filt <- purrr::map(.x = req_var_nms,
+                                  .f = ~ purrr::pluck(mod_fit$var, .x))
 
   out <- comp_var_ind_filt %>%
     purrr::map_df(.x = ., .f = ~ fetch_mms_comp_var_attr(
@@ -477,8 +479,8 @@ get_assumptions <- function(mod_fit,
 
   # Filter the comp_mms_var output from the fitted maars_lm object for the
   # requested variance types from the user
-  comp_var_ind_filt <- req_var_nms %>%
-    purrr::map(.x = ., ~ purrr::pluck(mod_fit$var, .x))
+  comp_var_ind_filt <- purrr::map(.x = req_var_nms,
+                                  .f = ~ purrr::pluck(mod_fit$var, .x))
 
   # Obtain the required variance assumptions list
     out <- comp_var_ind_filt %>%

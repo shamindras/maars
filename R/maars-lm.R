@@ -75,15 +75,16 @@
 #' print(out$var$var_boot_mul)
 #' }
 comp_var <- function(mod_fit,
-                    boot_emp = NULL,
-                    boot_res = NULL,
-                    boot_mul = NULL) {
+                     boot_emp = NULL,
+                     boot_res = NULL,
+                     boot_mul = NULL) {
   # the following condition will need to be revised once we introduce glm
   if (all(c("maars_lm", "lm") %in% class(mod_fit))) {
-    attr(mod_fit, "class") <- "lm"}
+    attr(mod_fit, "class") <- "lm"
+  }
 
   out_var <- comp_mms_var(mod_fit, boot_emp, boot_res, boot_mul)
-  mod_fit[['var']] <- out_var
+  mod_fit[["var"]] <- out_var
 
   attr(mod_fit, "class") <- c("maars_lm", "lm")
 
@@ -105,12 +106,15 @@ comp_var <- function(mod_fit,
 #' }
 get_mms_summary_print_lm_style <- function(var_summary, digits) {
   out_summ <- var_summary %>%
-    dplyr::mutate(sig = stats::symnum(p.value, corr = FALSE, na = FALSE,
-                                      legend = FALSE,
-                                      cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),
-                                      symbols = c("***", "**", "*", ".", " "))) %>%
-    dplyr::mutate(p.value = format.pval(p.value, digits = 2)) %>%
-    dplyr::rename(.data = .,
+    dplyr::mutate(.data = ., sig = stats::symnum(.data$p.value,
+      corr = FALSE, na = FALSE,
+      legend = FALSE,
+      cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),
+      symbols = c("***", "**", "*", ".", " ")
+    )) %>%
+    dplyr::mutate(.data = ., p.value = format.pval(.data$p.value, digits = 2)) %>%
+    dplyr::rename(
+      .data = .,
       Term = .data$term,
       Estimate = .data$estimate,
       `Std. Error` = .data$std.error,
@@ -119,7 +123,7 @@ get_mms_summary_print_lm_style <- function(var_summary, digits) {
       `Signif.` = .data$sig
     )
 
-  cat('Coefficients:\n')
+  cat("Coefficients:\n")
   print.data.frame(out_summ, row.names = FALSE, digits = digits)
 }
 
@@ -143,7 +147,6 @@ get_mms_summary_split_cli <- function(title,
                                       summary,
                                       assumptions,
                                       digits = 3) {
-
   cli::cli_h1(cli::col_yellow(glue::glue("{title} Summary")))
   cli::cli_text("\n")
   get_mms_summary_print_lm_style(var_summary = summary, digits = digits)
@@ -197,29 +200,37 @@ summary.maars_lm <- function(object,
 
   # Filter the comp_mms_var output from the fitted maars_lm object for the
   # requested variance types from the user
-  comp_var_ind_filt <- req_var_nms %>%
-    purrr::map(.x = ., ~ purrr::pluck(object$var, .x))
+  comp_var_ind_filt <- purrr::map(
+    .x = req_var_nms,
+    .f = ~ purrr::pluck(object$var, .x)
+  )
 
   # Get emoji titles for all variance types
-  all_emoji_titles <- comp_var_ind_filt %>%
-    purrr::map(.x = ., .f = ~ fetch_mms_comp_var_attr(
+  all_emoji_titles <- purrr::map(
+    .x = comp_var_ind_filt,
+    .f = ~ fetch_mms_comp_var_attr(
       comp_var_ind = .x,
       req_type = "emoji_title"
-    ))
+    )
+  )
 
   # Get all assumptions for all variance types
-  all_assumptions <- comp_var_ind_filt %>%
-    purrr::map(.x = ., .f = ~ fetch_mms_comp_var_attr(
+  all_assumptions <- purrr::map(
+    .x = comp_var_ind_filt,
+    .f = ~ fetch_mms_comp_var_attr(
       comp_var_ind = .x,
       req_type = "var_assumptions"
-    ))
+    )
+  )
 
   # Get variance summaries for all variance types
-  all_summaries <- comp_var_ind_filt %>%
-    purrr::map(.x = ., .f = ~ fetch_mms_comp_var_attr(
+  all_summaries <- purrr::map(
+    .x = comp_var_ind_filt,
+    .f = ~ fetch_mms_comp_var_attr(
       comp_var_ind = .x,
       req_type = "var_summary"
-    ))
+    )
+  )
 
   # Add detailed assumptions for the well-specified linear model
   # This is to design the specific string at the bottom of the
@@ -232,12 +243,12 @@ summary.maars_lm <- function(object,
   coefs <- stats::coef(object)
   n <- nrow(stats::model.frame(object))
   d <- length(coefs)
-  cov_mat <- purrr::pluck(object, 'var', 'var_sand', 'cov_mat')
+  cov_mat <- purrr::pluck(object, "var", "var_sand", "cov_mat")
   # TODO: fix the following code because this case only deals with cases in which
   # users code the intercept as "(Intercept)" in the regression data or the
   # intercept is handled directly in lm
-  if('(Intercept)' %in% colnames(cov_mat)){
-    is_intercept <- (colnames(cov_mat)=='(Intercept)')
+  if ("(Intercept)" %in% colnames(cov_mat)) {
+    is_intercept <- (colnames(cov_mat) == "(Intercept)")
     cov_mat <- cov_mat[!is_intercept, !is_intercept]
     coefs <- coefs[!is_intercept]
     d <- d - 1
@@ -245,7 +256,7 @@ summary.maars_lm <- function(object,
 
   # Compute the statistic
   chi2_stat <- (t(coefs) %*%
-     solve(cov_mat, coefs))
+    solve(cov_mat, coefs))
   # TODO: Do we need this following line?
   identical(stats::update(stats::formula(object), 0 ~ .), 0 ~ 1)
   chi2_p_value <- stats::pchisq(q = chi2_stat, df = d, lower.tail = FALSE)
@@ -257,55 +268,61 @@ summary.maars_lm <- function(object,
   #       "common_assumptions" or something similar, to make it more
   #       descriptive in the list output eventually returned by summary
   stats_lm <-
-    c(glue::glue("Residual standard error:",
-                 "{formatC(signif(summ_lm$sigma, digits = FMT_NUM_DIGITS))}",
-                 "on",
-                 "{object$df.residual}",
-                 "degrees of freedom",
-                 .sep = " "
-    ),
-    glue::glue("Multiple R-squared:",
-               "{formatC(summ_lm$r.squared, digits = FMT_NUM_DIGITS)},",
-               "Adjusted R-squared:",
-               "{formatC(summ_lm$adj.r.squared, digits = FMT_NUM_DIGITS)}",
-               .sep = " "
-    ),
-    glue::glue("F-statistic:",
-               "{formatC(summ_lm$fstatistic[1L], digits = FMT_NUM_DIGITS)}",
-               "on",
-               "{summ_lm$fstatistic[2L]} and {summ_lm$fstatistic[3L]} DF,",
-               "p-value:",
-               "{format.pval(stats::pf(summ_lm$fstatistic[1L],
+    c(
+      glue::glue("Residual standard error:",
+        "{formatC(signif(summ_lm$sigma, digits = FMT_NUM_DIGITS))}",
+        "on",
+        "{object$df.residual}",
+        "degrees of freedom",
+        .sep = " "
+      ),
+      glue::glue("Multiple R-squared:",
+        "{formatC(summ_lm$r.squared, digits = FMT_NUM_DIGITS)},",
+        "Adjusted R-squared:",
+        "{formatC(summ_lm$adj.r.squared, digits = FMT_NUM_DIGITS)}",
+        .sep = " "
+      ),
+      glue::glue("F-statistic:",
+        "{formatC(summ_lm$fstatistic[1L], digits = FMT_NUM_DIGITS)}",
+        "on",
+        "{summ_lm$fstatistic[2L]} and {summ_lm$fstatistic[3L]} DF,",
+        "p-value:",
+        "{format.pval(stats::pf(summ_lm$fstatistic[1L],
                        summ_lm$fstatistic[2L],
                        summ_lm$fstatistic[3L],
                        lower.tail = FALSE))}",
-               .sep = " "
-    ))
+        .sep = " "
+      )
+    )
 
   ## TODO: Need to decide how to display the statistics generated from lm vs.
   # those from sandwich
   stats_sand <-
-    c(glue::glue("Multiple R-squared:",
-               "{formatC(summ_lm$r.squared, digits = FMT_NUM_DIGITS)},",
-               "Adjusted R-squared:",
-               "{formatC(summ_lm$adj.r.squared, digits = FMT_NUM_DIGITS)}",
-               .sep = " "
-    ),
-    glue::glue("Chi-squared statistic based on sandwich variance:",
-               "{formatC(chi2_stat, digits = FMT_NUM_DIGITS)}",
-               "on",
-               "{d} DF,",
-               "p-value:",
-               "{format.pval(chi2_p_value, digits = 2)}",
-               .sep = " "
-    ))
+    c(
+      glue::glue("Multiple R-squared:",
+        "{formatC(summ_lm$r.squared, digits = FMT_NUM_DIGITS)},",
+        "Adjusted R-squared:",
+        "{formatC(summ_lm$adj.r.squared, digits = FMT_NUM_DIGITS)}",
+        .sep = " "
+      ),
+      glue::glue("Chi-squared statistic based on sandwich variance:",
+        "{formatC(chi2_stat, digits = FMT_NUM_DIGITS)}",
+        "on",
+        "{d} DF,",
+        "p-value:",
+        "{format.pval(chi2_p_value, digits = 2)}",
+        .sep = " "
+      )
+    )
 
-  summary_out <- list(all_summaries = all_summaries,
-                      all_emoji_titles = all_emoji_titles,
-                      all_assumptions =  all_assumptions,
-                      stats_sand = stats_sand,
-                      digits = digits)
-  class(summary_out) <- 'summary.maars_lm'
+  summary_out <- list(
+    all_summaries = all_summaries,
+    all_emoji_titles = all_emoji_titles,
+    all_assumptions = all_assumptions,
+    stats_sand = stats_sand,
+    digits = digits
+  )
+  class(summary_out) <- "summary.maars_lm"
   return(summary_out)
 }
 
@@ -319,25 +336,25 @@ summary.maars_lm <- function(object,
 #'
 #' @method print summary.maars_lm
 #' @export
-print.summary.maars_lm <- function(x, ...){
+print.summary.maars_lm <- function(x, ...) {
 
   # Get the printed summary table interleaved with assumptions
   # We just run an index over all_summaries, since it has the same
   # length as all_emoji_titles and all_assumptions and the same variance
   # type ordering
   purrr::iwalk(
-    unname(purrr::pluck(x, 'all_summaries')),
+    unname(purrr::pluck(x, "all_summaries")),
     ~ get_mms_summary_split_cli(
-      title = purrr::pluck(x, 'all_emoji_titles')[[.y]],
-      summary = purrr::pluck(x, 'all_summaries')[[.y]],
-      assumptions = purrr::pluck(x, 'all_assumptions')[[.y]],
-      digits = purrr::pluck(x, 'digits')
+      title = purrr::pluck(x, "all_emoji_titles")[[.y]],
+      summary = purrr::pluck(x, "all_summaries")[[.y]],
+      assumptions = purrr::pluck(x, "all_assumptions")[[.y]],
+      digits = purrr::pluck(x, "digits")
     )
   )
   cli::cli_h2(cli::col_blue(glue::glue("Signif. codes:")))
   cli::cli_li("0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1")
   cli::cli_h2(cli::col_magenta(glue::glue("Summary statistics:"))) # Placeholder title
-  cli::cli_li(purrr::pluck(x, 'stats_sand'))
+  cli::cli_li(purrr::pluck(x, "stats_sand"))
 
   # Return a summary object
   # TODO: Use the output of this to write a print.summary.maars_lm later
@@ -439,22 +456,25 @@ print.maars_lm <- function(x, ...) {
     purrr::map(.x = ., .f = ~ purrr::pluck(x$var, .x))
 
   # Get emoji titles for all variance types
-  all_emoji_titles <- comp_var_ind_filt %>%
-    purrr::map(.x = ., .f = ~ fetch_mms_comp_var_attr(
+  all_emoji_titles <- purrr::map(
+    .x = comp_var_ind_filt,
+    .f = ~ fetch_mms_comp_var_attr(
       comp_var_ind = .x,
       req_type = "emoji_title"
-    ))
+    )
+  )
 
   # Get all assumptions for all variance types
-  all_assumptions <- comp_var_ind_filt %>%
-    purrr::map(.x = ., .f = ~ fetch_mms_comp_var_attr(
-      comp_var_ind = .x,
-      req_type = "var_assumptions"
-    ))
+  all_assumptions <- purrr::map(.x = comp_var_ind_filt, .f = ~ fetch_mms_comp_var_attr(
+    comp_var_ind = .x,
+    req_type = "var_assumptions"
+  ))
 
-  get_mms_print_cli(mod_fit = x,
-                    all_emoji_titles = all_emoji_titles,
-                    all_assumptions = all_assumptions)
+  get_mms_print_cli(
+    mod_fit = x,
+    all_emoji_titles = all_emoji_titles,
+    all_assumptions = all_assumptions
+  )
 }
 
 #' Convert an object to an object that can be handled by the "maars" package
@@ -511,15 +531,17 @@ as.maars.lm <- function(x, ...) {
 #' summary(lm_fit)
 #'
 #' # Fit our first maars_lm object i.e. comp_var1
-#' comp_var1 <- comp_var(mod_fit = lm_fit,
-#'                       boot_emp = list(B = 50, m = 200),
-#'                       boot_res = NULL,
-#'                       boot_mul = list(B = 60))
+#' comp_var1 <- comp_var(
+#'   mod_fit = lm_fit,
+#'   boot_emp = list(B = 50, m = 200),
+#'   boot_res = NULL,
+#'   boot_mul = list(B = 60)
+#' )
 #'
 #' # Plot our maars_lm object
 #' plot(comp_var1)
 #' }
-plot.maars_lm <- function(x, which = NULL, ...){
+plot.maars_lm <- function(x, which = NULL, ...) {
 
   # Reminder: p8 is not NULL only if one type of bootstrap estimates
   # are available
@@ -527,9 +549,9 @@ plot.maars_lm <- function(x, which = NULL, ...){
 
   ### NEED TO FIX THIS ISSUE
   n_plots <- length(mms_diag_plots %>% purrr::keep(~ !is.null(.)))
-  if(is.null(which)) which <- 1:n_plots
+  if (is.null(which)) which <- 1:n_plots
   assertthat::assert_that(is.numeric(which) & !any(which < 1) & !any(which > n_plots),
-                           msg = glue::glue("'which' must be in 1:{n_plots}")
+    msg = glue::glue("'which' must be in 1:{n_plots}")
   )
 
   for (i in which) {
@@ -616,11 +638,11 @@ confint.maars_lm <- function(object,
   # TODO: Allow this to be a vector of numbers or a vector of names to filter
   #       for the term variable
   assertthat::assert_that(is.null(parm),
-                          msg = glue::glue("parm must be NULL valued")
+    msg = glue::glue("parm must be NULL valued")
   )
 
   assertthat::assert_that(level > 0 & level < 1,
-                          msg = glue::glue("level must be between 0 and 1")
+    msg = glue::glue("level must be between 0 and 1")
   )
 
   # Get the variance types the user has requested. This performs assertion
@@ -637,29 +659,37 @@ confint.maars_lm <- function(object,
 
   # Filter the comp_mms_var output from the fitted maars_lm object for the
   # requested variance types from the user
-  comp_var_ind_filt <- req_var_nms %>%
-    purrr::map(.x = ., ~ purrr::pluck(object$var, .x))
+  comp_var_ind_filt <- purrr::map(
+    .x = req_var_nms,
+    .f = ~ purrr::pluck(object$var, .x)
+  )
 
   # Get emoji titles for all variance types
-  all_emoji_titles <- comp_var_ind_filt %>%
-    purrr::map(.x = ., .f = ~ fetch_mms_comp_var_attr(
+  all_emoji_titles <- purrr::map(
+    .x = comp_var_ind_filt,
+    .f = ~ fetch_mms_comp_var_attr(
       comp_var_ind = .x,
       req_type = "emoji_title"
-    ))
+    )
+  )
 
   # Modified summary table with the broom standard column names and
   # variance type column
-  all_summary_mod <- comp_var_ind_filt %>%
-    purrr::map(.x = ., .f = ~ fetch_mms_comp_var_attr(
+  all_summary_mod <- purrr::map(
+    .x = comp_var_ind_filt,
+    .f = ~ fetch_mms_comp_var_attr(
       comp_var_ind = .x,
       req_type = "var_summary_mod"
-    ))
+    )
+  )
 
-  all_var_type_abb <- comp_var_ind_filt %>%
-    purrr::map(.x = ., .f = ~ fetch_mms_comp_var_attr(
+  all_var_type_abb <- purrr::map(
+    .x = comp_var_ind_filt,
+    .f = ~ fetch_mms_comp_var_attr(
       comp_var_ind = .x,
       req_type = "var_type_abb"
-    ))
+    )
+  )
 
   # Get fitted OLS residual degrees of freedom
   df_residual <- object[["df.residual"]]
