@@ -50,12 +50,12 @@ get_confint <- function(mod_fit,
   # TODO: Allow this to be a vector of numbers or a vector of names to filter
   #       for the term variable
   assertthat::assert_that(is.null(parm),
-                          msg = glue::glue("parm must be NULL valued")
+    msg = glue::glue("parm must be NULL valued")
   )
 
   # Check alpha level is valid
   assertthat::assert_that(level > 0 & level < 1,
-                          msg = glue::glue("level must be between 0 and 1")
+    msg = glue::glue("level must be between 0 and 1")
   )
 
   # Get the variance types the user has requested. This performs assertion
@@ -72,38 +72,40 @@ get_confint <- function(mod_fit,
 
   # Filter the comp_mms_var output from the fitted maars_lm object for the
   # requested variance types from the user
-  comp_var_ind_filt <- req_var_nms %>%
-    purrr::map(.x = ., ~ purrr::pluck(mod_fit$var, .x))
+  comp_var_ind_filt <- purrr::map(
+    .x = req_var_nms,
+    .f = ~ purrr::pluck(mod_fit$var, .x)
+  )
 
   # Modified summary table with the broom standard column names and
   # variance type column
-  all_summary_mod <- comp_var_ind_filt %>%
-    purrr::map(.x = ., .f = ~ fetch_mms_comp_var_attr(
-      comp_var_ind = .x,
-      req_type = "var_summary_mod"
-    ))
+  all_summary_mod <- purrr::map(.x = comp_var_ind_filt, .f = ~ fetch_mms_comp_var_attr(
+    comp_var_ind = .x,
+    req_type = "var_summary_mod"
+  ))
 
   # Get fitted OLS residual degrees of freedom
   df_residual <- mod_fit[["df.residual"]]
 
-  all_summary_confint <- all_summary_mod %>%
-    purrr::map_df(
-      .x = .,
-      .f = ~ dplyr::mutate(
-        .data = .,
-        conf.low = .data$estimate +
-          stats::qt(p = (1 - level) / 2, df = df_residual) * .data$std.error,
-        conf.high = .data$estimate +
-          stats::qt(p = 1 - (1 - level) / 2, df = df_residual) * .data$std.error
-      )
+  all_summary_confint <- purrr::map_df(
+    .x = all_summary_mod,
+    .f = ~ dplyr::mutate(
+      .data = .,
+      conf.low = .data$estimate +
+        stats::qt(p = (1 - level) / 2, df = df_residual) * .data$std.error,
+      conf.high = .data$estimate +
+        stats::qt(p = 1 - (1 - level) / 2, df = df_residual) * .data$std.error
     )
+  )
 
   # Produce the tidy confint summary
   out <- all_summary_confint %>%
-    tidyr::pivot_longer(data = .,
-                        cols = -c("term", "estimate", "var_type_abb"),
-                        names_to = "stat_type",
-                        values_to = "stat_val") %>%
+    tidyr::pivot_longer(
+      data = .,
+      cols = -c("term", "estimate", "var_type_abb"),
+      names_to = "stat_type",
+      values_to = "stat_val"
+    ) %>%
     dplyr::relocate(
       .data = .,
       .data$var_type_abb,

@@ -40,8 +40,8 @@ comp_sand_var <- function(mod_fit) {
                           msg = glue::glue("lm_object must only be of class lm")
   )
   J_inv <- stats::summary.lm(mod_fit)$cov.unscaled
-  X <- model.matrix(mod_fit)
-  res <- residuals(mod_fit)
+  X <- stats::model.matrix(mod_fit)
+  res <- stats::residuals(mod_fit)
   meat <- crossprod(x = res * X)
   cov_mat <- as.matrix(J_inv %*% meat %*% J_inv)
 
