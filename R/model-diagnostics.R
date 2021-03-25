@@ -43,11 +43,11 @@ gen_grid_cent_rwgt <- function(x, grid_method, n_grid) {
     msg = glue::glue("The number of points in the grid needs to be an integer larger than 1.")
   )
   if (grid_method == "regular") {
-    lb <- stats::quantile(x, probs = 0)
-    ub <- stats::quantile(x, probs = 1)
-    out <- seq(lb, ub, length = n_grid)
+    lb <- stats::quantile(x = x, probs = 0)
+    ub <- stats::quantile(x = x, probs = 1)
+    out <- seq(from = lb, to = ub, length = n_grid)
   } else if (grid_method == "quantiles") {
-    out <- stats::quantile(x, probs = seq(0.1, 0.9, length = n_grid))
+    out <- stats::quantile(x = x, probs = seq(0.1, 0.9, length = n_grid))
   }
   return(unname(out))
 }
@@ -104,30 +104,39 @@ gen_grid_cent_rwgt <- function(x, grid_method, n_grid) {
 #' # Display the output
 #' print(ols_rwgt_X1)
 #' }
-diag_fit_reg_rwgt_single <- function(mod_fit, term_to_rwgt, boot_samples, term_to_rwgt_centers) {
+diag_fit_reg_rwgt_single <- function(mod_fit,
+                                     term_to_rwgt,
+                                     boot_samples,
+                                     term_to_rwgt_centers) {
   data <- stats::model.frame(mod_fit)
 
   alpha <- 1
   gamma <- stats::sd(data[[term_to_rwgt]]) * alpha
   weights_assigned <- tibble::tibble(
     center = sort(unique(term_to_rwgt_centers)),
-    weights = as.list(center) %>%
-      purrr::map(~ exp(-(.x[[1]] - data[[term_to_rwgt]])^2 / (2 * gamma^2)))
+    weights = purrr::map(.x = as.list(center),
+                 .f = ~ exp(-(.x[[1]] - data[[term_to_rwgt]])^2 / (2 * gamma^2)))
   )
 
   out <- as.list(1:length(weights_assigned$center)) %>%
-    purrr::map_df(~ purrr::map(boot_samples$data,
-      ~ fit_reg(
+    purrr::map_df(.x = .,
+                  .f = ~ purrr::map(.x = boot_samples$data,
+      .f = ~ fit_reg(
         mod_fit = mod_fit,
-        data = .x %>% dplyr::mutate(weights = weights_assigned$weights[[.y]][n_obs]) %>%
-          dplyr::mutate(weights = weights / sum(weights)),
+        data = .x %>%
+          dplyr::mutate(.data = .,
+                        weights = weights_assigned$weights[[.y]][n_obs]) %>%
+          dplyr::mutate(.data = .,
+                        weights = .data$weights / sum(.data$weights)),
         weights = "weights"
       ),
       .y = .x
     ) %>%
       dplyr::bind_rows(.id = "b") %>%
-      dplyr::mutate(b = as.integer(b)) %>%
-      dplyr::mutate(term_rwgt_center = weights_assigned$center[.x]))
+      dplyr::mutate(.data = .,
+                    b = as.integer(.data$b)) %>%
+      dplyr::mutate(.data = .,
+                    term_rwgt_center = weights_assigned$center[.x]))
 
   return(out)
 }
@@ -235,14 +244,16 @@ diag_fit_reg_rwgt <- function(mod_fit,
   }
 
   boot_samples <- comp_boot_emp_samples(
-    data = data %>% tibble::add_column(n_obs = 1:nrow(data)),
+    data = tibble::add_column(.data = data,
+                              n_obs = 1:nrow(data)),
     B = B,
     m = m
   )
 
   if (is.null(grid_centers)) {
-    grid_centers <- data %>%
-      dplyr::summarise_all(function(x) {
+    grid_centers <- dplyr::summarise_all(
+      .tbl = data,
+      .funs = function(x) {
         gen_grid_cent_rwgt(x,
           grid_method = grid_method,
           n_grid = n_grid
@@ -251,14 +262,15 @@ diag_fit_reg_rwgt <- function(mod_fit,
   }
 
   out <- terms_to_rwgt %>%
-    purrr::map(~ diag_fit_reg_rwgt_single(
+    purrr::map(.x = .,
+               .f = ~ diag_fit_reg_rwgt_single(
       mod_fit = mod_fit,
       term_to_rwgt = .x[[1]],
       boot_samples = boot_samples,
       term_to_rwgt_centers = grid_centers %>% dplyr::pull(!!.x[[1]])
     )) %>%
     dplyr::bind_rows(.id = "term_rwgt") %>%
-    dplyr::mutate(m = m) %>%
+    dplyr::mutate(.data = ., m = m) %>%
     dplyr::mutate(n = nrow(data)) %>%
     tidyr::nest(
       .data = .,
