@@ -1,6 +1,6 @@
 ---
 title: "Reproducing LA County Standard Errors from [@buja2019modelsasapproximationspart1]"
-author: "Riccardo Fogliato, Shamindra Shrotriya"
+author: "Riccardo Fogliato and Shamindra Shrotriya"
 output: rmarkdown::html_vignette
 package: maars    
 bibliography: ../inst/REFERENCES.bib
@@ -30,14 +30,13 @@ source(here::here("R", "scripts_and_filters", "wrap-lines.R"))
 
 ## Setup and Installation
 
-First, we'll load the `maars` package, and other `tidyverse` analysis packages.
+First, we'll need to install a set of packages that will be useful for the analysis. 
 If you are a new user, you will need to manually run the following commands in a
 new in an `R` session before running the vignette code below:
 
 ``` {r install_maar, eval=FALSE}
-install.packages(pkgs = c("tidyverse", "vroom", "glue", "magrittr", 
-                          "knitr", "kableExtra", "remotes",
-                          "patchwork"))
+install.packages(pkgs = c(glue", "knitr", "magrittr", "tidyverse",
+                          "kableExtra", "remotes", "patchwork"))
 remotes::install_github('shamindras/maars', force = TRUE)
 ```
 
@@ -46,8 +45,9 @@ devtools::load_all()
 ```
 
 
-We will explicitly load the `tidyverse` set of packages to get access to the
-`magrittr` pipe (`%>%`) operator. We will also set a global random seed for
+We will explicitly load the `magrittr` packages to get access to the
+pipe (`%>%`) operator. 
+We will also set a global random seed for
 reproducibility purposes.
 
 ``` {r load_pkgs}
@@ -55,14 +55,14 @@ library(magrittr)
 set.seed(25422267)
 ```
 
-For all other functions we will refer to them explicitly using the
-`package::function` reference method to avoid ambiguity in the source package of
-the specific function used (to avoid function name conflicts).
+We will refer to all other functions explicitly using the
+`package::function` reference method to avoid ambiguity.
+
 
 ## Goal of Analysis
 
-We try to replicate the results of Table 1 in
-[@buja2019modelsasapproximationspart1], as shown below:
+In this vignette, we reproduce the results of Table 1 in
+[@buja2019modelsasapproximationspart1]:
 
 ``` {r table1_img, echo=FALSE, fig.cap="Table 1 from [@buja2019modelsasapproximationspart1]", out.width = '90%'}
 # knitr::include_graphics(here::here("vignettes", "figures", "buja1_table1.png"))
@@ -73,7 +73,7 @@ knitr::include_graphics(path = "figures/buja1_table1.png")
 
 Let's load the LA County Homeless persons data as used in
 [@buja2019modelsasapproximationspart1] and briefly examine it. 
-The dataset is already included in the package. 
+The dataset is included in the `maars` package. 
 
 ``` {r load_data}
 # LA County source data url, use glue to split string in easy to read format
@@ -91,23 +91,22 @@ la_county %>%
   kableExtra::kable_styling(position = "center")
 ```
 
-It is already in tidy format [@wickham2014tidydata]. So we have imported the 
-data correctly, given that we match the column names in Table 1 of the [@buja2019modelsasapproximationspart1] paper.
+The dataset is already in tidy format [@wickham2014tidydata].
 
 ## Fitting the OLS model
 
-We now fit an linear model of the count of homeless people (`StreetTotal`) as
+We now fit a linear model of the count of homeless people (`StreetTotal`) as
 the response variable, against the other covariates using Ordinary Least Squares
-(OLS).
+(OLS). As usual, this can be done via the `stats::lm` function.
 
 ``` {r mod_fit_lm}
 mod_fit <- stats::lm(formula = StreetTotal ~ ., data = la_county)
 ```
 
 
-### Estimating the variance
+## Estimating the variance
 
-Let's estimate the variance of the regression coefficients for the fitted model via 
+Let's then estimate the variance of the regression coefficients for the fitted model via 
 
 * sandwich estimator (see
 [@white1980heteroskedasticconsistentcovest,
@@ -116,8 +115,10 @@ Let's estimate the variance of the regression coefficients for the fitted model 
 * multiplier bootstrap with $B=10^{3}$ replications with Rademacher weights.
 * residual bootstrap with $B=10^{3}$ replications.
 
-To do so, we will use `comp_var`. 
-The sandwich estimator of the variance is always computed by default.
+To do so, we will use the `comp_var` function in `maars`.
+This arguments in this function are the output of `stats::lm` (i.e., `mod_fit`) 
+and the types of estimators (of the variance) that we wish to use. 
+The sandwich variance is always computed by default.
 
 ```{r comp_var}
 mms_fit <- comp_var(mod_fit = mod_fit,
@@ -126,18 +127,23 @@ mms_fit <- comp_var(mod_fit = mod_fit,
                     boot_res = list(B=10^3))
 ```
 
-We have obtained an object of class `r class(mms_fit)`
+We have obtained an object of class (`r class(mms_fit)`)
 We also have all the ingredients necessary to reproduce table 1 of the 
 [@buja2019modelsasapproximationspart1] paper. 
-Technically, we will only need the empirical bootstrap and sandiwch estimates.
+
+
+## Reproducing Table 1
+
+In order to reproduce Table 1, we will only need the empirical bootstrap and sandiwch estimates.
 In `maars`, the estimates, standard errors, t-statistics, and p-values can be 
-obtained in a `tidy` output via `get_summary`. 
+obtained in a `tidy` output format via the function `get_summary`. 
 This function returns the sandwich, again, returned by default, unless specified otherwise. 
 Let's first extract the summary of `mms_fit`.
 
 ```{r mms_summary}
+# get output
 mms_summary <- get_summary(mms_fit, boot_emp = TRUE, well_specified = TRUE)
-
+# print heading
 head(mms_summary) %>%
   knitr::kable(x = ., format = "html", digits = 2, align = "c") %>% 
   kableExtra::kable_styling(position = "center")
@@ -147,9 +153,10 @@ much more readily amenable for additional transformations using the `tidyverse`
 set of packages.
 
 We can now reformat the output of `get_summary` to make it more easily 
-comparable to table 1 in the paper.
+comparable to Table 1 in the paper.
 This can be achieved by first dropping the p-values (which are not needed),
 followed by the computation of the ratios of the variances, and last by a `pivot_wider`.
+We also need a bunch of latex code in order to obtain nice columns names.
 
 ```{r reproduce_table1}
 mms_summary %>%
@@ -186,34 +193,25 @@ mms_summary %>%
   kableExtra::kable_styling(position = "center")
 ```
 
+We have finally reproduced Table 1 in [@buja2019modelsasapproximationspart1]!
 
-We can obtain the other estimates of the variance (i.e., from 
+We could also obtain the other types of estimates of the variance (i.e., from 
 residual and multiplier bootstraps) that we computed in `comp_var` 
 in tidy format by specifying these additional arguments within `get_summary`.
 
-```{r get_summary_all_estimates}
-mms_summary <- get_summary(mms_fit, 
-                           boot_emp = TRUE,
-                           boot_res = TRUE,
-                           boot_mul = TRUE,
-                           well_specified = TRUE)
-head(mms_summary) %>%
-  knitr::kable(x = ., format = "html", digits = 2, align = "c") %>% 
-  kableExtra::kable_styling(position = "center")
-```
 
-
-
-### Visualizing the estimates
+## Visualizing the estimates
 
 We may want to compare some of the estimates that we obtained through `comp_var` 
 in a plot. 
 Confidence intervals and normality of the (bootstrap) estimates 
-reprent two (arguably) interesting statistics the data scientist/researcher may
-want to analyze. The corresponding plots are returned by default when `plot` is
-called on a `maars` object, together with six other "typical" `lm` plots. 
+represent two (arguably) interesting statistics the data scientist/researcher may
+want to look at. 
+The corresponding plots are returned by default when `plot` is
+called on an object of class `maars_lm`, together with six other "typical" 
+`stats::lm` plots. 
 The plots can be visualized sequentially calling `plot` on an object of class 
-`r class(mms_fit)` (e.g., `plot(mms_fit, which=c(1,2,7))`. 
+`r class(mms_fit)` (e.g., `plot(mms_fit, which=c(1,2,7)`). 
 Alternatively, we can store them in a list via `get_plot`, 
 as we do below.
 
@@ -222,8 +220,10 @@ mms_plots <- get_plot(mms_fit)
 ```
 
 Let's first look at the six "typical" `lm` plots. 
-```{r compare_lm}
-patchwork::wrap_plots(1:6 %>% purrr::map(~ purrr::pluck(mms_plots, .)), 
+```{r compare_lm, fig.dim = c(6,5)}
+patchwork::wrap_plots(1:6 %>% 
+                        purrr::map(~ purrr::pluck(mms_plots, .) + 
+                                           ggplot2::theme(plot.title = ggplot2::element_text(size=9))), 
                       ncol = 3, 
                       nrow = 2)
 ```
