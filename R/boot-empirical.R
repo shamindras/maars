@@ -209,7 +209,7 @@ fit_reg <- function(mod_fit, data, weights = NULL) {
 #' }
 comp_boot_emp <- function(mod_fit, B = 100, m = NULL) {
   assertthat::assert_that(all("lm" == class(mod_fit)) | any("glm" == class(mod_fit)),
-    msg = glue::glue("mod_fit must only be of class lm or glm")
+                          msg = glue::glue("mod_fit must only be of class lm or glm")
   )
   check_fn_args(B = B, m = m)
 
@@ -252,7 +252,7 @@ comp_boot_emp <- function(mod_fit, B = 100, m = NULL) {
     var_summary = summary_boot,
     var_assumptions = c(
       glue::glue("Observations are assumed to be independent",
-        .sep = " "
+                 .sep = " "
       ),
       glue::glue("Parameters: B = {B}, m = {m}, n = {n}")
     ),
@@ -311,14 +311,11 @@ comp_ci_boot <- function(boot_out, probs = c(0.025, 0.975),
     tidyr::unnest(boot_out) %>%
     dplyr::group_by(dplyr::across(dplyr::all_of(group_vars))) %>%
     dplyr::summarise(.data = .,
-      x = stats::quantile(sqrt(.data$m / .data$n) * (.data$estimate - mean(.data$estimate)) + mean(.data$estimate),
-        probs = probs
-      ),
-      q = probs,
-      .groups = "keep"
+                     x = stats::quantile(sqrt(.data$m / .data$n) * (.data$estimate - mean(.data$estimate)) + mean(.data$estimate),
+                                         probs = probs
+                     ),
+                     q = probs,
+                     .groups = "keep"
     )
   return(out)
 }
-
-
-

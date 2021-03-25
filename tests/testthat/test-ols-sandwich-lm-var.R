@@ -21,6 +21,21 @@ test_that("sandwich standard errors from our estimator and estimator from Sandwi
   )
 })
 
+
+test_that("sandwich standard errors from our estimator and estimator from Sandwich pkg for misspecified model", {
+  # generate data and fit model
+  y <- 2 + X * 1 + X^2 * 2 + stats::rnorm(n, 0, 10) * exp(3)
+  lm_fit <- stats::lm(y ~ X)
+  sandwich_qr_std_err <- comp_sand_var(lm_fit)$var_summary$std.error
+  # from sandwich package
+  sandwich_sandpkg_std_err <- sqrt(diag(sandwich::sandwich(lm_fit)))
+
+  expect_true(
+    max(abs(sandwich_sandpkg_std_err - sandwich_qr_std_err)) < MAX_DIFF_high_precision
+  )
+})
+
+
 test_that("sandwich variance from estimator via qr and lm", {
   n <- 1e4
   X <- stats::rnorm(n, 0, 1)
