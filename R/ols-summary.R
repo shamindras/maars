@@ -254,31 +254,10 @@ fetch_mms_emoji_title <- function(var_type_abb, title_type) {
 #' # TODO: Add here
 #' }
 fetch_mms_comp_var_attr <- function(comp_var_ind, req_type) {
-  # Get the variance component
-  # comp_var_ind <- purrr::pluck(.x = mod_fit, "var")
 
   # Raw data variables
-  cv_type <- purrr::pluck(.x = comp_var_ind, "var_type")
-  cv_type_abb <- purrr::pluck(.x = comp_var_ind, "var_type_abb")
   cv_summary <- purrr::pluck(.x = comp_var_ind, "var_summary")
-  cv_assumptions <- purrr::pluck(.x = comp_var_ind, "var_assumptions")
-
-  # Derived variables
-  cv_emoji <- fetch_mms_emoji_title(
-    var_type_abb = cv_type_abb,
-    title_type = "emoji"
-  )
-  cv_title <- fetch_mms_emoji_title(
-    var_type_abb = cv_type_abb,
-    title_type = "title"
-  )
-  cv_emoji_title <- fetch_mms_emoji_title(
-    var_type_abb = cv_type_abb,
-    title_type = "emoji_title"
-  )
-  # cv_emoji_title <- glue::glue("{cv_emoji}: {cv_title}:")
-  cv_summary_mod <- dplyr::mutate(.data = cv_summary,
-                                  var_type_abb = cv_type_abb)
+  cv_type_abb <- purrr::pluck(.x = comp_var_ind, "var_type_abb")
 
   # Append suffix to variable names
   cols_common <- c("term", "estimate")
@@ -286,21 +265,28 @@ fetch_mms_comp_var_attr <- function(comp_var_ind, req_type) {
     stringr::str_c(., cv_type_abb, sep = ".")
   cols_renamed <- c(cols_common, cols_with_suffix)
 
-  # Apply new names
-  cv_summary_nmd <- dplyr::rename_with(.data = cv_summary,
-                       .fn = ~cols_renamed,
-                       .cols = dplyr::everything())
-
   # Get the specific type of individual variance variable
   out <- switch(req_type,
-    "emoji" = cv_emoji,
-    "emoji_title" = cv_emoji_title,
-    "var_type" = cv_type,
+    "emoji" = fetch_mms_emoji_title(
+      var_type_abb = cv_type_abb,
+      title_type = "emoji"
+    ),
+    "emoji_title" = fetch_mms_emoji_title(
+      var_type_abb = cv_type_abb,
+      title_type = "emoji_title"
+    ),
+    "var_type" = purrr::pluck(.x = comp_var_ind, "var_type"),
     "var_type_abb" = cv_type_abb,
     "var_summary" = cv_summary,
-    "var_summary_mod" = cv_summary_mod,
-    "var_summary_nmd" = cv_summary_nmd,
-    "var_assumptions" = cv_assumptions
+    "var_summary_mod" = dplyr::mutate(
+      .data = cv_summary,
+      var_type_abb = cv_type_abb
+    ),
+    "var_summary_nmd" = dplyr::rename_with(
+      .data = cv_summary,
+      .fn = ~cols_renamed, dplyr::everything()
+    ),
+    "var_assumptions" = purrr::pluck(.x = comp_var_ind, "var_assumptions")
   )
   return(out)
 }
