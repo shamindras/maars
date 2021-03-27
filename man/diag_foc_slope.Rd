@@ -19,7 +19,7 @@ term (\code{term_rwgt}), and the estimates of the regression coefficients
 \code{diag_fit_reg_rwgt} function.}
 
 \item{term_chosen}{A character corresponding to the coefficient of interest
-to be analysed.}
+to be analyzed.}
 }
 \value{
 A ggplot2 object which shows how the coefficient of one regressor of

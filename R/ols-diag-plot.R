@@ -223,7 +223,7 @@ get_plot <- function(mod_fit) {
 #'   and \code{estimate}) on the bootstrapped datasets, the size of each
 #'   bootstrapped dataset (\code{m}), the size of the original dataset
 #'   (\code{n}), and the number of the bootstrap repetition (\code{b}).
-#' @param boot_type (\code{character}) : The (abbreviate) type of boostrap
+#' @param boot_type (\code{character}) : The (abbreviate) type of bootstrap
 #'   estimates to use for the plot
 #'
 #' @return A ggplot2 object containing normal QQ plot for each regressor in

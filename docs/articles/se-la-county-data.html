@@ -88,7 +88,7 @@
 
       
 
-      </header><script src="se-la-county-data_files/header-attrs-2.7.2/header-attrs.js"></script><script src="se-la-county-data_files/kePrint-0.0.1/kePrint.js"></script><link href="se-la-county-data_files/lightable-0.0.1/lightable.css" rel="stylesheet">
+      </header><script src="se-la-county-data_files/header-attrs-2.7/header-attrs.js"></script><script src="se-la-county-data_files/kePrint-0.0.1/kePrint.js"></script><link href="se-la-county-data_files/lightable-0.0.1/lightable.css" rel="stylesheet">
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
@@ -108,9 +108,9 @@
 <h2 class="hasAnchor">
 <a href="#setup-and-installation" class="anchor"></a>Setup and Installation</h2>
 <p>First, we’ll need to install a set of packages that will be useful for the analysis. If you are a new user, you will need to manually run the following commands in a new in an <code>R</code> session before running the vignette code below:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="kw">install.packages</span>(<span class="dt">pkgs =</span> <span class="kw">c</span>(glue<span class="st">", "</span>knitr<span class="st">", "</span>magrittr<span class="st">", "</span>tidyverse<span class="st">",</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true"></a><span class="st">                          "</span>kableExtra<span class="st">", "</span>remotes<span class="st">", "</span>patchwork<span class="st">"))</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true"></a><span class="st">remotes::install_github('shamindras/maars', force = TRUE)</span></span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="at">pkgs =</span> <span class="fu">c</span>(glue<span class="st">", "</span>knitr<span class="st">", "</span>magrittr<span class="st">", "</span>tidyverse<span class="st">",</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="st">                          "</span>kableExtra<span class="st">", "</span>remotes<span class="st">", "</span>patchwork<span class="st">"))</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="st">remotes::install_github('shamindras/maars', force = TRUE)</span></span></code></pre></div>
 <p>We will explicitly load the <code>magrittr</code> packages to get access to the pipe (<code><a href="../reference/%&gt;%.html">%&gt;%</a></code>) operator. We will also set a global random seed for reproducibility purposes.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://magrittr.tidyverse.org">magrittr</a></span><span class="op">)</span>
@@ -322,7 +322,7 @@ PercIndustrial
 <a href="#estimating-the-variance" class="anchor"></a>Estimating the variance</h2>
 <p>Let’s then estimate the variance of the regression coefficients for the fitted model via</p>
 <ul>
-<li>sandwich estimator (see <span class="citation">(White 1980a, @white1980usinglsapproxunknownregfuncs)</span>).</li>
+<li>sandwich estimator (see <span class="citation">White (1980b)</span>).</li>
 <li>(n-out-of-n) empirical bootstrap with <span class="math inline">\(B=10^{3}\)</span> replications.</li>
 <li>multiplier bootstrap with <span class="math inline">\(B=10^{3}\)</span> replications with Rademacher weights.</li>
 <li>residual bootstrap with <span class="math inline">\(B=10^{3}\)</span> replications.</li>
@@ -338,7 +338,7 @@ PercIndustrial
 <div id="reproducing-table-1" class="section level2">
 <h2 class="hasAnchor">
 <a href="#reproducing-table-1" class="anchor"></a>Reproducing Table 1</h2>
-<p>In order to reproduce Table 1, we will only need the empirical bootstrap and sandiwch estimates. In <code>maars</code>, the estimates, standard errors, t-statistics, and p-values can be obtained in a <code>tidy</code> output format via the function <code>get_summary</code>. This function returns the sandwich, again, returned by default, unless specified otherwise. Let’s first extract the summary of <code>mms_fit</code>.</p>
+<p>In order to reproduce Table 1, we will only need the empirical bootstrap and sandwich estimates. In <code>maars</code>, the estimates, standard errors, t-statistics, and p-values can be obtained in a <code>tidy</code> output format via the function <code>get_summary</code>. This function returns the sandwich, again, returned by default, unless specified otherwise. Let’s first extract the summary of <code>mms_fit</code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># get output</span>
 <span class="va">mms_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_summary.html">get_summary</a></span><span class="op">(</span><span class="va">mms_fit</span>, boot_emp <span class="op">=</span> <span class="cn">TRUE</span>, well_specified <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
@@ -817,18 +817,18 @@ PercIndustrial
 <div id="references" class="section level2 unnumbered">
 <h2 class="hasAnchor">
 <a href="#references" class="anchor"></a>References</h2>
-<div id="refs" class="references hanging-indent">
-<div id="ref-buja2019modelsasapproximationspart1">
-<p>Buja, Andreas, Lawrence Brown, Richard Berk, Edward George, Emil Pitkin, Mikhail Traskin, Kai Zhang, and Linda Zhao. 2019. “Models as Approximations I: Consequences Illustrated with Linear Regression.” <em>Statist. Sci.</em> 34 (4): 523–44. <a href="https://doi.org/10.1214/18-STS693">https://doi.org/10.1214/18-STS693</a>.</p>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-buja2019modelsasapproximationspart1" class="csl-entry">
+Buja, Andreas, Lawrence Brown, Richard Berk, Edward George, Emil Pitkin, Mikhail Traskin, Kai Zhang, and Linda Zhao. 2019. <span>“Models as Approximations <span>I</span>: Consequences Illustrated with Linear Regression.”</span> <em>Statist. Sci.</em> 34 (4): 523–44. <a href="https://doi.org/10.1214/18-STS693">https://doi.org/10.1214/18-STS693</a>.
 </div>
-<div id="ref-white1980heteroskedasticconsistentcovest">
-<p>White, Halbert. 1980a. “A Heteroskedasticity-Consistent Covariance Matrix Estimator and a Direct Test for Heteroskedasticity.” <em>Econometrica</em> 48 (4): 817–38. <a href="https://doi.org/10.2307/1912934">https://doi.org/10.2307/1912934</a>.</p>
+<div id="ref-white1980heteroskedasticconsistentcovest" class="csl-entry">
+White, Halbert. 1980a. <span>“A Heteroskedasticity-Consistent Covariance Matrix Estimator and a Direct Test for Heteroskedasticity.”</span> <em>Econometrica</em> 48 (4): 817–38. <a href="https://doi.org/10.2307/1912934">https://doi.org/10.2307/1912934</a>.
 </div>
-<div id="ref-white1980usinglsapproxunknownregfuncs">
-<p>———. 1980b. “Using Least Squares to Approximate Unknown Regression Functions.” <em>Internat. Econom. Rev.</em> 21 (1): 149–70. <a href="https://doi.org/10.2307/2526245">https://doi.org/10.2307/2526245</a>.</p>
+<div id="ref-white1980usinglsapproxunknownregfuncs" class="csl-entry">
+———. 1980b. <span>“Using Least Squares to Approximate Unknown Regression Functions.”</span> <em>Internat. Econom. Rev.</em> 21 (1): 149–70. <a href="https://doi.org/10.2307/2526245">https://doi.org/10.2307/2526245</a>.
 </div>
-<div id="ref-wickham2014tidydata">
-<p>Wickham, Hadley. 2014. “Tidy Data.” <em>Journal of Statistical Software</em> 59 (10). <a href="https://doi.org/10.18637/jss.v059.i10">https://doi.org/10.18637/jss.v059.i10</a>.</p>
+<div id="ref-wickham2014tidydata" class="csl-entry">
+Wickham, Hadley. 2014. <span>“Tidy Data.”</span> <em>Journal of Statistical Software</em> 59 (10). <a href="https://doi.org/10.18637/jss.v059.i10">https://doi.org/10.18637/jss.v059.i10</a>.
 </div>
 </div>
 </div>

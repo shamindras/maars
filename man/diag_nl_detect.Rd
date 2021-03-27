@@ -22,7 +22,7 @@ term (\code{term_rwgt}), and the estimates of the regression coefficients
 A ggplot2 object which shows how the estimates of all coefficients
 vary under reweighting of their own regressors.
 The vertical axis represents the estimates of the coefficients under
-reweighting of tthe one regressor, whose names appear in the panels
+reweighting of the one regressor, whose names appear in the panels
 titles. The horizontal axis shows the values of the regressors. The grey
 lines correspond to the traces of bootstrapped estimates forming the
 "spaghetti plot". The black vertical lines indicate 95\% confidence

@@ -12,7 +12,7 @@ and \code{estimate}) on the bootstrapped datasets, the size of each
 bootstrapped dataset (\code{m}), the size of the original dataset
 (\code{n}), and the number of the bootstrap repetition (\code{b}).}
 
-\item{boot_type}{(\code{character}) : The (abbreviate) type of boostrap
+\item{boot_type}{(\code{character}) : The (abbreviate) type of bootstrap
 estimates to use for the plot}
 }
 \value{

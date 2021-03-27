@@ -206,7 +206,7 @@ check_fn_args_comp_mms_var_boot_ind <- function(inp_list, boot_type) {
 #' }
 check_fn_args_comp_mms_var_boot <- function(boot_emp, boot_res, boot_mul) {
 
-  # Override boostrap NULL bootstrap variance calculations if any of the
+  # Override bootstrap NULL bootstrap variance calculations if any of the
   # input values passed in are not NULL
   if (!is.null(boot_emp)) {
     # Empirical Bootstrap: list format assertion checking

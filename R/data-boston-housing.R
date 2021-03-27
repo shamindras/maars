@@ -2,14 +2,14 @@
 #' Service concerning housing in the area of Boston Massachusetts.
 #'
 #' This dataset has 516 observations and 21 variables. It contains information
-#' collected by the U.S Census Service oncerning housing in the area of
+#' collected by the U.S Census Service concerning housing in the area of
 #' Boston Mass. It was obtained from the StatLib archive
 #' \url{http://lib.stat.cmu.edu/datasets/boston_corrected.txt}, and has been
 #' used extensively throughout the literature to benchmark algorithms.
 #' Note that the details of this dataset were sourced from
 #' \url{https://geodacenter.github.io/data-and-lab/boston-housing/}.
 #' The data was originally published in \insertCite{@see @harrison1978hedpricesdemandcleanairbhdata;textual}{maars}
-#' and subsequently corrected in \insertCite{@see @harrison1978hedpricesdemandcleanairbhdata;textual}{maars}
+#' and subsequently corrected in \insertCite{@see @gilley1996harrisonrubinfeldbhdata;textual}{maars}
 #'
 #' @importFrom Rdpack reprompt
 #'

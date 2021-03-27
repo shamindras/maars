@@ -35,7 +35,7 @@ columns and the corresponding reweighting centers.
 Each column corresponds to a different regressor, whose name is specified
 in the name of the column. Default is set to \code{NULL}.}
 
-\item{grid_method}{A chracter which specifies the method used to construct
+\item{grid_method}{A character which specifies the method used to construct
 the grid of reweighting centers. The grid can consist either of evenly
 spaced values between the maximum and the minimum
 (\code{grid_method='regular'}) or based on the quantiles between the first

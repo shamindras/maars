@@ -134,7 +134,7 @@ We also have all the ingredients necessary to reproduce table 1 of the
 
 ## Reproducing Table 1
 
-In order to reproduce Table 1, we will only need the empirical bootstrap and sandiwch estimates.
+In order to reproduce Table 1, we will only need the empirical bootstrap and sandwich estimates.
 In `maars`, the estimates, standard errors, t-statistics, and p-values can be 
 obtained in a `tidy` output format via the function `get_summary`. 
 This function returns the sandwich, again, returned by default, unless specified otherwise. 

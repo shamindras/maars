@@ -170,7 +170,7 @@ diag_fit_reg_rwgt_single <- function(mod_fit,
 #'   columns and the corresponding reweighting centers.
 #'   Each column corresponds to a different regressor, whose name is specified
 #'   in the name of the column. Default is set to \code{NULL}.
-#' @param grid_method A chracter which specifies the method used to construct
+#' @param grid_method A character which specifies the method used to construct
 #'   the grid of reweighting centers. The grid can consist either of evenly
 #'   spaced values between the maximum and the minimum
 #'   (\code{grid_method='regular'}) or based on the quantiles between the first
@@ -304,7 +304,7 @@ diag_fit_reg_rwgt <- function(mod_fit,
 #'   (\code{term} and \code{estimate}). This tibble can be created via the
 #'   \code{diag_fit_reg_rwgt} function.
 #' @param term_chosen A character corresponding to the coefficient of interest
-#'   to be analysed.
+#'   to be analyzed.
 #'
 #' @return A ggplot2 object which shows how the coefficient of one regressor of
 #'   interest (\code{term_chosen}) varies under reweighting of the regressors.
@@ -464,7 +464,7 @@ diag_foc_slope <- function(mod_fit, coef_rwgt, term_chosen) {
 #' @return A ggplot2 object which shows how the estimates of all coefficients
 #'   vary under reweighting of their own regressors.
 #'   The vertical axis represents the estimates of the coefficients under
-#'   reweighting of tthe one regressor, whose names appear in the panels
+#'   reweighting of the one regressor, whose names appear in the panels
 #'   titles. The horizontal axis shows the values of the regressors. The grey
 #'   lines correspond to the traces of bootstrapped estimates forming the
 #'   "spaghetti plot". The black vertical lines indicate 95% confidence
@@ -618,7 +618,7 @@ diag_nl_detect <- function(mod_fit, coef_rwgt) {
 #'   (\code{term} and \code{estimate}). This tibble can be created via the
 #'   \code{\link{diag_fit_reg_rwgt}} function.
 #' @param term_chosen A character corresponding to the coefficient of interest
-#'   to be analysed.
+#'   to be analyzed.
 #'
 #' @return A ggplot2 object which shows how coefficients estimates vary
 #'   under reweighting of only one regressor (\code{term_chosen}).

@@ -75,7 +75,7 @@ package using `make build_package`
 * **roxygen2:** Rewrite documentation of the functions making the style more 
 consistent across functions. For example, we could adopt the style used for 
 the [quantile function](https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/quantile)
-* **roxygen2:** insert dots at end of sentences in Roxygen. 
+* **roxygen2:** insert dots at end of sentences in roxygen2. 
 [See below](https://github.com/shamindras/maars/issues/24?fbclid=IwAR0JsSrXZGUpYyuizsTFIL8Q0dUvOy_WVbUWBuvZlygg4rmjuo0rU5xNGvM#issuecomment-751913442)
 * **roxygen2:** use `@details` responsibly. 
 [See below](https://github.com/shamindras/maars/issues/24?fbclid=IwAR0JsSrXZGUpYyuizsTFIL8Q0dUvOy_WVbUWBuvZlygg4rmjuo0rU5xNGvM#issuecomment-751913442)
@@ -120,7 +120,7 @@ the `"q"` here stands for `quantile`.
 * Implement the `empirical` bootstrap for `glm` standard errors
 * Change the input `lm_fit` to be `mod_object` in all of our functions
 * Check that we have referenced functions using `stats::`, `dplyr::`, etc
-* Add the `t-test` values in Table 1 of the MAA paper
+* Add the `t-test` values in Table 1 of the `Models As Approximations - Part 1` paper
 * Add input validation for our bootstrap and variance estimation functions 
 e.g. `B` must be a positive integer
 * Set a seed for the unit tests
