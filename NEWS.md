@@ -111,7 +111,7 @@ the `"q"` here stands for `quantile`.
 * Add doc for `weight_type` in `multiplier` bootstrap
 * Remove default value of `B` in `multiplier` variance
 * Allow for 5 types of weights for multiplier bootstrap i.e. `std_gaussian`, `rademacher`, and `mammen`, `webb`, `gamma`
-* Update credits in [Licence](https://github.com/shamindras/maars/blob/main/LICENSE) and [License.md](https://github.com/shamindras/maars/blob/main/LICENSE.md)
+* Update credits in `Licence` and [License.md](https://github.com/shamindras/maars/blob/main/LICENSE.md)
 
 # maars 0.3.0
 
