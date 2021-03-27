@@ -4,3 +4,5 @@
 # "set_ggplot2_theme": "set_mms_ggplot2_theme"
 # Supporting Utilities - Private Functions
 # "checkargs": "check_fn_args"
+# External Functions - Private Functions
+"dplyr::summarise": "dplyr::summarize"

@@ -251,7 +251,7 @@ diag_fit_reg_rwgt <- function(mod_fit,
   )
 
   if (is.null(grid_centers)) {
-    grid_centers <- dplyr::summarise_all(
+    grid_centers <- dplyr::summarize_all(
       .tbl = data,
       .funs = function(x) {
         gen_grid_cent_rwgt(x,
@@ -376,7 +376,7 @@ diag_foc_slope <- function(mod_fit, coef_rwgt, term_chosen) {
       .data$term_rwgt,
       .data$term_rwgt_center
     ) %>%
-    dplyr::summarise(
+    dplyr::summarize(
       .data = .,
       estimate = mean(.data$estimate),
       .groups = "keep"
@@ -527,7 +527,7 @@ diag_nl_detect <- function(mod_fit, coef_rwgt) {
 
   coef_rwgt_means <- coef_rwgt %>%
     dplyr::group_by(.data = ., .data$term_rwgt, .data$term_rwgt_center) %>%
-    dplyr::summarise(
+    dplyr::summarize(
       .data = .,
       estimate = mean(.data$estimate),
       .groups = "keep"
@@ -688,7 +688,7 @@ diag_foc_rwgt <- function(mod_fit, coef_rwgt, term_chosen) {
       .data$term,
       .data$term_rwgt_center
     ) %>%
-    dplyr::summarise(
+    dplyr::summarize(
       .data = .,
       estimate = mean(.data$estimate),
       .groups = "keep"

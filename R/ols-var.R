@@ -295,7 +295,7 @@ get_boot_summary <- function(mod_fit, boot_out, boot_type) {
       .data$term,
       .data$estimate
     ) %>%
-    dplyr::summarise(
+    dplyr::summarize(
       .data = .,
       std.error = stats::sd(sqrt(.data$m / .data$n) * (.data$estimate.boot - mean(.data$estimate.boot))),
       p.value = mean(sqrt(.data$m/.data$n) * abs(.data$estimate - .data$estimate.boot) > abs(.data$estimate)),

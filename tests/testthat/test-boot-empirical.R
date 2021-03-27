@@ -38,7 +38,7 @@ test_that("test sample mean of coefficients estimated via bootstrap matches the 
   # ols
   boot_out <- comp_boot_emp(lm_fit, B = 1e3)$boot_out %>% tidyr::unnest(cols = boot_out)
   expect_equal(boot_out %>% dplyr::group_by(term) %>%
-                 dplyr::summarise(mean = mean(estimate)) %>%
+                 dplyr::summarize(mean = mean(estimate)) %>%
                  dplyr::pull(mean) %>% unname(),
                unname(stats::coef(lm_fit)), tol = 1e-2)
 })

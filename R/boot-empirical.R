@@ -310,7 +310,7 @@ comp_ci_boot <- function(boot_out, probs = c(0.025, 0.975),
   out <- boot_out %>%
     tidyr::unnest(boot_out) %>%
     dplyr::group_by(dplyr::across(dplyr::all_of(group_vars))) %>%
-    dplyr::summarise(.data = .,
+    dplyr::summarize(.data = .,
                      x = stats::quantile(sqrt(.data$m / .data$n) * (.data$estimate - mean(.data$estimate)) + mean(.data$estimate),
                                          probs = probs
                      ),
