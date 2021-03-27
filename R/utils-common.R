@@ -20,7 +20,9 @@
 #' @param legend_position A character value the position of legends
 #' ("none", "left", "right", "bottom", "top", or two-element numeric vector)
 #'
-#' @return
+#' @return (\code{ggplot2}) : A \code{ggplot2} object with the custom theme
+#'   applied
+#'
 #' @keywords internal
 #'
 #' @examples

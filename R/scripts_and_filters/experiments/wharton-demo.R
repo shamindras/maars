@@ -163,7 +163,7 @@ mms_fit2_conf %>%
 # by calling the plot method on a maars_lm object, we return the six
 # "typical" lm plots and two additional plots, including (i) the confidence intervals
 # based on the different types of standard errors that are computed and (ii) the
-# QQ norm of the bootstrap coefficients estimates, when they are available.
+# Q-Q norm of the bootstrap coefficients estimates, when they are available.
 # Let's first look at plot()
 # plot(mms_fit1)
 

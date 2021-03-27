@@ -353,21 +353,8 @@ print.summary.maars_lm <- function(x, ...) {
   )
   cli::cli_h2(cli::col_blue(glue::glue("Signif. codes:")))
   cli::cli_li("0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1")
-  cli::cli_h2(cli::col_magenta(glue::glue("Summary statistics:"))) # Placeholder title
+  cli::cli_h2(cli::col_magenta(glue::glue("Summary statistics:")))
   cli::cli_li(purrr::pluck(x, "stats_sand"))
-
-  # Return a summary object
-  # TODO: Use the output of this to write a print.summary.maars_lm later
-  #       as discussed.
-  #       We will also refine these output names, but for now it is easier to
-  #       keep them, so that cut-paste code to other print methods is faster
-  #       We can change names across functions later quickly in one pass.
-  # TODO: The following lines can be uncommented and then taken as an input
-  #       to the print.summary.maars_lm function
-  # out <- list(all_summaries = all_summaries,
-  #             all_emoji_titles = all_emoji_titles,
-  #             all_assumptions = all_assumptions,
-  #             assumptions_lm = assumptions_lm)
 }
 
 # tidy.maars_lm <- function(x, ...){

@@ -36,7 +36,8 @@ legend title text in the \code{\link[ggplot2]{ggplot2}} object.}
 ("none", "left", "right", "bottom", "top", or two-element numeric vector)}
 }
 \value{
-
+(\code{ggplot2}) : A \code{ggplot2} object with the custom theme
+applied
 }
 \description{
 \code{set_mms_ggplot2_theme} is a wrapper to set a standard custom

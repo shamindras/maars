@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Normal QQ plot of the terms in an output of the bootstrap function — diag_boot_qqn • maars</title>
+<title>Normal Q-Q plot of the terms in an output of the bootstrap function — diag_boot_qqn • maars</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Normal QQ plot of the terms in an output of the bootstrap function — diag_boot_qqn" />
-<meta property="og:description" content="diag_boot_qqn produces a normal QQPlot for each regressors included
+<meta property="og:title" content="Normal Q-Q plot of the terms in an output of the bootstrap function — diag_boot_qqn" />
+<meta property="og:description" content="diag_boot_qqn produces a normal Q-Q plot for each regressors included
 in the estimates on the bootstrapped datasets. This function is a wrapper
 for the stat_qq function." />
 
@@ -134,13 +134,13 @@ for the stat_qq function." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Normal QQ plot of the terms in an output of the bootstrap function</h1>
+    <h1>Normal Q-Q plot of the terms in an output of the bootstrap function</h1>
     <small class="dont-index">Source: <a href='https://github.com/shamindras/maars/blob/master/R/ols-diag-plot.R'><code>R/ols-diag-plot.R</code></a></small>
     <div class="hidden name"><code>diag_boot_qqn.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p><code>diag_boot_qqn</code> produces a normal QQPlot for each regressors included
+    <p><code>diag_boot_qqn</code> produces a normal Q-Q plot for each regressors included
 in the estimates on the bootstrapped datasets. This function is a wrapper
 for the <code><a href='https://ggplot2.tidyverse.org/reference/geom_qq.html'>stat_qq</a></code> function.</p>
     </div>
@@ -166,13 +166,13 @@ estimates to use for the plot</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A ggplot2 object containing normal QQ plot for each regressor in
+    <p>A ggplot2 object containing normal Q-Q plot for each regressor in
 <code>boot_out</code>. Each panel corresponds to a different coefficient,
 whose name appears in the panel's titles.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='co'># Obtain normal QQ plot of the</span>
+<span class='co'># Obtain normal Q-Q plot of the</span>
 <span class='va'>n</span> <span class='op'>&lt;-</span> <span class='fl'>1e3</span>
 <span class='va'>X1</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>
 <span class='va'>X2</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>3</span><span class='op'>)</span>

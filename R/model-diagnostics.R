@@ -512,7 +512,7 @@ diag_nl_detect <- function(mod_fit, coef_rwgt) {
     ) %>%
     dplyr::filter(
       .data = .,
-      term == .data$term_rwgt
+      .data$term == .data$term_rwgt
     )
 
   coef_rwgt <- coef_rwgt %>%
@@ -522,7 +522,7 @@ diag_nl_detect <- function(mod_fit, coef_rwgt) {
     ) %>%
     dplyr::filter(
       .data = .,
-      term == .data$term_rwgt
+      .data$term == .data$term_rwgt
     )
 
   coef_rwgt_means <- coef_rwgt %>%

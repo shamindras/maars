@@ -193,7 +193,7 @@ get_plot <- function(mod_fit) {
     ggplot2::guides(col = ggplot2::guide_legend(title = "Type of standard error")) +
     NULL
 
-  # QQnorm of the estimates of the regression coefficients based on
+  # Q-Q norm of the estimates of the regression coefficients based on
   # one of the bootstraps available.
   # First try with empirical. If not available, use multiplier. If not available,
   # then use residual.
@@ -213,9 +213,9 @@ get_plot <- function(mod_fit) {
 }
 
 
-#' Normal QQ plot of the terms in an output of the bootstrap function
+#' Normal Q-Q plot of the terms in an output of the bootstrap function
 #'
-#' \code{diag_boot_qqn} produces a normal QQPlot for each regressors included
+#' \code{diag_boot_qqn} produces a normal Q-Q plot for each regressors included
 #' in the estimates on the bootstrapped datasets. This function is a wrapper
 #' for the \code{\link[ggplot2]{stat_qq}} function.
 #'
@@ -226,7 +226,7 @@ get_plot <- function(mod_fit) {
 #' @param boot_type (\code{character}) : The (abbreviate) type of bootstrap
 #'   estimates to use for the plot
 #'
-#' @return A ggplot2 object containing normal QQ plot for each regressor in
+#' @return A ggplot2 object containing normal Q-Q plot for each regressor in
 #'   \code{boot_out}. Each panel corresponds to a different coefficient,
 #'   whose name appears in the panel's titles.
 #'
@@ -236,7 +236,7 @@ get_plot <- function(mod_fit) {
 #'
 #' @examples
 #' \dontrun{
-#' # Obtain normal QQ plot of the
+#' # Obtain normal Q-Q plot of the
 #' n <- 1e3
 #' X1 <- stats::rnorm(n, 0, 1)
 #' X2 <- stats::rnorm(n, 0, 3)
