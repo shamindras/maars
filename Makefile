@@ -29,6 +29,10 @@ build_pkgdown:
 	-e 'devtools::document()' \
 	-e 'pkgdown::build_site()' \
 
+style:
+	Rscript -e "styler::style_dir(path = here::here('R'), filetype = c('R'), recursive = FALSE, include_roxygen_examples = TRUE)"
+	Rscript -e "styler::style_dir(path = here::here('tests', 'testthat'), filetype = c('R'), recursive = FALSE, include_roxygen_examples = TRUE)"
+
 paper_clean: 
 	rm -rf paper/*.html paper/*.tex paper/*.log paper/*.md paper/submission/*.md
 paper:
