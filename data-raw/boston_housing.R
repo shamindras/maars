@@ -3,7 +3,7 @@ library(tidyverse)
 
 # Read in the raw boston housing dataset ----
 # Need to skip header rows
-boston_raw <- readr::read_tsv(
+boston_housing <- readr::read_tsv(
   glue::glue("http://lib.stat.cmu.edu",
     "datasets/boston_corrected.txt",
     .sep = "/"
