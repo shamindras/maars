@@ -13,3 +13,4 @@
 ^paper$
 ^data-raw$
 ^R/scripts_and_filters/experiments$
+^vignettes/figures/output/\.gitkeep$
