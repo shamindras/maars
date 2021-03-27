@@ -1,6 +1,5 @@
 Package: maars
-Title: An implementation of the Models As Approximations series
-    of statistics papers
+Title: Tidy Inference Under Misspecified Statistical Models in R
 Version: 1.0.0
 Authors@R: 
     c(person(given = "Shamindra",
@@ -11,7 +10,8 @@ Authors@R:
              family = "Fogliato",
              role = c("aut"),
              email = "rfogliat@andrew.cmu.edu"))
-Description: An implementation of the Models As Approximations series of statistics papers
+Description: Tidy Inference Under Misspecified Statistical Models in R. An 
+    implementation of the Models As Approximations series of statistics papers.
 License: GPL (>= 3)
 Imports: 
     magrittr,

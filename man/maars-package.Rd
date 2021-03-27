@@ -4,8 +4,7 @@
 \name{maars-package}
 \alias{maars}
 \alias{maars-package}
-\title{maars: An implementation of the Models As Approximations series
-    of statistics papers}
+\title{maars: Tidy Inference Under Misspecified Statistical Models in R}
 \description{
 To learn more about \code{maars}, start with the vignettes:
 \code{browseVignettes(package = "maars")}
