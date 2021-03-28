@@ -1,5 +1,5 @@
 #' @description
-#' To learn more about \code{maars}, start with the vignettes:
+#' To learn more about maars, start with the vignettes:
 #' `browseVignettes(package = "maars")`
 #' @keywords internal
 #' @importFrom Rdpack reprompt

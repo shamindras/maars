@@ -108,19 +108,36 @@
 <h2 class="hasAnchor">
 <a href="#setup-and-installation" class="anchor"></a>Setup and Installation</h2>
 <p>First, we’ll need to install a set of packages that will be useful for the analysis. If you are a new user, you will need to manually run the following commands in a new in an <code>R</code> session before running the vignette code below:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="at">pkgs =</span> <span class="fu">c</span>(glue<span class="st">", "</span>knitr<span class="st">", "</span>magrittr<span class="st">", "</span>tidyverse<span class="st">",</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="st">                          "</span>kableExtra<span class="st">", "</span>remotes<span class="st">", "</span>patchwork<span class="st">"))</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="st">remotes::install_github('shamindras/maars', force = TRUE)</span></span></code></pre></div>
-<p>We will explicitly load the <code>magrittr</code> packages to get access to the pipe (<code><a href="../reference/%&gt;%.html">%&gt;%</a></code>) operator. We will also set a global random seed for reproducibility purposes.</p>
+<br><details><summary>
+Required package installation and load
+</summary><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co"># Install the required packages</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span>pkgs <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>
+  <span class="st">"glue"</span>, <span class="st">"knitr"</span>, <span class="st">"tidyverse"</span>, <span class="st">"kableExtra"</span>,
+  <span class="st">"remotes"</span>, <span class="st">"patchwork"</span>
+<span class="op">)</span><span class="op">)</span>
+
+<span class="co"># Install the latest version of the maars package</span>
+<span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"shamindras/maars"</span>, force <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+
+<span class="co"># Load the required packages</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tidyverse/glue">glue</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://yihui.org/knitr/">knitr</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/shamindras/maars">maars</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="http://haozhu233.github.io/kableExtra/">kableExtra</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://remotes.r-lib.org">remotes</a></span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com">patchwork</a></span><span class="op">)</span></code></pre></div>
+</details><p><br></p>
+<p>Note that we use the pipe (<code><a href="../reference/%&gt;%.html">%&gt;%</a></code>) operator loaded from the <code>tidyverse</code> package as part of the tidy <code>maars</code> inferential workflow. We will also set a global random seed for reproducibility purposes.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://magrittr.tidyverse.org">magrittr</a></span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">25422267</span><span class="op">)</span></code></pre></div>
-<p>We will refer to all other functions explicitly using the <code>package::function</code> reference method to avoid ambiguity.</p>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">25422267</span><span class="op">)</span></code></pre></div>
+<p>We will refer to all other functions explicitly using the <code>package::function()</code> reference method to avoid any function reference source ambiguity.</p>
 </div>
 <div id="goal-of-analysis" class="section level2">
 <h2 class="hasAnchor">
 <a href="#goal-of-analysis" class="anchor"></a>Goal of Analysis</h2>
-<p>In this vignette, we reproduce the results of Table 1 in <span class="citation">(Buja et al. 2019)</span>:</p>
+<p>In this vignette, we will reproduce the results of Table 1 in <span class="citation">(Buja et al. 2019)</span>, as shown below:</p>
 <div class="figure" style="text-align: center">
 <img src="figures/buja1_table1.png" alt="Table 1 from [@buja2019modelsasapproximationspart1]" width="90%"><p class="caption">
 Table 1 from <span class="citation">(Buja et al. 2019)</span>
@@ -130,20 +147,21 @@ Table 1 from <span class="citation">(Buja et al. 2019)</span>
 <div id="loading-the-data" class="section level2">
 <h2 class="hasAnchor">
 <a href="#loading-the-data" class="anchor"></a>Loading the data</h2>
-<p>Let’s load the LA County Homeless persons data as used in <span class="citation">(Buja et al. 2019)</span> and briefly examine it. The dataset is included in the <code>maars</code> package.</p>
+<p>Let’s first load the LA County Homeless persons data as used in <span class="citation">(Buja et al. 2019)</span> and briefly examine it. The dataset is included in the <code>maars</code> package for convenience.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># LA County source data url, use glue to split string in easy to read format</span>
-<span class="co"># let's load </span>
-<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">'la_county'</span>, package <span class="op">=</span> <span class="st">'maars'</span><span class="op">)</span>
-<span class="va">la_county</span> <span class="op">%&gt;%</span> <span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">.</span><span class="op">)</span>
+<code class="sourceCode R"><span class="co"># LA County source data - already built into maars</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">"la_county"</span>, package <span class="op">=</span> <span class="st">"maars"</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">la_county</span><span class="op">)</span>
 <span class="co">#&gt; [1] 505   7</span></code></pre></div>
-<p>Let’s view the first few rows to understand the structure of the data frame.</p>
+<p>So the dataset is relatively small with 505 observations and 7 features.</p>
+<p>Let’s view the data interactively, with an emphasis on the first few rows. This is to get a better understanding of the structure of the <code>la_county</code> <code>tibble</code>.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">la_county</span> <span class="op">%&gt;%</span> 
-  <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">.</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">.</span>, format <span class="op">=</span> <span class="st">"html"</span>, digits <span class="op">=</span> <span class="fl">2</span>, align <span class="op">=</span> <span class="st">"c"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu">kableExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/kable_styling.html">kable_styling</a></span><span class="op">(</span>position <span class="op">=</span> <span class="st">"center"</span><span class="op">)</span></code></pre></div>
-<table class="table table">
+<code class="sourceCode R"><span class="va">la_county</span> <span class="op">%&gt;%</span>
+  <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">.</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">.</span>, format <span class="op">=</span> <span class="st">"html"</span>, digits <span class="op">=</span> <span class="fl">2</span>, align <span class="op">=</span> <span class="st">"c"</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">kableExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/kable_styling.html">kable_styling</a></span><span class="op">(</span>position <span class="op">=</span> <span class="st">"center"</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">kableExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/kable_classic.html">kable_classic</a></span><span class="op">(</span>kable_input <span class="op">=</span> <span class="va">.</span><span class="op">)</span></code></pre></div>
+<table class="table table lightable-classic">
 <thead><tr>
 <th style="text-align:center;">
 StreetTotal
@@ -308,45 +326,53 @@ PercIndustrial
 </tr>
 </tbody>
 </table>
-<p>The dataset is already in tidy format <span class="citation">(Wickham 2014)</span>.</p>
+<p>The <code>la_county</code> dataset is already in tidy format <span class="citation">(Wickham 2014)</span>.</p>
 </div>
 <div id="fitting-the-ols-model" class="section level2">
 <h2 class="hasAnchor">
 <a href="#fitting-the-ols-model" class="anchor"></a>Fitting the OLS model</h2>
-<p>We now fit a linear model of the count of homeless people (<code>StreetTotal</code>) as the response variable, against the other covariates using Ordinary Least Squares (OLS). As usual, this can be done via the <code><a href="https://rdrr.io/r/stats/lm.html">stats::lm</a></code> function.</p>
+<p>We now fit a linear model of the count of homeless people (<code>StreetTotal</code>) as the response variable, against the other covariates using Ordinary Least Squares (OLS). As usual, this can be done via the <code><a href="https://rdrr.io/r/stats/lm.html">stats::lm()</a></code> function.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">mod_fit</span> <span class="op">&lt;-</span> <span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html">lm</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="va">StreetTotal</span> <span class="op">~</span> <span class="va">.</span>, data <span class="op">=</span> <span class="va">la_county</span><span class="op">)</span></code></pre></div>
+<p>The most important thing to note at this stage is that the inference provided by the <code>mod_fit</code> (i.e. <code>lm</code>) object is based on the typical well-specified assumption setting. That is this fitted linear model assumes the linearity of the conditional expectation and the homoscedasticity of errors.</p>
+<p>The goal of <code>maars</code> is to take the same OLS estimates for the fitted model parameters but augment the inference to be based in the model misspecified setting. This is done in the following sections, and drives the remainder of this reproducibility analysis.</p>
 </div>
 <div id="estimating-the-variance" class="section level2">
 <h2 class="hasAnchor">
 <a href="#estimating-the-variance" class="anchor"></a>Estimating the variance</h2>
-<p>Let’s then estimate the variance of the regression coefficients for the fitted model via</p>
+<p>As done in <span class="citation">(Buja et al. 2019)</span> let’s estimate the variance of the regression coefficients for the fitted model using model misspecified assumptions using the following approaches:</p>
 <ul>
-<li>sandwich estimator (see <span class="citation">White (1980b)</span>).</li>
-<li>(n-out-of-n) empirical bootstrap with <span class="math inline">\(B=10^{3}\)</span> replications.</li>
-<li>multiplier bootstrap with <span class="math inline">\(B=10^{3}\)</span> replications with Rademacher weights.</li>
-<li>residual bootstrap with <span class="math inline">\(B=10^{3}\)</span> replications.</li>
+<li>
+<strong>sandwich estimator</strong> (see <span class="citation">White (1980b)</span> for more details).</li>
+<li>(<span class="math inline">\(n\)</span>-out-of-<span class="math inline">\(n\)</span>) <strong>empirical bootstrap</strong> with <span class="math inline">\(B = 10^{3}\)</span> replications.</li>
+<li>
+<strong>multiplier bootstrap</strong> with <span class="math inline">\(B = 10^{3}\)</span> replications with the default Rademacher weights.</li>
+<li>
+<strong>residual bootstrap</strong> with <span class="math inline">\(B = 10^{3}\)</span> replications.</li>
 </ul>
-<p>To do so, we will use the <code>comp_var</code> function in <code>maars</code>. This arguments in this function are the output of <code><a href="https://rdrr.io/r/stats/lm.html">stats::lm</a></code> (i.e., <code>mod_fit</code>) and the types of estimators (of the variance) that we wish to use. The sandwich variance is always computed by default.</p>
+<p>To do so, we will use the <code>comp_var</code> function in <code>maars</code>. This arguments in this function are the output of <code><a href="https://rdrr.io/r/stats/lm.html">stats::lm()</a></code> (i.e., <code>mod_fit</code>) and the types of estimators (of the variance) that we wish to use, with the specific parameters. The sandwich variance is always computed by default so there is no need to specify it.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">mms_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/comp_var.html">comp_var</a></span><span class="op">(</span>mod_fit <span class="op">=</span> <span class="va">mod_fit</span>,
-                    boot_emp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>B<span class="op">=</span><span class="fl">10</span><span class="op">^</span><span class="fl">3</span><span class="op">)</span>,
-                    boot_mul <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>B<span class="op">=</span><span class="fl">10</span><span class="op">^</span><span class="fl">3</span>, weights_type<span class="op">=</span><span class="st">'rademacher'</span><span class="op">)</span>,
-                    boot_res <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>B<span class="op">=</span><span class="fl">10</span><span class="op">^</span><span class="fl">3</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<p>We have obtained an object of class (maars_lm, lm) We also have all the ingredients necessary to reproduce table 1 of the <span class="citation">(Buja et al. 2019)</span> paper.</p>
+<code class="sourceCode R"><span class="va">mms_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/comp_var.html">comp_var</a></span><span class="op">(</span>
+  mod_fit <span class="op">=</span> <span class="va">mod_fit</span>,
+  boot_emp <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>B <span class="op">=</span> <span class="fl">10</span><span class="op">^</span><span class="fl">3</span><span class="op">)</span>,
+  boot_mul <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>B <span class="op">=</span> <span class="fl">10</span><span class="op">^</span><span class="fl">3</span>, weights_type <span class="op">=</span> <span class="st">"rademacher"</span><span class="op">)</span>,
+  boot_res <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>B <span class="op">=</span> <span class="fl">10</span><span class="op">^</span><span class="fl">3</span><span class="op">)</span>
+<span class="op">)</span></code></pre></div>
+<p>The resulting model misspecified linear model fit i.e. <code>mms_fit</code> is now a (maars_lm, lm) object. With this object constructed, we now have all of the ingredients necessary to reproduce Table 1 of the <span class="citation">(Buja et al. 2019)</span> paper.</p>
 </div>
 <div id="reproducing-table-1" class="section level2">
 <h2 class="hasAnchor">
 <a href="#reproducing-table-1" class="anchor"></a>Reproducing Table 1</h2>
-<p>In order to reproduce Table 1, we will only need the empirical bootstrap and sandwich estimates. In <code>maars</code>, the estimates, standard errors, t-statistics, and p-values can be obtained in a <code>tidy</code> output format via the function <code>get_summary</code>. This function returns the sandwich, again, returned by default, unless specified otherwise. Let’s first extract the summary of <code>mms_fit</code>.</p>
+<p>In order to reproduce Table 1, we will only need the empirical bootstrap and sandwich estimates. In <code>maars</code>, the estimates, standard errors, <span class="math inline">\(t\)</span>-statistics, and <span class="math inline">\(p\)</span>-values can be obtained in a <code>tidy</code> output format via the function <code>get_summary</code>. This function returns the sandwich, again, returned by default, unless specified otherwise. Let’s first extract the summary of <code>mms_fit</code>.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="co"># get output</span>
 <span class="va">mms_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_summary.html">get_summary</a></span><span class="op">(</span><span class="va">mms_fit</span>, boot_emp <span class="op">=</span> <span class="cn">TRUE</span>, well_specified <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
 <span class="co"># print heading</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">mms_summary</span><span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">.</span>, format <span class="op">=</span> <span class="st">"html"</span>, digits <span class="op">=</span> <span class="fl">2</span>, align <span class="op">=</span> <span class="st">"c"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
-  <span class="fu">kableExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/kable_styling.html">kable_styling</a></span><span class="op">(</span>position <span class="op">=</span> <span class="st">"center"</span><span class="op">)</span></code></pre></div>
-<table class="table table">
+  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">.</span>, format <span class="op">=</span> <span class="st">"html"</span>, digits <span class="op">=</span> <span class="fl">3</span>, align <span class="op">=</span> <span class="st">"c"</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">kableExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/kable_styling.html">kable_styling</a></span><span class="op">(</span>position <span class="op">=</span> <span class="st">"center"</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">kableExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/kable_classic.html">kable_classic</a></span><span class="op">(</span>kable_input <span class="op">=</span> <span class="va">.</span><span class="op">)</span></code></pre></div>
+<table class="table table lightable-classic">
 <thead><tr>
 <th style="text-align:center;">
 term
@@ -370,13 +396,13 @@ var_type_abb
 (Intercept)
 </td>
 <td style="text-align:center;">
-0.76
+0.760
 </td>
 <td style="text-align:center;">
 std.error
 </td>
 <td style="text-align:center;">
-22.77
+22.767
 </td>
 <td style="text-align:center;">
 lm
@@ -387,13 +413,13 @@ lm
 (Intercept)
 </td>
 <td style="text-align:center;">
-0.76
+0.760
 </td>
 <td style="text-align:center;">
 statistic
 </td>
 <td style="text-align:center;">
-0.03
+0.033
 </td>
 <td style="text-align:center;">
 lm
@@ -404,13 +430,13 @@ lm
 (Intercept)
 </td>
 <td style="text-align:center;">
-0.76
+0.760
 </td>
 <td style="text-align:center;">
 p.value
 </td>
 <td style="text-align:center;">
-0.97
+0.973
 </td>
 <td style="text-align:center;">
 lm
@@ -421,13 +447,13 @@ lm
 MedianInc1000
 </td>
 <td style="text-align:center;">
--0.18
+-0.183
 </td>
 <td style="text-align:center;">
 std.error
 </td>
 <td style="text-align:center;">
-0.19
+0.187
 </td>
 <td style="text-align:center;">
 lm
@@ -438,13 +464,13 @@ lm
 MedianInc1000
 </td>
 <td style="text-align:center;">
--0.18
+-0.183
 </td>
 <td style="text-align:center;">
 statistic
 </td>
 <td style="text-align:center;">
--0.98
+-0.977
 </td>
 <td style="text-align:center;">
 lm
@@ -455,13 +481,13 @@ lm
 MedianInc1000
 </td>
 <td style="text-align:center;">
--0.18
+-0.183
 </td>
 <td style="text-align:center;">
 p.value
 </td>
 <td style="text-align:center;">
-0.33
+0.329
 </td>
 <td style="text-align:center;">
 lm
@@ -469,42 +495,51 @@ lm
 </tr>
 </tbody>
 </table>
-<p>As we can see, the output is in tidy format as a <code>tibble</code> object. This makes it much more readily amenable for additional transformations using the <code>tidyverse</code> set of packages.</p>
-<p>We can now reformat the output of <code>get_summary</code> to make it more easily comparable to Table 1 in the paper. This can be achieved by first dropping the p-values (which are not needed), followed by the computation of the ratios of the variances, and last by a <code>pivot_wider</code>. We also need a bunch of latex code in order to obtain nice columns names.</p>
+<p>As we can see, the output is in tidy <code>tibble</code> format. This makes it much more readily amenable for additional transformations using the <code>tidyverse</code> set of packages.</p>
+<p>We can now reformat the output of <code>get_summary</code> to make it more easily comparable to Table 1 in the paper. This can be achieved by first dropping the p-values (which are not needed), followed by the computation of the ratios of the variances, and last by an application of the <code><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">tidyr::pivot_wider()</a></code> function. We also need add in the required <span class="math inline">\(\LaTeX\)</span> code for the column names to reproduce values and formatting as in the original table.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">mms_summary</span> <span class="op">%&gt;%</span>
   <span class="co"># drop the p-values</span>
-  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">stat_type</span> <span class="op">!=</span> <span class="st">'p.value'</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">stat_type</span> <span class="op">!=</span> <span class="st">"p.value"</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="co"># compute the variances</span>
-  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">pivot_wider</a></span><span class="op">(</span>names_from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">stat_type</span>, <span class="va">var_type_abb</span><span class="op">)</span>, 
-                     values_from <span class="op">=</span> <span class="va">stat_val</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/pivot_wider.html">pivot_wider</a></span><span class="op">(</span>
+    names_from <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">stat_type</span>, <span class="va">var_type_abb</span><span class="op">)</span>,
+    values_from <span class="op">=</span> <span class="va">stat_val</span>
+  <span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="co"># compute the ratios</span>
-  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>ratio_emp_vs_lm <span class="op">=</span> <span class="va">std.error_emp</span><span class="op">/</span><span class="va">std.error_lm</span>,
-                ratio_sand_vs_lm <span class="op">=</span> <span class="va">std.error_sand</span><span class="op">/</span><span class="va">std.error_emp</span>,
-                ratio_sand_vs_emp <span class="op">=</span> <span class="va">std.error_sand</span><span class="op">/</span><span class="va">std.error_emp</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>
+    ratio_emp_vs_lm <span class="op">=</span> <span class="va">std.error_emp</span> <span class="op">/</span> <span class="va">std.error_lm</span>,
+    ratio_sand_vs_lm <span class="op">=</span> <span class="va">std.error_sand</span> <span class="op">/</span> <span class="va">std.error_emp</span>,
+    ratio_sand_vs_emp <span class="op">=</span> <span class="va">std.error_sand</span> <span class="op">/</span> <span class="va">std.error_emp</span>
+  <span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="co"># reorder the variables</span>
-  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">term</span>, 
-                <span class="va">estimate</span>, 
-                <span class="fu">starts_with</span><span class="op">(</span><span class="st">"std.error"</span><span class="op">)</span>, 
-                <span class="fu">starts_with</span><span class="op">(</span><span class="st">"ratio"</span><span class="op">)</span>, 
-                <span class="fu">starts_with</span><span class="op">(</span><span class="st">"statistic"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span>
+    <span class="va">term</span>,
+    <span class="va">estimate</span>,
+    <span class="fu">starts_with</span><span class="op">(</span><span class="st">"std.error"</span><span class="op">)</span>,
+    <span class="fu">starts_with</span><span class="op">(</span><span class="st">"ratio"</span><span class="op">)</span>,
+    <span class="fu">starts_with</span><span class="op">(</span><span class="st">"statistic"</span><span class="op">)</span>
+  <span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="co"># rename the variables</span>
-  <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/set_names.html">set_names</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">.</span>, nm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Term"</span>, <span class="st">"$\\widehat{\\beta}_{j}$"</span>, 
-                                 <span class="st">"$SE_{\\text{lin}}$"</span>, 
-                                 <span class="st">"$SE_{\\text{boot}}$"</span>, 
-                                 <span class="st">"$SE_{\\text{sand}}$"</span>,
-                                 <span class="st">"$\\frac{SE_{\\text{boot}}}{SE_{\\text{lin}}}$"</span>,
-                                 <span class="st">"$\\frac{SE_{\\text{sand}}}{SE_{\\text{lin}}}$"</span>, 
-                                 <span class="st">"$\\frac{SE_{\\text{sand}}}{SE_{\\text{boot}}}$"</span>,
-                                 <span class="st">"$t_{\\text{lin}}$"</span>, 
-                                 <span class="st">"$t_{\\text{boot}}$"</span>,
-                                 <span class="st">"$t_{\\text{sand}}$"</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/set_names.html">set_names</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">.</span>, nm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>
+    <span class="st">"Term"</span>, <span class="st">"$\\widehat{\\beta}_{j}$"</span>,
+    <span class="st">"$SE_{\\text{lin}}$"</span>,
+    <span class="st">"$SE_{\\text{boot}}$"</span>,
+    <span class="st">"$SE_{\\text{sand}}$"</span>,
+    <span class="st">"$\\frac{SE_{\\text{boot}}}{SE_{\\text{lin}}}$"</span>,
+    <span class="st">"$\\frac{SE_{\\text{sand}}}{SE_{\\text{lin}}}$"</span>,
+    <span class="st">"$\\frac{SE_{\\text{sand}}}{SE_{\\text{boot}}}$"</span>,
+    <span class="st">"$t_{\\text{lin}}$"</span>,
+    <span class="st">"$t_{\\text{boot}}$"</span>,
+    <span class="st">"$t_{\\text{sand}}$"</span>
+  <span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
   <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span>
-    x <span class="op">=</span> <span class="va">.</span>, format <span class="op">=</span> <span class="st">"html"</span>, digits <span class="op">=</span> <span class="fl">2</span>,
+    x <span class="op">=</span> <span class="va">.</span>, format <span class="op">=</span> <span class="st">"html"</span>, digits <span class="op">=</span> <span class="fl">3</span>,
     align <span class="op">=</span> <span class="st">"c"</span>, escape <span class="op">=</span> <span class="cn">TRUE</span>
   <span class="op">)</span> <span class="op">%&gt;%</span>
-  <span class="fu">kableExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/kable_styling.html">kable_styling</a></span><span class="op">(</span>position <span class="op">=</span> <span class="st">"center"</span><span class="op">)</span></code></pre></div>
-<table class="table table">
+  <span class="fu">kableExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/kable_styling.html">kable_styling</a></span><span class="op">(</span>position <span class="op">=</span> <span class="st">"center"</span><span class="op">)</span> <span class="op">%&gt;%</span> 
+  <span class="fu">kableExtra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/kableExtra/man/kable_classic.html">kable_classic</a></span><span class="op">(</span>kable_input <span class="op">=</span> <span class="va">.</span><span class="op">)</span></code></pre></div>
+<table class="table table lightable-classic">
 <thead><tr>
 <th style="text-align:center;">
 Term
@@ -546,34 +581,34 @@ Term
 (Intercept)
 </td>
 <td style="text-align:center;">
-0.76
+0.760
 </td>
 <td style="text-align:center;">
-22.77
+22.767
 </td>
 <td style="text-align:center;">
-15.91
+15.909
 </td>
 <td style="text-align:center;">
-16.63
+16.627
 </td>
 <td style="text-align:center;">
-0.73
+0.730
 </td>
 <td style="text-align:center;">
-0.96
+0.957
 </td>
 <td style="text-align:center;">
-0.96
+0.957
 </td>
 <td style="text-align:center;">
-0.03
+0.033
 </td>
 <td style="text-align:center;">
-0.05
+0.048
 </td>
 <td style="text-align:center;">
-0.05
+0.046
 </td>
 </tr>
 <tr>
@@ -581,34 +616,34 @@ Term
 MedianInc1000
 </td>
 <td style="text-align:center;">
--0.18
+-0.183
 </td>
 <td style="text-align:center;">
-0.19
+0.187
 </td>
 <td style="text-align:center;">
-0.10
+0.105
 </td>
 <td style="text-align:center;">
-0.11
+0.114
 </td>
 <td style="text-align:center;">
-0.61
+0.606
 </td>
 <td style="text-align:center;">
-0.92
+0.923
 </td>
 <td style="text-align:center;">
-0.92
+0.923
 </td>
 <td style="text-align:center;">
--0.98
+-0.977
 </td>
 <td style="text-align:center;">
--1.75
+-1.745
 </td>
 <td style="text-align:center;">
--1.61
+-1.610
 </td>
 </tr>
 <tr>
@@ -616,34 +651,34 @@ MedianInc1000
 PercVacant
 </td>
 <td style="text-align:center;">
-4.63
+4.629
 </td>
 <td style="text-align:center;">
-0.90
+0.901
 </td>
 <td style="text-align:center;">
-1.29
+1.287
 </td>
 <td style="text-align:center;">
-1.41
+1.406
 </td>
 <td style="text-align:center;">
-1.56
+1.561
 </td>
 <td style="text-align:center;">
-0.92
+0.915
 </td>
 <td style="text-align:center;">
-0.92
+0.915
 </td>
 <td style="text-align:center;">
-5.14
+5.140
 </td>
 <td style="text-align:center;">
-3.60
+3.597
 </td>
 <td style="text-align:center;">
-3.29
+3.292
 </td>
 </tr>
 <tr>
@@ -651,34 +686,34 @@ PercVacant
 PercMinority
 </td>
 <td style="text-align:center;">
-0.12
+0.123
 </td>
 <td style="text-align:center;">
-0.18
+0.176
 </td>
 <td style="text-align:center;">
-0.16
+0.162
 </td>
 <td style="text-align:center;">
-0.16
+0.163
 </td>
 <td style="text-align:center;">
-0.92
+0.924
 </td>
 <td style="text-align:center;">
-1.00
+0.997
 </td>
 <td style="text-align:center;">
-1.00
+0.997
 </td>
 <td style="text-align:center;">
-0.70
+0.701
 </td>
 <td style="text-align:center;">
-0.76
+0.761
 </td>
 <td style="text-align:center;">
-0.76
+0.759
 </td>
 </tr>
 <tr>
@@ -686,34 +721,34 @@ PercMinority
 PercResidential
 </td>
 <td style="text-align:center;">
--0.05
+-0.050
 </td>
 <td style="text-align:center;">
-0.17
+0.171
 </td>
 <td style="text-align:center;">
-0.11
+0.108
 </td>
 <td style="text-align:center;">
-0.11
+0.112
 </td>
 <td style="text-align:center;">
-0.65
+0.651
 </td>
 <td style="text-align:center;">
-0.97
+0.972
 </td>
 <td style="text-align:center;">
-0.97
+0.972
 </td>
 <td style="text-align:center;">
--0.29
+-0.292
 </td>
 <td style="text-align:center;">
--0.46
+-0.462
 </td>
 <td style="text-align:center;">
--0.45
+-0.449
 </td>
 </tr>
 <tr>
@@ -721,34 +756,34 @@ PercResidential
 PercCommercial
 </td>
 <td style="text-align:center;">
-0.74
+0.737
 </td>
 <td style="text-align:center;">
-0.27
+0.273
 </td>
 <td style="text-align:center;">
-0.39
+0.388
 </td>
 <td style="text-align:center;">
-0.40
+0.396
 </td>
 <td style="text-align:center;">
-1.45
+1.450
 </td>
 <td style="text-align:center;">
-0.98
+0.980
 </td>
 <td style="text-align:center;">
-0.98
+0.980
 </td>
 <td style="text-align:center;">
-2.70
+2.700
 </td>
 <td style="text-align:center;">
-1.90
+1.901
 </td>
 <td style="text-align:center;">
-1.86
+1.862
 </td>
 </tr>
 <tr>
@@ -756,62 +791,63 @@ PercCommercial
 PercIndustrial
 </td>
 <td style="text-align:center;">
-0.91
+0.905
 </td>
 <td style="text-align:center;">
-0.32
+0.321
 </td>
 <td style="text-align:center;">
-0.58
+0.579
 </td>
 <td style="text-align:center;">
-0.59
+0.586
 </td>
 <td style="text-align:center;">
-1.82
+1.823
 </td>
 <td style="text-align:center;">
-0.99
+0.988
 </td>
 <td style="text-align:center;">
-0.99
+0.988
 </td>
 <td style="text-align:center;">
-2.82
+2.818
 </td>
 <td style="text-align:center;">
-1.56
+1.565
 </td>
 <td style="text-align:center;">
-1.55
+1.546
 </td>
 </tr>
 </tbody>
 </table>
-<p>We have finally reproduced Table 1 in <span class="citation">(Buja et al. 2019)</span>!</p>
-<p>We could also obtain the other types of estimates of the variance (i.e., from residual and multiplier bootstraps) that we computed in <code>comp_var</code> in tidy format by specifying these additional arguments within <code>get_summary</code>.</p>
+<p>Voila! We have reproduced Table 1 in <span class="citation">(Buja et al. 2019)</span>. Note that there are minor differences due to slightly different parameters and random seeds used in our analysis to the original paper.</p>
+<p>We could also obtain the other types of estimates of the variance (i.e., from residual and multiplier bootstraps) that we computed in <code><a href="../reference/comp_var.html">comp_var()</a></code> in tidy format by specifying these additional arguments within <code><a href="../reference/get_summary.html">get_summary()</a></code>.</p>
 </div>
 <div id="visualizing-the-estimates" class="section level2">
 <h2 class="hasAnchor">
 <a href="#visualizing-the-estimates" class="anchor"></a>Visualizing the estimates</h2>
-<p>We may want to compare some of the estimates that we obtained through <code>comp_var</code> in a plot. Confidence intervals and normality of the (bootstrap) estimates represent two (arguably) interesting statistics the data scientist/researcher may want to look at. The corresponding plots are returned by default when <code>plot</code> is called on an object of class <code>maars_lm</code>, together with six other “typical” <code><a href="https://rdrr.io/r/stats/lm.html">stats::lm</a></code> plots. The plots can be visualized sequentially calling <code>plot</code> on an object of class maars_lm, lm (e.g., <code>plot(mms_fit, which=c(1,2,7)</code>). Alternatively, we can store them in a list via <code>get_plot</code>, as we do below.</p>
+<p>We may want to compare some of the estimates that we obtained through <code><a href="../reference/comp_var.html">comp_var()</a></code> in a plot. Confidence intervals and normality of the (bootstrap) estimates represent two (arguably) interesting statistics the data scientist/researcher may want to look at. The corresponding plots are returned by default when <code>plot</code> is called on an object of class <code>maars_lm</code>, together with six other “typical” <code><a href="https://rdrr.io/r/stats/lm.html">stats::lm()</a></code> plots. The plots can be visualized sequentially calling <code>plot</code> on an object of class maars_lm, lm (e.g., <code>plot(mms_fit, which=c(1,2,7)</code>). Alternatively, we can store them in a list via <code><a href="../reference/get_plot.html">get_plot()</a></code>, as we do below.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">mms_plots</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_plot.html">get_plot</a></span><span class="op">(</span><span class="va">mms_fit</span><span class="op">)</span></code></pre></div>
-<p>Let’s first look at the six “typical” <code>lm</code> plots.</p>
+<p>Let’s first look at the six “typical” <code><a href="https://rdrr.io/r/stats/lm.html">stats::lm()</a></code> plots. We will do some minor formatting of the plot text size. Since the output is a <code>list</code> we can simply do this in a single pipeline using the relevant <code>purrr</code> and <code>patchwork</code> functions.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">patchwork</span><span class="fu">::</span><span class="fu"><a href="https://patchwork.data-imaginist.com/reference/wrap_plots.html">wrap_plots</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span> <span class="op">%&gt;%</span> 
-                        <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="op">~</span> <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/pluck.html">pluck</a></span><span class="op">(</span><span class="va">mms_plots</span>, <span class="va">.</span><span class="op">)</span> <span class="op">+</span> 
-                                           <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>plot.title <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>size<span class="op">=</span><span class="fl">9</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, 
-                      ncol <span class="op">=</span> <span class="fl">3</span>, 
-                      nrow <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fl">1</span><span class="op">:</span><span class="fl">6</span> <span class="op">%&gt;%</span>
+  <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="op">~</span> <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/pluck.html">pluck</a></span><span class="op">(</span><span class="va">mms_plots</span>, <span class="va">.</span><span class="op">)</span> <span class="op">+</span>
+    <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>plot.title <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">9</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">%&gt;%</span>
+  <span class="fu">patchwork</span><span class="fu">::</span><span class="fu"><a href="https://patchwork.data-imaginist.com/reference/wrap_plots.html">wrap_plots</a></span><span class="op">(</span><span class="va">.</span>, ncol <span class="op">=</span> <span class="fl">3</span>, nrow <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></code></pre></div>
 <p><img src="se-la-county-data_files/figure-html/compare_lm-1.png" width="576" style="display: block; margin: auto;"></p>
-<p>Let’s compare confidence intervals for the regression coefficients based on the different types of estimators of the variance.</p>
+<p>Let’s compare confidence intervals for the regression coefficients based on the different types of estimators of the variance. Since all <code>maars</code> plot outputs are by default <code>ggplot</code> objects, we can adjust the plot legend and other formats easily, as demonstrated below.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/pluck.html">pluck</a></span><span class="op">(</span><span class="va">mms_plots</span>, <span class="st">'p7'</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/pluck.html">pluck</a></span><span class="op">(</span><span class="va">mms_plots</span>, <span class="st">"p7"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span> <span class="op">+</span>
+  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guides.html">guides</a></span><span class="op">(</span>colour <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/guide_legend.html">guide_legend</a></span><span class="op">(</span>nrow <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><img src="se-la-county-data_files/figure-html/compare_confint-1.png" width="576" style="display: block; margin: auto;"></p>
 <p>Let’s now visualize the distribution of the bootstrap estimate to check whether it well approximates the normal distribution.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/pluck.html">pluck</a></span><span class="op">(</span><span class="va">mms_plots</span>, <span class="st">'p8'</span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/pluck.html">pluck</a></span><span class="op">(</span><span class="va">mms_plots</span>, <span class="st">"p8"</span><span class="op">)</span></code></pre></div>
 <p><img src="se-la-county-data_files/figure-html/visualize_boot_estimates-1.png" width="576" style="display: block; margin: auto;"></p>
 </div>
 <div id="references" class="section level2 unnumbered">
@@ -819,7 +855,7 @@ PercIndustrial
 <a href="#references" class="anchor"></a>References</h2>
 <div id="refs" class="references csl-bib-body hanging-indent">
 <div id="ref-buja2019modelsasapproximationspart1" class="csl-entry">
-Buja, Andreas, Lawrence Brown, Richard Berk, Edward George, Emil Pitkin, Mikhail Traskin, Kai Zhang, and Linda Zhao. 2019. <span>“Models as Approximations <span>I</span>: Consequences Illustrated with Linear Regression.”</span> <em>Statist. Sci.</em> 34 (4): 523–44. <a href="https://doi.org/10.1214/18-STS693">https://doi.org/10.1214/18-STS693</a>.
+Buja, Andreas, Lawrence Brown, Richard Berk, Edward George, Emil Pitkin, Mikhail Traskin, Kai Zhang, and Linda Zhao. 2019. <span>“Models as Approximations <span>I</span>: Consequences Illustrated with Linear Regression.”</span> <em>Statist. Sci.</em> 34 (4): 523–44.
 </div>
 <div id="ref-white1980heteroskedasticconsistentcovest" class="csl-entry">
 White, Halbert. 1980a. <span>“A Heteroskedasticity-Consistent Covariance Matrix Estimator and a Direct Test for Heteroskedasticity.”</span> <em>Econometrica</em> 48 (4): 817–38. <a href="https://doi.org/10.2307/1912934">https://doi.org/10.2307/1912934</a>.

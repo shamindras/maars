@@ -44,7 +44,8 @@ Suggests:
     covr,
     rmarkdown,
     devtools,
-    patchwork
+    patchwork,
+    DT
 RdMacros: Rdpack
 Encoding: UTF-8
 Language: en-US

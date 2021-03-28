@@ -6,7 +6,7 @@
 \alias{maars-package}
 \title{maars: Tidy Inference Under Misspecified Statistical Models in R}
 \description{
-To learn more about \code{maars}, start with the vignettes:
+To learn more about maars, start with the vignettes:
 \code{browseVignettes(package = "maars")}
 }
 \seealso{
