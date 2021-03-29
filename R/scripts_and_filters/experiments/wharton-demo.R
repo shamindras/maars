@@ -99,7 +99,7 @@ print(mms_fit2)
 # are shown, together with the corresponding assumptions
 #summary(mms_fit0)
 #summary(mms_fit1, boot_emp = TRUE)
-summary(mms_fit2, boot_emp = TRUE, boot_mul = TRUE, boot_res = TRUE)
+summary(mms_fit2)
 
 # we also store summary in a list!
 summ_out <- summary(mms_fit1)

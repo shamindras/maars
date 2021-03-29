@@ -173,19 +173,17 @@ get_mms_summary_split_cli <- function(title,
 #'   (well specified) output is required, \code{FALSE} to exclude this output
 #'   from the request.
 #' @param digits (integer) : Rounding digits used in some of the function's output.
-#' @param split (logical) : TODO: Add later
 #' @param ... Additional arguments.
 #'
 #' @method summary maars_lm
 #' @export
 summary.maars_lm <- function(object,
-                             sand = TRUE,
+                             sand = FALSE,
                              boot_emp = FALSE,
                              boot_res = FALSE,
                              boot_mul = FALSE,
                              well_specified = FALSE,
                              digits = 3,
-                             split = TRUE,
                              ...) {
 
   # Get the variance types the user has requested. This performs assertion

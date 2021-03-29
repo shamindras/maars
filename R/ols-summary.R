@@ -64,7 +64,7 @@ check_fn_args_summary <- function(mod_fit,
 
   # Assertion checking for mod_fit is of class "maars_lm", "lm"
   assertthat::assert_that(all(c("maars_lm", "lm") == class(mod_fit)),
-    msg = glue::glue("mod_fit must only be of class: ['maars_lm', 'lm']")
+                          msg = glue::glue("mod_fit must only be of class: ['maars_lm', 'lm']")
   )
 
   # Input variance parameter names
@@ -92,63 +92,70 @@ check_fn_args_summary <- function(mod_fit,
     purrr::map_lgl(.x = ., ~.x) %>%
     unname(obj = .)
 
-  # If all parameters are FALSE, return a warning, and the table containing
-  # only the sandwich variance
+
   if (!any(var_param_vals_lgl)) {
-    warning(glue::glue("You have passed in FALSE for all input variance parameters:",
-      "\n[sand, boot_emp, boot_res, boot_mul, well_specified].",
-      "\n\nReturning the default sandwich variance estimator...\n",
-      .sep = " "
-    ))
-    comm_nms <- c("var_sand")
-  } else {
-    # Filter to only the selected variance params i.e. those with TRUE values
-    var_param_nms_filt <- var_param_nms[var_param_vals_lgl]
+    # TODO: delete these lines
+    # warning(glue::glue("You have passed in FALSE for all input variance parameters:",
+    #                    "\n[sand, boot_emp, boot_res, boot_mul, well_specified].",
+    #                    "\n\nReturning the default sandwich variance estimator...\n",
+    #                    .sep = " "
+    # ))
+    # comm_nms <- c("var_sand")
 
-    # Get the comp_mms_var output from the fitted maars_lm object
-    out_comp_mms_var <- mod_fit$var
-    # out_comp_mms_var_nms <- names(out_comp_mms_var)
-    # Get the abbreviated names i.e. remove the "var_" prefix to align with summary
-    # inputs
-    # out_comp_mms_var_nms_abb <- names(out_comp_mms_var) %>%
-    #     stringr::str_replace_all(string = ., pattern = "var_", "")
-
-    # Filter out the non-NULL variance values
-    out_comp_mms_var_filt <- purrr::compact(.x = out_comp_mms_var)
-    # Get the abbreviated names i.e. with the "_var" prefix removed
-    out_comp_mms_var_filt_nms_abb <- names(out_comp_mms_var_filt) %>%
-      stringr::str_replace_all(string = ., pattern = "var_", "")
-
-    # Get the common variance estimates from the the model and the user
-    # requested variance estimates
-    # Here intersect first uses the model variance estimate names to ensure
-    # that the ordering of variance estimates is preserved from comp_mms_var.
-    # This will ensure the correct default ordering in the consolidated
-    # variance summary terms in other functions that use this assertion
-    # check
-    comm_nms_abb <- intersect(out_comp_mms_var_filt_nms_abb, var_param_nms_filt)
-
-    # Check that the user requested cterms are
-    assertthat::assert_that(
-      length(comm_nms_abb) == length(var_param_nms_filt),
-      msg = glue::glue("You have requested variance summary for:",
-        "\n[{glue::glue_collapse(var_param_nms_filt, sep = ', ')}]",
-        "\n\nHowever your model only has the following variance computations:",
-        "\n[{glue::glue_collapse(out_comp_mms_var_filt_nms_abb, sep = ', ')}]",
-        "\n\nPlease refit your maars_lm model again with your requested variance computations and re-run...",
-        .sep = " "
-      )
-    )
-
-    # Add the "var_" prefix to the requested variance terms, so that we
-    # match the names in the variance estimates from the model i.e. from the
-    # comp_mms_var output
-    comm_nms <- stringr::str_c("var_", comm_nms_abb, sep = "")
+    # extract available types of variance estimators
+    available_var_nms <- purrr::pluck(.x = mod_fit, 'var') %>%
+      purrr::compact(.x = .) %>%
+      purrr::map(~ purrr::pluck(.x, 'var_type')) %>%
+      unname() %>% unlist()
+    # set to true the arguments based on availability
+    var_param_vals_lgl <-  var_param_nms %in% available_var_nms
   }
+
+  # Filter to only the selected variance params i.e. those with TRUE values
+  var_param_nms_filt <- var_param_nms[var_param_vals_lgl]
+
+  # Get the comp_mms_var output from the fitted maars_lm object
+  out_comp_mms_var <- purrr::pluck(mod_fit, 'var')
+  # out_comp_mms_var_nms <- names(out_comp_mms_var)
+  # Get the abbreviated names i.e. remove the "var_" prefix to align with summary
+  # inputs
+  # out_comp_mms_var_nms_abb <- names(out_comp_mms_var) %>%
+  #     stringr::str_replace_all(string = ., pattern = "var_", "")
+
+  # Filter out the non-NULL variance values
+  out_comp_mms_var_filt <- purrr::compact(.x = out_comp_mms_var)
+  # Get the abbreviated names i.e. with the "_var" prefix removed
+  out_comp_mms_var_filt_nms_abb <- names(out_comp_mms_var_filt) %>%
+    stringr::str_replace_all(string = ., pattern = "var_", "")
+
+  # Get the common variance estimates from the the model and the user
+  # requested variance estimates
+  # Here intersect first uses the model variance estimate names to ensure
+  # that the ordering of variance estimates is preserved from comp_mms_var.
+  # This will ensure the correct default ordering in the consolidated
+  # variance summary terms in other functions that use this assertion
+  # check
+  comm_nms_abb <- intersect(out_comp_mms_var_filt_nms_abb, var_param_nms_filt)
+
+  # Check that the user requested cterms are
+  assertthat::assert_that(
+    length(comm_nms_abb) == length(var_param_nms_filt),
+    msg = glue::glue("You have requested variance summary for:",
+                     "\n[{glue::glue_collapse(var_param_nms_filt, sep = ', ')}]",
+                     "\n\nHowever your model only has the following variance computations:",
+                     "\n[{glue::glue_collapse(out_comp_mms_var_filt_nms_abb, sep = ', ')}]",
+                     "\n\nPlease refit your maars_lm model again with your requested variance computations and re-run...",
+                     .sep = " "
+    )
+  )
+
+  # Add the "var_" prefix to the requested variance terms, so that we
+  # match the names in the variance estimates from the model i.e. from the
+  # comp_mms_var output
+  comm_nms <- stringr::str_c("var_", comm_nms_abb, sep = "")
 
   return(comm_nms)
 }
-
 
 # FUNCTIONS: emoji and title builder helper function ----
 
@@ -322,7 +329,7 @@ fetch_mms_comp_var_attr <- function(comp_var_ind, req_type) {
 #'
 #' }
 get_summary <- function(mod_fit,
-                        sand = TRUE,
+                        sand = FALSE,
                         boot_emp = FALSE,
                         boot_mul = FALSE,
                         boot_res = FALSE,
@@ -416,13 +423,10 @@ get_summary <- function(mod_fit,
 #' # This returns everything but boot_mul, since we didn't run it in the original
 #' # original maars_lm model
 #' get_assumptions(
-#'   mod_fit = comp_var1, sand = TRUE,
-#'   boot_emp = TRUE, boot_res = TRUE, boot_mul = FALSE,
-#'   well_specified = TRUE
-#' )
+#'   mod_fit = comp_var1)
 #' }
 get_assumptions <- function(mod_fit,
-                            sand = TRUE,
+                            sand = FALSE,
                             boot_emp = FALSE,
                             boot_mul = FALSE,
                             boot_res = FALSE,
