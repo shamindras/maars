@@ -179,24 +179,23 @@ check_fn_args_summary <- function(mod_fit,
 #' }
 fetch_mms_emoji_title <- function(var_type_abb, title_type) {
 
-
   # Get the title only for the specific variance type
-  var_title <- switch(var_type_abb,
-    "lm" = "Well Specified Model",
-    "sand" = "Sandwich",
-    "emp" = "Empirical Bootstrap",
-    "res" = "Residual Bootstrap",
-    "mul" = "Multiplier Bootstrap"
+  var_title <- dplyr::case_when(
+    var_type_abb == "lm" ~ "Well Specified Model",
+    var_type_abb == "sand" ~ "Sandwich",
+    var_type_abb == "emp" ~ "Empirical Bootstrap",
+    var_type_abb == "res" ~ "Residual Bootstrap",
+    var_type_abb == "mul" ~ "Multiplier Bootstrap"
   ) %>%
     glue::as_glue(x = .)
 
   # Get the emoji only for the specific variance type
-  var_emoji <- switch(var_type_abb,
-    "lm" = "\U1F4C9\U1F4C8",
-    "sand" = "\U1F969\U1F35E", # \U1F96A
-    "emp" = "\U1F9EE\U1F45F",
-    "res" = "\U2696\U1F45F",
-    "mul" = "\U274C\U1F45F" # \U2716
+  var_emoji <- dplyr::case_when(
+    var_type_abb == "lm" ~ "\U1F4C9\U1F4C8",
+    var_type_abb == "sand" ~ "\U1F969\U1F35E", # \U1F96A
+    var_type_abb == "emp" ~ "\U1F9EE\U1F45F",
+    var_type_abb == "res" ~ "\U2696\U1F45F",
+    var_type_abb == "mul" ~ "\U274C\U1F45F" # \U2716
   ) %>%
     glue::as_glue(x = .)
 
@@ -204,10 +203,10 @@ fetch_mms_emoji_title <- function(var_type_abb, title_type) {
   var_emoji_title <- glue::glue("{var_emoji}: {var_title}:")
 
   # Get the specific string type based on user specification
-  out <- switch(title_type,
-    "title" = var_title,
-    "emoji" = var_emoji,
-    "emoji_title" = var_emoji_title
+  out <- dplyr::case_when(
+    title_type == "title" ~ var_title,
+    title_type == "emoji" ~ var_emoji,
+    title_type == "emoji_title" ~ var_emoji_title
   )
   return(out)
 }

@@ -173,7 +173,9 @@ unless specified otherwise. Let's first extract the summary of `mms_fit`.
 
 ``` {r mms_summary}
 # get output
-mms_summary <- get_summary(mms_fit, boot_emp = TRUE, well_specified = TRUE)
+mms_summary <- get_summary(mms_fit, sand = TRUE, 
+                           boot_emp = TRUE, 
+                           well_specified = TRUE)
 # print heading
 head(mms_summary) %>%
   knitr::kable(x = ., format = "html", digits = 3, align = "c") %>%

@@ -7,7 +7,7 @@ a fitted OLS \code{maars_lm, lm} class object}
 \usage{
 get_assumptions(
   mod_fit,
-  sand = TRUE,
+  sand = FALSE,
   boot_emp = FALSE,
   boot_mul = FALSE,
   boot_res = FALSE,
@@ -70,9 +70,6 @@ comp_var1 <- comp_var(
 # This returns everything but boot_mul, since we didn't run it in the original
 # original maars_lm model
 get_assumptions(
-  mod_fit = comp_var1, sand = TRUE,
-  boot_emp = TRUE, boot_res = TRUE, boot_mul = FALSE,
-  well_specified = TRUE
-)
+  mod_fit = comp_var1)
 }
 }

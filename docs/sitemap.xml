@@ -106,16 +106,13 @@
     <loc>https://shamindras.github.io/maars/reference/get_mms_print_cli.html</loc>
   </url>
   <url>
-    <loc>https://shamindras.github.io/maars/reference/get_mms_rnm_cols_suff.html</loc>
-  </url>
-  <url>
     <loc>https://shamindras.github.io/maars/reference/get_mms_summary_confint_split_cli.html</loc>
   </url>
   <url>
-    <loc>https://shamindras.github.io/maars/reference/get_mms_summary_print_lm_style.html</loc>
+    <loc>https://shamindras.github.io/maars/reference/get_mms_summary_split_cli.html</loc>
   </url>
   <url>
-    <loc>https://shamindras.github.io/maars/reference/get_mms_summary_split_cli.html</loc>
+    <loc>https://shamindras.github.io/maars/reference/get_mms_summary_with_stars.html</loc>
   </url>
   <url>
     <loc>https://shamindras.github.io/maars/reference/get_plot.html</loc>
