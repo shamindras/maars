@@ -302,19 +302,24 @@ fetch_mms_comp_var_attr <- function(comp_var_ind, req_type) {
 #' y <- 2 + X_1 * 1 + X_2 * 5 + eps
 #' lm_fit <- stats::lm(y ~ X_1 + X_2)
 #'
-#' # DEFINE common column names - these stay the same across all
-#' # reported error types
-#' common_vars <- c("term", "estimate")
 #'
 #' # Empirical Bootstrap check
 #' set.seed(454354534)
-#' comp_var1 <- comp_var(
+#' mms_var <- comp_var(
 #'   mod_fit = lm_fit, boot_emp = list(B = 20, m = 200),
-#'   boot_res = list(B = 30),
-#'   boot_mul = NULL
+#'   boot_res = list(B = 30)
 #' )
 #'
-#' # TODO: Add here
+#' get_summary(mms_var)
+#'
+#' # compute variance with multiplier bootstrap now
+#' mms_var2 <- comp_var(
+#'   mod_fit = lm_fit,
+#'   boot_mul = list(B = 100)
+#' )
+#'
+#' get_summary(mms_var2)
+#'
 #' }
 get_summary <- function(mod_fit,
                         sand = TRUE,
