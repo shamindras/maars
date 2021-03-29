@@ -149,36 +149,6 @@ check_fn_args_summary <- function(mod_fit,
   return(comm_nms)
 }
 
-# FUNCTIONS: variance summary columns suffix renaming helper function ----
-
-#' Adds a variance type abbreviation suffix to variance summary tibbles
-#'
-#' @param var_summary TODO: Add later
-#' @param var_type_abb TODO: Add later
-#'
-#' @return (\code{tibble}) : TODO Add later
-#'
-#' @keywords internal
-#'
-#' @examples
-#' \dontrun{
-#' # TODO: Add here
-#' }
-get_mms_rnm_cols_suff <- function(var_summary, var_type_abb) {
-
-  # Append suffix to variable names
-  cols_common <- c("term", "estimate")
-  cols_with_suffix <- setdiff(colnames(var_summary), cols_common) %>%
-    stringr::str_c(., var_type_abb, sep = ".")
-  cols_renamed <- c(cols_common, cols_with_suffix)
-
-  # Apply new names
-  var_summary <- dplyr::rename_with(.data = var_summary,
-                                    .fn = ~ cols_renamed,
-                                    .cols = dplyr::everything())
-
-  return(var_summary)
-}
 
 # FUNCTIONS: emoji and title builder helper function ----
 
