@@ -104,7 +104,7 @@ comp_var <- function(mod_fit,
 #' \dontrun{
 #' # TODO: Add later
 #' }
-get_mms_summary_print_lm_style <- function(var_summary, digits) {
+get_mms_summary_with_stars <- function(var_summary, digits) {
   out_summ <- var_summary %>%
     dplyr::mutate(.data = ., sig = stats::symnum(.data$p.value,
       corr = FALSE, na = FALSE,
@@ -122,9 +122,7 @@ get_mms_summary_print_lm_style <- function(var_summary, digits) {
       `Pr(>|t|)` = .data$p.value,
       `Signif.` = .data$sig
     )
-
-  cat("Coefficients:\n")
-  print.data.frame(out_summ, row.names = FALSE, digits = digits)
+  return(out_summ)
 }
 
 #' Print interleaved summary for a \code{maars_lm, lm} object, for a
@@ -149,7 +147,11 @@ get_mms_summary_split_cli <- function(title,
                                       digits = 3) {
   cli::cli_h1(cli::col_yellow(glue::glue("{title} Summary")))
   cli::cli_text("\n")
-  get_mms_summary_print_lm_style(var_summary = summary, digits = digits)
+
+  summary_stats <- get_mms_summary_with_stars(var_summary = summary, digits = digits)
+  cat("Coefficients:\n")
+  print.data.frame(summary_stats, row.names = FALSE, digits = digits)
+
   cli::cli_h2(cli::col_green(glue::glue("{title} Assumptions")))
   cli::cli_li(assumptions)
 }
