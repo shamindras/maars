@@ -1,9 +1,9 @@
-pandoc: 2.11.4
+pandoc: '2.11'
 pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
   se-la-county-data: se-la-county-data.html
-last_built: 2021-03-29T20:53Z
+last_built: 2021-03-30T13:37Z
 urls:
   reference: https://shamindras.github.io/maars/reference
   article: https://shamindras.github.io/maars/articles

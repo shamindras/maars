@@ -1,6 +1,9 @@
 template:
+  bootswatch: flatly
   params:
-    bootswatch: flatly
+    docsearch:
+      api_key: f0ad25edfd6fa5501f3057affbad5212
+      index_name: maars
 
 url: https://shamindras.github.io/maars
 
