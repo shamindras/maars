@@ -17,7 +17,7 @@ df <- gen_reg_data(n = n, gamma = 0)
 lm_fit <- stats::lm(Y ~ X, data = df)
 
 
-# ----
+# test error handling and assertion checking ----
 test_that("Empirical Bootstrap input list assertion checking explicitly", {
     # valid since the named arguments are B, m
     testthat::expect_true(check_fn_args_comp_mms_var_boot_ind(inp_list = list(B = 10, m = 100), boot_type = "boot_emp"))
@@ -227,6 +227,13 @@ test_that("test multiplier bootstrap assertion checking in comp_mms_var", {
 
 
 
+
+
+
+
+# test output of comp_mms_var matches output of its functions ----
+
+
 test_that("test estimate variance from empirical bootstrap matches comp_mms_var", {
     # Empirical Bootstrap check
     set.seed(454354534)
@@ -236,6 +243,9 @@ test_that("test estimate variance from empirical bootstrap matches comp_mms_var"
                                        boot_emp = list(B = 1e2, m = 600),
                                        boot_res = NULL,
                                        boot_mul = NULL)
+    expect_equal(
+        boot_out_emp_comp1[["var_boot_emp"]][["cov_mat"]],
+        boot_out_emp1[["cov_mat"]], tol = 1e-5)
     expect_equal(
         boot_out_emp_comp1[["var_boot_emp"]][["cov_mat"]],
         boot_out_emp1[["cov_mat"]], tol = 1e-5)
@@ -272,10 +282,9 @@ test_that("test estimate variance from multiplier bootstrap matches comp_mms_var
 
 
 
-# ----
+# test whether our variance estimators agree ----
 
-
-test_that("test estimate covariance matrices from multiplier and empirical bootstraps match", {
+test_that("test estimated covariance matrices from multiplier and empirical bootstraps match in case of misspecified models", {
 
     set.seed(1342)
     # generate misspecified model
@@ -297,5 +306,7 @@ test_that("test estimate covariance matrices from multiplier and empirical boots
         boot_out_emp[["var_summary"]],
         tol = 1e-1)
 })
+
+
 
 
