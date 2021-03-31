@@ -86,7 +86,7 @@ comp_var <- function(mod_fit,
   out_var <- comp_mms_var(mod_fit, boot_emp, boot_res, boot_mul)
   mod_fit[["var"]] <- out_var
 
-  attr(mod_fit, "class") <- c("maars_lm", "lm")
+  class(mod_fit) <- c("maars_lm", "lm")
 
   return(mod_fit)
 }
@@ -319,6 +319,7 @@ summary.maars_lm <- function(object,
     all_summaries = all_summaries,
     all_emoji_titles = all_emoji_titles,
     all_assumptions = all_assumptions,
+    stats_lm = stats_lm,
     stats_sand = stats_sand,
     digits = digits
   )
@@ -353,7 +354,7 @@ print.summary.maars_lm <- function(x, ...) {
   )
   cli::cli_h2(cli::col_blue(glue::glue("Signif. codes:")))
   cli::cli_li("0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1")
-  cli::cli_h2(cli::col_magenta(glue::glue("Summary statistics:")))
+  cli::cli_h2(cli::col_magenta(glue::glue("Summary statistics (sandwich):")))
   cli::cli_li(purrr::pluck(x, "stats_sand"))
 }
 
@@ -476,7 +477,7 @@ print.maars_lm <- function(x, ...) {
 #'
 #' @export
 as.maars <- function(x, ...) {
-  attr(x, "class") <- c("maars_lm", "lm")
+  class(x) <- c("maars_lm", "lm")
   return(x)
 }
 
