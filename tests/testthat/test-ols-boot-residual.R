@@ -23,8 +23,8 @@ test_that('variance is 0 when the model is well-specified and sample size is lar
     lm_fit <- stats::lm(y ~ X)
     boot_out <- comp_boot_res(lm_fit, B = 1e3)$boot_out %>% tidyr::unnest(cols = boot_out)
     expect_equal(boot_out %>% dplyr::group_by(term) %>%
-                     dplyr::summarize(sd_estimate = var(estimate)) %>%
-                   dplyr::pull(sd_estimate) %>% unname(),
+                     dplyr::summarize(var_estimate = var(estimate)) %>%
+                   dplyr::pull(var_estimate) %>% unname(),
                  c(0,0), tol = 1e-2)
 })
 
