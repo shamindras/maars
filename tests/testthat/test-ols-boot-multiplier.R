@@ -113,4 +113,43 @@ test_that("test std errors from our multiplier bootstrap match those from the sa
 
 
 
+test_that("test statistics from our multiplier
+          bootstrap matches that from the sandwich package for misspecified model", {
+
+              # generate misspecified model
+              df <- gen_reg_data(100, gamma = 0.3)
+              lm_fit <- lm(Y ~ X, data = df)
+
+              var_mulboot <- comp_boot_mul(lm_fit, B = 1e5)
+              # get estimate from sandwich package
+              var_sandwichpkg <- sandwich::vcovBS(lm_fit,
+                                                  type = "wild",
+                                                  cluster = NULL,
+                                                  R = 1e5)
+              # covariance matrices
+              expect_equal(var_mulboot$cov_mat,
+                           var_sandwichpkg, tol = 1e-2)
+              # statistic
+              expect_equal(
+                  var_mulboot$var_summary$statistic,
+                  broom::tidy(lmtest::coeftest(lm_fit, vcov = var_sandwichpkg))$statistic,
+                  tol = 1e-2
+              )
+              # error
+              expect_equal(
+                  var_mulboot$var_summary$std.error,
+                  broom::tidy(lmtest::coeftest(lm_fit, vcov = var_sandwichpkg))$std.error,
+                  tol = 1e-2
+              )
+              # p-values
+              expect_equal(
+                  var_mulboot$var_summary$p.value,
+                  broom::tidy(lmtest::coeftest(lm_fit, vcov = var_sandwichpkg))$p.value,
+                  tol = 1e-2
+              )
+          })
+
+
+
+
 

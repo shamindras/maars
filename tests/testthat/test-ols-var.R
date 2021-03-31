@@ -283,7 +283,6 @@ test_that("test estimate variance from multiplier bootstrap matches comp_mms_var
 
 
 # test whether our variance estimators agree ----
-
 test_that("test estimated covariance matrices from multiplier and empirical bootstraps match in case of misspecified models", {
 
     set.seed(1342)
