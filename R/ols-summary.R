@@ -1,4 +1,4 @@
-# FUNCTIONS: Assertion checking helper function ----
+# Assertion checking helper function ----
 
 #' Assertion Checks for individual \code{\link{get_boot_summary}} function inputs
 #'
@@ -157,7 +157,7 @@ check_fn_args_summary <- function(mod_fit,
   return(comm_nms)
 }
 
-# FUNCTIONS: emoji and title builder helper function ----
+# Emoji and title builder helper function ----
 
 #' An emoji and title builder helper function for a specific variance type
 #'
@@ -211,7 +211,7 @@ fetch_mms_emoji_title <- function(var_type_abb, title_type) {
   return(out)
 }
 
-# FUNCTIONS: Get the individual variance summary attribute from comp_var ----
+# Get the individual variance summary attribute from comp_var ----
 # This function works off our common list output from comp_var
 
 #' Get the individual variance summary for a specific attribute in the

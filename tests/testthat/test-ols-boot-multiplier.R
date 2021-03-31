@@ -1,5 +1,18 @@
 # Multiplier Bootstrap Utilities -----------------------------------------------
 
+set.seed(1243434)
+
+# thanks to Arun K. for providing the following function
+gen_reg_data <- function(n,
+                         gamma){ # gamma ~ "degree of misspecification"
+    beta0 <- 1
+    beta1 <- 2
+    X <- runif(n, 0, 10)
+    Y <- beta0 + beta1*X + gamma*X^{1.7} + exp(gamma*X)*rnorm(n)
+    data <- tibble::tibble(X = X, Y = Y)
+    return(data)
+}
+
 #' This is the \code{purrr} implementation of
 #' \code{\link{multiplier_single_bootstrap}}. It should be slower
 #' than the matrix implementation \code{\link{multiplier_single_bootstrap}}
