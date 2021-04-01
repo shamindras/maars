@@ -18,8 +18,11 @@ github
 glm
 grey
 hardcoded
+homoscedasticity
 https
+kableExtra
 Kai
+knitr
 Kuchibhotla
 Kuchibhotla's
 Kumar
@@ -45,6 +48,7 @@ reweighting
 Riccardo
 roxygen
 selectiveInference
+shamindras
 Stata
 Statist
 StatLib
@@ -52,6 +56,7 @@ STS
 th
 tibble
 tibbles
+tidyverse
 Traskin
 usethis
 Xie
