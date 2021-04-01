@@ -61,7 +61,7 @@ us, or file an issue if you would like to contribute to it.
 Buja, Andreas, Lawrence Brown, Richard Berk, Edward George, Emil Pitkin,
 Mikhail Traskin, Kai Zhang, and Linda Zhao. 2019. “Models as
 Approximations I: Consequences Illustrated with Linear Regression.”
-*Statist. Sci.* 34 (4): 523–44. <https://doi.org/10.1214/18-STS693>.
+*Statist. Sci.* 34 (4): 523–44.
 
 </div>
 
@@ -70,7 +70,7 @@ Approximations I: Consequences Illustrated with Linear Regression.”
 Buja, Andreas, Lawrence Brown, Arun Kumar Kuchibhotla, Richard Berk,
 Edward George, and Linda Zhao. 2019. “Models as Approximations II: A
 Model-Free Theory of Parametric Regression.” *Statist. Sci.* 34 (4):
-545–65. <https://doi.org/10.1214/18-STS694>.
+545–65.
 
 </div>
 

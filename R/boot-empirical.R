@@ -106,15 +106,15 @@ comp_boot_emp_samples <- function(data,
 #' mod_fit <- lm(y ~ X)
 #'
 #' # fit weighted regression
-#' df <- tibble::tibble(y = y, X = X, weights = 1:length(X))
-#' mod <- fit_reg(mod_fit, df, "weights")
+#' reg_df <- tibble::tibble(y = y, X = X, weights = 1:length(X))
+#' mod <- fit_reg(mod_fit, reg_df, "weights")
 #' print(mod)
 #'
 #' # fit unweighted regression
-#' mod <- fit_reg(mod_fit, df)
+#' mod <- fit_reg(mod_fit, reg_df)
 #' print(mod)
 #' # compare this output with the output from lm
-#' coef(lm(y ~ X, df))
+#' coef(lm(y ~ X, reg_df))
 #' }
 fit_reg <- function(mod_fit, data, weights = NULL) {
   if (all("lm" == class(mod_fit))) {
@@ -209,7 +209,7 @@ fit_reg <- function(mod_fit, data, weights = NULL) {
 #' }
 comp_boot_emp <- function(mod_fit, B = 100, m = NULL) {
   assertthat::assert_that(all("lm" == class(mod_fit)) | any("glm" == class(mod_fit)),
-    msg = glue::glue("mod_fit must only be of class lm or glm")
+                          msg = glue::glue("mod_fit must only be of class lm or glm")
   )
   check_fn_args(B = B, m = m)
 
@@ -232,11 +232,12 @@ comp_boot_emp <- function(mod_fit, B = 100, m = NULL) {
   cov_mat <- boot_out %>%
     purrr::map(~ .x %>% dplyr::pull(estimate)) %>%
     dplyr::bind_rows(data = ., .id = NULL) %>%
-    cov(.) * m / n
+    stats::cov(x = .) * m / n
 
   boot_out <- boot_out %>%
     dplyr::bind_rows(.id = "b") %>%
-    tidyr::nest(boot_out = c(estimate, term)) %>%
+    tidyr::nest(.data = .,
+                boot_out = c(.data$estimate, .data$term)) %>%
     tibble::add_column(m = m, n = n)
 
   summary_boot <- get_boot_summary(
@@ -251,7 +252,7 @@ comp_boot_emp <- function(mod_fit, B = 100, m = NULL) {
     var_summary = summary_boot,
     var_assumptions = c(
       glue::glue("Observations are assumed to be independent",
-        .sep = " "
+                 .sep = " "
       ),
       glue::glue("Parameters: B = {B}, m = {m}, n = {n}")
     ),
@@ -295,8 +296,8 @@ comp_boot_emp <- function(mod_fit, B = 100, m = NULL) {
 #' X1 <- stats::rnorm(n, 0, 1)
 #' X2 <- stats::rnorm(n, 0, 3)
 #' y <- 2 + X1 + X2 * 0.3 + stats::rnorm(n, 0, 1)
-#' df <- tibble::tibble(y = y, X1 = X1, X2 = X2, n_obs = 1:length(X1))
-#' mod_fit <- stats::lm(y ~ X1 + X2, df)
+#' reg_df <- tibble::tibble(y = y, X1 = X1, X2 = X2, n_obs = 1:length(X1))
+#' mod_fit <- stats::lm(y ~ X1 + X2, reg_df)
 #' boot_out <- comp_boot_emp(mod_fit)
 #' conf_int <- comp_ci_boot(boot_out, c(0.05, 0.95)) %>%
 #'   tidyr::pivot_wider(names_from = q, values_from = x)
@@ -309,15 +310,12 @@ comp_ci_boot <- function(boot_out, probs = c(0.025, 0.975),
   out <- boot_out %>%
     tidyr::unnest(boot_out) %>%
     dplyr::group_by(dplyr::across(dplyr::all_of(group_vars))) %>%
-    dplyr::summarise(
-      x = stats::quantile(sqrt(m / n) * (estimate - mean(estimate)) + mean(estimate),
-        probs = probs
-      ),
-      q = probs,
-      .groups = "keep"
+    dplyr::summarize(.data = .,
+                     x = stats::quantile(sqrt(.data$m / .data$n) * (.data$estimate - mean(.data$estimate)) + mean(.data$estimate),
+                                         probs = probs
+                     ),
+                     q = probs,
+                     .groups = "keep"
     )
   return(out)
 }
-
-
-

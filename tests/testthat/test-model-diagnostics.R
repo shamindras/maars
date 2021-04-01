@@ -34,8 +34,8 @@ test_that("standard errors in reweighting with extreme center has large variance
     # without reweighting
     coef_boot <- comp_boot_emp(glm_fit, B = 1e3)$boot_out %>% tidyr::unnest(cols = boot_out)
     expect_true(
-       all(coef_boot %>% dplyr::group_by(term) %>% dplyr::summarise(std.error = sd(estimate)) %>% dplyr::pull(std.error) <
-        coef_rwgt_boot %>% dplyr::group_by(term) %>% dplyr::summarise(std.error = sd(estimate)) %>% dplyr::pull(std.error))
+       all(coef_boot %>% dplyr::group_by(term) %>% dplyr::summarize(std.error = sd(estimate)) %>% dplyr::pull(std.error) <
+        coef_rwgt_boot %>% dplyr::group_by(term) %>% dplyr::summarize(std.error = sd(estimate)) %>% dplyr::pull(std.error))
     )
 })
 

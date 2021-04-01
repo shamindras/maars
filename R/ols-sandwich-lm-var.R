@@ -40,8 +40,9 @@ comp_sand_var <- function(mod_fit) {
                           msg = glue::glue("lm_object must only be of class lm")
   )
   J_inv <- stats::summary.lm(mod_fit)$cov.unscaled
-  X <- qr.X(mod_fit$qr)
-  meat <- t(X) %*% Matrix::Diagonal(x = stats::residuals(mod_fit)^2) %*% X
+  X <- stats::model.matrix(mod_fit)
+  res <- stats::residuals(mod_fit)
+  meat <- crossprod(x = res * X)
   cov_mat <- as.matrix(J_inv %*% meat %*% J_inv)
 
   std_error_sand <- sqrt(diag(cov_mat)) %>%
@@ -53,7 +54,9 @@ comp_sand_var <- function(mod_fit) {
 
   summary_sand <- mod_fit %>%
     broom::tidy(x = .) %>%
-    dplyr::select(term, estimate) %>%
+    dplyr::select(.data = .,
+                  .data$term,
+                  .data$estimate) %>%
     dplyr::left_join(
       x = .,
       y = std_error_sand,

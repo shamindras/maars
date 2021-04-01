@@ -43,11 +43,11 @@ gen_grid_cent_rwgt <- function(x, grid_method, n_grid) {
     msg = glue::glue("The number of points in the grid needs to be an integer larger than 1.")
   )
   if (grid_method == "regular") {
-    lb <- stats::quantile(x, probs = 0)
-    ub <- stats::quantile(x, probs = 1)
-    out <- base::seq(lb, ub, length = n_grid)
+    lb <- stats::quantile(x = x, probs = 0)
+    ub <- stats::quantile(x = x, probs = 1)
+    out <- seq(from = lb, to = ub, length = n_grid)
   } else if (grid_method == "quantiles") {
-    out <- stats::quantile(x, probs = base::seq(0.1, 0.9, length = n_grid))
+    out <- stats::quantile(x = x, probs = seq(0.1, 0.9, length = n_grid))
   }
   return(unname(out))
 }
@@ -96,38 +96,47 @@ gen_grid_cent_rwgt <- function(x, grid_method, n_grid) {
 #' X1 <- stats::rnorm(n, 0, 1)
 #' X2 <- stats::rnorm(n, 0, 3)
 #' y <- 2 + X1 + X2 * 0.3 + stats::rnorm(n, 0, 1)
-#' df <- tibble::tibble(y = y, X1 = X1, X2 = X2, n_obs = 1:length(X1))
-#' mod_fit <- stats::lm(y ~ X1 + X2, df)
-#' boot_samples <- comp_boot_emp_samples(df, B = 100)
+#' reg_df <- tibble::tibble(y = y, X1 = X1, X2 = X2, n_obs = 1:length(X1))
+#' mod_fit <- stats::lm(y ~ X1 + X2, reg_df)
+#' boot_samples <- comp_boot_emp_samples(reg_df, B = 100)
 #' ols_rwgt_X1 <- diag_fit_reg_rwgt_single(mod_fit, "X1", boot_samples, c(-1, 0, 1, 2))
 #'
 #' # Display the output
 #' print(ols_rwgt_X1)
 #' }
-diag_fit_reg_rwgt_single <- function(mod_fit, term_to_rwgt, boot_samples, term_to_rwgt_centers) {
+diag_fit_reg_rwgt_single <- function(mod_fit,
+                                     term_to_rwgt,
+                                     boot_samples,
+                                     term_to_rwgt_centers) {
   data <- stats::model.frame(mod_fit)
 
   alpha <- 1
   gamma <- stats::sd(data[[term_to_rwgt]]) * alpha
   weights_assigned <- tibble::tibble(
     center = sort(unique(term_to_rwgt_centers)),
-    weights = as.list(center) %>%
-      purrr::map(~ exp(-(.x[[1]] - data[[term_to_rwgt]])^2 / (2 * gamma^2)))
+    weights = purrr::map(.x = as.list(center),
+                 .f = ~ exp(-(.x[[1]] - data[[term_to_rwgt]])^2 / (2 * gamma^2)))
   )
 
   out <- as.list(1:length(weights_assigned$center)) %>%
-    purrr::map_df(~ purrr::map(boot_samples$data,
-      ~ fit_reg(
+    purrr::map_df(.x = .,
+                  .f = ~ purrr::map(.x = boot_samples$data,
+      .f = ~ fit_reg(
         mod_fit = mod_fit,
-        data = .x %>% dplyr::mutate(weights = weights_assigned$weights[[.y]][n_obs]) %>%
-          dplyr::mutate(weights = weights / sum(weights)),
+        data = .x %>%
+          dplyr::mutate(.data = .,
+                        weights = weights_assigned$weights[[.y]][n_obs]) %>%
+          dplyr::mutate(.data = .,
+                        weights = .data$weights / sum(.data$weights)),
         weights = "weights"
       ),
       .y = .x
     ) %>%
       dplyr::bind_rows(.id = "b") %>%
-      dplyr::mutate(b = as.integer(b)) %>%
-      dplyr::mutate(term_rwgt_center = weights_assigned$center[.x]))
+      dplyr::mutate(.data = .,
+                    b = as.integer(.data$b)) %>%
+      dplyr::mutate(.data = .,
+                    term_rwgt_center = weights_assigned$center[.x]))
 
   return(out)
 }
@@ -161,7 +170,7 @@ diag_fit_reg_rwgt_single <- function(mod_fit, term_to_rwgt, boot_samples, term_t
 #'   columns and the corresponding reweighting centers.
 #'   Each column corresponds to a different regressor, whose name is specified
 #'   in the name of the column. Default is set to \code{NULL}.
-#' @param grid_method A chracter which specifies the method used to construct
+#' @param grid_method A character which specifies the method used to construct
 #'   the grid of reweighting centers. The grid can consist either of evenly
 #'   spaced values between the maximum and the minimum
 #'   (\code{grid_method='regular'}) or based on the quantiles between the first
@@ -189,8 +198,8 @@ diag_fit_reg_rwgt_single <- function(mod_fit, term_to_rwgt, boot_samples, term_t
 #' X1 <- stats::rnorm(n, 0, 1)
 #' X2 <- stats::rnorm(n, 0, 3)
 #' y <- 2 + X1 + X2 * 0.3 + stats::rnorm(n, 0, 1)
-#' df <- tibble::tibble(y = y, X1 = X1, X2 = X2, n_obs = 1:length(X1))
-#' mod_fit <- stats::lm(y ~ X1 + X2, df)
+#' reg_df <- tibble::tibble(y = y, X1 = X1, X2 = X2, n_obs = 1:length(X1))
+#' mod_fit <- stats::lm(y ~ X1 + X2, reg_df)
 #' ols_rwgt <- diag_fit_reg_rwgt(mod_fit, c("X1", "X2"))
 #'
 #' # Display the output
@@ -235,14 +244,16 @@ diag_fit_reg_rwgt <- function(mod_fit,
   }
 
   boot_samples <- comp_boot_emp_samples(
-    data = data %>% tibble::add_column(n_obs = 1:nrow(data)),
+    data = tibble::add_column(.data = data,
+                              n_obs = 1:nrow(data)),
     B = B,
     m = m
   )
 
   if (is.null(grid_centers)) {
-    grid_centers <- data %>%
-      dplyr::summarise_all(function(x) {
+    grid_centers <- dplyr::summarize_all(
+      .tbl = data,
+      .funs = function(x) {
         gen_grid_cent_rwgt(x,
           grid_method = grid_method,
           n_grid = n_grid
@@ -251,14 +262,15 @@ diag_fit_reg_rwgt <- function(mod_fit,
   }
 
   out <- terms_to_rwgt %>%
-    purrr::map(~ diag_fit_reg_rwgt_single(
+    purrr::map(.x = .,
+               .f = ~ diag_fit_reg_rwgt_single(
       mod_fit = mod_fit,
       term_to_rwgt = .x[[1]],
       boot_samples = boot_samples,
       term_to_rwgt_centers = grid_centers %>% dplyr::pull(!!.x[[1]])
     )) %>%
     dplyr::bind_rows(.id = "term_rwgt") %>%
-    dplyr::mutate(m = m) %>%
+    dplyr::mutate(.data = ., m = m) %>%
     dplyr::mutate(n = nrow(data)) %>%
     tidyr::nest(
       .data = .,
@@ -292,7 +304,7 @@ diag_fit_reg_rwgt <- function(mod_fit,
 #'   (\code{term} and \code{estimate}). This tibble can be created via the
 #'   \code{diag_fit_reg_rwgt} function.
 #' @param term_chosen A character corresponding to the coefficient of interest
-#'   to be analysed.
+#'   to be analyzed.
 #'
 #' @return A ggplot2 object which shows how the coefficient of one regressor of
 #'   interest (\code{term_chosen}) varies under reweighting of the regressors.
@@ -324,8 +336,8 @@ diag_fit_reg_rwgt <- function(mod_fit,
 #' X1 <- stats::rnorm(n, 0, 1)
 #' X2 <- stats::rnorm(n, 0, 3)
 #' y <- 2 + X1 + X2 * 0.3 + stats::rnorm(n, 0, 1)
-#' df <- tibble::tibble(y = y, X1 = X1, X2 = X2, n_obs = 1:length(X1))
-#' mod_fit <- stats::lm(y ~ X1 + X2, df)
+#' reg_df <- tibble::tibble(y = y, X1 = X1, X2 = X2, n_obs = 1:length(X1))
+#' mod_fit <- stats::lm(y ~ X1 + X2, reg_df)
 #' ols_rwgt <- diag_fit_reg_rwgt(mod_fit, c("X1", "X2"), B = 300)
 #'
 #' # Display the output
@@ -364,7 +376,7 @@ diag_foc_slope <- function(mod_fit, coef_rwgt, term_chosen) {
       .data$term_rwgt,
       .data$term_rwgt_center
     ) %>%
-    dplyr::summarise(
+    dplyr::summarize(
       .data = .,
       estimate = mean(.data$estimate),
       .groups = "keep"
@@ -452,7 +464,7 @@ diag_foc_slope <- function(mod_fit, coef_rwgt, term_chosen) {
 #' @return A ggplot2 object which shows how the estimates of all coefficients
 #'   vary under reweighting of their own regressors.
 #'   The vertical axis represents the estimates of the coefficients under
-#'   reweighting of tthe one regressor, whose names appear in the panels
+#'   reweighting of the one regressor, whose names appear in the panels
 #'   titles. The horizontal axis shows the values of the regressors. The grey
 #'   lines correspond to the traces of bootstrapped estimates forming the
 #'   "spaghetti plot". The black vertical lines indicate 95% confidence
@@ -479,8 +491,8 @@ diag_foc_slope <- function(mod_fit, coef_rwgt, term_chosen) {
 #' X1 <- stats::rnorm(n, 0, 1)
 #' X2 <- stats::rnorm(n, 0, 3)
 #' y <- 2 + X1 + X2 * 0.3 + stats::rnorm(n, 0, 1)
-#' df <- tibble::tibble(y = y, X1 = X1, X2 = X2, n_obs = 1:length(X1))
-#' mod_fit <- stats::lm(y ~ X1 + X2, df)
+#' reg_df <- tibble::tibble(y = y, X1 = X1, X2 = X2, n_obs = 1:length(X1))
+#' mod_fit <- stats::lm(y ~ X1 + X2, reg_df)
 #' ols_rwgt <- diag_fit_reg_rwgt(mod_fit, c("X1", "X2"), B = 300)
 #'
 #' # Display the output
@@ -500,7 +512,7 @@ diag_nl_detect <- function(mod_fit, coef_rwgt) {
     ) %>%
     dplyr::filter(
       .data = .,
-      term == .data$term_rwgt
+      .data$term == .data$term_rwgt
     )
 
   coef_rwgt <- coef_rwgt %>%
@@ -510,12 +522,12 @@ diag_nl_detect <- function(mod_fit, coef_rwgt) {
     ) %>%
     dplyr::filter(
       .data = .,
-      term == .data$term_rwgt
+      .data$term == .data$term_rwgt
     )
 
   coef_rwgt_means <- coef_rwgt %>%
     dplyr::group_by(.data = ., .data$term_rwgt, .data$term_rwgt_center) %>%
-    dplyr::summarise(
+    dplyr::summarize(
       .data = .,
       estimate = mean(.data$estimate),
       .groups = "keep"
@@ -558,7 +570,7 @@ diag_nl_detect <- function(mod_fit, coef_rwgt) {
   p_oriest <- broom::tidy(mod_fit) %>%
     dplyr::rename(
       .data = .,
-      term_rwgt = term
+      term_rwgt = .data$term
     ) %>%
     dplyr::inner_join(
       x = .,
@@ -606,7 +618,7 @@ diag_nl_detect <- function(mod_fit, coef_rwgt) {
 #'   (\code{term} and \code{estimate}). This tibble can be created via the
 #'   \code{\link{diag_fit_reg_rwgt}} function.
 #' @param term_chosen A character corresponding to the coefficient of interest
-#'   to be analysed.
+#'   to be analyzed.
 #'
 #' @return A ggplot2 object which shows how coefficients estimates vary
 #'   under reweighting of only one regressor (\code{term_chosen}).
@@ -637,8 +649,8 @@ diag_nl_detect <- function(mod_fit, coef_rwgt) {
 #' X1 <- stats::rnorm(n, 0, 1)
 #' X2 <- stats::rnorm(n, 0, 3)
 #' y <- 2 + X1 + X2 * 0.3 + stats::rnorm(n, 0, 1)
-#' df <- tibble::tibble(y = y, X1 = X1, X2 = X2, n_obs = 1:length(X1))
-#' mod_fit <- stats::lm(y ~ X1 + X2, df)
+#' reg_df <- tibble::tibble(y = y, X1 = X1, X2 = X2, n_obs = 1:length(X1))
+#' mod_fit <- stats::lm(y ~ X1 + X2, reg_df)
 #' ols_rwgt <- diag_fit_reg_rwgt(mod_fit, c("X1", "X2"), B = 300)
 #'
 #' # Display the output
@@ -676,7 +688,7 @@ diag_foc_rwgt <- function(mod_fit, coef_rwgt, term_chosen) {
       .data$term,
       .data$term_rwgt_center
     ) %>%
-    dplyr::summarise(
+    dplyr::summarize(
       .data = .,
       estimate = mean(.data$estimate),
       .groups = "keep"

@@ -33,7 +33,7 @@
 get_plot <- function(mod_fit) {
   # Assertion checking for mod_fit is of class "maars_lm", "lm"
   assertthat::assert_that(all(c("maars_lm", "lm") == class(mod_fit)),
-    msg = glue::glue("mod_fit must only be of class: ['maars_lm', 'lm']")
+                          msg = glue::glue("mod_fit must only be of class: ['maars_lm', 'lm']")
   )
 
   # Compute values from OLS fit which will be use across several plots
@@ -43,7 +43,7 @@ get_plot <- function(mod_fit) {
 
   # Compute the standardized residuals from the model in both vector and
   # tibble format
-  std_resid <- rstandard(mod_fit)
+  std_resid <- stats::rstandard(mod_fit)
   std_resid_tbl <- std_resid %>%
     tibble::enframe(x = ., name = NULL, value = "std_residuals")
 
@@ -65,7 +65,7 @@ get_plot <- function(mod_fit) {
   # Scale-Location Plots
   p2 <- ggplot2::ggplot(
     data = std_resid_tbl,
-    ggplot2::aes(sample = std_residuals)
+    ggplot2::aes(sample = .data$std_residuals)
   ) +
     ggplot2::stat_qq_line(linetype = 'dashed') +
     ggplot2::stat_qq(shape = 1, size = 0.5) + # open circles
@@ -93,7 +93,7 @@ get_plot <- function(mod_fit) {
 
   # Cook’s distance vs. observation number
   p4 <- ggplot2::ggplot(
-   data = tibble::tibble(cooks_distance),
+    data = tibble::tibble(cooks_distance),
     ggplot2::aes(
       x = seq_along(cooks_distance),
       y = cooks_distance
@@ -119,8 +119,8 @@ get_plot <- function(mod_fit) {
     ggplot2::aes(x = stats::lm.influence(mod_fit)$hat, std_resid)
   ) +
     ggplot2::geom_point(ggplot2::aes(size = stats::cooks.distance(mod_fit)),
-      na.rm = TRUE,
-      size = 0.5
+                        na.rm = TRUE,
+                        size = 0.5
     ) +
     ggplot2::stat_smooth(formula = y ~ x, method = "loess", na.rm = TRUE) +
     ggplot2::labs(
@@ -157,17 +157,22 @@ get_plot <- function(mod_fit) {
     purrr::compact(.x = .) %>%
     purrr::map(~ purrr::pluck(.x, 'var_type_abb'))
   p7 <- get_confint(mod_fit, level = 0.95,
-              sand = TRUE,
-              boot_emp = ('emp' %in% available_var_nms),
-              boot_mul = ('mul' %in% available_var_nms),
-              boot_res = ('res' %in% available_var_nms),
-              well_specified = TRUE) %>%
-  dplyr::filter(stat_type == "conf.low" | stat_type == "conf.high") %>%
+                    sand = TRUE,
+                    boot_emp = ('emp' %in% available_var_nms),
+                    boot_mul = ('mul' %in% available_var_nms),
+                    boot_res = ('res' %in% available_var_nms),
+                    well_specified = TRUE) %>%
+    dplyr::filter(.data = .,
+                  .data$stat_type == "conf.low" | .data$stat_type == "conf.high") %>%
     tidyr::pivot_wider(names_from = stat_type,
                        values_from = stat_val) %>%
-    dplyr::mutate(Type = fetch_mms_emoji_title(var_type_abb = var_type_abb,
+    dplyr::mutate(.data = .,
+                  Type = fetch_mms_emoji_title(var_type_abb = .data$var_type_abb,
                                                title_type = "title")) %>%
-    ggplot2::ggplot(ggplot2::aes(x = Type, y = estimate, col = Type)) +
+    ggplot2::ggplot(data = .,
+                    mapping = ggplot2::aes(x = .data$Type,
+                                           y = .data$estimate,
+                                           col = .data$Type)) +
     ggplot2::geom_point(position = ggplot2::position_dodge(width = 0.5)) +
     ggplot2::theme_bw() +
     ggplot2::theme(axis.ticks.x = ggplot2::element_blank(),
@@ -188,7 +193,7 @@ get_plot <- function(mod_fit) {
     ggplot2::guides(col = ggplot2::guide_legend(title = "Type of standard error")) +
     NULL
 
-  # QQnorm of the estimates of the regression coefficients based on
+  # Q-Q norm of the estimates of the regression coefficients based on
   # one of the bootstraps available.
   # First try with empirical. If not available, use multiplier. If not available,
   # then use residual.
@@ -204,13 +209,13 @@ get_plot <- function(mod_fit) {
   }
 
   out <- list(p1 = p1, p2 = p2, p3 = p3, p4 = p4, p5 = p5, p6 = p6, p7 = p7, p8 = p8)
-  base::return(out)
+  return(out)
 }
 
 
-#' Normal QQ plot of the terms in an output of the bootstrap function
+#' Normal Q-Q plot of the terms in an output of the bootstrap function
 #'
-#' \code{diag_boot_qqn} produces a normal QQPlot for each regressors included
+#' \code{diag_boot_qqn} produces a normal Q-Q plot for each regressors included
 #' in the estimates on the bootstrapped datasets. This function is a wrapper
 #' for the \code{\link[ggplot2]{stat_qq}} function.
 #'
@@ -218,10 +223,10 @@ get_plot <- function(mod_fit) {
 #'   and \code{estimate}) on the bootstrapped datasets, the size of each
 #'   bootstrapped dataset (\code{m}), the size of the original dataset
 #'   (\code{n}), and the number of the bootstrap repetition (\code{b}).
-#' @param boot_type (\code{character}) : The (abbreviate) type of boostrap
+#' @param boot_type (\code{character}) : The (abbreviate) type of bootstrap
 #'   estimates to use for the plot
 #'
-#' @return A ggplot2 object containing normal QQ plot for each regressor in
+#' @return A ggplot2 object containing normal Q-Q plot for each regressor in
 #'   \code{boot_out}. Each panel corresponds to a different coefficient,
 #'   whose name appears in the panel's titles.
 #'
@@ -231,15 +236,15 @@ get_plot <- function(mod_fit) {
 #'
 #' @examples
 #' \dontrun{
-#' # Obtain normal QQ plot of the
+#' # Obtain normal Q-Q plot of the
 #' n <- 1e3
 #' X1 <- stats::rnorm(n, 0, 1)
 #' X2 <- stats::rnorm(n, 0, 3)
 #' y <- 2 + X1 + X2 * 0.3 + stats::rnorm(n, 0, 1)
-#' df <- tibble::tibble(y = y, X1 = X1, X2 = X2, n_obs = 1:length(X1))
+#' reg_df <- tibble::tibble(y = y, X1 = X1, X2 = X2, n_obs = 1:length(X1))
 #'
 #' # Fit a linear model (OLS) to the data
-#' mod_fit <- stats::lm(y ~ X1 + X2, df)
+#' mod_fit <- stats::lm(y ~ X1 + X2, reg_df)
 #' mms_fit <- comp_var(mod_fit, boot_emp = list(B = 50))
 #' boot_var <- purrr::pluck(mms_fit, 'var', 'var_boot_emp')
 #' # Display the output
@@ -271,5 +276,4 @@ diag_boot_qqn <- function(boot_out, boot_type) {
     ggplot2::theme_bw()
   return(out)
 }
-
 

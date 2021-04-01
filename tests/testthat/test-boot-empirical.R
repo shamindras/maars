@@ -1,11 +1,20 @@
 set.seed(1243434)
 
-# generate data
+# thanks to Arun K. for providing the following function
+gen_reg_data <- function(n,
+                         gamma){ # gamma ~ "degree of misspecification"
+  beta0 <- 1
+  beta1 <- 2
+  X <- runif(n, 0, 10)
+  Y <- beta0 + beta1*X + gamma*X^{1.7} + exp(gamma*X)*rnorm(n)
+  data <- tibble::tibble(X = X, Y = Y)
+  return(data)
+}
+
+# generate regression data on which we'll fit a correctly specified reg. model
 n <- 1e3
-X <- stats::rnorm(n, 0, 1)
-# OLS data and model
-y <- 2 + X * 1 + stats::rnorm(n, 0, 1)
-lm_fit <- stats::lm(y ~ X)
+df <- gen_reg_data(n = n, gamma = 0)
+lm_fit <- stats::lm(Y ~ X, data = df)
 
 
 test_that("draw from dataset with one observation works returns that observation", {
@@ -38,34 +47,58 @@ test_that("test sample mean of coefficients estimated via bootstrap matches the 
   # ols
   boot_out <- comp_boot_emp(lm_fit, B = 1e3)$boot_out %>% tidyr::unnest(cols = boot_out)
   expect_equal(boot_out %>% dplyr::group_by(term) %>%
-                 dplyr::summarise(mean = mean(estimate)) %>%
+                 dplyr::summarize(mean = mean(estimate)) %>%
                  dplyr::pull(mean) %>% unname(),
                unname(stats::coef(lm_fit)), tol = 1e-2)
 })
 
 
-test_that("test std errors from our empirical bootstrap match those from the sandwich package for well-specified model", {
-  # ols
-  var_empboot <- comp_boot_emp(lm_fit, B = 1e3)$var_summary$std.error^2
+test_that("test covariance matrix from our empirical bootstrap matches that
+          from the sandwich package for well-specified model", {
+
+  var_empboot <- comp_boot_emp(lm_fit, B = 1e4)$cov_mat
   # get estimate from sandwich package
-  var_sandwichpkg <- sandwich::vcovBS(lm_fit, cluster = NULL, R = 1e3)
+  var_sandwichpkg <- sandwich::vcovBS(lm_fit, cluster = NULL, R = 1e4)
+
   expect_equal(var_empboot,
-               diag(var_sandwichpkg) %>% unname(), tol = 1e-2)
+               var_sandwichpkg, tol = 1e-3)
 })
 
+test_that("test statistics from our empirical
+          bootstrap matches that from the sandwich package for misspecified model", {
 
-# test_that("test std errors from our empirical bootstrap match those from the sandwich package for misspecified model", {
-#   # ols
-#   n <- 1e2
-#   X <- rnorm(n, 0, 4)
-#   y <- 2*X + 3 + X^3 + rnorm(n, 0, 2)
-#   lm_fit <- lm(y ~ X)
-#   var_empboot <- comp_boot_emp(lm_fit, B = 1e4)$var_summary$std.error^2
-#   # get estimate from sandwich package
-#   var_sandwichpkg <- sandwich::vcovBS(lm_fit, cluster = NULL, R = 1e4, type = "xy")
-#   expect_equal(var_empboot,
-#                diag(var_sandwichpkg) %>% unname(), tol = 1e-2)
-# })
+  # generate misspecified model
+  df <- gen_reg_data(100, gamma = 0.3)
+  lm_fit <- lm(Y ~ X, data = df)
+
+  var_empboot <- comp_boot_emp(lm_fit, B = 5e4)
+  # get estimate from sandwich package
+  var_sandwichpkg <- sandwich::vcovBS(lm_fit,
+                                      type = "xy",
+                                      cluster = NULL,
+                                      R = 1e5)
+  # covariance matrices
+  expect_equal(var_empboot$cov_mat,
+               var_sandwichpkg, tol = 1e-2)
+  # statistic
+  expect_equal(
+    var_empboot$var_summary$statistic,
+    broom::tidy(lmtest::coeftest(lm_fit, vcov = var_sandwichpkg))$statistic,
+    tol = 1e-2
+  )
+  # error
+  expect_equal(
+    var_empboot$var_summary$std.error,
+    broom::tidy(lmtest::coeftest(lm_fit, vcov = var_sandwichpkg))$std.error,
+    tol = 1e-2
+  )
+  # p-values
+  expect_equal(
+    var_empboot$var_summary$p.value,
+    broom::tidy(lmtest::coeftest(lm_fit, vcov = var_sandwichpkg))$p.value,
+    tol = 1e-2
+  )
+})
 
 
 test_that("test bootstrap confidence intervals via percentile method for different values of m matches for stats::lm", {

@@ -35,7 +35,7 @@ columns and the corresponding reweighting centers.
 Each column corresponds to a different regressor, whose name is specified
 in the name of the column. Default is set to \code{NULL}.}
 
-\item{grid_method}{A chracter which specifies the method used to construct
+\item{grid_method}{A character which specifies the method used to construct
 the grid of reweighting centers. The grid can consist either of evenly
 spaced values between the maximum and the minimum
 (\code{grid_method='regular'}) or based on the quantiles between the first
@@ -74,8 +74,8 @@ n <- 1e3
 X1 <- stats::rnorm(n, 0, 1)
 X2 <- stats::rnorm(n, 0, 3)
 y <- 2 + X1 + X2 * 0.3 + stats::rnorm(n, 0, 1)
-df <- tibble::tibble(y = y, X1 = X1, X2 = X2, n_obs = 1:length(X1))
-mod_fit <- stats::lm(y ~ X1 + X2, df)
+reg_df <- tibble::tibble(y = y, X1 = X1, X2 = X2, n_obs = 1:length(X1))
+mod_fit <- stats::lm(y ~ X1 + X2, reg_df)
 ols_rwgt <- diag_fit_reg_rwgt(mod_fit, c("X1", "X2"))
 
 # Display the output

@@ -20,7 +20,9 @@
 #' @param legend_position A character value the position of legends
 #' ("none", "left", "right", "bottom", "top", or two-element numeric vector)
 #'
-#' @return
+#' @return (\code{ggplot2}) : A \code{ggplot2} object with the custom theme
+#'   applied
+#'
 #' @keywords internal
 #'
 #' @examples
@@ -69,7 +71,7 @@ set_mms_ggplot2_theme <- function(ggplot_obj,
 #' assertthat::assert_that(check_fn_args_posint(inp_arg = B)) # Pass assertion
 #' }
 check_fn_args_posint <- function(inp_arg){
-  base::return(is.numeric(inp_arg)
+  return(is.numeric(inp_arg)
                && inp_arg == as.integer(inp_arg)
                && as.integer(inp_arg) > 0)
 }

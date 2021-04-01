@@ -36,10 +36,12 @@ lm_fit <- stats::lm(y ~ X_1 + X_2)
 summary(lm_fit)
 
 # Fit our first maars_lm object i.e. comp_var1
-comp_var1 <- comp_var(mod_fit = lm_fit,
-                      boot_emp = list(B = 50, m = 200),
-                      boot_res = NULL,
-                      boot_mul = list(B = 60))
+comp_var1 <- comp_var(
+  mod_fit = lm_fit,
+  boot_emp = list(B = 50, m = 200),
+  boot_res = NULL,
+  boot_mul = list(B = 60)
+)
 
 # Plot our maars_lm object
 plot(comp_var1)

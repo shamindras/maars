@@ -1,4 +1,4 @@
-# FUNCTIONS: Assertion checking helper function ----
+# Assertion checking helper function ----
 
 #' Assertion Checks for individual \code{\link{get_boot_summary}} function inputs
 #'
@@ -64,7 +64,7 @@ check_fn_args_summary <- function(mod_fit,
 
   # Assertion checking for mod_fit is of class "maars_lm", "lm"
   assertthat::assert_that(all(c("maars_lm", "lm") == class(mod_fit)),
-    msg = glue::glue("mod_fit must only be of class: ['maars_lm', 'lm']")
+                          msg = glue::glue("mod_fit must only be of class: ['maars_lm', 'lm']")
   )
 
   # Input variance parameter names
@@ -90,96 +90,74 @@ check_fn_args_summary <- function(mod_fit,
   # make future assertion checking easier
   var_param_vals_lgl <- var_param_vals %>%
     purrr::map_lgl(.x = ., ~.x) %>%
-    base::unname(obj = .)
+    unname(obj = .)
 
-  # If all parameters are FALSE, return a warning, and the table containing
-  # only the sandwich variance
+
   if (!any(var_param_vals_lgl)) {
-    warning(glue::glue("You have passed in FALSE for all input variance parameters:",
-      "\n[sand, boot_emp, boot_res, boot_mul, well_specified].",
-      "\n\nReturning the default sandwich variance estimator...\n",
-      .sep = " "
-    ))
-    comm_nms <- c("var_sand")
-  } else {
-    # Filter to only the selected variance params i.e. those with TRUE values
-    var_param_nms_filt <- var_param_nms[var_param_vals_lgl]
+    # TODO: delete these lines
+    # warning(glue::glue("You have passed in FALSE for all input variance parameters:",
+    #                    "\n[sand, boot_emp, boot_res, boot_mul, well_specified].",
+    #                    "\n\nReturning the default sandwich variance estimator...\n",
+    #                    .sep = " "
+    # ))
+    # comm_nms <- c("var_sand")
 
-    # Get the comp_mms_var output from the fitted maars_lm object
-    out_comp_mms_var <- mod_fit$var
-    # out_comp_mms_var_nms <- names(out_comp_mms_var)
-    # Get the abbreviated names i.e. remove the "var_" prefix to align with summary
-    # inputs
-    # out_comp_mms_var_nms_abb <- names(out_comp_mms_var) %>%
-    #     stringr::str_replace_all(string = ., pattern = "var_", "")
-
-    # Filter out the non-NULL variance values
-    out_comp_mms_var_filt <- out_comp_mms_var %>% purrr::compact(.x = .)
-    # Get the abbreviated names i.e. with the "_var" prefix removed
-    out_comp_mms_var_filt_nms_abb <- names(out_comp_mms_var_filt) %>%
-      stringr::str_replace_all(string = ., pattern = "var_", "")
-
-    # Get the common variance estimates from the the model and the user
-    # requested variance estimates
-    # Here intersect first uses the model variance estimate names to ensure
-    # that the ordering of variance estimates is preserved from comp_mms_var.
-    # This will ensure the correct default ordering in the consolidated
-    # variance summary terms in other functions that use this assertion
-    # check
-    comm_nms_abb <- intersect(out_comp_mms_var_filt_nms_abb, var_param_nms_filt)
-
-    # Check that the user requested cterms are
-    assertthat::assert_that(
-      length(comm_nms_abb) == length(var_param_nms_filt),
-      msg = glue::glue("You have requested variance summary for:",
-        "\n[{glue::glue_collapse(var_param_nms_filt, sep = ', ')}]",
-        "\n\nHowever your model only has the following variance computations:",
-        "\n[{glue::glue_collapse(out_comp_mms_var_filt_nms_abb, sep = ', ')}]",
-        "\n\nPlease refit your maars_lm model again with your requested variance computations and re-run...",
-        .sep = " "
-      )
-    )
-
-    # Add the "var_" prefix to the requested variance terms, so that we
-    # match the names in the variance estimates from the model i.e. from the
-    # comp_mms_var output
-    comm_nms <- comm_nms_abb %>% stringr::str_c("var_", ., sep = "")
+    # extract available types of variance estimators
+    available_var_nms <- purrr::pluck(.x = mod_fit, 'var') %>%
+      purrr::compact(.x = .) %>%
+      purrr::map(~ purrr::pluck(.x, 'var_type')) %>%
+      unname() %>% unlist()
+    # set to true the arguments based on availability
+    var_param_vals_lgl <-  var_param_nms %in% available_var_nms
   }
+
+  # Filter to only the selected variance params i.e. those with TRUE values
+  var_param_nms_filt <- var_param_nms[var_param_vals_lgl]
+
+  # Get the comp_mms_var output from the fitted maars_lm object
+  out_comp_mms_var <- purrr::pluck(mod_fit, 'var')
+  # out_comp_mms_var_nms <- names(out_comp_mms_var)
+  # Get the abbreviated names i.e. remove the "var_" prefix to align with summary
+  # inputs
+  # out_comp_mms_var_nms_abb <- names(out_comp_mms_var) %>%
+  #     stringr::str_replace_all(string = ., pattern = "var_", "")
+
+  # Filter out the non-NULL variance values
+  out_comp_mms_var_filt <- purrr::compact(.x = out_comp_mms_var)
+  # Get the abbreviated names i.e. with the "_var" prefix removed
+  out_comp_mms_var_filt_nms_abb <- names(out_comp_mms_var_filt) %>%
+    stringr::str_replace_all(string = ., pattern = "var_", "")
+
+  # Get the common variance estimates from the the model and the user
+  # requested variance estimates
+  # Here intersect first uses the model variance estimate names to ensure
+  # that the ordering of variance estimates is preserved from comp_mms_var.
+  # This will ensure the correct default ordering in the consolidated
+  # variance summary terms in other functions that use this assertion
+  # check
+  comm_nms_abb <- intersect(out_comp_mms_var_filt_nms_abb, var_param_nms_filt)
+
+  # Check that the user requested cterms are
+  assertthat::assert_that(
+    length(comm_nms_abb) == length(var_param_nms_filt),
+    msg = glue::glue("You have requested variance summary for:",
+                     "\n[{glue::glue_collapse(var_param_nms_filt, sep = ', ')}]",
+                     "\n\nHowever your model only has the following variance computations:",
+                     "\n[{glue::glue_collapse(out_comp_mms_var_filt_nms_abb, sep = ', ')}]",
+                     "\n\nPlease refit your maars_lm model again with your requested variance computations and re-run...",
+                     .sep = " "
+    )
+  )
+
+  # Add the "var_" prefix to the requested variance terms, so that we
+  # match the names in the variance estimates from the model i.e. from the
+  # comp_mms_var output
+  comm_nms <- stringr::str_c("var_", comm_nms_abb, sep = "")
 
   return(comm_nms)
 }
 
-# FUNCTIONS: variance summary columns suffix renaming helper function ----
-
-#' Adds a variance type abbreviation suffix to variance summary tibbles
-#'
-#' @param var_summary TODO: Add later
-#' @param var_type_abb TODO: Add later
-#'
-#' @return (\code{tibble}) : TODO Add later
-#'
-#' @keywords internal
-#'
-#' @examples
-#' \dontrun{
-#' # TODO: Add here
-#' }
-get_mms_rnm_cols_suff <- function(var_summary, var_type_abb) {
-
-  # Append suffix to variable names
-  cols_common <- c("term", "estimate")
-  cols_with_suffix <- setdiff(colnames(var_summary), cols_common) %>%
-    stringr::str_c(., var_type_abb, sep = ".")
-  cols_renamed <- c(cols_common, cols_with_suffix)
-
-  # Apply new names
-  var_summary <- var_summary %>%
-    dplyr::rename_with(~cols_renamed, dplyr::everything())
-
-  return(var_summary)
-}
-
-# FUNCTIONS: emoji and title builder helper function ----
+# Emoji and title builder helper function ----
 
 #' An emoji and title builder helper function for a specific variance type
 #'
@@ -200,6 +178,7 @@ get_mms_rnm_cols_suff <- function(var_summary, var_type_abb) {
 #' # TODO: Add here
 #' }
 fetch_mms_emoji_title <- function(var_type_abb, title_type) {
+
   # Get the title only for the specific variance type
   var_title <- dplyr::case_when(
     var_type_abb == "lm" ~ "Well Specified Model",
@@ -232,7 +211,7 @@ fetch_mms_emoji_title <- function(var_type_abb, title_type) {
   return(out)
 }
 
-# FUNCTIONS: Get the individual variance summary attribute from comp_var ----
+# Get the individual variance summary attribute from comp_var ----
 # This function works off our common list output from comp_var
 
 #' Get the individual variance summary for a specific attribute in the
@@ -253,31 +232,10 @@ fetch_mms_emoji_title <- function(var_type_abb, title_type) {
 #' # TODO: Add here
 #' }
 fetch_mms_comp_var_attr <- function(comp_var_ind, req_type) {
-  # Get the variance component
-  # comp_var_ind <- purrr::pluck(.x = mod_fit, "var")
 
   # Raw data variables
-  cv_type <- purrr::pluck(.x = comp_var_ind, "var_type")
-  cv_type_abb <- purrr::pluck(.x = comp_var_ind, "var_type_abb")
   cv_summary <- purrr::pluck(.x = comp_var_ind, "var_summary")
-  cv_assumptions <- purrr::pluck(.x = comp_var_ind, "var_assumptions")
-
-  # Derived variables
-  cv_emoji <- fetch_mms_emoji_title(
-    var_type_abb = cv_type_abb,
-    title_type = "emoji"
-  )
-  cv_title <- fetch_mms_emoji_title(
-    var_type_abb = cv_type_abb,
-    title_type = "title"
-  )
-  cv_emoji_title <- fetch_mms_emoji_title(
-    var_type_abb = cv_type_abb,
-    title_type = "emoji_title"
-  )
-  # cv_emoji_title <- glue::glue("{cv_emoji}: {cv_title}:")
-  cv_summary_mod <- cv_summary %>%
-    dplyr::mutate(var_type_abb = cv_type_abb)
+  cv_type_abb <- purrr::pluck(.x = comp_var_ind, "var_type_abb")
 
   # Append suffix to variable names
   cols_common <- c("term", "estimate")
@@ -285,20 +243,28 @@ fetch_mms_comp_var_attr <- function(comp_var_ind, req_type) {
     stringr::str_c(., cv_type_abb, sep = ".")
   cols_renamed <- c(cols_common, cols_with_suffix)
 
-  # Apply new names
-  cv_summary_nmd <- cv_summary %>%
-    dplyr::rename_with(~cols_renamed, dplyr::everything())
-
   # Get the specific type of individual variance variable
   out <- switch(req_type,
-    "emoji" = cv_emoji,
-    "emoji_title" = cv_emoji_title,
-    "var_type" = cv_type,
+    "emoji" = fetch_mms_emoji_title(
+      var_type_abb = cv_type_abb,
+      title_type = "emoji"
+    ),
+    "emoji_title" = fetch_mms_emoji_title(
+      var_type_abb = cv_type_abb,
+      title_type = "emoji_title"
+    ),
+    "var_type" = purrr::pluck(.x = comp_var_ind, "var_type"),
     "var_type_abb" = cv_type_abb,
     "var_summary" = cv_summary,
-    "var_summary_mod" = cv_summary_mod,
-    "var_summary_nmd" = cv_summary_nmd,
-    "var_assumptions" = cv_assumptions
+    "var_summary_mod" = dplyr::mutate(
+      .data = cv_summary,
+      var_type_abb = cv_type_abb
+    ),
+    "var_summary_nmd" = dplyr::rename_with(
+      .data = cv_summary,
+      .fn = ~cols_renamed, dplyr::everything()
+    ),
+    "var_assumptions" = purrr::pluck(.x = comp_var_ind, "var_assumptions")
   )
   return(out)
 }
@@ -342,22 +308,27 @@ fetch_mms_comp_var_attr <- function(comp_var_ind, req_type) {
 #' y <- 2 + X_1 * 1 + X_2 * 5 + eps
 #' lm_fit <- stats::lm(y ~ X_1 + X_2)
 #'
-#' # DEFINE common column names - these stay the same across all
-#' # reported error types
-#' common_vars <- c("term", "estimate")
 #'
 #' # Empirical Bootstrap check
 #' set.seed(454354534)
-#' comp_var1 <- comp_var(
+#' mms_var <- comp_var(
 #'   mod_fit = lm_fit, boot_emp = list(B = 20, m = 200),
-#'   boot_res = list(B = 30),
-#'   boot_mul = NULL
+#'   boot_res = list(B = 30)
 #' )
 #'
-#' # TODO: Add here
+#' get_summary(mms_var)
+#'
+#' # compute variance with multiplier bootstrap now
+#' mms_var2 <- comp_var(
+#'   mod_fit = lm_fit,
+#'   boot_mul = list(B = 100)
+#' )
+#'
+#' get_summary(mms_var2)
+#'
 #' }
 get_summary <- function(mod_fit,
-                        sand = TRUE,
+                        sand = FALSE,
                         boot_emp = FALSE,
                         boot_mul = FALSE,
                         boot_res = FALSE,
@@ -377,8 +348,8 @@ get_summary <- function(mod_fit,
 
   # Filter the comp_mms_var output from the fitted maars_lm object for the
   # requested variance types from the user
-  comp_var_ind_filt <- req_var_nms %>%
-    purrr::map(.x = ., ~ purrr::pluck(mod_fit$var, .x))
+  comp_var_ind_filt <- purrr::map(.x = req_var_nms,
+                                  .f = ~ purrr::pluck(mod_fit$var, .x))
 
   out <- comp_var_ind_filt %>%
     purrr::map_df(.x = ., .f = ~ fetch_mms_comp_var_attr(
@@ -451,13 +422,10 @@ get_summary <- function(mod_fit,
 #' # This returns everything but boot_mul, since we didn't run it in the original
 #' # original maars_lm model
 #' get_assumptions(
-#'   mod_fit = comp_var1, sand = TRUE,
-#'   boot_emp = TRUE, boot_res = TRUE, boot_mul = FALSE,
-#'   well_specified = TRUE
-#' )
+#'   mod_fit = comp_var1)
 #' }
 get_assumptions <- function(mod_fit,
-                            sand = TRUE,
+                            sand = FALSE,
                             boot_emp = FALSE,
                             boot_mul = FALSE,
                             boot_res = FALSE,
@@ -477,8 +445,8 @@ get_assumptions <- function(mod_fit,
 
   # Filter the comp_mms_var output from the fitted maars_lm object for the
   # requested variance types from the user
-  comp_var_ind_filt <- req_var_nms %>%
-    purrr::map(.x = ., ~ purrr::pluck(mod_fit$var, .x))
+  comp_var_ind_filt <- purrr::map(.x = req_var_nms,
+                                  .f = ~ purrr::pluck(mod_fit$var, .x))
 
   # Obtain the required variance assumptions list
     out <- comp_var_ind_filt %>%

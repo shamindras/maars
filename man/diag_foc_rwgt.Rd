@@ -19,7 +19,7 @@ term (\code{term_rwgt}), and the estimates of the regression coefficients
 \code{\link{diag_fit_reg_rwgt}} function.}
 
 \item{term_chosen}{A character corresponding to the coefficient of interest
-to be analysed.}
+to be analyzed.}
 }
 \value{
 A ggplot2 object which shows how coefficients estimates vary
@@ -55,8 +55,8 @@ n <- 1e3
 X1 <- stats::rnorm(n, 0, 1)
 X2 <- stats::rnorm(n, 0, 3)
 y <- 2 + X1 + X2 * 0.3 + stats::rnorm(n, 0, 1)
-df <- tibble::tibble(y = y, X1 = X1, X2 = X2, n_obs = 1:length(X1))
-mod_fit <- stats::lm(y ~ X1 + X2, df)
+reg_df <- tibble::tibble(y = y, X1 = X1, X2 = X2, n_obs = 1:length(X1))
+mod_fit <- stats::lm(y ~ X1 + X2, reg_df)
 ols_rwgt <- diag_fit_reg_rwgt(mod_fit, c("X1", "X2"), B = 300)
 
 # Display the output

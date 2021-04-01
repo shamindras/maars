@@ -52,15 +52,15 @@ y <- 2 + X * 1 + stats::rnorm(n, 0, 1)
 mod_fit <- lm(y ~ X)
 
 # fit weighted regression
-df <- tibble::tibble(y = y, X = X, weights = 1:length(X))
-mod <- fit_reg(mod_fit, df, "weights")
+reg_df <- tibble::tibble(y = y, X = X, weights = 1:length(X))
+mod <- fit_reg(mod_fit, reg_df, "weights")
 print(mod)
 
 # fit unweighted regression
-mod <- fit_reg(mod_fit, df)
+mod <- fit_reg(mod_fit, reg_df)
 print(mod)
 # compare this output with the output from lm
-coef(lm(y ~ X, df))
+coef(lm(y ~ X, reg_df))
 }
 }
 \keyword{internal}

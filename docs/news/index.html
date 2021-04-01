@@ -12,8 +12,8 @@
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
 
@@ -36,6 +36,12 @@
 <link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script>
 
+
+<!-- docsearch -->
+<script src="../docsearch.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/docsearch.js/2.6.3/docsearch.min.css" integrity="sha256-QOSRU/ra9ActyXkIBbiIB144aDBdtvXBcNc3OTNuX/Q=" crossorigin="anonymous" />
+<link href="../docsearch.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
 
 
 
@@ -119,6 +125,12 @@
   </a>
 </li>
       </ul>
+      
+      <form class="navbar-form navbar-right hidden-xs hidden-sm" role="search">
+        <div class="form-group">
+          <input type="search" class="form-control" name="search-input" id="search-input" placeholder="Search..." aria-label="Search for..." autocomplete="off">
+        </div>
+      </form>
       
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -237,7 +249,7 @@
 <strong>roxygen2:</strong> Rewrite documentation of the functions making the style more consistent across functions. For example, we could adopt the style used for the <a href="https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/quantile">quantile function</a>
 </li>
 <li>
-<strong>roxygen2:</strong> insert dots at end of sentences in Roxygen. <a href="https://github.com/shamindras/maars/issues/24?fbclid=IwAR0JsSrXZGUpYyuizsTFIL8Q0dUvOy_WVbUWBuvZlygg4rmjuo0rU5xNGvM#issuecomment-751913442">See below</a>
+<strong>roxygen2:</strong> insert dots at end of sentences in roxygen2. <a href="https://github.com/shamindras/maars/issues/24?fbclid=IwAR0JsSrXZGUpYyuizsTFIL8Q0dUvOy_WVbUWBuvZlygg4rmjuo0rU5xNGvM#issuecomment-751913442">See below</a>
 </li>
 <li>
 <strong>roxygen2:</strong> use <code>@details</code> responsibly. <a href="https://github.com/shamindras/maars/issues/24?fbclid=IwAR0JsSrXZGUpYyuizsTFIL8Q0dUvOy_WVbUWBuvZlygg4rmjuo0rU5xNGvM#issuecomment-751913442">See below</a>
@@ -277,7 +289,7 @@
 <li>Remove default value of <code>B</code> in <code>multiplier</code> variance</li>
 <li>Allow for 5 types of weights for multiplier bootstrap i.e. <code>std_gaussian</code>, <code>rademacher</code>, and <code>mammen</code>, <code>webb</code>, <code>gamma</code>
 </li>
-<li>Update credits in <a href="https://github.com/shamindras/maars/blob/main/LICENSE">Licence</a> and <a href="https://github.com/shamindras/maars/blob/main/LICENSE.md">License.md</a>
+<li>Update credits in <code>Licence</code> and <a href="https://github.com/shamindras/maars/blob/main/LICENSE.md">License.md</a>
 </li>
 </ul>
 </div>
@@ -290,7 +302,7 @@
 <li>Implement the <code>empirical</code> bootstrap for <code>glm</code> standard errors</li>
 <li>Change the input <code>lm_fit</code> to be <code>mod_object</code> in all of our functions</li>
 <li>Check that we have referenced functions using <code>stats::</code>, <code>dplyr::</code>, etc</li>
-<li>Add the <code>t-test</code> values in Table 1 of the MAA paper</li>
+<li>Add the <code>t-test</code> values in Table 1 of the <code>Models As Approximations - Part 1</code> paper</li>
 <li>Add input validation for our bootstrap and variance estimation functions e.g. <code>B</code> must be a positive integer</li>
 <li>Set a seed for the unit tests</li>
 <li>Update <code>Readme.Rmd</code> to add installation instructions and link to official package</li>
@@ -338,6 +350,23 @@
    </div>
 
   
+<script src="https://cdnjs.cloudflare.com/ajax/libs/docsearch.js/2.6.1/docsearch.min.js" integrity="sha256-GKvGqXDznoRYHCwKXGnuchvKSwmx9SRMrZOTh2g4Sb0=" crossorigin="anonymous"></script>
+<script>
+  docsearch({
+    
+    
+    apiKey: 'f0ad25edfd6fa5501f3057affbad5212',
+    indexName: 'maars',
+    inputSelector: 'input#search-input.form-control',
+    transformData: function(hits) {
+      return hits.map(function (hit) {
+        hit.url = updateHitURL(hit);
+        return hit;
+      });
+    }
+  });
+</script>
+
 
 
   </body>

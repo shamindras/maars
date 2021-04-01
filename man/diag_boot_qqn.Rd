@@ -2,7 +2,7 @@
 % Please edit documentation in R/ols-diag-plot.R
 \name{diag_boot_qqn}
 \alias{diag_boot_qqn}
-\title{Normal QQ plot of the terms in an output of the bootstrap function}
+\title{Normal Q-Q plot of the terms in an output of the bootstrap function}
 \usage{
 diag_boot_qqn(boot_out, boot_type)
 }
@@ -12,30 +12,30 @@ and \code{estimate}) on the bootstrapped datasets, the size of each
 bootstrapped dataset (\code{m}), the size of the original dataset
 (\code{n}), and the number of the bootstrap repetition (\code{b}).}
 
-\item{boot_type}{(\code{character}) : The (abbreviate) type of boostrap
+\item{boot_type}{(\code{character}) : The (abbreviate) type of bootstrap
 estimates to use for the plot}
 }
 \value{
-A ggplot2 object containing normal QQ plot for each regressor in
+A ggplot2 object containing normal Q-Q plot for each regressor in
 \code{boot_out}. Each panel corresponds to a different coefficient,
 whose name appears in the panel's titles.
 }
 \description{
-\code{diag_boot_qqn} produces a normal QQPlot for each regressors included
+\code{diag_boot_qqn} produces a normal Q-Q plot for each regressors included
 in the estimates on the bootstrapped datasets. This function is a wrapper
 for the \code{\link[ggplot2]{stat_qq}} function.
 }
 \examples{
 \dontrun{
-# Obtain normal QQ plot of the
+# Obtain normal Q-Q plot of the
 n <- 1e3
 X1 <- stats::rnorm(n, 0, 1)
 X2 <- stats::rnorm(n, 0, 3)
 y <- 2 + X1 + X2 * 0.3 + stats::rnorm(n, 0, 1)
-df <- tibble::tibble(y = y, X1 = X1, X2 = X2, n_obs = 1:length(X1))
+reg_df <- tibble::tibble(y = y, X1 = X1, X2 = X2, n_obs = 1:length(X1))
 
 # Fit a linear model (OLS) to the data
-mod_fit <- stats::lm(y ~ X1 + X2, df)
+mod_fit <- stats::lm(y ~ X1 + X2, reg_df)
 mms_fit <- comp_var(mod_fit, boot_emp = list(B = 50))
 boot_var <- purrr::pluck(mms_fit, 'var', 'var_boot_emp')
 # Display the output

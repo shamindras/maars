@@ -206,7 +206,7 @@ check_fn_args_comp_mms_var_boot_ind <- function(inp_list, boot_type) {
 #' }
 check_fn_args_comp_mms_var_boot <- function(boot_emp, boot_res, boot_mul) {
 
-  # Override boostrap NULL bootstrap variance calculations if any of the
+  # Override bootstrap NULL bootstrap variance calculations if any of the
   # input values passed in are not NULL
   if (!is.null(boot_emp)) {
     # Empirical Bootstrap: list format assertion checking
@@ -270,7 +270,10 @@ get_boot_summary <- function(mod_fit, boot_out, boot_type) {
   )
 
   if (boot_type %in% c("mul", "res")) {
-    boot_out <- boot_out %>% dplyr::mutate(m = nrow(model.frame(mod_fit)), n = m)
+    boot_out <- boot_out %>%
+      dplyr::mutate(.data = .,
+                    m = nrow(stats::model.frame(mod_fit)),
+                    n = .data$m)
   }
 
   out <- boot_out %>%
@@ -292,7 +295,7 @@ get_boot_summary <- function(mod_fit, boot_out, boot_type) {
       .data$term,
       .data$estimate
     ) %>%
-    dplyr::summarise(
+    dplyr::summarize(
       .data = .,
       std.error = stats::sd(sqrt(.data$m / .data$n) * (.data$estimate.boot - mean(.data$estimate.boot))),
       p.value = mean(sqrt(.data$m/.data$n) * abs(.data$estimate - .data$estimate.boot) > abs(.data$estimate)),
