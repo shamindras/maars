@@ -4,12 +4,16 @@ Version: 1.1.0
 Authors@R: 
     c(person(given = "Shamindra",
              family = "Shrotriya",
-             role = c("aut", "cre"),
+             role = c("aut", "cre", "cph"),
              email = "shamindra.shrotriya@gmail.com"),
       person(given = "Riccardo",
              family = "Fogliato",
-             role = c("aut"),
-             email = "rfogliat@andrew.cmu.edu"))
+             role = c("aut", "cph"),
+             email = "rfogliat@andrew.cmu.edu"),
+      person(given = "Arun Kumar",
+             family = "Kuchibhotla",
+             role = c("aut", "cph"),
+             email = "karun3kumar@gmail.com"))
 Description: Tidy Inference Under Misspecified Statistical Models in R. An 
     implementation of the Models As Approximations series of statistics papers.
 License: MIT + file LICENSE
