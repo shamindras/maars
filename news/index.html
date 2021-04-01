@@ -12,8 +12,8 @@
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
 
@@ -37,9 +37,17 @@
 <script src="../pkgdown.js"></script>
 
 
+<!-- docsearch -->
+<script src="../docsearch.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/docsearch.js/2.6.3/docsearch.min.css" integrity="sha256-QOSRU/ra9ActyXkIBbiIB144aDBdtvXBcNc3OTNuX/Q=" crossorigin="anonymous" />
+<link href="../docsearch.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+
 
 
 <meta property="og:title" content="Changelog" />
+
+
 
 
 
@@ -55,9 +63,16 @@
 
 
 
+
+  
+
+  
+
   </head>
 
   <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-news">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -120,6 +135,12 @@
 </li>
       </ul>
       
+      <form class="navbar-form navbar-right hidden-xs hidden-sm" role="search">
+        <div class="form-group">
+          <input type="search" class="form-control" name="search-input" id="search-input" placeholder="Search..." aria-label="Search for..." autocomplete="off">
+        </div>
+      </form>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -148,18 +169,18 @@
 <li>Change the statistic based on the F-distribution to one based on the Chi-square</li>
 <li>Write <code>plots</code> function with default options and wrap around <code><a href="../reference/get_plot.html">get_plot()</a></code>
 </li>
-<li>Add more Cook’s distance plots similar to <code><a href="https://rdrr.io/r/stats/lm.html">lm()</a></code> output</li>
+<li>Add more Cook’s distance plots similar to <code><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm()</a></code> output</li>
 <li>Add confidence interval plots to the <code>maars_lm</code> plot output</li>
 <li>Print assumptions i.e. for all run <code>maars</code> standard errors. So <code>sand</code>, <code>well_specified</code> assumptions are printed by default, and other standard errors</li>
-<li>Add assumption string for <code>comp_lm_var</code> using <code><a href="https://glue.tidyverse.org/reference/glue.html">glue::glue()</a></code> and improve formatting</li>
+<li>Add assumption string for <code>comp_lm_var</code> using <code><a href="https://glue.tidyverse.org/reference/glue.html" class="external-link">glue::glue()</a></code> and improve formatting</li>
 <li>Amend <code><a href="../reference/get_confint.html">get_confint()</a></code> to return tidy tibble output</li>
-<li>Just show <code>term</code>, <code>conf.low</code>, <code>conf.high</code> for <code><a href="https://rdrr.io/r/stats/confint.html">confint(maars_lm)</a></code>. Fix it to be the same as <code><a href="https://rdrr.io/r/stats/confint.html">confint(lm)</a></code>
+<li>Just show <code>term</code>, <code>conf.low</code>, <code>conf.high</code> for <code><a href="https://rdrr.io/r/stats/confint.html" class="external-link">confint(maars_lm)</a></code>. Fix it to be the same as <code><a href="https://rdrr.io/r/stats/confint.html" class="external-link">confint(lm)</a></code>
 </li>
 <li>Add <code>la_county</code> <code>tibble</code> to our package</li>
 <li>Change <code>README.Rmd</code> to use <code>devtools</code> rather than <code>remotes</code> as the preferred package installation</li>
 <li>Add <code>devtools</code> to <code>Suggests</code> in <code>DESCRIPTION</code> so that vignettes use our latest code</li>
 <li>Ensure that the <code>la_county</code> <code>tibble</code> is documented method</li>
-<li>Write residual bootstrap assumptions to be the same as the well specified <code><a href="https://rdrr.io/r/stats/lm.html">lm()</a></code> model</li>
+<li>Write residual bootstrap assumptions to be the same as the well specified <code><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm()</a></code> model</li>
 <li>Include <code>weights</code> type in assumptions for multiplier bootstrap</li>
 <li>Include <code>n</code> in assumptions for empirical bootstrap</li>
 </ul>
@@ -180,7 +201,7 @@
 <li>Use <code>GPL-2</code> and <code>GPL-3</code> <code>LICENCE</code>
 </li>
 <li>Remove the <code>MIT LICENCE</code> files</li>
-<li>We would like to thank <a href="https://www.refsmmat.com/">Alex Reinhart</a> for his kind assistance in various aspects of this release</li>
+<li>We would like to thank <a href="https://www.refsmmat.com/" class="external-link">Alex Reinhart</a> for his kind assistance in various aspects of this release</li>
 </ul>
 </div>
     <div id="maars-060" class="section level1">
@@ -220,7 +241,7 @@
 <ul>
 <li>Rename function names to be more consistent e.g. remove <code>qr</code> from <code>empirical</code> bootstrap names</li>
 <li>Ensure renamed function names are also correctly changed in the corresponding test files</li>
-<li>Split our <code>pkgdown</code> references into suitable categories <a href="https://usethis.r-lib.org/reference/index.html">like usethis</a>, here is <a href="https://github.com/r-lib/usethis/blob/45d0fef414fd69ac7ed468d196e93db7f2008e27/_pkgdown.yml">an example</a>
+<li>Split our <code>pkgdown</code> references into suitable categories <a href="https://usethis.r-lib.org/reference/index.html" class="external-link">like usethis</a>, here is <a href="https://github.com/r-lib/usethis/blob/45d0fef414fd69ac7ed468d196e93db7f2008e27/_pkgdown.yml" class="external-link">an example</a>
 </li>
 <li>Change specific functions to be private by removing <code>#' <a href='https://github.com/export'>@export</a></code> in <code>roxygen2</code> and replacing it with <code>#' <a href='https://github.com/keywords'>@keywords</a> internal</code>
 </li>
@@ -234,50 +255,50 @@
 <li>We need to <code>set.seed</code> in all our vignette chunks. This is for reproducibility, but to also avoid merge conflicts every time we rebuild the package using <code>make build_package</code>
 </li>
 <li>
-<strong>roxygen2:</strong> Rewrite documentation of the functions making the style more consistent across functions. For example, we could adopt the style used for the <a href="https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/quantile">quantile function</a>
+<strong>roxygen2:</strong> Rewrite documentation of the functions making the style more consistent across functions. For example, we could adopt the style used for the <a href="https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/quantile" class="external-link">quantile function</a>
 </li>
 <li>
-<strong>roxygen2:</strong> insert dots at end of sentences in Roxygen. <a href="https://github.com/shamindras/maars/issues/24?fbclid=IwAR0JsSrXZGUpYyuizsTFIL8Q0dUvOy_WVbUWBuvZlygg4rmjuo0rU5xNGvM#issuecomment-751913442">See below</a>
+<strong>roxygen2:</strong> insert dots at end of sentences in roxygen2. <a href="https://github.com/shamindras/maars/issues/24?fbclid=IwAR0JsSrXZGUpYyuizsTFIL8Q0dUvOy_WVbUWBuvZlygg4rmjuo0rU5xNGvM#issuecomment-751913442" class="external-link">See below</a>
 </li>
 <li>
-<strong>roxygen2:</strong> use <code>@details</code> responsibly. <a href="https://github.com/shamindras/maars/issues/24?fbclid=IwAR0JsSrXZGUpYyuizsTFIL8Q0dUvOy_WVbUWBuvZlygg4rmjuo0rU5xNGvM#issuecomment-751913442">See below</a>
+<strong>roxygen2:</strong> use <code>@details</code> responsibly. <a href="https://github.com/shamindras/maars/issues/24?fbclid=IwAR0JsSrXZGUpYyuizsTFIL8Q0dUvOy_WVbUWBuvZlygg4rmjuo0rU5xNGvM#issuecomment-751913442" class="external-link">See below</a>
 </li>
 <li>
-<strong>roxygen2:</strong> replace <code>var_name</code> with <code>\code{var_name}</code>. <a href="https://github.com/shamindras/maars/issues/24?fbclid=IwAR0JsSrXZGUpYyuizsTFIL8Q0dUvOy_WVbUWBuvZlygg4rmjuo0rU5xNGvM#issuecomment-751913442">See below</a>
+<strong>roxygen2:</strong> replace <code>var_name</code> with <code>\code{var_name}</code>. <a href="https://github.com/shamindras/maars/issues/24?fbclid=IwAR0JsSrXZGUpYyuizsTFIL8Q0dUvOy_WVbUWBuvZlygg4rmjuo0rU5xNGvM#issuecomment-751913442" class="external-link">See below</a>
 </li>
 <li>
 <strong>ggplot2:</strong> Replace hardcoded values <code>1.96</code> with appropriate outputs from statistics functions, in <code>vignettes</code>
 </li>
 <li>Check the order in which we have our functions written in each file</li>
 <li>
-<strong>ggplot2:</strong> We should break up our <code>ggplot2</code> code into separate plots and then combine them using <code><a href="https://rdrr.io/r/base/Arithmetic.html">+</a></code>. This will make it much easier to manage the code and make it readable</li>
+<strong>ggplot2:</strong> We should break up our <code>ggplot2</code> code into separate plots and then combine them using <code><a href="https://rdrr.io/r/base/Arithmetic.html" class="external-link">+</a></code>. This will make it much easier to manage the code and make it readable</li>
 <li>
-<strong>ggplot2:</strong> Need to be consistent with our <code>ggplot2</code> themes used in our plots. <a href="https://github.com/shamindras/maars/issues/24?fbclid=IwAR0JsSrXZGUpYyuizsTFIL8Q0dUvOy_WVbUWBuvZlygg4rmjuo0rU5xNGvM#issuecomment-751917061">See ggplot2 theme wrapper below</a>
+<strong>ggplot2:</strong> Need to be consistent with our <code>ggplot2</code> themes used in our plots. <a href="https://github.com/shamindras/maars/issues/24?fbclid=IwAR0JsSrXZGUpYyuizsTFIL8Q0dUvOy_WVbUWBuvZlygg4rmjuo0rU5xNGvM#issuecomment-751917061" class="external-link">See ggplot2 theme wrapper below</a>
 </li>
 <li>
-<strong>ggplot2:</strong> Need to be consistent with the <code>ggplot2</code> font and other settings used in our plots. As a preference we should only use <code>labs</code> for example. <a href="https://github.com/shamindras/maars/issues/24?fbclid=IwAR0JsSrXZGUpYyuizsTFIL8Q0dUvOy_WVbUWBuvZlygg4rmjuo0rU5xNGvM#issuecomment-751917061">See ggplot2 theme wrapper below</a>
+<strong>ggplot2:</strong> Need to be consistent with the <code>ggplot2</code> font and other settings used in our plots. As a preference we should only use <code>labs</code> for example. <a href="https://github.com/shamindras/maars/issues/24?fbclid=IwAR0JsSrXZGUpYyuizsTFIL8Q0dUvOy_WVbUWBuvZlygg4rmjuo0rU5xNGvM#issuecomment-751917061" class="external-link">See ggplot2 theme wrapper below</a>
 </li>
 <li>
 <strong>ggplot2:</strong> Add <code>names_prefix = "q"</code> to <code>pivot_wider</code> for the <code>ggplot2</code> code i.e. to avoid <strong>.data$<code>0.275</code></strong> issue. Note the <code>"q"</code> here stands for <code>quantile</code>.</li>
-<li>Create a <code>utils-common.R</code> similar to the <a href="https://github.com/selective-inference/R-software/blob/master/selectiveInference/R/funs.common.R#L87-L123">selectiveInference package</a>, ensure that common functions are put in this file</li>
+<li>Create a <code>utils-common.R</code> similar to the <a href="https://github.com/selective-inference/R-software/blob/master/selectiveInference/R/funs.common.R#L87-L123" class="external-link">selectiveInference package</a>, ensure that common functions are put in this file</li>
 <li>clean up the <code>tests</code> directory i.e. delete unused <code>R</code> test files</li>
 <li>clean up the <code>R</code> directory i.e. delete unused <code>R</code> files</li>
 <li>We should add <code>#' <a href='https://github.com/importFrom'>@importFrom</a> rlang .data</code> in all our functions under <code>#' <a href='https://github.com/export'>@export</a></code>
 </li>
-<li>Fix <code>R CMD CHECK</code> error caused in <code>vignette</code>, namely <a href="https://github.com/shamindras/maars/pull/21/checks?check_run_id=1555124560">this one</a>
+<li>Fix <code>R CMD CHECK</code> error caused in <code>vignette</code>, namely <a href="https://github.com/shamindras/maars/pull/21/checks?check_run_id=1555124560" class="external-link">this one</a>
 </li>
 <li>Add <code>stringr</code> to <code>DESCRIPTION</code>
 </li>
-<li>Change <code>multiplier</code> bootstrap weights to be applied inside <code>purrr</code> e.g using <code><a href="https://purrr.tidyverse.org/reference/map2.html">purrr::map2</a></code> rather than generating the <code>e</code> matrix up front. Conduct benchmarks of this to test speed, so that current version still has it’s place in benchmarking</li>
-<li>For <code>vignette</code> should <code><a href="https://rdrr.io/pkg/knitr/man/kable.html">knitr::kable</a></code> package instead of <code>DT</code> package and just need to ensure Table 1 is correctly populated</li>
-<li>For <code>vignette</code> we just need to ensure Table 1 is correctly formatted i.e. use <code>LaTeX</code> for headings, consistent width, and captions. See <a href="https://bookdown.org/yihui/rmarkdown-cookbook/kable.html#escape-special-characters">here</a> for the use of LaTeX in <code><a href="https://rdrr.io/pkg/knitr/man/kable.html">knitr::kable</a></code> heading rows</li>
-<li>Add <code>Rmd</code> line wrap hooks similar to <a href="https://github.com/yihui/knitr-examples/blob/master/077-wrap-output.Rmd#L14-L27">Yihui Xie’s approach</a> and the <a href="https://github.com/ulyngs/oxforddown/blob/master/index.Rmd#L69-L72">oxforddown approach</a>
+<li>Change <code>multiplier</code> bootstrap weights to be applied inside <code>purrr</code> e.g using <code><a href="https://purrr.tidyverse.org/reference/map2.html" class="external-link">purrr::map2</a></code> rather than generating the <code>e</code> matrix up front. Conduct benchmarks of this to test speed, so that current version still has it’s place in benchmarking</li>
+<li>For <code>vignette</code> should <code><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">knitr::kable</a></code> package instead of <code>DT</code> package and just need to ensure Table 1 is correctly populated</li>
+<li>For <code>vignette</code> we just need to ensure Table 1 is correctly formatted i.e. use <code>LaTeX</code> for headings, consistent width, and captions. See <a href="https://bookdown.org/yihui/rmarkdown-cookbook/kable.html#escape-special-characters" class="external-link">here</a> for the use of LaTeX in <code><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">knitr::kable</a></code> heading rows</li>
+<li>Add <code>Rmd</code> line wrap hooks similar to <a href="https://github.com/yihui/knitr-examples/blob/master/077-wrap-output.Rmd#L14-L27" class="external-link">Yihui Xie’s approach</a> and the <a href="https://github.com/ulyngs/oxforddown/blob/master/index.Rmd#L69-L72" class="external-link">oxforddown approach</a>
 </li>
 <li>Add doc for <code>weight_type</code> in <code>multiplier</code> bootstrap</li>
 <li>Remove default value of <code>B</code> in <code>multiplier</code> variance</li>
 <li>Allow for 5 types of weights for multiplier bootstrap i.e. <code>std_gaussian</code>, <code>rademacher</code>, and <code>mammen</code>, <code>webb</code>, <code>gamma</code>
 </li>
-<li>Update credits in <a href="https://github.com/shamindras/maars/blob/main/LICENSE">Licence</a> and <a href="https://github.com/shamindras/maars/blob/main/LICENSE.md">License.md</a>
+<li>Update credits in <code>Licence</code> and <a href="https://github.com/shamindras/maars/blob/main/LICENSE.md" class="external-link">License.md</a>
 </li>
 </ul>
 </div>
@@ -290,7 +311,7 @@
 <li>Implement the <code>empirical</code> bootstrap for <code>glm</code> standard errors</li>
 <li>Change the input <code>lm_fit</code> to be <code>mod_object</code> in all of our functions</li>
 <li>Check that we have referenced functions using <code>stats::</code>, <code>dplyr::</code>, etc</li>
-<li>Add the <code>t-test</code> values in Table 1 of the MAA paper</li>
+<li>Add the <code>t-test</code> values in Table 1 of the <code>Models As Approximations - Part 1</code> paper</li>
 <li>Add input validation for our bootstrap and variance estimation functions e.g. <code>B</code> must be a positive integer</li>
 <li>Set a seed for the unit tests</li>
 <li>Update <code>Readme.Rmd</code> to add installation instructions and link to official package</li>
@@ -327,18 +348,37 @@
 
       <footer>
       <div class="copyright">
-  <p>Developed by Shamindra Shrotriya, Riccardo Fogliato.</p>
+  <p><p>Developed by Shamindra Shrotriya, Riccardo Fogliato.</p></p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9001.</p></p>
 </div>
 
       </footer>
    </div>
 
   
+<script src="https://cdnjs.cloudflare.com/ajax/libs/docsearch.js/2.6.1/docsearch.min.js" integrity="sha256-GKvGqXDznoRYHCwKXGnuchvKSwmx9SRMrZOTh2g4Sb0=" crossorigin="anonymous"></script>
+<script>
+  docsearch({
+    
+    
+    apiKey: 'f0ad25edfd6fa5501f3057affbad5212',
+    indexName: 'maars',
+    inputSelector: 'input#search-input.form-control',
+    transformData: function(hits) {
+      return hits.map(function (hit) {
+        hit.url = updateHitURL(hit);
+        return hit;
+      });
+    }
+  });
+</script>
 
+
+
+  
 
   </body>
 </html>

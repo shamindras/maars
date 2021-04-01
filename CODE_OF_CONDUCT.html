@@ -12,8 +12,8 @@
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
 
@@ -37,9 +37,17 @@
 <script src="pkgdown.js"></script>
 
 
+<!-- docsearch -->
+<script src="docsearch.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/docsearch.js/2.6.3/docsearch.min.css" integrity="sha256-QOSRU/ra9ActyXkIBbiIB144aDBdtvXBcNc3OTNuX/Q=" crossorigin="anonymous" />
+<link href="docsearch.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+
 
 
 <meta property="og:title" content="Contributor Covenant Code of Conduct" />
+
+
 
 
 
@@ -55,9 +63,16 @@
 
 
 
+
+  
+
+  
+
   </head>
 
   <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-title-body">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -119,6 +134,12 @@
   </a>
 </li>
       </ul>
+      
+      <form class="navbar-form navbar-right hidden-xs hidden-sm" role="search">
+        <div class="form-group">
+          <input type="search" class="form-control" name="search-input" id="search-input" placeholder="Search..." aria-label="Search for..." autocomplete="off">
+        </div>
+      </form>
       
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -211,9 +232,9 @@
 <div id="attribution" class="section level2">
 <h2 class="hasAnchor">
 <a href="#attribution" class="anchor"></a>Attribution</h2>
-<p>This Code of Conduct is adapted from the <a href="https://www.contributor-covenant.org">Contributor Covenant</a>, version 2.0, available at <a href="https://www.contributor-covenant.org/version/2/0/" class="uri">https://www.contributor-covenant.org/version/2/0/</a> code_of_conduct.html.</p>
-<p>Community Impact Guidelines were inspired by <a href="https://github.com/mozilla/diversity">Mozilla’s code of conduct enforcement ladder</a>.</p>
-<p>For answers to common questions about this code of conduct, see the FAQ at <a href="https://www.contributor-covenant.org/faq" class="uri">https://www.contributor-covenant.org/faq</a>. Translations are available at <a href="https://" class="uri">https://</a> www.contributor-covenant.org/translations.</p>
+<p>This Code of Conduct is adapted from the <a href="https://www.contributor-covenant.org" class="external-link">Contributor Covenant</a>, version 2.0, available at https://www.contributor-covenant.org/version/2/0/ code_of_conduct.html.</p>
+<p>Community Impact Guidelines were inspired by <a href="https://github.com/mozilla/diversity" class="external-link">Mozilla’s code of conduct enforcement ladder</a>.</p>
+<p>For answers to common questions about this code of conduct, see the FAQ at https://www.contributor-covenant.org/faq. Translations are available at https:// www.contributor-covenant.org/translations.</p>
 </div>
 </div>
 
@@ -231,18 +252,37 @@
 
       <footer>
       <div class="copyright">
-  <p>Developed by Shamindra Shrotriya, Riccardo Fogliato.</p>
+  <p><p>Developed by Shamindra Shrotriya, Riccardo Fogliato.</p></p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9001.</p></p>
 </div>
 
       </footer>
    </div>
 
   
+<script src="https://cdnjs.cloudflare.com/ajax/libs/docsearch.js/2.6.1/docsearch.min.js" integrity="sha256-GKvGqXDznoRYHCwKXGnuchvKSwmx9SRMrZOTh2g4Sb0=" crossorigin="anonymous"></script>
+<script>
+  docsearch({
+    
+    
+    apiKey: 'f0ad25edfd6fa5501f3057affbad5212',
+    indexName: 'maars',
+    inputSelector: 'input#search-input.form-control',
+    transformData: function(hits) {
+      return hits.map(function (hit) {
+        hit.url = updateHitURL(hit);
+        return hit;
+      });
+    }
+  });
+</script>
 
+
+
+  
 
   </body>
 </html>

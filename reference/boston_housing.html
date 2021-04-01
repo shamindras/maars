@@ -6,7 +6,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Tidy eval helpers — tidyeval • maars</title>
+<title>This (corrected) dataset contains information collected by the U.S Census
+Service concerning housing in the area of Boston Massachusetts. — boston_housing • maars</title>
 
 
 <!-- jquery -->
@@ -45,40 +46,18 @@
 
 
 
-<meta property="og:title" content="Tidy eval helpers — tidyeval" />
-<meta property="og:description" content="
+<meta property="og:title" content="This (corrected) dataset contains information collected by the U.S Census
+Service concerning housing in the area of Boston Massachusetts. — boston_housing" />
+<meta property="og:description" content="This dataset has 516 observations and 21 variables. It contains information
+collected by the U.S Census Service concerning housing in the area of
+Boston Mass. It was obtained from the StatLib archive
+http://lib.stat.cmu.edu/datasets/boston_corrected.txt, and has been
+used extensively throughout the literature to benchmark algorithms.
+Note that the details of this dataset were sourced from
+https://geodacenter.github.io/data-and-lab/boston-housing/.
+The data was originally published in see Harrison Jr and Rubinfeld (1978)
 
-sym() creates a symbol from a string and
-syms() creates a list of symbols from a
-character vector.
-enquo() and
-enquos() delay the execution of one or
-several function arguments. enquo() returns a single quoted
-expression, which is like a blueprint for the delayed computation.
-enquos() returns a list of such quoted expressions.
-expr() quotes a new expression locally. It
-is mostly useful to build new expressions around arguments
-captured with enquo() or enquos():
-expr(mean(!!enquo(arg), na.rm = TRUE)).
-as_name() transforms a quoted variable name
-into a string. Supplying something else than a quoted variable
-name is an error.
-That's unlike as_label() which also returns
-a single string but supports any kind of R object as input,
-including quoted function calls and vectors. Its purpose is to
-summarize that object into a single label. That label is often
-suitable as a default name.
-If you don't know what a quoted expression contains (for instance
-expressions captured with enquo() could be a variable
-name, a call to a function, or an unquoted constant), then use
-as_label(). If you know you have quoted a simple variable
-name, or would like to enforce this, use as_name().
-
-
-To learn more about tidy eval and how to use these tools, visit
-https://tidyeval.tidyverse.org and the
-Metaprogramming
-section of Advanced R." />
+and subsequently corrected in see Gilley et al. (1996)" />
 
 
 
@@ -185,49 +164,65 @@ section of Advanced R." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Tidy eval helpers</h1>
-    <small class="dont-index">Source: <a href='https://github.com/shamindras/maars/blob/master/R/utils-tidy-eval.R'><code>R/utils-tidy-eval.R</code></a></small>
-    <div class="hidden name"><code>tidyeval.Rd</code></div>
+    <h1>This (corrected) dataset contains information collected by the U.S Census
+Service concerning housing in the area of Boston Massachusetts.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/shamindras/maars/blob/master/R/data-maars.R'><code>R/data-maars.R</code></a></small>
+    <div class="hidden name"><code>boston_housing.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    
-<ul>
-<li><p><code><a href='https://rlang.r-lib.org/reference/sym.html'>sym</a>()</code> creates a symbol from a string and
-<code><a href='https://rlang.r-lib.org/reference/sym.html'>syms</a>()</code> creates a list of symbols from a
-character vector.</p></li>
-<li><p><code><a href='https://rlang.r-lib.org/reference/nse-defuse.html'>enquo</a>()</code> and
-<code><a href='https://rlang.r-lib.org/reference/nse-defuse.html'>enquos</a>()</code> delay the execution of one or
-several function arguments. <code>enquo()</code> returns a single quoted
-expression, which is like a blueprint for the delayed computation.
-<code>enquos()</code> returns a list of such quoted expressions.</p></li>
-<li><p><code><a href='https://rlang.r-lib.org/reference/nse-defuse.html'>expr</a>()</code> quotes a new expression <em>locally</em>. It
-is mostly useful to build new expressions around arguments
-captured with <code>enquo()</code> or <code>enquos()</code>:
-<code>expr(mean(!!enquo(arg), na.rm = TRUE))</code>.</p></li>
-<li><p><code><a href='https://rlang.r-lib.org/reference/as_name.html'>as_name</a>()</code> transforms a quoted variable name
-into a string. Supplying something else than a quoted variable
-name is an error.</p>
-<p>That's unlike <code><a href='https://rlang.r-lib.org/reference/as_label.html'>as_label</a>()</code> which also returns
-a single string but supports any kind of R object as input,
-including quoted function calls and vectors. Its purpose is to
-summarize that object into a single label. That label is often
-suitable as a default name.</p>
-<p>If you don't know what a quoted expression contains (for instance
-expressions captured with <code>enquo()</code> could be a variable
-name, a call to a function, or an unquoted constant), then use
-<code>as_label()</code>. If you know you have quoted a simple variable
-name, or would like to enforce this, use <code>as_name()</code>.</p></li>
-</ul>
+    <p>This dataset has 516 observations and 21 variables. It contains information
+collected by the U.S Census Service concerning housing in the area of
+Boston Mass. It was obtained from the StatLib archive
+<a href='http://lib.stat.cmu.edu/datasets/boston_corrected.txt'>http://lib.stat.cmu.edu/datasets/boston_corrected.txt</a>, and has been
+used extensively throughout the literature to benchmark algorithms.
+Note that the details of this dataset were sourced from
+<a href='https://geodacenter.github.io/data-and-lab/boston-housing/'>https://geodacenter.github.io/data-and-lab/boston-housing/</a>.
+The data was originally published in see Harrison Jr and Rubinfeld (1978)
 
-<p>To learn more about tidy eval and how to use these tools, visit
-<a href='https://tidyeval.tidyverse.org'>https://tidyeval.tidyverse.org</a> and the
-<a href='https://adv-r.hadley.nz/metaprogramming.html'>Metaprogramming
-section</a> of <a href='https://adv-r.hadley.nz'>Advanced R</a>.</p>
+and subsequently corrected in see Gilley et al. (1996)</p>
     </div>
 
+    <pre class="usage"><span class='va'>boston_housing</span></pre>
 
 
+    <h2 class="hasAnchor" id="format"><a class="anchor" href="#format"></a>Format</h2>
+
+    <p>A <code>tibble</code> with 516 rows and 21 variables:</p><dl>
+<dt>obs</dt><dd><p>Sequential ID</p></dd>
+<dt>town</dt><dd><p>A factor with levels given by town names</p></dd>
+<dt>town_no</dt><dd><p>A numeric vector corresponding to TOWN</p></dd>
+<dt>tract</dt><dd><p>A numeric vector of tract ID numbers</p></dd>
+<dt>lon</dt><dd><p>A numeric vector of tract point longitudes in decimal degrees</p></dd>
+<dt>lat</dt><dd><p>A numeric vector of tract point latitudes in decimal degrees</p></dd>
+<dt>medv</dt><dd><p>A numeric vector of median values of owner-occupied housing in USD 1000</p></dd>
+<dt>cmedv</dt><dd><p>A numeric vector of corrected median values of owner-occupied housing in USD 1000</p></dd>
+<dt>crim</dt><dd><p>A numeric vector of per capita crime</p></dd>
+<dt>zn</dt><dd><p>A numeric vector of proportions of residential land zoned for lots over 25000 sq. ft per town (constant for all Boston tracts)</p></dd>
+<dt>indus</dt><dd><p>A numeric vector of proportions of non-retail business acres per town (constant for all Boston tracts)</p></dd>
+<dt>chas</dt><dd><p>A factor with levels 1 if tract borders Charles River; 0 otherwise</p></dd>
+<dt>nox</dt><dd><p>A numeric vector of nitric oxides concentration (parts per 10 million) per town</p></dd>
+<dt>rm</dt><dd><p>A numeric vector of average numbers of rooms per dwelling</p></dd>
+<dt>age</dt><dd><p>A numeric vector of proportions of owner-occupied units built prior to 1940</p></dd>
+<dt>dis</dt><dd><p>A numeric vector of weighted distances to five Boston employment centers</p></dd>
+<dt>rad</dt><dd><p>A numeric vector of an index of accessibility to radial highways per town (constant for all Boston tracts)</p></dd>
+<dt>tax</dt><dd><p>A numeric vector full-value property-tax rate per USD 10,000 per town (constant for all Boston tracts)</p></dd>
+<dt>ptratio</dt><dd><p>A numeric vector of pupil-teacher ratios per town (constant for all Boston tracts)</p></dd>
+<dt>b</dt><dd><p>A numeric vector of 1000*(Bk - 0.63)^2 where Bk is the proportion of the black population</p></dd>
+<dt>lstat</dt><dd><p>A numeric vector of percentage values of lower status population</p></dd>
+
+</dl>
+
+    <h2 class="hasAnchor" id="source"><a class="anchor" href="#source"></a>Source</h2>
+
+    <p><a href='http://lib.stat.cmu.edu/datasets/boston_corrected.txt'>http://lib.stat.cmu.edu/datasets/boston_corrected.txt</a></p>
+    <h2 class="hasAnchor" id="references"><a class="anchor" href="#references"></a>References</h2>
+
+    <p>Gilley OW, Pace RK, others (1996).
+&#8220;On the Harrison and Rubinfeld data.&#8221;
+<em>Journal of Environmental Economics and Management</em>, <b>31</b>(3), 403--405.<br /><br /> Harrison Jr D, Rubinfeld DL (1978).
+&#8220;Hedonic housing prices and the demand for clean air.&#8221;
+<em>Journal of environmental economics and management</em>, <b>5</b>(1), 81--102.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

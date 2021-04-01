@@ -7,6 +7,9 @@
     <loc>https://shamindras.github.io/maars/reference/as.maars.html</loc>
   </url>
   <url>
+    <loc>https://shamindras.github.io/maars/reference/boston_housing.html</loc>
+  </url>
+  <url>
     <loc>https://shamindras.github.io/maars/reference/check_fn_args.html</loc>
   </url>
   <url>
@@ -103,16 +106,13 @@
     <loc>https://shamindras.github.io/maars/reference/get_mms_print_cli.html</loc>
   </url>
   <url>
-    <loc>https://shamindras.github.io/maars/reference/get_mms_rnm_cols_suff.html</loc>
-  </url>
-  <url>
     <loc>https://shamindras.github.io/maars/reference/get_mms_summary_confint_split_cli.html</loc>
   </url>
   <url>
-    <loc>https://shamindras.github.io/maars/reference/get_mms_summary_print_lm_style.html</loc>
+    <loc>https://shamindras.github.io/maars/reference/get_mms_summary_split_cli.html</loc>
   </url>
   <url>
-    <loc>https://shamindras.github.io/maars/reference/get_mms_summary_split_cli.html</loc>
+    <loc>https://shamindras.github.io/maars/reference/get_mms_summary_with_stars.html</loc>
   </url>
   <url>
     <loc>https://shamindras.github.io/maars/reference/get_plot.html</loc>
@@ -122,6 +122,9 @@
   </url>
   <url>
     <loc>https://shamindras.github.io/maars/reference/la_county.html</loc>
+  </url>
+  <url>
+    <loc>https://shamindras.github.io/maars/reference/maars-package.html</loc>
   </url>
   <url>
     <loc>https://shamindras.github.io/maars/reference/pipe.html</loc>

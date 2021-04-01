@@ -13,8 +13,8 @@ multiple regressors — diag_fit_reg_rwgt • maars</title>
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
 
@@ -38,6 +38,12 @@ multiple regressors — diag_fit_reg_rwgt • maars</title>
 <script src="../pkgdown.js"></script>
 
 
+<!-- docsearch -->
+<script src="../docsearch.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/docsearch.js/2.6.3/docsearch.min.css" integrity="sha256-QOSRU/ra9ActyXkIBbiIB144aDBdtvXBcNc3OTNuX/Q=" crossorigin="anonymous" />
+<link href="../docsearch.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+
 
 
 <meta property="og:title" content="Obtain estimates of GLM or OLS under reweighting of one or
@@ -45,6 +51,8 @@ multiple regressors — diag_fit_reg_rwgt" />
 <meta property="og:description" content="diag_fit_reg_rwgt returns estimates for GLM and OLS under reweighting of
 multiple regressors. The function estimates a set of coefficients for several
 configurations of the reweighting of the reweighting of each regressor." />
+
+
 
 
 
@@ -60,9 +68,18 @@ configurations of the reweighting of the reweighting of each regressor." />
 
 
 
+<!-- dependencies from examples -->
+
+
+  
+
+  
+
   </head>
 
   <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -124,6 +141,12 @@ configurations of the reweighting of the reweighting of each regressor." />
   </a>
 </li>
       </ul>
+      
+      <form class="navbar-form navbar-right hidden-xs hidden-sm" role="search">
+        <div class="form-group">
+          <input type="search" class="form-control" name="search-input" id="search-input" placeholder="Search..." aria-label="Search for..." autocomplete="off">
+        </div>
+      </form>
       
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -192,7 +215,7 @@ in the name of the column. Default is set to <code>NULL</code>.</p></td>
     </tr>
     <tr>
       <th>grid_method</th>
-      <td><p>A chracter which specifies the method used to construct
+      <td><p>A character which specifies the method used to construct
 the grid of reweighting centers. The grid can consist either of evenly
 spaced values between the maximum and the minimum
 (<code>grid_method='regular'</code>) or based on the quantiles between the first
@@ -231,8 +254,8 @@ a grid based on the second to first to the ninth deciles of each regressor.</p>
 <span class='va'>X1</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>
 <span class='va'>X2</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>3</span><span class='op'>)</span>
 <span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fl'>2</span> <span class='op'>+</span> <span class='va'>X1</span> <span class='op'>+</span> <span class='va'>X2</span> <span class='op'>*</span> <span class='fl'>0.3</span> <span class='op'>+</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>
-<span class='va'>df</span> <span class='op'>&lt;-</span> <span class='fu'>tibble</span><span class='fu'>::</span><span class='fu'><a href='https://tibble.tidyverse.org/reference/tibble.html'>tibble</a></span><span class='op'>(</span>y <span class='op'>=</span> <span class='va'>y</span>, X1 <span class='op'>=</span> <span class='va'>X1</span>, X2 <span class='op'>=</span> <span class='va'>X2</span>, n_obs <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>X1</span><span class='op'>)</span><span class='op'>)</span>
-<span class='va'>mod_fit</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>y</span> <span class='op'>~</span> <span class='va'>X1</span> <span class='op'>+</span> <span class='va'>X2</span>, <span class='va'>df</span><span class='op'>)</span>
+<span class='va'>reg_df</span> <span class='op'>&lt;-</span> <span class='fu'>tibble</span><span class='fu'>::</span><span class='fu'><a href='https://tibble.tidyverse.org/reference/tibble.html'>tibble</a></span><span class='op'>(</span>y <span class='op'>=</span> <span class='va'>y</span>, X1 <span class='op'>=</span> <span class='va'>X1</span>, X2 <span class='op'>=</span> <span class='va'>X2</span>, n_obs <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>X1</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>mod_fit</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>y</span> <span class='op'>~</span> <span class='va'>X1</span> <span class='op'>+</span> <span class='va'>X2</span>, <span class='va'>reg_df</span><span class='op'>)</span>
 <span class='va'>ols_rwgt</span> <span class='op'>&lt;-</span> <span class='fu'>diag_fit_reg_rwgt</span><span class='op'>(</span><span class='va'>mod_fit</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"X1"</span>, <span class='st'>"X2"</span><span class='op'>)</span><span class='op'>)</span>
 
 <span class='co'># Display the output</span>
@@ -256,18 +279,37 @@ a grid based on the second to first to the ninth deciles of each regressor.</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Shamindra Shrotriya, Riccardo Fogliato.</p>
+  <p><p>Developed by Shamindra Shrotriya, Riccardo Fogliato.</p></p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9001.</p></p>
 </div>
 
       </footer>
    </div>
 
   
+<script src="https://cdnjs.cloudflare.com/ajax/libs/docsearch.js/2.6.1/docsearch.min.js" integrity="sha256-GKvGqXDznoRYHCwKXGnuchvKSwmx9SRMrZOTh2g4Sb0=" crossorigin="anonymous"></script>
+<script>
+  docsearch({
+    
+    
+    apiKey: 'f0ad25edfd6fa5501f3057affbad5212',
+    indexName: 'maars',
+    inputSelector: 'input#search-input.form-control',
+    transformData: function(hits) {
+      return hits.map(function (hit) {
+        hit.url = updateHitURL(hit);
+        return hit;
+      });
+    }
+  });
+</script>
 
+
+
+  
 
   </body>
 </html>

@@ -12,8 +12,8 @@
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <!-- Bootstrap -->
-<link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.4.0/flatly/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous" />
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
 
@@ -37,6 +37,12 @@
 <script src="../pkgdown.js"></script>
 
 
+<!-- docsearch -->
+<script src="../docsearch.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/docsearch.js/2.6.3/docsearch.min.css" integrity="sha256-QOSRU/ra9ActyXkIBbiIB144aDBdtvXBcNc3OTNuX/Q=" crossorigin="anonymous" />
+<link href="../docsearch.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+
 
 
 <meta property="og:title" content="Compute the sandwich estimator of standard errors for OLS — comp_sand_var" />
@@ -45,6 +51,8 @@ ordinary least squares (OLS) regression, see White (1980) and White (1980)
 . For more details
 see also Buja et al. (2019) and Buja et al. (2019)
 ." />
+
+
 
 
 
@@ -60,9 +68,18 @@ see also Buja et al. (2019) and Buja et al. (2019)
 
 
 
+<!-- dependencies from examples -->
+
+
+  
+
+  
+
   </head>
 
   <body data-spy="scroll" data-target="#toc">
+    
+
     <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -125,6 +142,12 @@ see also Buja et al. (2019) and Buja et al. (2019)
 </li>
       </ul>
       
+      <form class="navbar-form navbar-right hidden-xs hidden-sm" role="search">
+        <div class="form-group">
+          <input type="search" class="form-control" name="search-input" id="search-input" placeholder="Search..." aria-label="Search for..." autocomplete="off">
+        </div>
+      </form>
+      
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
@@ -180,20 +203,16 @@ about the components of the model based on the sandwich standard errors.</p>
     <p>Buja A, Brown L, Berk R, George E, Pitkin E, Traskin M, Zhang K, Zhao L (2019).
 &#8220;Models as approximations I: consequences illustrated with linear regression.&#8221;
 <em>Statist. Sci.</em>, <b>34</b>(4), 523--544.
-ISSN 0883-4237, doi: <a href='https://doi.org/10.1214/18-STS693'>10.1214/18-STS693</a>
-, <a href='https://doi.org/10.1214/18-STS693'>https://doi.org/10.1214/18-STS693</a>.<br /><br /> Buja A, Brown L, Kuchibhotla AK, Berk R, George E, Zhao L (2019).
+ISSN 0883-4237.<br /><br /> Buja A, Brown L, Kuchibhotla AK, Berk R, George E, Zhao L (2019).
 &#8220;Models as approximations II: A model-free theory of parametric regression.&#8221;
 <em>Statist. Sci.</em>, <b>34</b>(4), 545--565.
-ISSN 0883-4237, doi: <a href='https://doi.org/10.1214/18-STS694'>10.1214/18-STS694</a>
-, <a href='https://doi.org/10.1214/18-STS694'>https://doi.org/10.1214/18-STS694</a>.<br /><br /> White H (1980).
+ISSN 0883-4237.<br /><br /> White H (1980).
 &#8220;Using least squares to approximate unknown regression functions.&#8221;
 <em>Internat. Econom. Rev.</em>, <b>21</b>(1), 149--170.
-ISSN 0020-6598, doi: <a href='https://doi.org/10.2307/2526245'>10.2307/2526245</a>
-, <a href='https://doi.org/10.2307/2526245'>https://doi.org/10.2307/2526245</a>.<br /><br /> White H (1980).
+ISSN 0020-6598.<br /><br /> White H (1980).
 &#8220;A heteroskedasticity-consistent covariance matrix estimator and a direct test for heteroskedasticity.&#8221;
 <em>Econometrica</em>, <b>48</b>(4), 817--838.
-ISSN 0012-9682, doi: <a href='https://doi.org/10.2307/1912934'>10.2307/1912934</a>
-, <a href='https://doi.org/10.2307/1912934'>https://doi.org/10.2307/1912934</a>.</p>
+ISSN 0012-9682.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
@@ -216,18 +235,37 @@ ISSN 0012-9682, doi: <a href='https://doi.org/10.2307/1912934'>10.2307/1912934</
 
       <footer>
       <div class="copyright">
-  <p>Developed by Shamindra Shrotriya, Riccardo Fogliato.</p>
+  <p><p>Developed by Shamindra Shrotriya, Riccardo Fogliato.</p></p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
+  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9001.</p></p>
 </div>
 
       </footer>
    </div>
 
   
+<script src="https://cdnjs.cloudflare.com/ajax/libs/docsearch.js/2.6.1/docsearch.min.js" integrity="sha256-GKvGqXDznoRYHCwKXGnuchvKSwmx9SRMrZOTh2g4Sb0=" crossorigin="anonymous"></script>
+<script>
+  docsearch({
+    
+    
+    apiKey: 'f0ad25edfd6fa5501f3057affbad5212',
+    indexName: 'maars',
+    inputSelector: 'input#search-input.form-control',
+    transformData: function(hits) {
+      return hits.map(function (hit) {
+        hit.url = updateHitURL(hit);
+        return hit;
+      });
+    }
+  });
+</script>
 
+
+
+  
 
   </body>
 </html>
