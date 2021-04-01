@@ -1,3 +1,5 @@
+# maars 1.1.0
+
 # maars 1.0.0
 
 - Set the default `digits = 3` formatting in `summary.maars_lm` printed output
