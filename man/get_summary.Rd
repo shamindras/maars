@@ -7,11 +7,11 @@ class object}
 \usage{
 get_summary(
   mod_fit,
-  sand = FALSE,
-  boot_emp = FALSE,
-  boot_mul = FALSE,
-  boot_res = FALSE,
-  well_specified = FALSE
+  sand = NULL,
+  boot_emp = NULL,
+  boot_mul = NULL,
+  boot_res = NULL,
+  well_specified = NULL
 )
 }
 \arguments{

@@ -178,11 +178,11 @@ get_mms_summary_split_cli <- function(title,
 #' @method summary maars_lm
 #' @export
 summary.maars_lm <- function(object,
-                             sand = FALSE,
-                             boot_emp = FALSE,
-                             boot_res = FALSE,
-                             boot_mul = FALSE,
-                             well_specified = FALSE,
+                             sand = NULL,
+                             boot_emp = NULL,
+                             boot_mul = NULL,
+                             boot_res = NULL,
+                             well_specified = NULL,
                              digits = 3,
                              ...) {
 
@@ -614,6 +614,7 @@ get_mms_summary_confint_split_cli <- function(title,
 confint.maars_lm <- function(object,
                              parm = NULL,
                              level = 0.95,
+                             # TODO: to be changed
                              sand = TRUE,
                              boot_emp = FALSE,
                              boot_res = FALSE,
