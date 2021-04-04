@@ -40,11 +40,11 @@
 get_confint <- function(mod_fit,
                         parm = NULL,
                         level = 0.95,
-                        sand = TRUE,
-                        boot_emp = FALSE,
-                        boot_mul = FALSE,
-                        boot_res = FALSE,
-                        well_specified = FALSE) {
+                        sand = NULL,
+                        boot_emp = NULL,
+                        boot_mul = NULL,
+                        boot_res = NULL,
+                        well_specified = NULL) {
 
   # Check parm is NULL valued
   # TODO: Allow this to be a vector of numbers or a vector of names to filter
