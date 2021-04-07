@@ -141,7 +141,7 @@ comp_lm_var <- function(mod_fit) {
     var_type_abb = "lm",
     var_summary = summary_lm,
     var_assumptions = assumptions_lm,
-    cov_mat = NULL
+    cov_mat = vcov(mod_fit)
   )
 
   return(out)
