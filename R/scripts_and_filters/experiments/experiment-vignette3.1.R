@@ -1,6 +1,7 @@
 # Setup Libraries ---------------------------------------------------------
 
 library(tidyverse)
+devtools::document()
 devtools::load_all()
 
 # Run lm fitted model -----------------------------------------------------
@@ -10,8 +11,19 @@ n <- 1e2
 X <- stats::rnorm(n, 0, 1)
 y <- 2 + X * 1 + stats::rnorm(n, 0, 1)
 
+# TODO: Generate Q replications of data e.g. Q = 1000 using purrr::map
+
+# Use the map on map approach to get list of confidence intervals tibbles for
+# each B, m and replicate of data i.e. B * m * Q total number of such tibbles
+# Check this map of a map
+# map(boot_emp, ~ map(list_of_data, ~ comp_var(.x, .y))
+
 # Fit the linear model using OLS (ordinary least squares)
 mod_fit <- stats::lm(y ~ X)
+
+maars_fit <- comp_var(mod_fit = mod_fit, boot_emp = list(B = 100, m = 50))
+
+
 
 # Create grid sequences ---------------------------------------------------
 
@@ -75,6 +87,8 @@ out_crossing_norpl <-
     )
   )))
 
+out_crossing_norpl[8, 3]$boot_emp
+
 # Run the map across the empirical bootstrap models. Really we should
 # just put this in a mutate statement
 boot_emp_crossing <-
@@ -84,3 +98,33 @@ boot_emp_crossing <-
     .x = .,
     .f = ~ comp_var(mod_fit = mod_fit, boot_emp = .x)
   )
+
+boot_emp_crossing[[1]]
+
+out_crossing_norpl2 <- out_crossing_norpl
+out_crossing_norpl2$cmp_var <- boot_emp_crossing
+
+boot_emp_confint <-
+  out_crossing_norpl2 %>%
+  dplyr::pull(cmp_var) %>%
+  purrr::map(
+    .x = .,
+    .f = ~ get_confint(mod_fit = ., boot_emp = TRUE)
+  )
+
+# Add in the confidence intervals
+out_crossing_norpl2$cnf_int <- boot_emp_confint
+
+
+# out_crossing_norpl_comp <-
+#   out_crossing_norpl %>%
+#   # dplyr::rowwise() %>%
+#   dplyr::mutate(.data = .,
+#                 cmp_var = purrr::map(
+#                   .x = boot_emp,
+#                   # .f = ~ 1
+#                   .f = ~ comp_var(mod_fit = mod_fit, boot_emp = .x[[1]])
+#                 ))
+
+
+purrr::map(.x = boot_emp, .f = ~ map(list_of_data, ~ comp_var(.x, .y))
