@@ -116,15 +116,27 @@ boot_emp_confint <-
 out_crossing_norpl2$cnf_int <- boot_emp_confint
 
 
-# out_crossing_norpl_comp <-
-#   out_crossing_norpl %>%
-#   # dplyr::rowwise() %>%
-#   dplyr::mutate(.data = .,
-#                 cmp_var = purrr::map(
-#                   .x = boot_emp,
-#                   # .f = ~ 1
-#                   .f = ~ comp_var(mod_fit = mod_fit, boot_emp = .x[[1]])
-#                 ))
+out_crossing_norpl_comp <-
+  out_crossing_norpl %>%
+  # dplyr::rowwise() %>%
+  dplyr::mutate(cmp_var = purrr::map(
+                  .x = list(boot_emp),
+                  # .f = ~ 1
+                  .f = ~ comp_var(mod_fit = mod_fit, boot_emp = .)
+                ))
 
 
-purrr::map(.x = boot_emp, .f = ~ map(list_of_data, ~ comp_var(.x, .y))
+#purrr::map(.x = boot_emp, .f = ~ map(list_of_data, ~ comp_var(.x, .y))
+
+out_crossing_norpl_comp
+
+
+
+
+
+
+
+
+
+
+

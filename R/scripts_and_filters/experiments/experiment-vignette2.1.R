@@ -5,12 +5,13 @@ library(tidyverse)
 
 # generate covariates
 n_obs <- 1e3
-X <- runif(n_obs, min = 0, max = 5)
+X <- runif(n_obs, min = 0, max = 10)
 
 # generate Y's for a grid of gamma values
-gamma_values <- c(0, 0.5, 1, 1.5, 2, 2.5)
-beta_val <- 2
-inter_val <- 1
+gamma_values <- c(0, 0.1, 0.5, 1, 1.5, 2, 2.5)
+beta_0 <=
+# beta_val <- 2
+# inter_val <- 1
 # Y_by_gamma <- gamma_values %>%
 #     map(~ inter_val + beta_val*X + .*X^{1.7} + exp(0.5*X)*rnorm(n_obs)) %>%
 #     setNames(gamma_values)
@@ -21,9 +22,14 @@ inter_val <- 1
 #     setNames(gamma_values)
 
 # Attempt at heteroscedasticity with gamma noise
-# Y_i = \beta X_i + eps_i, eps_i ~N(0, \sigma_i^{2})
+# # Y_i = \beta X_i + eps_i, eps_i ~N(0, \sigma_i^{2})
+# Y_by_gamma <- gamma_values %>%
+#     map(~ inter_val + beta_val*X + sapply(sqrt(X), rnorm, n = n_obs, mean = 0)) %>%
+#     setNames(gamma_values)
+
+gamma_values <- c(0, 0.1, 0.3, 0.5)
 Y_by_gamma <- gamma_values %>%
-    map(~ inter_val + beta_val*X + sapply(sqrt(X), rnorm, n = n_obs, mean = 0)) %>%
+    map(~ inter_val + beta_val*X + .*X^2 + rnorm(n_obs)) %>%
     setNames(gamma_values)
 
 # plot the data - need to add the title gamma = value
@@ -72,7 +78,7 @@ ci_by_gamma %>%
     facet_wrap(~ var_type_abb, ncol = 3)
 
 
-
+# ----
 
 # old (to be deleted) -----
 # std_errs <- varest_by_gamma %>%
