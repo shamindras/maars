@@ -9,15 +9,15 @@ devtools::load_all()
 # Global variables --------------------------------------------------------
 set.seed(35542)
 NUM_COVG_REPS <- 200 # Number of coverage replications
-NUM_OBS <- 300
+NUM_OBS <- 1000
 
 # Create grid sequences ---------------------------------------------------
 # For empirical bootstrap parameters i.e. B*m
 # Create individual sequences of grid values to cross join
 # TODO: Need to add replace = {TRUE/FALSE} values once we add subsampling
 out_crossing <- purrr::cross2(
-  .x = seq(from = 5, to = 35, by = 10),
-  .y = seq(from = 40, to = 120, by = 40),
+  .x = seq(from = 20, to = 100, by = 20),
+  .y = seq(from = 250, to = 1000, by = 250),
   .filter = `==`
 ) %>%
   purrr::map(purrr::set_names, c("B", "m"))
@@ -124,10 +124,20 @@ hist(all_confint_coverage$coverage, breaks = 10, xlim = c(0, 1))
 
 # TODO: Check if we should be plotting avg_width?
 # Should this be coverage instead?
-all_confint_coverage %>%
+all_confint_plt <- all_confint_coverage %>%
   mutate(title = as.factor(glue::glue("m = {m}"))) %>%
-  ggplot(aes(B, avg_width)) +
+  ggplot(aes(B, coverage)) +
   geom_col() +
-  facet_grid(~title) +
+  facet_grid(term ~ title) +
   labs(y = "Coverage") +
   geom_hline(yintercept = 0.95, linetype = "dashed")
+all_confint_plt
+# Save the plot
+# Note: It may be good to pre-run this script and read it in our paper, rather
+#       than knit the pdf with this time consuming run
+ggsave(filename = here::here("R/scripts_and_filters/experiments/experiment-vignette3.1-SS-2.png"), plot = all_confint_plt)
+# Plot interactively using plotly
+# plotly::ggplotly(p = all_confint_plt)
+
+all_confint_coverage %>%
+  dplyr::filter(B == 100, m == 250)
