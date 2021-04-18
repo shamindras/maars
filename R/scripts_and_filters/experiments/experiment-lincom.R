@@ -64,7 +64,8 @@ lincom <- function(coef_est, R, r, cov_mat){
 # https://www.stata.com/manuals/rtest.pdf page 21
 
 
-get_lincomtest <- function(mod_fit, R,
+get_lincomtest <- function(mod_fit,
+                           R,
                    r,
                    sand = NULL,
                    boot_emp = NULL,
@@ -106,6 +107,10 @@ get_lincomtest <- function(mod_fit, R,
 get_lincomtest(mms_var,
                R = matrix(c(1,0,0,1),ncol = 2),
                r = c(0,0))
+get_lincomtest(mms_var,
+               R = matrix(c(1,0),ncol = 2),
+               r = 0)
+
 # test
 
 
@@ -123,9 +128,6 @@ lincom(coef_est = coef(lm_fit),
 diag(length(coef(lm_fit))) %>%
     apply(., 2,
           function(x) lincom(coef_est = coef(lm_fit), R = x, r = c(0), cov_mat = vcov(lm_fit)))
-
-
-
 
 
 car::linearHypothesis(lm_fit, c(0,1,0), test=c("Chisq"))

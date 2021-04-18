@@ -10,15 +10,15 @@ set.seed(35542)
 NUM_COVG_REPS <- 10 # Number of coverage replications
 
 # Setup progress bar ------------------------------------------------------
-pb <- progress_bar$new(
-  format = "running replications [:bar] :elapsedfull",
-  total = NUM_COVG_REPS, clear = FALSE, width = 60
-)
+# pb <- progress_bar$new(
+#   format = "running replications [:bar] :elapsedfull",
+#   total = NUM_COVG_REPS, clear = FALSE, width = 60
+# )
 
 # Run lm fitted model -----------------------------------------------------
 # Fit the linear model using OLS (ordinary least squares)
 fit_confint_boot_emp <- function(covg_rep_idx, boot_emp) {
-  n <- 500
+  n <- 1e2 # TOO LARGE - DATA CHANGES ALL THE TIMES
   X <- stats::rnorm(n, 0, 1)
   y <- 2 + X * 1 + stats::rnorm(n, 0, 1)
   lm_fit <- stats::lm(y ~ X)
@@ -35,7 +35,7 @@ fit_confint_boot_emp <- function(covg_rep_idx, boot_emp) {
 
 # Wrapper function to
 wrap_fit_confint_boot_emp <- function(num_reps, boot_emp) {
-  pb$tick()
+  #pb$tick()
   out <- 1:num_reps %>%
     purrr::imap_dfr(.x = ., .f = ~ fit_confint_boot_emp(
       covg_rep_idx = .y,
@@ -55,17 +55,11 @@ wrap_fit_confint_boot_emp(num_reps = 5, boot_emp = list(B = 20, m = 200))
 # Create individual sequences of grid values to cross join
 # TODO: Need to add replace = {TRUE/FALSE} values once we add subsampling
 
-# TODO: This version is using rowwise, we can simplify this with map2 below
-# out_crossing <- tidyr::crossing(B = seq(from = 5, to = 35, by = 10),
-#                                 m = seq(from = 40, to = 120, by = 40)) %>%
-#   dplyr::rowwise(data = .) %>%
-#   dplyr::mutate(boot_emp = list(tibble::lst("B" = B,
-#                                             "m" = switch(!is.na(m), m, NULL))))
-
 out_crossing <- tidyr::crossing(
   B = seq(from = 5, to = 35, by = 10),
   m = seq(from = 40, to = 120, by = 40)
 ) %>%
+  # THIS IS PROBABLY NOT NEEDED
   dplyr::mutate(boot_emp = purrr::map2(
     .x = B, .y = m,
     .f = ~ list(B = .x, m = .y)
@@ -103,10 +97,32 @@ confint_replications <-
 head(confint_replications)
 
 # Get combined confidence intervals ---------------------------------------
-confint_replications %>%
+confint <- confint_replications %>%
   dplyr::pull(cmp_var) %>%
-  purrr::map_dfr(.x = ., .f = ~.x)
+  purrr::map_dfr(.x = ., .f = ~.x) %>%
   # Add plotting code here
+  filter(stat_type == "conf.low" |
+           stat_type == "conf.high") %>%
+  pivot_wider(names_from = stat_type, values_from = stat_val)
+
+
+
+coverage <- confint %>%
+  inner_join(tibble(term = c('(Intercept)', 'X'), value_par = c(2, 1)), by = 'term') %>%
+  mutate(covers_c = ifelse(conf.low <= value_par & conf.high >= value_par, 1, 0)) %>%
+  group_by(term, B, m, var_type_abb) %>%
+  summarise(coverage = mean(covers_c),
+          avg_width = mean(conf.high-conf.low))
+
+coverage %>%
+  mutate(title = as.factor(glue::glue('m = {m}'))) %>%
+  ggplot(aes(B, avg_width)) +
+  geom_col() +
+  facet_grid(~ title) +
+  labs(y = "Coverage") +
+  geom_hline(yintercept = 0.95, linetype = "dashed")
+
+
 
 # TODO: Discuss
 # 1. Can we filter the tibble from `fit_confint_boot_emp` to only keep the
@@ -119,3 +135,14 @@ confint_replications %>%
 #    or the NUM_COVG_REPS? We should find a reasonable combination that
 #    allows the key ideas to be illustrated and for the code to be more
 #    efficiently run
+
+
+
+
+
+
+
+
+
+
+
