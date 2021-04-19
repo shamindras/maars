@@ -8,7 +8,7 @@ devtools::load_all()
 
 # Global variables --------------------------------------------------------
 set.seed(35542)
-NUM_COVG_REPS <- 200 # Number of coverage replications
+NUM_COVG_REPS <- 500 # Number of coverage replications
 NUM_OBS <- 1000
 
 # Create grid sequences ---------------------------------------------------
@@ -16,7 +16,7 @@ NUM_OBS <- 1000
 # Create individual sequences of grid values to cross join
 # TODO: Need to add replace = {TRUE/FALSE} values once we add subsampling
 out_crossing <- purrr::cross2(
-  .x = seq(from = 20, to = 100, by = 20),
+  .x = seq(from = 20, to = 200, by = 20),
   .y = seq(from = 250, to = 1000, by = 250),
   .filter = `==`
 ) %>%
@@ -137,7 +137,7 @@ all_confint_plt
 #       than knit the pdf with this time consuming run
 ggsave(filename = here::here("R/scripts_and_filters/experiments/experiment-vignette3.1-SS-2.png"), plot = all_confint_plt)
 # Plot interactively using plotly
-# plotly::ggplotly(p = all_confint_plt)
+plotly::ggplotly(p = all_confint_plt)
 
 all_confint_coverage %>%
   dplyr::filter(B == 100, m == 250)
