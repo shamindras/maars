@@ -8,16 +8,16 @@ devtools::load_all()
 
 # Global variables --------------------------------------------------------
 set.seed(35542)
-NUM_COVG_REPS <- 500 # Number of coverage replications
-NUM_OBS <- 1000
+NUM_COVG_REPS <- 1000 # Number of coverage replications
+NUM_OBS <- 300
 
 # Create grid sequences ---------------------------------------------------
 # For empirical bootstrap parameters i.e. B*m
 # Create individual sequences of grid values to cross join
 # TODO: Need to add replace = {TRUE/FALSE} values once we add subsampling
 out_crossing <- purrr::cross2(
-  .x = seq(from = 20, to = 200, by = 20),
-  .y = seq(from = 250, to = 1000, by = 250),
+  .x = seq(from = 20, to = 100, by = 20),
+  .y = c(20, 30, 50, 100, 200, 300),
   .filter = `==`
 ) %>%
   purrr::map(purrr::set_names, c("B", "m"))
