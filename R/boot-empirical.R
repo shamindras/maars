@@ -12,6 +12,7 @@
 #'   be drawn.
 #' @param m Number of observations to be sampled with replacement from
 #'   the original dataset for each bootstrap repetition.
+#' @param replace TODO: ADD
 #'
 #' @return A tibble containing the number of bootstrap iteration, the
 #'   bootstrap samples (\code{data}),
@@ -41,14 +42,15 @@
 #' }
 comp_boot_emp_samples <- function(data,
                                   B = 1,
-                                  m = NULL) {
+                                  m = NULL,
+                                  replace = TRUE) {
   n <- nrow(data)
   if (is.null(m)) {
     m <- n
   }
   # this is a simplified version of rsample because rsample currently
   # does not allow for sampling m!=n observations from the data
-  indices <- purrr::map(rep(n, B), sample, replace = TRUE, size = m)
+  indices <- purrr::map(rep(n, B), sample, replace = replace, size = m)
 
   out <- tibble::tibble(
     b = as.integer(paste0(1:length(indices))),
@@ -171,6 +173,7 @@ fit_reg <- function(mod_fit, data, weights = NULL) {
 #' @param B Bootstrap repetitions or number of bootstrap samples to be drawn.
 #' @param m Number of observations to be sampled with replacement from the
 #'   dataset for each bootstrap repetition.
+#' @param replace TODO: ADD
 #'
 #' @return A list containing the following elements.
 #'   \code{var_type}: The type of estimator for the variance of the coefficients
@@ -207,7 +210,7 @@ fit_reg <- function(mod_fit, data, weights = NULL) {
 #'
 #' print(out)
 #' }
-comp_boot_emp <- function(mod_fit, B = 100, m = NULL) {
+comp_boot_emp <- function(mod_fit, B = 100, m = NULL, replace = TRUE) {
   assertthat::assert_that(all("lm" == class(mod_fit)) | any("glm" == class(mod_fit)),
                           msg = glue::glue("mod_fit must only be of class lm or glm")
   )
@@ -219,12 +222,18 @@ comp_boot_emp <- function(mod_fit, B = 100, m = NULL) {
     m <- n
   }
 
+  assertthat::assert_that(replace || (!replace & m <= n),
+                            msg = glue::glue("m must be less or equal to n for subsampling")
+  )
+
+  boot_type <- ifelse(replace, 'emp', 'sub')
+
   boot_out <- lapply(
     1:B,
     function(x) {
       fit_reg(
         mod_fit = mod_fit,
-        data = comp_boot_emp_samples(data, B = 1, m)$data[[1]]
+        data = comp_boot_emp_samples(data, B = 1, m = m, replace = replace)$data[[1]]
       )
     }
   )
@@ -232,7 +241,7 @@ comp_boot_emp <- function(mod_fit, B = 100, m = NULL) {
   cov_mat <- boot_out %>%
     purrr::map(~ .x %>% dplyr::pull(estimate)) %>%
     dplyr::bind_rows(data = ., .id = NULL) %>%
-    stats::cov(x = .) * m / n
+    stats::cov(x = .) * m / n # check in case of subsampling
 
   boot_out <- boot_out %>%
     dplyr::bind_rows(.id = "b") %>%
@@ -243,12 +252,12 @@ comp_boot_emp <- function(mod_fit, B = 100, m = NULL) {
   summary_boot <- get_boot_summary(
     mod_fit = mod_fit,
     boot_out = boot_out,
-    boot_type = "emp"
+    boot_type = boot_type # check if subsampling needs any modification
   )
 
   out <- list(
-    var_type = "boot_emp",
-    var_type_abb = "emp",
+    var_type = glue::glue("boot_{boot_type}"),
+    var_type_abb = boot_type,
     var_summary = summary_boot,
     var_assumptions = c(
       glue::glue("Observations are assumed to be independent",

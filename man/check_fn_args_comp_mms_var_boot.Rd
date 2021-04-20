@@ -4,7 +4,7 @@
 \alias{check_fn_args_comp_mms_var_boot}
 \title{Assertion Checks for all \code{\link{comp_mms_var}} function bootstrap function inputs}
 \usage{
-check_fn_args_comp_mms_var_boot(boot_emp, boot_res, boot_mul)
+check_fn_args_comp_mms_var_boot(boot_emp, boot_sub, boot_res, boot_mul)
 }
 \arguments{
 \item{boot_emp}{(list) In the case of empirical bootstrap the expected input
@@ -17,6 +17,8 @@ but this assertion checking is handled explicitly in the
 in \code{list(B = -15, m = -20)} will pass this function without errors,
 these will be addressed explicitly in \code{\link{comp_boot_emp}} as
 invalid inputs.}
+
+\item{boot_sub}{(list) TODO: ADD}
 
 \item{boot_res}{(list) : In the case of residual bootstrap the expected
 input is of the form \code{list(B = 10)}. Note that technically \code{B}

@@ -81,6 +81,7 @@ set.seed(454354534)
 mms_fit2 <- comp_var(
     mod_fit = lm_fit,
     boot_emp = list(B = 50, m = 200),
+    boot_sub = list(B = 100, m = 100),
     boot_res = list(B = 70),
     boot_mul = list(B = 60))
 
@@ -116,7 +117,7 @@ summary(mms_fit1, boot_emp = TRUE, boot_mul = TRUE)
 # and here we ask for residual bootstrap, which is not available either
 summary(mms_fit1, boot_res = TRUE)
 # In both cases, these summaries return helpful warnings
-
+summary(mms_fit1, boot_sub = TRUE)
 
 # extract assumptions ----
 

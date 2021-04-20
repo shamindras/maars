@@ -4,7 +4,7 @@
 \alias{comp_boot_emp}
 \title{A wrapper for the empirical bootstrap of a fitted OLS or GLM regression model}
 \usage{
-comp_boot_emp(mod_fit, B = 100, m = NULL)
+comp_boot_emp(mod_fit, B = 100, m = NULL, replace = TRUE)
 }
 \arguments{
 \item{mod_fit}{An object of class \code{\link[stats]{lm}} or
@@ -16,6 +16,8 @@ the family.}
 
 \item{m}{Number of observations to be sampled with replacement from the
 dataset for each bootstrap repetition.}
+
+\item{replace}{TODO: ADD}
 }
 \value{
 A list containing the following elements.

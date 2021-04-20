@@ -16,6 +16,7 @@
 #'   in \code{list(B = -15, m = -20)} will pass this function without errors,
 #'   these will be addressed explicitly in \code{\link{comp_boot_emp}} as
 #'   invalid inputs.
+#' @param boot_sub (list) TODO: ADD
 #' @param boot_mul (list) : In the case of multiplier bootstrap the expected
 #'   input is of the form \code{list(B = 10, weights_type = "rademacher")}.
 #'   Here the named element \code{weights_type} is optional
@@ -76,6 +77,7 @@
 #' }
 comp_var <- function(mod_fit,
                      boot_emp = NULL,
+                     boot_sub = NULL,
                      boot_res = NULL,
                      boot_mul = NULL) {
   # the following condition will need to be revised once we introduce glm
@@ -83,7 +85,11 @@ comp_var <- function(mod_fit,
     attr(mod_fit, "class") <- "lm"
   }
 
-  out_var <- comp_mms_var(mod_fit, boot_emp, boot_res, boot_mul)
+  out_var <- comp_mms_var(mod_fit = mod_fit,
+                          boot_emp = boot_emp,
+                          boot_sub = boot_sub,
+                          boot_res = boot_res,
+                          boot_mul = boot_mul)
   mod_fit[["var"]] <- out_var
 
   class(mod_fit) <- c("maars_lm", "lm")
@@ -165,6 +171,8 @@ get_mms_summary_split_cli <- function(title,
 #'   \code{FALSE} to exclude this output from the request.
 #' @param boot_emp (logical) : \code{TRUE} if empirical bootstrap standard error
 #'   output is required, \code{FALSE} to exclude this output from the request.
+#' @param boot_sub (logical) : \code{TRUE} if subsampling standard error
+#'   output is required, \code{FALSE} to exclude this output from the request.
 #' @param boot_res (logical) : \code{TRUE} if residual bootstrap standard error
 #'   output is required, \code{FALSE} to exclude this output from the request.
 #' @param boot_mul (logical) : \code{TRUE} if multiplier bootstrap standard error
@@ -180,6 +188,7 @@ get_mms_summary_split_cli <- function(title,
 summary.maars_lm <- function(object,
                              sand = NULL,
                              boot_emp = NULL,
+                             boot_sub = NULL,
                              boot_mul = NULL,
                              boot_res = NULL,
                              well_specified = NULL,
@@ -193,6 +202,7 @@ summary.maars_lm <- function(object,
     mod_fit = object,
     sand = sand,
     boot_emp = boot_emp,
+    boot_sub = boot_sub,
     boot_res = boot_res,
     boot_mul = boot_mul,
     well_specified = well_specified
@@ -598,6 +608,8 @@ get_mms_summary_confint_split_cli <- function(title,
 #'   \code{FALSE} to exclude this output from the request.
 #' @param boot_emp (logical) : \code{TRUE} if empirical bootstrap standard error
 #'   output is required, \code{FALSE} to exclude this output from the request.
+#' @param boot_sub (logical) : \code{TRUE} if subsampling standard error
+#'   output is required, \code{FALSE} to exclude this output from the request.
 #' @param boot_res (logical) : \code{TRUE} if residual bootstrap standard error
 #'   output is required, \code{FALSE} to exclude this output from the request.
 #' @param boot_mul (logical) : \code{TRUE} if multiplier bootstrap standard error
@@ -617,6 +629,7 @@ confint.maars_lm <- function(object,
                              # TODO: to be changed
                              sand = TRUE,
                              boot_emp = FALSE,
+                             boot_sub = FALSE,
                              boot_res = FALSE,
                              boot_mul = FALSE,
                              well_specified = FALSE,
@@ -641,6 +654,7 @@ confint.maars_lm <- function(object,
     mod_fit = object,
     sand = sand,
     boot_emp = boot_emp,
+    boot_sub = boot_sub,
     boot_res = boot_res,
     boot_mul = boot_mul,
     well_specified = well_specified

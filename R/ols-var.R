@@ -37,8 +37,8 @@
 #'   these will be addressed explicitly in \code{\link{comp_boot_mul}} as
 #'   invalid inputs.
 #' @param boot_type (character) : Can take one of the values
-#'   \code{c('boot_emp', 'boot_res', 'boot_mul')}, which are for empirical,
-#'   residual, and multiplier bootstrap respectively.
+#'   \code{c('boot_emp', 'boot_sub', 'boot_res', 'boot_mul')}, which are for
+#'   empirical, subsampling, residual, and multiplier bootstrap respectively.
 #'
 #' @return : A \code{TRUE} if assertions pass, or an error if there is an
 #'   assertion failure.
@@ -71,12 +71,14 @@ check_fn_args_comp_mms_var_boot_ind <- function(inp_list, boot_type) {
   )
 
   assertthat::assert_that(
-    boot_type %in% c("boot_emp", "boot_res", "boot_mul"),
-    msg = glue::glue("boot_type must be one of ['boot_emp', 'boot_res', 'boot_mul']")
+    boot_type %in% c("boot_emp", "boot_sub", "boot_res", "boot_mul"),
+    msg = glue::glue("boot_type must be one of",
+                     "['boot_emp', 'boot_sub', 'boot_res', 'boot_mul']",
+                     .sep = " ")
   )
 
-  # Empirical Bootstrap
-  if (boot_type == "boot_emp") {
+  # Empirical Bootstrap and subsampling
+  if (boot_type == "boot_emp" | boot_type == "boot_sub") {
     assertthat::assert_that(
       length(inp_list) <= 2,
       msg = glue::glue("{boot_type} input list must have 1 or 2 elements",
@@ -170,6 +172,7 @@ check_fn_args_comp_mms_var_boot_ind <- function(inp_list, boot_type) {
 #'   in \code{list(B = -15, m = -20)} will pass this function without errors,
 #'   these will be addressed explicitly in \code{\link{comp_boot_emp}} as
 #'   invalid inputs.
+#' @param boot_sub (list) TODO: ADD
 #' @param boot_res (list) : In the case of residual bootstrap the expected
 #'   input is of the form \code{list(B = 10)}. Note that technically \code{B}
 #'   should be a positive integer, but this assertion checking is handled
@@ -204,7 +207,7 @@ check_fn_args_comp_mms_var_boot_ind <- function(inp_list, boot_type) {
 #'                             boot_res = NULL,
 #'                             boot_mul = NULL)
 #' }
-check_fn_args_comp_mms_var_boot <- function(boot_emp, boot_res, boot_mul) {
+check_fn_args_comp_mms_var_boot <- function(boot_emp, boot_sub, boot_res, boot_mul) {
 
   # Override bootstrap NULL bootstrap variance calculations if any of the
   # input values passed in are not NULL
@@ -213,6 +216,13 @@ check_fn_args_comp_mms_var_boot <- function(boot_emp, boot_res, boot_mul) {
     check_fn_args_comp_mms_var_boot_ind(
       inp_list = boot_emp,
       boot_type = "boot_emp"
+    )
+  }
+  if (!is.null(boot_sub)) {
+    # Subsampling: list format assertion checking
+    check_fn_args_comp_mms_var_boot_ind(
+      inp_list = boot_sub,
+      boot_type = "boot_sub"
     )
   }
   if (!is.null(boot_res)) {
@@ -265,8 +275,9 @@ get_boot_summary <- function(mod_fit, boot_out, boot_type) {
   assertthat::assert_that("tbl_df" %in% class(boot_out),
     msg = glue::glue("boot_out must only be of class tibble")
   )
-  assertthat::assert_that(boot_type %in% c("emp", "mul", "res"),
-    msg = glue::glue("boot_out must only be a character taking values either 'emp' or 'mul'")
+  assertthat::assert_that(boot_type %in% c("emp", "mul", "res", "sub"),
+    msg = glue::glue("boot_out must only be a character taking values",
+    " either ['emp', 'mul', 'res', 'sub']")
   )
 
   if (boot_type %in% c("mul", "res")) {
@@ -325,6 +336,7 @@ get_boot_summary <- function(mod_fit, boot_out, boot_type) {
 #'   in \code{list(B = -15, m = -20)} will pass this function without errors,
 #'   these will be addressed explicitly in \code{\link{comp_boot_emp}} as
 #'   invalid inputs.
+#' @param boot_sub (list) TODO: ADD
 #' @param boot_mul (list) : In the case of multiplier bootstrap the expected
 #'   input is of the form \code{list(B = 10, weights_type = "rademacher")}.
 #'   Here the named element \code{weights_type} is optional
@@ -364,12 +376,18 @@ get_boot_summary <- function(mod_fit, boot_out, boot_type) {
 #'
 #' # Run the multiplier bootstrap on the fitted (OLS) linear model
 #' set.seed(162632)
-#' out <- comp_mms_var(mod_fit, boot_mul = list(B = 100, weights_type = "rademacher"))
+#' out <- comp_mms_var(mod_fit,
+#' boot_mul = list(B = 100, weights_type = "rademacher"),
+#' boot_sub = list(B = 100, m = 50))
 #'
 #' # print output
 #' print(out)
 #' }
-comp_mms_var <- function(mod_fit, boot_emp = NULL, boot_res = NULL, boot_mul = NULL) {
+comp_mms_var <- function(mod_fit,
+                         boot_emp = NULL,
+                         boot_sub = NULL,
+                         boot_res = NULL,
+                         boot_mul = NULL) {
   # Assertion checking for mod_fit
   assertthat::assert_that(all("lm" == class(mod_fit))
                           || any("glm" == class(mod_fit)),
@@ -378,6 +396,7 @@ comp_mms_var <- function(mod_fit, boot_emp = NULL, boot_res = NULL, boot_mul = N
 
   # Assertion checking for empirical, multiplier, and residual bootstrap
   check_fn_args_comp_mms_var_boot(boot_emp = boot_emp,
+                              boot_sub = boot_sub,
                               boot_res = boot_res,
                               boot_mul = boot_mul)
 
@@ -389,6 +408,7 @@ comp_mms_var <- function(mod_fit, boot_emp = NULL, boot_res = NULL, boot_mul = N
 
   # Initialize all other bootstrap variance computations to NULL values
   boot_out_emp <- NULL
+  boot_out_sub <- NULL
   boot_out_mul <- NULL
   boot_out_res <- NULL
 
@@ -410,7 +430,29 @@ comp_mms_var <- function(mod_fit, boot_emp = NULL, boot_res = NULL, boot_mul = N
     boot_out_emp <- comp_boot_emp(
       mod_fit = mod_fit,
       B = B,
-      m = m
+      m = m,
+      replace = TRUE
+    )
+  }
+
+
+  if(!is.null(boot_sub)){
+    if (length(purrr::compact(.x = boot_sub)) == 2) {
+      B <- boot_sub[["B"]]
+      m <- boot_sub[["m"]]
+    } else if (length(purrr::compact(.x = boot_sub)) == 1) {
+      B <- boot_sub[["B"]]
+      m <- NULL
+    } else {
+      stop("An error has occurred in boot_sub input. Please check it and rerun")
+    }
+
+    # Run subsampling
+    boot_out_sub <- comp_boot_emp(
+      mod_fit = mod_fit,
+      B = B,
+      m = m,
+      replace = FALSE
     )
   }
 
@@ -448,11 +490,13 @@ comp_mms_var <- function(mod_fit, boot_emp = NULL, boot_res = NULL, boot_mul = N
     )
   }
 
+
   # Combine all output into a single list of lists
   out <- list(
     var_well_specified = out_well_specified,
     var_sand = out_sand,
     var_boot_emp = boot_out_emp,
+    var_boot_sub = boot_out_sub,
     var_boot_mul = boot_out_mul,
     var_boot_res = boot_out_res
   )

@@ -4,7 +4,7 @@
 \alias{comp_boot_emp_samples}
 \title{Draw bootstrap sample from the data}
 \usage{
-comp_boot_emp_samples(data, B = 1, m = NULL)
+comp_boot_emp_samples(data, B = 1, m = NULL, replace = TRUE)
 }
 \arguments{
 \item{data}{A tibble or data frame containing the dataset to be
@@ -15,6 +15,8 @@ be drawn.}
 
 \item{m}{Number of observations to be sampled with replacement from
 the original dataset for each bootstrap repetition.}
+
+\item{replace}{TODO: ADD}
 }
 \value{
 A tibble containing the number of bootstrap iteration, the
