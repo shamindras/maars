@@ -157,7 +157,13 @@ variance, together with the assumptions behind which these estimates are
 consistent.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>comp_mms_var</span><span class='op'>(</span><span class='va'>mod_fit</span>, boot_emp <span class='op'>=</span> <span class='cn'>NULL</span>, boot_res <span class='op'>=</span> <span class='cn'>NULL</span>, boot_mul <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>comp_mms_var</span><span class='op'>(</span>
+  <span class='va'>mod_fit</span>,
+  boot_emp <span class='op'>=</span> <span class='cn'>NULL</span>,
+  boot_sub <span class='op'>=</span> <span class='cn'>NULL</span>,
+  boot_res <span class='op'>=</span> <span class='cn'>NULL</span>,
+  boot_mul <span class='op'>=</span> <span class='cn'>NULL</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -178,6 +184,10 @@ but this assertion checking is handled explicitly in the
 in <code><a href='https://rdrr.io/r/base/list.html'>list(B = -15, m = -20)</a></code> will pass this function without errors,
 these will be addressed explicitly in <code><a href='comp_boot_emp.html'>comp_boot_emp</a></code> as
 invalid inputs.</p></td>
+    </tr>
+    <tr>
+      <th>boot_sub</th>
+      <td><p>(list) TODO: ADD</p></td>
     </tr>
     <tr>
       <th>boot_res</th>
@@ -225,7 +235,9 @@ by the  user, including the sandwich and the the variance returned by
 
 <span class='co'># Run the multiplier bootstrap on the fitted (OLS) linear model</span>
 <span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>162632</span><span class='op'>)</span>
-<span class='va'>out</span> <span class='op'>&lt;-</span> <span class='fu'>comp_mms_var</span><span class='op'>(</span><span class='va'>mod_fit</span>, boot_mul <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>B <span class='op'>=</span> <span class='fl'>100</span>, weights_type <span class='op'>=</span> <span class='st'>"rademacher"</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>out</span> <span class='op'>&lt;-</span> <span class='fu'>comp_mms_var</span><span class='op'>(</span><span class='va'>mod_fit</span>,
+boot_mul <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>B <span class='op'>=</span> <span class='fl'>100</span>, weights_type <span class='op'>=</span> <span class='st'>"rademacher"</span><span class='op'>)</span>,
+boot_sub <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>B <span class='op'>=</span> <span class='fl'>100</span>, m <span class='op'>=</span> <span class='fl'>50</span><span class='op'>)</span><span class='op'>)</span>
 
 <span class='co'># print output</span>
 <span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>out</span><span class='op'>)</span>

@@ -160,6 +160,7 @@
   level <span class='op'>=</span> <span class='fl'>0.95</span>,
   sand <span class='op'>=</span> <span class='cn'>TRUE</span>,
   boot_emp <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  boot_sub <span class='op'>=</span> <span class='cn'>FALSE</span>,
   boot_res <span class='op'>=</span> <span class='cn'>FALSE</span>,
   boot_mul <span class='op'>=</span> <span class='cn'>FALSE</span>,
   well_specified <span class='op'>=</span> <span class='cn'>FALSE</span>,
@@ -193,6 +194,11 @@ value is <code>NULL</code>.</p></td>
     <tr>
       <th>boot_emp</th>
       <td><p>(logical) : <code>TRUE</code> if empirical bootstrap standard error
+output is required, <code>FALSE</code> to exclude this output from the request.</p></td>
+    </tr>
+    <tr>
+      <th>boot_sub</th>
+      <td><p>(logical) : <code>TRUE</code> if subsampling standard error
 output is required, <code>FALSE</code> to exclude this output from the request.</p></td>
     </tr>
     <tr>

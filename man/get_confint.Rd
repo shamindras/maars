@@ -11,6 +11,7 @@ get_confint(
   level = 0.95,
   sand = NULL,
   boot_emp = NULL,
+  boot_sub = NULL,
   boot_mul = NULL,
   boot_res = NULL,
   well_specified = NULL
@@ -31,6 +32,9 @@ confidence level (e.g., 0.95)}
 \code{FALSE} to exclude this output from the request}
 
 \item{boot_emp}{(logical) : \code{TRUE} if empirical bootstrap standard error
+output is required, \code{FALSE} to exclude this output from the request}
+
+\item{boot_sub}{(logical) : \code{TRUE} if subsampling standard error
 output is required, \code{FALSE} to exclude this output from the request}
 
 \item{boot_mul}{(logical) : \code{TRUE} if multiplier bootstrap standard error

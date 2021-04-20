@@ -162,6 +162,7 @@ class object</p>
   <span class='va'>mod_fit</span>,
   sand <span class='op'>=</span> <span class='cn'>NULL</span>,
   boot_emp <span class='op'>=</span> <span class='cn'>NULL</span>,
+  boot_sub <span class='op'>=</span> <span class='cn'>NULL</span>,
   boot_mul <span class='op'>=</span> <span class='cn'>NULL</span>,
   boot_res <span class='op'>=</span> <span class='cn'>NULL</span>,
   well_specified <span class='op'>=</span> <span class='cn'>NULL</span>
@@ -183,6 +184,11 @@ object</p></td>
     <tr>
       <th>boot_emp</th>
       <td><p>(logical) : <code>TRUE</code> if empirical bootstrap standard error
+output is required, <code>FALSE</code> to exclude this output from the request</p></td>
+    </tr>
+    <tr>
+      <th>boot_sub</th>
+      <td><p>(logical) : <code>TRUE</code> if subsampling standard error
 output is required, <code>FALSE</code> to exclude this output from the request</p></td>
     </tr>
     <tr>

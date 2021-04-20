@@ -8,6 +8,7 @@ check_fn_args_summary(
   mod_fit,
   sand,
   boot_emp,
+  boot_sub,
   boot_mul,
   boot_res,
   well_specified
@@ -20,6 +21,9 @@ check_fn_args_summary(
 \code{FALSE} to exclude this output from the request}
 
 \item{boot_emp}{(logical) : \code{TRUE} if empirical bootstrap standard error
+output is required, \code{FALSE} to exclude this output from the request}
+
+\item{boot_sub}{(logical) : \code{TRUE} if subsampling bootstrap standard error
 output is required, \code{FALSE} to exclude this output from the request}
 
 \item{boot_mul}{(logical) : \code{TRUE} if multiplier bootstrap standard error
@@ -58,7 +62,9 @@ lm_fit <- stats::lm(y ~ X_1 + X_2)
 # Create a maars_lm model with empirical bootstrap, sandwich, and
 # well-specified variance estimates
 comp_var1 <- comp_var(
-  mod_fit = lm_fit, boot_emp = list(B = 20, m = 200),
+  mod_fit = lm_fit,
+  boot_emp = list(B = 20, m = 200),
+  boot_sub = list(B = 20, m = 100),
   boot_res = NULL,
   boot_mul = NULL
 )
@@ -68,7 +74,8 @@ comp_var1 <- comp_var(
 # and it is available in the fitted maars_lm model
 check_fn_args_summary(
   mod_fit = comp_var1, sand = FALSE,
-  boot_emp = TRUE, boot_res = FALSE, boot_mul = FALSE,
+  boot_emp = TRUE, boot_sub = FALSE,
+  boot_res = FALSE, boot_mul = FALSE,
   well_specified = FALSE
 )
 }
