@@ -8,11 +8,10 @@ set.seed(1243434)
 # generate modeling data ----
 n <- 1e3
 x <- stats::rnorm(n, 0, 1)
-y <- 2 + x * 1 + 1 * x^{
-  2
-} + exp(0.2 * abs(x)) * rnorm(n)
+xd <- sample(c('a','b'), replace = TRUE, size = n)
+y <- 2 + x * 1# + 1 * x^{2} + 0.5*ifelse(xd=='a', 1, 0) + exp(0.2 * abs(x)) * rnorm(n)
 
-lm_fit <- lm(y ~ x)
+lm_fit <- lm(y ~ x + xd)
 
 mms_var <- comp_var(lm_fit)
 
@@ -22,6 +21,9 @@ mms_var <- comp_var(lm_fit)
 # look at Stata
 # https://www.stata.com/manuals/rlincom.pdf
 # https://www.stata.com/manuals/rtest.pdf page 21
+#
+# # add print method on get_lincom
+# #
 
 # test: test whether one or more coefficients are equal to zero
 # x1 x2 OR x1=x2
@@ -29,8 +31,11 @@ mms_var <- comp_var(lm_fit)
 # introduce option for F-test for residual bootstrap & well specified
 
 # rename lincom -> test_lincom OR test_wald
+# call it wald test
 lincom <- function(coef_est, R, r, cov_mat) {
+  # add "alt" option
 
+  coef_est <- as.matrix(coef_est)
   # if R is a vector, convert it into a matrix
   if (is.vector(R)) R <- matrix(R, nrow = 1)
 
@@ -72,6 +77,7 @@ get_lincomtest <- function(mod_fit,
                            r,
                            sand = NULL,
                            boot_emp = NULL,
+                           boot_sub = NULL,
                            boot_res = NULL,
                            boot_mul = NULL,
                            well_specified = NULL) {
@@ -79,6 +85,7 @@ get_lincomtest <- function(mod_fit,
     mod_fit = mod_fit,
     sand = sand,
     boot_emp = boot_emp,
+    boot_sub = boot_sub,
     boot_res = boot_res,
     boot_mul = boot_mul,
     well_specified = well_specified
@@ -108,7 +115,7 @@ get_lincomtest <- function(mod_fit,
 
 # test linear combination of coefficients
 get_lincomtest(mms_var,
-  R = matrix(c(1, 0, 0, 1), ncol = 2),
+  R = matrix(c(1, 0, 0, 1, 0, 0), ncol = 3),
   r = c(0, 0)
 )
 
@@ -159,4 +166,12 @@ anova(lm_fit)
 aov(y ~ x, data = tibble::tibble(x = x, y = y))
 # https://github.com/cran/car/blob/master/R/linearHypothesis.R
 
+# try anova with as.factor
 
+mm <- sample(c(1,2), replace = TRUE, size = 12)
+size <- c(3,4,5,6,4,5,6,7,7,8,9,10)
+pop <- c("A","A","A","A","B","B","B","B","C","C","C","C")
+gg <- sample(c('c', 'd', 'f', 'g'), replace = TRUE, size = 12)
+anova(lm(size ~ pop + gg + mm))
+aov.model <- aov(size ~ pop + gg + mm)
+summary(aov.model)

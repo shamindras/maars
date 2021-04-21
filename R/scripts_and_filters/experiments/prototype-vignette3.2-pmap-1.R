@@ -93,7 +93,7 @@ get_ind_confint <- function(covg_rep_idx, B, m, mod_fit, boot_emp, boot_sub, boo
 
 # Use furrr to run in parallel
 # https://github.com/DavisVaughan/furrr#example
-plan(multisession, workers = 2)
+plan(multicore, workers = 2)
 
 # ORIGINAL CODE - using purrr not furrr
 # system.time(confint_replications <- out_all %>%
