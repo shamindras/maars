@@ -23,43 +23,29 @@ gen_ind_mod_fit <- function(n){
 # Note: This could be generated on the fly as well, but here we will reuse this
 #       multiple times, so more efficient to generate this up front
 set.seed(35542)
-replication_mod_fits <- purrr::map(.x = 1:NUM_COVG_REPS,
-                                   .f = ~gen_ind_mod_fit(n = N))
+replication_mod_fits <- map(1:NUM_COVG_REPS, .f = ~gen_ind_mod_fit(n = N))
 
-# Create grid sequences ---------------------------------------------------
-# B parameter grid for bootstrap (empirical/multiplier/subsampling)
-grid_B <- seq(from = 20, to = 100, by = 20)
-
-# Empirical bootstrap parameters grid i.e. n:n bootstrap, with replacement
-grid_boot_emp_n_n <- purrr::map(.x = grid_B, .f = ~list(B = .x, m = N))
-
-# Subsampling bootstrap parameters grid i.e. sqrt(n):n bootstrap (without replacement)
-# grid_boot_emp_sqrtn_n <- purrr::map(.x = grid_B, .f = ~list(B = .x, m = N))
-grid_boot_emp_sqrtn_n <- purrr::map(.x = grid_B, .f = ~list(B = .x, m = floor(sqrt(N))))
-
-# Multiplier bootstrap parameters grid
-grid_boot_mul <- map(.x = grid_B, .f = ~list(B = .x, weights_type = "rademacher"))
-
-# Residual bootstrap parameters grid - NULL values since we are not running this
-# TODO: Perhaps we don't need a boot_res column i.e. can just set it to NULL on the
-#       fly in get_ind_confint below
-grid_boot_res <- purrr::map(.x = seq_along(grid_boot_mul), .f = ~ NULL)
-
+# Create grid sequences -----------------------------------------------
 # Generate the grid of all the variance calculation parameters
-grid_params <- tibble::tibble(B = grid_B, m = N,
-                              boot_emp = grid_boot_emp_n_n,
-                              boot_sub = grid_boot_emp_sqrtn_n,
-                              boot_mul = grid_boot_mul,
-                              boot_res = grid_boot_res)
+grid_params <-
+  tibble(
+    B = seq(from = 20, to = 100, by = 20), m = N,
+    boot_emp = map(B, ~ list(B = .x, m = N)),
+    boot_sub = map(B, ~ list(B = .x, m = floor(sqrt(N)))),
+    boot_mul = map(B, ~ list(B = .x, weights_type = "rademacher")),
+    boot_res = purrr::map(seq_along(boot_mul), ~NULL)
+  )
 
 # Now cross join on all of the replications to this dataset
 # This intentionally contains some duplication redundancy, to make downstream
 # code a single application of pmap!
 out_all <- tidyr::crossing(replication_mod_fits, grid_params) %>%
-    dplyr::rename(mod_fit = replication_mod_fits) %>%
-    tibble::rownames_to_column(var = "covg_rep_idx") %>%
-    dplyr::select(covg_rep_idx, B, m, dplyr::everything())
+    rename(mod_fit = replication_mod_fits) %>%
+    rownames_to_column(var = "covg_rep_idx") %>%
+    select(covg_rep_idx, B, m, everything())
 
+# Quickly examine our table
+head(out_all)
 out_all$boot_sub[[1]]
 
 # We can get the confint for a single replication
@@ -76,14 +62,14 @@ get_ind_confint <- function(covg_rep_idx, B, m, mod_fit, boot_emp, boot_sub, boo
         get_confint(mod_fit = ., level = 0.95,
                     sand = TRUE, boot_emp = TRUE, boot_sub = TRUE,
                     boot_mul = TRUE, boot_res = FALSE) %>%
-        dplyr::mutate(covg_rep_idx = covg_rep_idx, B = B, m = m) %>%
-        dplyr::select(covg_rep_idx, B, m, dplyr::everything())
+        mutate(covg_rep_idx = covg_rep_idx, B = B, m = m) %>%
+        select(covg_rep_idx, B, m, everything())
     return(confint_fit)
 }
 
 # Run the confidence interval replications
 system.time(confint_replications <- out_all %>%
-    dplyr::mutate(confint_fit = purrr::pmap(.l = ., .f = get_ind_confint)))
+    mutate(confint_fit = purrr::pmap(.l = ., .f = get_ind_confint)))
 
 # Check the output
 head(confint_replications)
@@ -91,7 +77,7 @@ head(confint_replications)
 
 # Get combined confidence intervals ---------------------------------------
 all_confint <- confint_replications %>%
-    dplyr::pull(confint_fit) %>%
+    pull(confint_fit) %>%
     purrr::map_dfr(.f = ~.x) %>%
     # Add plotting code here
     filter(stat_type == "conf.low" |
@@ -119,7 +105,7 @@ hist(all_confint_coverage$coverage, breaks = 10, xlim = c(0, 1))
 # TODO: Check if we should be plotting avg_width?
 # Should this be coverage instead?
 all_confint_plt <- all_confint_coverage %>%
-    # dplyr::filter(var_type_abb == "emp") %>%
+    # filter(var_type_abb == "emp") %>%
     mutate(var_type_abb = as.factor(var_type_abb),
            B = as.factor(B)) %>%
     ggplot(aes(B, coverage)) +
