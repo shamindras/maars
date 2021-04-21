@@ -2,20 +2,26 @@
 library(tidyverse)
 library(progress)
 library(glue)
+library(furrr)
 
 devtools::document()
 devtools::load_all()
 
 # Global variables --------------------------------------------------------
-NUM_COVG_REPS <- 300 # Number of coverage replications
-N <- 1000
+NUM_COVG_REPS <- 5 # Number of coverage replications
+N <- 200
 
 # Generate replication data + model fit -----------------------------------
 # Helper function to generate a single replication dataset and `lm` fit
 gen_ind_mod_fit <- function(n){
-    X <- stats::rnorm(n, 0, 1)
-    y <- 2 + X * 1 + stats::rnorm(n, 0, 1)
-    lm_fit <- stats::lm(y ~ X)
+    # X <- stats::rnorm(n, 0, 1)
+    # y <- 2 + X * 1 + stats::rnorm(n, 0, 1)
+    beta0 <- 1
+    beta1 <- 2
+    gamma <- 1
+    x <- runif(n, 0, 10)
+    y <- beta0 + beta1*x + gamma*x^{1.7} + exp(gamma*x)*rnorm(n)
+    lm_fit <- stats::lm(y ~ x)
     return(lm_fit)
 }
 
@@ -24,17 +30,34 @@ gen_ind_mod_fit <- function(n){
 #       multiple times, so more efficient to generate this up front
 set.seed(35542)
 replication_mod_fits <- map(1:NUM_COVG_REPS, ~gen_ind_mod_fit(n = N))
+length(replication_mod_fits)
+replication_mod_fits[[1]]
 
 # Create grid sequences -----------------------------------------------
 # Generate the grid of all the variance calculation parameters
-grid_params <-
-  tibble(
-    B = seq(from = 20, to = 100, by = 20), m = N,
-    boot_emp = map(B, ~ list(B = .x, m = N)),
-    boot_sub = map(B, ~ list(B = .x, m = floor(sqrt(N)))),
-    boot_mul = map(B, ~ list(B = .x, weights_type = "rademacher")),
-    boot_res = purrr::map(seq_along(boot_mul), ~NULL)
-  )
+# This time run it without the filtering
+# grid_B <- seq(50, 100, by = 50)
+# grid_m <- seq(from = 40, to = 120, by = 40)
+grid_B <- seq(100, 400, by = 100)
+grid_m <- c(floor(seq(N**(1/3), to = N, length = 3)), (N^2)/4, (N^2)/2, N^2)
+length(grid_B) * length(grid_m)
+
+grid_params <- tidyr::crossing(
+    # B = seq(50, 100, by = 50),
+    # m = seq(from = 40, to = 120, by = 40)
+    B = grid_B,
+    m = grid_m
+) %>%
+    dplyr::mutate(
+        boot_emp = map2(B, m, ~ list(B = .x, m = .y)),
+        boot_sub = purrr::map(seq_along(boot_emp), ~NULL),
+        boot_mul = purrr::map(seq_along(boot_emp), ~NULL),
+        boot_res = purrr::map(seq_along(boot_mul), ~NULL))
+
+grid_params$boot_emp[[1]]
+grid_params$boot_emp[[2]]
+grid_params$boot_mul[[1]]
+grid_params$boot_sub[[1]]
 
 # Now cross join on all of the replications to this dataset
 # This intentionally contains some duplication redundancy, to make downstream
@@ -43,10 +66,11 @@ out_all <- tidyr::crossing(replication_mod_fits, grid_params) %>%
     rename(mod_fit = replication_mod_fits) %>%
     rownames_to_column(var = "covg_rep_idx") %>%
     select(covg_rep_idx, B, m, everything())
-
+nrow(out_all)
 # Quickly examine our table
 head(out_all)
 out_all$boot_sub[[1]]
+lobstr::obj_size(out_all)*1e-6
 
 # We can get the confint for a single replication
 get_ind_confint <- function(covg_rep_idx, B, m, mod_fit, boot_emp, boot_sub, boot_mul, boot_res){
@@ -67,9 +91,17 @@ get_ind_confint <- function(covg_rep_idx, B, m, mod_fit, boot_emp, boot_sub, boo
     return(confint_fit)
 }
 
+# Use furrr to run in parallel
+# https://github.com/DavisVaughan/furrr#example
+plan(multisession, workers = 2)
+
+# ORIGINAL CODE - using purrr not furrr
+# system.time(confint_replications <- out_all %>%
+#                 mutate(confint_fit = purrr::pmap(.l = ., .f = get_ind_confint)))
+
 # Run the confidence interval replications
 system.time(confint_replications <- out_all %>%
-    mutate(confint_fit = purrr::pmap(.l = ., .f = get_ind_confint)))
+                mutate(confint_fit = furrr::future_pmap(.l = ., .f = get_ind_confint)))
 
 # Check the output
 head(confint_replications)
