@@ -7,7 +7,7 @@ devtools::document()
 devtools::load_all()
 
 # Global variables --------------------------------------------------------
-NUM_COVG_REPS <- 10 # Number of coverage replications
+NUM_COVG_REPS <- 300 # Number of coverage replications
 N <- 1000
 
 # Generate replication data + model fit -----------------------------------
@@ -31,87 +31,59 @@ replication_mod_fits <- purrr::map(.x = 1:NUM_COVG_REPS,
 grid_B <- seq(from = 20, to = 100, by = 20)
 
 # Empirical bootstrap parameters grid i.e. n:n bootstrap, with replacement
-# TODO: Later switch to having `replace = TRUE` explicitly
 grid_boot_emp_n_n <- purrr::map(.x = grid_B, .f = ~list(B = .x, m = N))
-# grid_boot_emp_n_n <- purrr::map(.x = grid_B, .f = ~list(B = .x, m = N, replace = TRUE))
 
-# Empirical bootstrap parameters grid i.e. sqrt(n):n bootstrap, subsampling (without replacement)
-grid_boot_emp_sqrtn_n <- purrr::map(.x = grid_B, .f = ~list(B = .x, m = N))
+# Subsampling bootstrap parameters grid i.e. sqrt(n):n bootstrap (without replacement)
+# grid_boot_emp_sqrtn_n <- purrr::map(.x = grid_B, .f = ~list(B = .x, m = N))
+grid_boot_emp_sqrtn_n <- purrr::map(.x = grid_B, .f = ~list(B = .x, m = floor(sqrt(N))))
 
 # Multiplier bootstrap parameters grid
 grid_boot_mul <- map(.x = grid_B, .f = ~list(B = .x, weights_type = "rademacher"))
 
-# grid_boot_res <- list(rep(x = NA, times = length(grid_boot_mul)))
-# grid_boot_res <- seq_along(along.with = grid_boot_mul) %>%
-#     purrr::map(.x = ., .f = ~ NULL)
+# Residual bootstrap parameters grid - NULL values since we are not running this
+# TODO: Perhaps we don't need a boot_res column i.e. can just set it to NULL on the
+#       fly in get_ind_confint below
 grid_boot_res <- purrr::map(.x = seq_along(grid_boot_mul), .f = ~ NULL)
 
-out_crossing <- tibble::tibble(B = grid_B,
-                               m = N,
-                               boot_emp = grid_boot_emp_n_n,
-                               boot_sub = grid_boot_emp_sqrtn_n,
-                               boot_mul = grid_boot_mul,
-                               boot_res = grid_boot_res)
-out_crossing
-out_crossing$boot_res
+# Generate the grid of all the variance calculation parameters
+grid_params <- tibble::tibble(B = grid_B, m = N,
+                              boot_emp = grid_boot_emp_n_n,
+                              boot_sub = grid_boot_emp_sqrtn_n,
+                              boot_mul = grid_boot_mul,
+                              boot_res = grid_boot_res)
 
-# Let's try running pmap inside the mutate statement for a single replication
-# This pmap does not seem to run the required boot_emp, boot_sub, boot_mul, boot_res correctly
-lm_fit <- gen_ind_mod_fit(n = N)
-test_pmap1 <- out_crossing %>%
-    dplyr::mutate(out_fit = purrr::pmap(.l = .,
-                                        .f = ~comp_var(mod_fit = lm_fit)))
-print(test_pmap1$out_fit[[1]], boot_emp = TRUE)
-test_pmap1$out_fit[[1]]$var
-
-# Let's try running pmap outside the mutate statement for a single replication
-# Let's try running it outside the mutate statement
-test_pmap2 <- purrr::pmap(.l = out_crossing, .f = ~comp_var(mod_fit = lm_fit))
-test_pmap2[[1]]$var
-
-# Let's try doing a cross join on all models with the data
-length(replication_mod_fits)
-
-out_all <- tidyr::crossing(replication_mod_fits, out_crossing) %>%
+# Now cross join on all of the replications to this dataset
+# This intentionally contains some duplication redundancy, to make downstream
+# code a single application of pmap!
+out_all <- tidyr::crossing(replication_mod_fits, grid_params) %>%
     dplyr::rename(mod_fit = replication_mod_fits) %>%
     tibble::rownames_to_column(var = "covg_rep_idx") %>%
     dplyr::select(covg_rep_idx, B, m, dplyr::everything())
-colnames(out_all) %>% cat(sep = ", ")
 
+out_all$boot_sub[[1]]
 
-fin_out <- out_all %>%
-    dplyr::select(-covg_rep_idx, -B, -m) %>%
-    dplyr::mutate(out_fit = purrr::pmap(.l = .,
-                                        .f = ~comp_var(mod_fit = lm_fit)))
-
+# We can get the confint for a single replication
 get_ind_confint <- function(covg_rep_idx, B, m, mod_fit, boot_emp, boot_sub, boot_mul, boot_res){
     # TODO: Remove the print message later
     print(glue::glue("Running coverage replication index: {covg_rep_idx}...\n"))
     print(glue::glue("B: {B}...\n"))
     print(glue::glue("m: {m}...\n"))
-    confint_fit <- comp_var(mod_fit = mod_fit,
-                            boot_emp = boot_emp,
-                            boot_sub = boot_sub,
-                            boot_mul = boot_mul,
+    # TODO: Perhaps we don't need a boot_res column i.e. can just set it
+    #       manually to NULL below
+    confint_fit <- comp_var(mod_fit = mod_fit, boot_emp = boot_emp,
+                            boot_sub = boot_sub, boot_mul = boot_mul,
                             boot_res = boot_res) %>%
-        get_confint(mod_fit = .,
-                    level = 0.95,
-                    boot_emp = TRUE,
-                    boot_sub = TRUE,
-                    boot_mul = TRUE,
-                    boot_res = FALSE) %>%
-        dplyr::mutate(
-            covg_rep_idx = covg_rep_idx,
-            B = B,
-            m = m
-        ) %>%
+        get_confint(mod_fit = ., level = 0.95,
+                    sand = TRUE, boot_emp = TRUE, boot_sub = TRUE,
+                    boot_mul = TRUE, boot_res = FALSE) %>%
+        dplyr::mutate(covg_rep_idx = covg_rep_idx, B = B, m = m) %>%
         dplyr::select(covg_rep_idx, B, m, dplyr::everything())
     return(confint_fit)
 }
 
-confint_replications <- out_all %>%
-    dplyr::mutate(confint_fit = purrr::pmap(.l = .,
-                                            .f = get_ind_confint))
+# Run the confidence interval replications
+system.time(confint_replications <- out_all %>%
+    dplyr::mutate(confint_fit = purrr::pmap(.l = ., .f = get_ind_confint)))
 
 # Check the output
 head(confint_replications)
@@ -146,17 +118,20 @@ hist(all_confint_coverage$coverage, breaks = 10, xlim = c(0, 1))
 
 # TODO: Check if we should be plotting avg_width?
 # Should this be coverage instead?
-# all_confint_plt <- all_confint_coverage %>%
-#     mutate(title = as.factor(glue::glue("m = {m}"))) %>%
-#     ggplot(aes(B, coverage)) +
-#     geom_col() +
-#     facet_grid(term ~ title) +
-#     labs(y = "Coverage") +
-#     geom_hline(yintercept = 0.95, linetype = "dashed")
-# all_confint_plt
+all_confint_plt <- all_confint_coverage %>%
+    # dplyr::filter(var_type_abb == "emp") %>%
+    mutate(var_type_abb = as.factor(var_type_abb),
+           B = as.factor(B)) %>%
+    ggplot(aes(B, coverage)) +
+    geom_col() +
+    facet_grid(term ~ var_type_abb) +
+    labs(title = glue::glue("m = {N}"),
+         y = "Coverage") +
+    geom_hline(yintercept = 0.95, linetype = "dashed")
+all_confint_plt
 # Save the plot
 # Note: It may be good to pre-run this script and read it in our paper, rather
 #       than knit the pdf with this time consuming run
 # ggsave(filename = here::here("R/scripts_and_filters/experiments/experiment-vignette3.1-SS-2.png"), plot = all_confint_plt)
 # Plot interactively using plotly
-# plotly::ggplotly(p = all_confint_plt)
+plotly::ggplotly(p = all_confint_plt)
