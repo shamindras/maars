@@ -1,6 +1,6 @@
 # Setup Libraries ---------------------------------------------------------
 library(tidyverse)
-library(progress)
+#library(progress)
 library(glue)
 library(furrr)
 
@@ -8,7 +8,7 @@ devtools::document()
 devtools::load_all()
 
 # Global variables --------------------------------------------------------
-NUM_COVG_REPS <- 5 # Number of coverage replications
+NUM_COVG_REPS <- 500 # Number of coverage replications
 N <- 200
 
 # Generate replication data + model fit -----------------------------------
@@ -18,7 +18,7 @@ gen_ind_mod_fit <- function(n){
     # y <- 2 + X * 1 + stats::rnorm(n, 0, 1)
     beta0 <- 1
     beta1 <- 2
-    gamma <- 1
+    gamma <- 0.1
     x <- runif(n, 0, 10)
     y <- beta0 + beta1*x + gamma*x^{1.7} + exp(gamma*x)*rnorm(n)
     lm_fit <- stats::lm(y ~ x)
@@ -38,8 +38,9 @@ replication_mod_fits[[1]]
 # This time run it without the filtering
 # grid_B <- seq(50, 100, by = 50)
 # grid_m <- seq(from = 40, to = 120, by = 40)
-grid_B <- seq(100, 400, by = 100)
-grid_m <- c(floor(seq(N**(1/3), to = N, length = 3)), (N^2)/4, (N^2)/2, N^2)
+grid_B <- seq(100, 500, by = 100)
+grid_m <- c(floor(N**(1/3)), 50, 100, 200, 500, 1e3, 1e4, 4e4) # cleaner version of grid_m
+#grid_m <- c(floor(seq(N**(1/3), to = N, length = 3)), (N^2)/4, (N^2)/2, N^2)
 length(grid_B) * length(grid_m)
 
 grid_params <- tidyr::crossing(
@@ -93,7 +94,7 @@ get_ind_confint <- function(covg_rep_idx, B, m, mod_fit, boot_emp, boot_sub, boo
 
 # Use furrr to run in parallel
 # https://github.com/DavisVaughan/furrr#example
-plan(multicore, workers = 2)
+plan(multicore, workers = 50)
 
 # ORIGINAL CODE - using purrr not furrr
 # system.time(confint_replications <- out_all %>%
@@ -116,10 +117,12 @@ all_confint <- confint_replications %>%
                stat_type == "conf.high") %>%
     pivot_wider(names_from = stat_type, values_from = stat_val)
 
+df_mod <- gen_ind_mod_fit(1e8)
+
 all_confint_coverage <- all_confint %>%
     inner_join(tibble(
-        term = c("(Intercept)", "X"),
-        value_par = c(2, 1)
+        term = c("(Intercept)", "x"),
+        value_par = c(coef(df_mod)[1], coef(df_mod)[2])
     ),
     by = "term"
     ) %>%
@@ -128,7 +131,9 @@ all_confint_coverage <- all_confint %>%
     summarize(
         coverage = mean(covers_c),
         avg_width = mean(conf.high - conf.low)
-    )
+    ) %>%
+    filter(var_type_abb != 'lm') %>%
+    filter(term != '(Intercept)')
 
 # Coverage seems to be working here i.e. most of the values are in the 86-100% range
 summary(all_confint_coverage$coverage)
@@ -137,19 +142,60 @@ hist(all_confint_coverage$coverage, breaks = 10, xlim = c(0, 1))
 # TODO: Check if we should be plotting avg_width?
 # Should this be coverage instead?
 all_confint_plt <- all_confint_coverage %>%
-    # filter(var_type_abb == "emp") %>%
     mutate(var_type_abb = as.factor(var_type_abb),
-           B = as.factor(B)) %>%
-    ggplot(aes(B, coverage)) +
+           B = as.factor(B),
+           m = as.factor(m))  %>%
+    filter(var_type_abb != 'sand') %>%
+    ggplot(aes(m, coverage)) +
     geom_col() +
-    facet_grid(term ~ var_type_abb) +
-    labs(title = glue::glue("m = {N}"),
-         y = "Coverage") +
-    geom_hline(yintercept = 0.95, linetype = "dashed")
+    facet_grid(B~var_type_abb) +
+    labs(y = "Coverage") +
+    theme_bw() +
+    geom_hline(yintercept = (all_confint_coverage %>% filter(var_type_abb == 'sand') %>% pull(coverage))[1], linetype = "dashed")
+all_confint_plt
+# all_confint_plt <- all_confint_coverage %>%
+#     filter(var_type_abb != 'lm') %>%
+#     filter(term != '(Intercept)') %>%
+#     mutate(var_type_abb = as.factor(var_type_abb),
+#            B = as.factor(B)
+#            ) %>%
+#     ggplot(aes(m, coverage, col = B)) +
+#     geom_point() +
+#     #geom_path() +
+#     ggplot2::scale_x_log10() +
+#     ylim(0.75,1) +
+#     #facet_grid~ var_type_abb) +
+#     labs(y = "Coverage") +
+#     geom_hline(yintercept = (all_confint_coverage %>% filter(var_type_abb == 'sand') %>% pull(coverage))[1], linetype = "dashed") +
+#     theme_bw()
 all_confint_plt
 # Save the plot
 # Note: It may be good to pre-run this script and read it in our paper, rather
 #       than knit the pdf with this time consuming run
-# ggsave(filename = here::here("R/scripts_and_filters/experiments/experiment-vignette3.1-SS-2.png"), plot = all_confint_plt)
+ggsave(filename = here::here("R/scripts_and_filters/experiments/experiment-vignette3.1_coverage.png"), plot = all_confint_plt)
 # Plot interactively using plotly
 plotly::ggplotly(p = all_confint_plt)
+
+
+all_avgwidth_plt <- all_confint_coverage %>%
+    filter(var_type_abb != 'lm') %>%
+    filter(term != '(Intercept)') %>%
+    filter(var_type_abb != 'sand') %>%
+    mutate(var_type_abb = as.factor(var_type_abb),
+           B = as.factor(B),
+           m = as.factor(m)) %>%
+    ggplot(aes(m, avg_width)) +
+    geom_col() +
+    facet_grid(B ~ var_type_abb) +
+    labs(y = "Average width of confidence inverval") +
+    theme_bw() +
+    geom_hline(yintercept =  (all_confint_coverage %>% filter(var_type_abb == 'sand') %>% pull(avg_width))[1], linetype = 'dashed')
+all_avgwidth_plt
+# Save the plot
+# Note: It may be good to pre-run this script and read it in our paper, rather
+#       than knit the pdf with this time consuming run
+ggsave(filename = here::here("R/scripts_and_filters/experiments/experiment-vignette3.1_width.png"), plot = all_avgwidth_plt)
+# Plot interactively using plotly
+plotly::ggplotly(p = all_confint_plt)
+
+
