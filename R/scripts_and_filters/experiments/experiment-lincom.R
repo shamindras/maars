@@ -23,12 +23,11 @@ mms_var <- comp_var(lm_fit)
 # https://www.stata.com/manuals/rtest.pdf page 21
 
 
-
 # rename lincom -> test_lincom OR test_wald
 # call it wald test
 # add possibility to do Bonferroni correction?
 test_mms_lincom <- function(coef_est, R, r, cov_mat) {
-  # add "alt" option
+  # add "alt" option -> use it only when alt is R is one row and return the t-stat
 
   coef_est <- as.matrix(coef_est)
   # if R is a vector, convert it into a matrix
@@ -65,7 +64,7 @@ test_mms_lincom <- function(coef_est, R, r, cov_mat) {
   return(out)
 }
 
-
+# add alt and allow it only when R has only one row
 test_lincom <- function(mod_fit,
                            R,
                            r,
@@ -121,7 +120,7 @@ print.test.maars <- function(x,  ...) {
     print.data.frame(x = .)
 }
 
-
+# alt needs to be specified for all coefficients
 test_wald <- function(mod_fit,
                       alt = NULL,
                       sand = NULL,
