@@ -51,8 +51,8 @@ grid_params <- tidyr::crossing(
     dplyr::mutate(
         boot_emp = map2(B, m, ~ list(B = .x, m = .y)),
         boot_sub = purrr::map(seq_along(boot_emp), ~NULL),
-        boot_mul = purrr::map(seq_along(boot_emp), ~NULL),
-        boot_res = purrr::map(seq_along(boot_mul), ~NULL))
+        boot_mul = purrr::map(seq_along(boot_mul), ~NULL),
+        boot_res = purrr::map(seq_along(boot_res), ~NULL))
 
 grid_params$boot_emp[[1]]
 grid_params$boot_emp[[2]]
