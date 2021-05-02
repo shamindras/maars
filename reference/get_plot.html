@@ -92,7 +92,7 @@ in the link[ggplot2] package style." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">maars</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
 
@@ -198,7 +198,7 @@ in the <code>link[ggplot2]</code> package style.</p>
 <span class='co'># OLS data and model</span>
 <span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fl'>2</span> <span class='op'>+</span> <span class='va'>X_1</span> <span class='op'>*</span> <span class='fl'>1</span> <span class='op'>+</span> <span class='va'>X_2</span> <span class='op'>*</span> <span class='fl'>5</span> <span class='op'>+</span> <span class='va'>eps</span>
 <span class='va'>lm_fit</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>y</span> <span class='op'>~</span> <span class='va'>X_1</span> <span class='op'>+</span> <span class='va'>X_2</span><span class='op'>)</span>
-<span class='va'>mms_fit</span> <span class='op'>&lt;-</span> <span class='va'>lm_fit</span> <span class='op'>%&gt;%</span> <span class='fu'><a href='comp_var.html'>comp_var</a></span><span class='op'>(</span>
+<span class='va'>mms_fit</span> <span class='op'>&lt;-</span> <span class='va'>lm_fit</span> <span class='op'><a href='pipe.html'>%&gt;%</a></span> <span class='fu'><a href='comp_var.html'>comp_var</a></span><span class='op'>(</span>
   mod_fit <span class='op'>=</span> <span class='va'>.</span>,
   boot_emp <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>B <span class='op'>=</span> <span class='fl'>100</span>, m <span class='op'>=</span> <span class='fl'>50</span><span class='op'>)</span>,
   boot_res <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>B <span class='op'>=</span> <span class='fl'>50</span><span class='op'>)</span>
@@ -219,7 +219,7 @@ in the <code>link[ggplot2]</code> package style.</p>
 
       <footer>
       <div class="copyright">
-  <p><p>Developed by Shamindra Shrotriya, Riccardo Fogliato.</p></p>
+  <p><p>Developed by Shamindra Shrotriya, Riccardo Fogliato, Arun Kumar Kuchibhotla.</p></p>
 </div>
 
 <div class="pkgdown">

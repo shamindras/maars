@@ -91,7 +91,7 @@ consistent." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">maars</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
 
@@ -168,7 +168,13 @@ variance, together with the assumptions behind which these estimates are
 consistent.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>comp_mms_var</span><span class='op'>(</span><span class='va'>mod_fit</span>, boot_emp <span class='op'>=</span> <span class='cn'>NULL</span>, boot_res <span class='op'>=</span> <span class='cn'>NULL</span>, boot_mul <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>comp_mms_var</span><span class='op'>(</span>
+  <span class='va'>mod_fit</span>,
+  boot_emp <span class='op'>=</span> <span class='cn'>NULL</span>,
+  boot_sub <span class='op'>=</span> <span class='cn'>NULL</span>,
+  boot_res <span class='op'>=</span> <span class='cn'>NULL</span>,
+  boot_mul <span class='op'>=</span> <span class='cn'>NULL</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -180,38 +186,42 @@ consistent.</p>
     <tr>
       <th>boot_emp</th>
       <td><p>(list) In the case of empirical bootstrap the expected input
-is of the form #'   <code><a href='https://rdrr.io/r/base/list.html'>list(B = 10, m = 100)</a></code>. Here the named
-element <code>m</code> is optional e.g. <code><a href='https://rdrr.io/r/base/list.html'>list(B = 10)</a></code> is valid, or passed
-in as an explicit <code>NULL</code> e.g. <code><a href='https://rdrr.io/r/base/list.html'>list(B = 10, m = NULL)</a></code>.
+is of the form #'   <code>list(B = 10, m = 100)</code>. Here the named
+element <code>m</code> is optional e.g. <code>list(B = 10)</code> is valid, or passed
+in as an explicit <code>NULL</code> e.g. <code>list(B = 10, m = NULL)</code>.
 Note that technically <code>B, m</code> should both be positive integers,
 but this assertion checking is handled explicitly in the
 <code><a href='comp_boot_emp.html'>comp_boot_emp</a></code> function. So although passing
-in <code><a href='https://rdrr.io/r/base/list.html'>list(B = -15, m = -20)</a></code> will pass this function without errors,
+in <code>list(B = -15, m = -20)</code> will pass this function without errors,
 these will be addressed explicitly in <code><a href='comp_boot_emp.html'>comp_boot_emp</a></code> as
 invalid inputs.</p></td>
     </tr>
     <tr>
+      <th>boot_sub</th>
+      <td><p>(list) TODO: ADD</p></td>
+    </tr>
+    <tr>
       <th>boot_res</th>
       <td><p>(list) : In the case of residual bootstrap the expected
-input is of the form <code><a href='https://rdrr.io/r/base/list.html'>list(B = 10)</a></code>. Note that technically <code>B</code>
+input is of the form <code>list(B = 10)</code>. Note that technically <code>B</code>
 should be a positive integer, but this assertion checking is handled
 explicitly in the <code><a href='comp_boot_res.html'>comp_boot_res</a></code> function. So although passing
-in <code><a href='https://rdrr.io/r/base/list.html'>list(B = -15)</a></code> will pass this function without errors,
+in <code>list(B = -15)</code> will pass this function without errors,
 these will be addressed explicitly in <code><a href='comp_boot_res.html'>comp_boot_res</a></code> as
 invalid inputs.</p></td>
     </tr>
     <tr>
       <th>boot_mul</th>
       <td><p>(list) : In the case of multiplier bootstrap the expected
-input is of the form <code><a href='https://rdrr.io/r/base/list.html'>list(B = 10, weights_type = "rademacher")</a></code>.
+input is of the form <code>list(B = 10, weights_type = "rademacher")</code>.
 Here the named element <code>weights_type</code> is optional
-e.g. <code><a href='https://rdrr.io/r/base/list.html'>list(B = 10)</a></code> is valid, or passed in as an explicit <code>NULL</code>
-e.g. <code><a href='https://rdrr.io/r/base/list.html'>list(B = 10, weights_type = NULL)</a></code>.
+e.g. <code>list(B = 10)</code> is valid, or passed in as an explicit <code>NULL</code>
+e.g. <code>list(B = 10, weights_type = NULL)</code>.
 Note that technically <code>B</code> should be a positive integer, and
 <code>weights_type</code> should be a character vector
 (see <code><a href='comp_boot_mul.html'>comp_boot_mul</a></code>), but this assertion checking is handled
 explicitly in the <code><a href='comp_boot_mul.html'>comp_boot_mul</a></code> function. So although passing
-in <code><a href='https://rdrr.io/r/base/list.html'>list(B = -15, m = "test")</a></code> will pass this function without errors,
+in <code>list(B = -15, m = "test")</code> will pass this function without errors,
 these will be addressed explicitly in <code><a href='comp_boot_mul.html'>comp_boot_mul</a></code> as
 invalid inputs.</p></td>
     </tr>
@@ -236,7 +246,9 @@ by the  user, including the sandwich and the the variance returned by
 
 <span class='co'># Run the multiplier bootstrap on the fitted (OLS) linear model</span>
 <span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>162632</span><span class='op'>)</span>
-<span class='va'>out</span> <span class='op'>&lt;-</span> <span class='fu'>comp_mms_var</span><span class='op'>(</span><span class='va'>mod_fit</span>, boot_mul <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>B <span class='op'>=</span> <span class='fl'>100</span>, weights_type <span class='op'>=</span> <span class='st'>"rademacher"</span><span class='op'>)</span><span class='op'>)</span>
+<span class='va'>out</span> <span class='op'>&lt;-</span> <span class='fu'>comp_mms_var</span><span class='op'>(</span><span class='va'>mod_fit</span>,
+boot_mul <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>B <span class='op'>=</span> <span class='fl'>100</span>, weights_type <span class='op'>=</span> <span class='st'>"rademacher"</span><span class='op'>)</span>,
+boot_sub <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>B <span class='op'>=</span> <span class='fl'>100</span>, m <span class='op'>=</span> <span class='fl'>50</span><span class='op'>)</span><span class='op'>)</span>
 
 <span class='co'># print output</span>
 <span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>out</span><span class='op'>)</span>
@@ -253,7 +265,7 @@ by the  user, including the sandwich and the the variance returned by
 
       <footer>
       <div class="copyright">
-  <p><p>Developed by Shamindra Shrotriya, Riccardo Fogliato.</p></p>
+  <p><p>Developed by Shamindra Shrotriya, Riccardo Fogliato, Arun Kumar Kuchibhotla.</p></p>
 </div>
 
 <div class="pkgdown">

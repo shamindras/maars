@@ -86,7 +86,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">maars</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
 
@@ -156,9 +156,52 @@
       <small>Source: <a href='https://github.com/shamindras/maars/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="maars-110" class="section level1">
+<h1 class="page-header" data-toc-text="1.1.0">
+<a href="#maars-110" class="anchor" aria-hidden="true"></a>maars 1.1.0</h1>
+<ul>
+<li>Change <code>Significance</code> heading in our summary output to be abbreviated to <code>Signif:</code> to be consistent with <code><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm()</a></code> output</li>
+<li>Change column ordering for bootstrap standard errors and t-statistics rigorously</li>
+<li>Change p-value format to be <code>2</code>/<code>3</code> digits</li>
+<li>Clean <code>R/scripts_and_filters/experiments/</code> dir, remove old experiments</li>
+<li>Clean up script that gets metadata of <code>maars</code> function <strong>metadata</strong> from <code>pkgdown</code>
+</li>
+<li>Remove all <code>base::</code> prefix use e.g. <code><a href="https://rdrr.io/r/base/function.html" class="external-link">base::return()</a></code>
+</li>
+<li>Change <code><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">dplyr::summarise</a></code> to <code><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">dplyr::summarize</a></code> for spelling consistency</li>
+<li>Ensure all <code>stats</code> functions use the <code>stats::</code> prefix</li>
+<li>Fix <code>.data</code> related <code>rlang</code> issues</li>
+<li>We shouldn’t name a variable <code>df</code> since this conflicts with <code><a href="https://rdrr.io/r/stats/Fdist.html" class="external-link">stats::df</a></code>. We should change this after the demo</li>
+<li>Clean vignette. Leave the plot in the vignette (to be moved elsewhere)</li>
+<li>Updated the corrected <code>Boston Housing</code> Dataset with citations. Add unit tests for the corrections</li>
+<li>Clean up spelling notes</li>
+<li>Change multiplier weights code to use <code>switch</code> based approach</li>
+<li>Switch to <code>model.matrix</code> in sandwich variance and use residuals in the computation</li>
+<li>Update <code>maars</code> to have a package level doc. Add <code>@importFrom</code> statements</li>
+<li>Fix <code>NOTE</code> by adding <code>.gitkeep</code> in vignettes to <code>.RBuildignore</code>
+</li>
+<li>Fix <code>NOTE</code> by DESCRIPTION meta-information by making it a couple of sentences. This is a placeholder and we should refine it before official <code>CRAN</code> release.</li>
+<li>Consolidate <code>boston-housing.R</code> and <code>la-county.R</code> files into a single <code>data-maars.R</code> files. Consolidate <code>test</code> files accordingly</li>
+<li>Make some minor changes to the vignette</li>
+<li>Add <code>styling</code> to our code using the <code>Makefile</code> and <code>styler::style_dir(here::here('R'))</code> and for <code>tests</code>
+</li>
+<li>Have a <code>make style</code> which does both <code>R</code> and <code>tests</code>
+</li>
+<li>Make sure styling does not include vignettes</li>
+<li>Ensure that <code>url_check()</code> are all resolved for <code>CRAN</code>
+</li>
+<li>Remove DOI entries from <code>inst/REFERENCES.bib</code> since they can cause <code>CRAN</code> url issues</li>
+<li>Add search functionality to <code>pkgdown</code> our site.</li>
+<li>Use MIT License</li>
+<li>Fix the no visible binding for global variable errors in our code</li>
+<li>Remove mixture of <code>%&gt;%</code> and base code, and just break pipes into variables</li>
+<li>Change all <code>attr(obj, "class") &lt;- c("obj_class_name")</code> to be of the form <code>class(obj) &lt;- "obj_class_name"</code> for consistency</li>
+<li>Change <code>dplyr::_all</code> scoped words using the superseded <code>across</code> function</li>
+</ul>
+</div>
     <div id="maars-100" class="section level1">
 <h1 class="page-header" data-toc-text="1.0.0">
-<a href="#maars-100" class="anchor"></a>maars 1.0.0</h1>
+<a href="#maars-100" class="anchor" aria-hidden="true"></a>maars 1.0.0</h1>
 <ul>
 <li>Set the default <code>digits = 3</code> formatting in <code>summary.maars_lm</code> printed output</li>
 <li>Move <code>summary.maars_lm</code>, <code>print.maars_lm</code>, <code>plot.maars_lm</code> methods into <code>maars-lm.R</code> file</li>
@@ -174,7 +217,7 @@
 <li>Print assumptions i.e. for all run <code>maars</code> standard errors. So <code>sand</code>, <code>well_specified</code> assumptions are printed by default, and other standard errors</li>
 <li>Add assumption string for <code>comp_lm_var</code> using <code><a href="https://glue.tidyverse.org/reference/glue.html" class="external-link">glue::glue()</a></code> and improve formatting</li>
 <li>Amend <code><a href="../reference/get_confint.html">get_confint()</a></code> to return tidy tibble output</li>
-<li>Just show <code>term</code>, <code>conf.low</code>, <code>conf.high</code> for <code><a href="https://rdrr.io/r/stats/confint.html" class="external-link">confint(maars_lm)</a></code>. Fix it to be the same as <code><a href="https://rdrr.io/r/stats/confint.html" class="external-link">confint(lm)</a></code>
+<li>Just show <code>term</code>, <code>conf.low</code>, <code>conf.high</code> for <code>confint(maars_lm)</code>. Fix it to be the same as <code>confint(lm)</code>
 </li>
 <li>Add <code>la_county</code> <code>tibble</code> to our package</li>
 <li>Change <code>README.Rmd</code> to use <code>devtools</code> rather than <code>remotes</code> as the preferred package installation</li>
@@ -187,7 +230,7 @@
 </div>
     <div id="maars-070" class="section level1">
 <h1 class="page-header" data-toc-text="0.7.0">
-<a href="#maars-070" class="anchor"></a>maars 0.7.0</h1>
+<a href="#maars-070" class="anchor" aria-hidden="true"></a>maars 0.7.0</h1>
 <ul>
 <li>Write function to create <code>maars_lm</code> object from <code>comp_var</code>
 </li>
@@ -206,7 +249,7 @@
 </div>
     <div id="maars-060" class="section level1">
 <h1 class="page-header" data-toc-text="0.6.0">
-<a href="#maars-060" class="anchor"></a>maars 0.6.0</h1>
+<a href="#maars-060" class="anchor" aria-hidden="true"></a>maars 0.6.0</h1>
 <ul>
 <li>update the documentation of <code>comp_var</code> and of the estimators of the variance</li>
 <li>Adapt tests to handle the new function <code>comp_var</code>
@@ -237,7 +280,7 @@
 </div>
     <div id="maars-050" class="section level1">
 <h1 class="page-header" data-toc-text="0.5.0">
-<a href="#maars-050" class="anchor"></a>maars 0.5.0</h1>
+<a href="#maars-050" class="anchor" aria-hidden="true"></a>maars 0.5.0</h1>
 <ul>
 <li>Rename function names to be more consistent e.g. remove <code>qr</code> from <code>empirical</code> bootstrap names</li>
 <li>Ensure renamed function names are also correctly changed in the corresponding test files</li>
@@ -249,7 +292,7 @@
 </div>
     <div id="maars-040" class="section level1">
 <h1 class="page-header" data-toc-text="0.4.0">
-<a href="#maars-040" class="anchor"></a>maars 0.4.0</h1>
+<a href="#maars-040" class="anchor" aria-hidden="true"></a>maars 0.4.0</h1>
 <ul>
 <li>Include <code>.gitattributes</code> file</li>
 <li>We need to <code>set.seed</code> in all our vignette chunks. This is for reproducibility, but to also avoid merge conflicts every time we rebuild the package using <code>make build_package</code>
@@ -271,7 +314,7 @@
 </li>
 <li>Check the order in which we have our functions written in each file</li>
 <li>
-<strong>ggplot2:</strong> We should break up our <code>ggplot2</code> code into separate plots and then combine them using <code><a href="https://rdrr.io/r/base/Arithmetic.html" class="external-link">+</a></code>. This will make it much easier to manage the code and make it readable</li>
+<strong>ggplot2:</strong> We should break up our <code>ggplot2</code> code into separate plots and then combine them using <code>+</code>. This will make it much easier to manage the code and make it readable</li>
 <li>
 <strong>ggplot2:</strong> Need to be consistent with our <code>ggplot2</code> themes used in our plots. <a href="https://github.com/shamindras/maars/issues/24?fbclid=IwAR0JsSrXZGUpYyuizsTFIL8Q0dUvOy_WVbUWBuvZlygg4rmjuo0rU5xNGvM#issuecomment-751917061" class="external-link">See ggplot2 theme wrapper below</a>
 </li>
@@ -304,7 +347,7 @@
 </div>
     <div id="maars-030" class="section level1">
 <h1 class="page-header" data-toc-text="0.3.0">
-<a href="#maars-030" class="anchor"></a>maars 0.3.0</h1>
+<a href="#maars-030" class="anchor" aria-hidden="true"></a>maars 0.3.0</h1>
 <ul>
 <li>Implement an efficient <code>multiplier</code> bootstrap for <code>lm</code> standard errors</li>
 <li>Implement the <code>empirical</code> bootstrap for <code>lm</code> standard errors</li>
@@ -319,18 +362,18 @@
 </div>
     <div id="maars-020" class="section level1">
 <h1 class="page-header" data-toc-text="0.2.0">
-<a href="#maars-020" class="anchor"></a>maars 0.2.0</h1>
+<a href="#maars-020" class="anchor" aria-hidden="true"></a>maars 0.2.0</h1>
 <ul>
 <li>Create the <code>comp_sandwich_qr_var</code> function with documentation, tests, benchmarking</li>
 </ul>
 </div>
     <div id="maars-010" class="section level1">
 <h1 class="page-header" data-toc-text="0.1.0">
-<a href="#maars-010" class="anchor"></a>maars 0.1.0</h1>
+<a href="#maars-010" class="anchor" aria-hidden="true"></a>maars 0.1.0</h1>
 </div>
     <div id="maars-0009000" class="section level1">
 <h1 class="page-header" data-toc-text="0.0.0.9000">
-<a href="#maars-0009000" class="anchor"></a>maars 0.0.0.9000</h1>
+<a href="#maars-0009000" class="anchor" aria-hidden="true"></a>maars 0.0.0.9000</h1>
 <ul>
 <li>Added a <code>NEWS.md</code> file to track changes to the package.</li>
 </ul>
@@ -348,7 +391,7 @@
 
       <footer>
       <div class="copyright">
-  <p><p>Developed by Shamindra Shrotriya, Riccardo Fogliato.</p></p>
+  <p><p>Developed by Shamindra Shrotriya, Riccardo Fogliato, Arun Kumar Kuchibhotla.</p></p>
 </div>
 
 <div class="pkgdown">

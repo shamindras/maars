@@ -1,7 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://shamindras.github.io/maars/404.html</loc>
+  </url>
+  <url>
+    <loc>https://shamindras.github.io/maars/CODE_OF_CONDUCT.html</loc>
+  </url>
+  <url>
+    <loc>https://shamindras.github.io/maars/CONTRIBUTING.html</loc>
+  </url>
+  <url>
+    <loc>https://shamindras.github.io/maars/LICENSE-text.html</loc>
+  </url>
+  <url>
+    <loc>https://shamindras.github.io/maars/LICENSE.html</loc>
+  </url>
+  <url>
+    <loc>https://shamindras.github.io/maars/SUPPORT.html</loc>
+  </url>
+  <url>
+    <loc>https://shamindras.github.io/maars/articles/index.html</loc>
+  </url>
+  <url>
+    <loc>https://shamindras.github.io/maars/articles/se-la-county-data.html</loc>
+  </url>
+  <url>
+    <loc>https://shamindras.github.io/maars/authors.html</loc>
+  </url>
+  <url>
     <loc>https://shamindras.github.io/maars/index.html</loc>
+  </url>
+  <url>
+    <loc>https://shamindras.github.io/maars/news/index.html</loc>
   </url>
   <url>
     <loc>https://shamindras.github.io/maars/reference/as.maars.html</loc>
@@ -121,6 +151,9 @@
     <loc>https://shamindras.github.io/maars/reference/get_summary.html</loc>
   </url>
   <url>
+    <loc>https://shamindras.github.io/maars/reference/index.html</loc>
+  </url>
+  <url>
     <loc>https://shamindras.github.io/maars/reference/la_county.html</loc>
   </url>
   <url>
@@ -146,8 +179,5 @@
   </url>
   <url>
     <loc>https://shamindras.github.io/maars/reference/tidyeval.html</loc>
-  </url>
-  <url>
-    <loc>https://shamindras.github.io/maars/articles/se-la-county-data.html</loc>
   </url>
 </urlset>

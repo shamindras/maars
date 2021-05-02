@@ -91,7 +91,7 @@ they do not match the correct specification" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">maars</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
 
@@ -172,6 +172,7 @@ they do not match the correct specification</p>
   <span class='va'>mod_fit</span>,
   <span class='va'>sand</span>,
   <span class='va'>boot_emp</span>,
+  <span class='va'>boot_sub</span>,
   <span class='va'>boot_mul</span>,
   <span class='va'>boot_res</span>,
   <span class='va'>well_specified</span>
@@ -192,6 +193,11 @@ they do not match the correct specification</p>
     <tr>
       <th>boot_emp</th>
       <td><p>(logical) : <code>TRUE</code> if empirical bootstrap standard error
+output is required, <code>FALSE</code> to exclude this output from the request</p></td>
+    </tr>
+    <tr>
+      <th>boot_sub</th>
+      <td><p>(logical) : <code>TRUE</code> if subsampling bootstrap standard error
 output is required, <code>FALSE</code> to exclude this output from the request</p></td>
     </tr>
     <tr>
@@ -234,7 +240,9 @@ error if there is an assertion failure.</p>
 <span class='co'># Create a maars_lm model with empirical bootstrap, sandwich, and</span>
 <span class='co'># well-specified variance estimates</span>
 <span class='va'>comp_var1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='comp_var.html'>comp_var</a></span><span class='op'>(</span>
-  mod_fit <span class='op'>=</span> <span class='va'>lm_fit</span>, boot_emp <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>B <span class='op'>=</span> <span class='fl'>20</span>, m <span class='op'>=</span> <span class='fl'>200</span><span class='op'>)</span>,
+  mod_fit <span class='op'>=</span> <span class='va'>lm_fit</span>,
+  boot_emp <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>B <span class='op'>=</span> <span class='fl'>20</span>, m <span class='op'>=</span> <span class='fl'>200</span><span class='op'>)</span>,
+  boot_sub <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>B <span class='op'>=</span> <span class='fl'>20</span>, m <span class='op'>=</span> <span class='fl'>100</span><span class='op'>)</span>,
   boot_res <span class='op'>=</span> <span class='cn'>NULL</span>,
   boot_mul <span class='op'>=</span> <span class='cn'>NULL</span>
 <span class='op'>)</span>
@@ -244,7 +252,8 @@ error if there is an assertion failure.</p>
 <span class='co'># and it is available in the fitted maars_lm model</span>
 <span class='fu'>check_fn_args_summary</span><span class='op'>(</span>
   mod_fit <span class='op'>=</span> <span class='va'>comp_var1</span>, sand <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  boot_emp <span class='op'>=</span> <span class='cn'>TRUE</span>, boot_res <span class='op'>=</span> <span class='cn'>FALSE</span>, boot_mul <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  boot_emp <span class='op'>=</span> <span class='cn'>TRUE</span>, boot_sub <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  boot_res <span class='op'>=</span> <span class='cn'>FALSE</span>, boot_mul <span class='op'>=</span> <span class='cn'>FALSE</span>,
   well_specified <span class='op'>=</span> <span class='cn'>FALSE</span>
 <span class='op'>)</span>
 <span class='op'>}</span>
@@ -260,7 +269,7 @@ error if there is an assertion failure.</p>
 
       <footer>
       <div class="copyright">
-  <p><p>Developed by Shamindra Shrotriya, Riccardo Fogliato.</p></p>
+  <p><p>Developed by Shamindra Shrotriya, Riccardo Fogliato, Arun Kumar Kuchibhotla.</p></p>
 </div>
 
 <div class="pkgdown">

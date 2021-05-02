@@ -92,7 +92,7 @@ a fitted OLS maars_lm, lm class object." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">maars</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
 
@@ -171,11 +171,12 @@ a fitted OLS <code>maars_lm, lm</code> class object.</p>
 
     <pre class="usage"><span class='fu'>get_assumptions</span><span class='op'>(</span>
   <span class='va'>mod_fit</span>,
-  sand <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  boot_emp <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  boot_mul <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  boot_res <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  well_specified <span class='op'>=</span> <span class='cn'>FALSE</span>
+  sand <span class='op'>=</span> <span class='cn'>NULL</span>,
+  boot_emp <span class='op'>=</span> <span class='cn'>NULL</span>,
+  boot_sub <span class='op'>=</span> <span class='cn'>NULL</span>,
+  boot_mul <span class='op'>=</span> <span class='cn'>NULL</span>,
+  boot_res <span class='op'>=</span> <span class='cn'>NULL</span>,
+  well_specified <span class='op'>=</span> <span class='cn'>NULL</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -193,6 +194,11 @@ a fitted OLS <code>maars_lm, lm</code> class object.</p>
     <tr>
       <th>boot_emp</th>
       <td><p>(logical) : <code>TRUE</code> if empirical bootstrap standard error
+output is required, <code>FALSE</code> to exclude this output from the request</p></td>
+    </tr>
+    <tr>
+      <th>boot_sub</th>
+      <td><p>(logical) : <code>TRUE</code> if subsampling standard error
 output is required, <code>FALSE</code> to exclude this output from the request</p></td>
     </tr>
     <tr>
@@ -239,9 +245,9 @@ of the variance is consistent.</p>
 <span class='co'># Empirical Bootstrap check</span>
 <span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>454354534</span><span class='op'>)</span>
 <span class='va'>comp_var1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='comp_var.html'>comp_var</a></span><span class='op'>(</span>
-  mod_fit <span class='op'>=</span> <span class='va'>lm_fit</span>, boot_emp <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>B <span class='op'>=</span> <span class='fl'>20</span>, m <span class='op'>=</span> <span class='fl'>200</span><span class='op'>)</span>,
-  boot_res <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>B <span class='op'>=</span> <span class='fl'>30</span><span class='op'>)</span>,
-  boot_mul <span class='op'>=</span> <span class='cn'>NULL</span>
+  mod_fit <span class='op'>=</span> <span class='va'>lm_fit</span>,
+  boot_emp <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>B <span class='op'>=</span> <span class='fl'>20</span>, m <span class='op'>=</span> <span class='fl'>200</span><span class='op'>)</span>,
+  boot_res <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>B <span class='op'>=</span> <span class='fl'>30</span><span class='op'>)</span>
 <span class='op'>)</span>
 
 <span class='co'># This returns everything but boot_mul, since we didn't run it in the original</span>
@@ -261,7 +267,7 @@ of the variance is consistent.</p>
 
       <footer>
       <div class="copyright">
-  <p><p>Developed by Shamindra Shrotriya, Riccardo Fogliato.</p></p>
+  <p><p>Developed by Shamindra Shrotriya, Riccardo Fogliato, Arun Kumar Kuchibhotla.</p></p>
 </div>
 
 <div class="pkgdown">

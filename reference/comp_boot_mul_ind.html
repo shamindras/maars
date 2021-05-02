@@ -95,7 +95,7 @@ $$\frac{1}{n}\sum_{i=1}^{n} e_{i}\widehat{J}^{-1}X_{i}(Y_{i}-X_{i}^{T} \widehat{
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">maars</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
 
@@ -218,8 +218,8 @@ observations and \(d\) features (including an intercept)</p></td>
 <span class='va'>res</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/residuals.html'>residuals</a></span><span class='op'>(</span><span class='va'>lm_fit</span><span class='op'>)</span>
 <span class='va'>n</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>res</span><span class='op'>)</span>
 <span class='va'>J_inv_X_res</span> <span class='op'>&lt;-</span>
-  <span class='fl'>1</span><span class='op'>:</span><span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>X</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
-  <span class='fu'>purrr</span><span class='fu'>::</span><span class='fu'><a href='https://purrr.tidyverse.org/reference/map.html'>map</a></span><span class='op'>(</span><span class='op'>~</span> <span class='fu'><a href='https://rdrr.io/r/base/t.html'>t</a></span><span class='op'>(</span><span class='va'>J_inv</span> <span class='op'>%*%</span> <span class='va'>X</span><span class='op'>[</span><span class='va'>.x</span>, <span class='op'>]</span> <span class='op'>*</span> <span class='va'>res</span><span class='op'>[</span><span class='va'>.x</span><span class='op'>]</span><span class='op'>)</span><span class='op'>)</span> <span class='op'>%&gt;%</span>
+  <span class='fl'>1</span><span class='op'>:</span><span class='fu'><a href='https://rdrr.io/r/base/nrow.html'>nrow</a></span><span class='op'>(</span><span class='va'>X</span><span class='op'>)</span> <span class='op'><a href='pipe.html'>%&gt;%</a></span>
+  <span class='fu'>purrr</span><span class='fu'>::</span><span class='fu'><a href='https://purrr.tidyverse.org/reference/map.html'>map</a></span><span class='op'>(</span><span class='op'>~</span> <span class='fu'><a href='https://rdrr.io/r/base/t.html'>t</a></span><span class='op'>(</span><span class='va'>J_inv</span> <span class='op'><a href='https://rdrr.io/r/base/matmult.html'>%*%</a></span> <span class='va'>X</span><span class='op'>[</span><span class='va'>.x</span>, <span class='op'>]</span> <span class='op'>*</span> <span class='va'>res</span><span class='op'>[</span><span class='va'>.x</span><span class='op'>]</span><span class='op'>)</span><span class='op'>)</span> <span class='op'><a href='pipe.html'>%&gt;%</a></span>
   <span class='fu'><a href='https://rdrr.io/r/base/do.call.html'>do.call</a></span><span class='op'>(</span><span class='va'>rbind</span>, <span class='va'>.</span><span class='op'>)</span>
 
 <span class='co'># Generate a single random vector of length n, containing</span>
@@ -248,7 +248,7 @@ observations and \(d\) features (including an intercept)</p></td>
 
       <footer>
       <div class="copyright">
-  <p><p>Developed by Shamindra Shrotriya, Riccardo Fogliato.</p></p>
+  <p><p>Developed by Shamindra Shrotriya, Riccardo Fogliato, Arun Kumar Kuchibhotla.</p></p>
 </div>
 
 <div class="pkgdown">

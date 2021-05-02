@@ -91,7 +91,7 @@ they do not match the correct specification" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">maars</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
 
@@ -180,39 +180,39 @@ empirical bootstrap (<code><a href='comp_boot_emp.html'>comp_boot_emp</a></code>
 residual bootstrap (<code><a href='comp_boot_res.html'>comp_boot_res</a></code>), and
 multiplier bootstrap (<code><a href='comp_boot_mul.html'>comp_boot_mul</a></code>).
 In the case of empirical bootstrap the expected input is of the form
-<code><a href='https://rdrr.io/r/base/list.html'>list(B = 10, m = 100)</a></code>. Here the named element <code>m</code> is optional
-e.g. <code><a href='https://rdrr.io/r/base/list.html'>list(B = 10)</a></code> is valid, or passed in as an explicit <code>NULL</code>
-e.g. <code><a href='https://rdrr.io/r/base/list.html'>list(B = 10, m = NULL)</a></code>. Note that technically <code>B, m</code>
+<code>list(B = 10, m = 100)</code>. Here the named element <code>m</code> is optional
+e.g. <code>list(B = 10)</code> is valid, or passed in as an explicit <code>NULL</code>
+e.g. <code>list(B = 10, m = NULL)</code>. Note that technically <code>B, m</code>
 should both be positive integers, but this assertion checking is handled
 explicitly in the <code><a href='comp_boot_emp.html'>comp_boot_emp</a></code> function. So although passing
-in <code><a href='https://rdrr.io/r/base/list.html'>list(B = -15, m = -20)</a></code> will pass this function without errors,
+in <code>list(B = -15, m = -20)</code> will pass this function without errors,
 these will be addressed explicitly in <code><a href='comp_boot_emp.html'>comp_boot_emp</a></code> as
 invalid inputs.
 In the case of residual bootstrap the expected input is of the form
-<code><a href='https://rdrr.io/r/base/list.html'>list(B = 10)</a></code>. Note that technically <code>B</code>
+<code>list(B = 10)</code>. Note that technically <code>B</code>
 should be a positive integer, but this assertion checking is handled
 explicitly in the <code><a href='comp_boot_res.html'>comp_boot_res</a></code> function. So although passing
-in <code><a href='https://rdrr.io/r/base/list.html'>list(B = -15)</a></code> will pass this function without errors,
+in <code>list(B = -15)</code> will pass this function without errors,
 these will be addressed explicitly in <code><a href='comp_boot_res.html'>comp_boot_res</a></code> as
 invalid inputs.
 In the case of multiplier bootstrap the expected input is of the form
-<code><a href='https://rdrr.io/r/base/list.html'>list(B = 10, weights_type = "rademacher")</a></code>. Here the named element
-<code>weights_type</code> is optional e.g. <code><a href='https://rdrr.io/r/base/list.html'>list(B = 10)</a></code> is valid,
+<code>list(B = 10, weights_type = "rademacher")</code>. Here the named element
+<code>weights_type</code> is optional e.g. <code>list(B = 10)</code> is valid,
 or passed in as an explicit <code>NULL</code>
-e.g. <code><a href='https://rdrr.io/r/base/list.html'>list(B = 10, weights_type = NULL)</a></code>.
+e.g. <code>list(B = 10, weights_type = NULL)</code>.
 Note that technically <code>B</code> should be a positive integer, and
 <code>weights_type</code> should be a character vector
 (see <code><a href='comp_boot_mul.html'>comp_boot_mul</a></code>), but this assertion checking is handled
 explicitly in the <code><a href='comp_boot_mul.html'>comp_boot_mul</a></code> function. So although passing
-in <code><a href='https://rdrr.io/r/base/list.html'>list(B = -15, m = "test")</a></code> will pass this function without errors,
+in <code>list(B = -15, m = "test")</code> will pass this function without errors,
 these will be addressed explicitly in <code><a href='comp_boot_mul.html'>comp_boot_mul</a></code> as
 invalid inputs.</p></td>
     </tr>
     <tr>
       <th>boot_type</th>
       <td><p>(character) : Can take one of the values
-<code><a href='https://rdrr.io/r/base/c.html'>c('boot_emp', 'boot_res', 'boot_mul')</a></code>, which are for empirical,
-residual, and multiplier bootstrap respectively.</p></td>
+<code>c('boot_emp', 'boot_sub', 'boot_res', 'boot_mul')</code>, which are for
+empirical, subsampling, residual, and multiplier bootstrap respectively.</p></td>
     </tr>
     </table>
 
@@ -249,7 +249,7 @@ assertion failure.</p>
 
       <footer>
       <div class="copyright">
-  <p><p>Developed by Shamindra Shrotriya, Riccardo Fogliato.</p></p>
+  <p><p>Developed by Shamindra Shrotriya, Riccardo Fogliato, Arun Kumar Kuchibhotla.</p></p>
 </div>
 
 <div class="pkgdown">
