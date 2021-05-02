@@ -19,11 +19,12 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Shamindra Shrotriya \email{shamindra.shrotriya@gmail.com}
+\strong{Maintainer}: Shamindra Shrotriya \email{shamindra.shrotriya@gmail.com} [copyright holder]
 
 Authors:
 \itemize{
-  \item Riccardo Fogliato \email{rfogliat@andrew.cmu.edu}
+  \item Riccardo Fogliato \email{rfogliat@andrew.cmu.edu} [copyright holder]
+  \item Arun Kumar Kuchibhotla \email{karun3kumar@gmail.com} [copyright holder]
 }
 
 }

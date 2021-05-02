@@ -6,11 +6,12 @@
 \usage{
 \method{summary}{maars_lm}(
   object,
-  sand = FALSE,
-  boot_emp = FALSE,
-  boot_res = FALSE,
-  boot_mul = FALSE,
-  well_specified = FALSE,
+  sand = NULL,
+  boot_emp = NULL,
+  boot_sub = NULL,
+  boot_mul = NULL,
+  boot_res = NULL,
+  well_specified = NULL,
   digits = 3,
   ...
 )
@@ -24,11 +25,14 @@
 \item{boot_emp}{(logical) : \code{TRUE} if empirical bootstrap standard error
 output is required, \code{FALSE} to exclude this output from the request.}
 
-\item{boot_res}{(logical) : \code{TRUE} if residual bootstrap standard error
+\item{boot_sub}{(logical) : \code{TRUE} if subsampling standard error
 output is required, \code{FALSE} to exclude this output from the request.}
 
 \item{boot_mul}{(logical) : \code{TRUE} if multiplier bootstrap standard error
 output is required, \code{FALSE} to exclude this output from the request}
+
+\item{boot_res}{(logical) : \code{TRUE} if residual bootstrap standard error
+output is required, \code{FALSE} to exclude this output from the request.}
 
 \item{well_specified}{(logical) : \code{TRUE} if lm standard errors.
 (well specified) output is required, \code{FALSE} to exclude this output

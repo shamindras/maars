@@ -15,6 +15,8 @@
 #'   \code{FALSE} to exclude this output from the request
 #' @param boot_emp (logical) : \code{TRUE} if empirical bootstrap standard error
 #'   output is required, \code{FALSE} to exclude this output from the request
+#' @param boot_sub (logical) : \code{TRUE} if subsampling standard error
+#'   output is required, \code{FALSE} to exclude this output from the request
 #' @param boot_res (logical) : \code{TRUE} if residual bootstrap standard error
 #'   output is required, \code{FALSE} to exclude this output from the request
 #' @param boot_mul (logical) : \code{TRUE} if multiplier bootstrap standard error
@@ -40,11 +42,12 @@
 get_confint <- function(mod_fit,
                         parm = NULL,
                         level = 0.95,
-                        sand = TRUE,
-                        boot_emp = FALSE,
-                        boot_mul = FALSE,
-                        boot_res = FALSE,
-                        well_specified = FALSE) {
+                        sand = NULL,
+                        boot_emp = NULL,
+                        boot_sub = NULL,
+                        boot_mul = NULL,
+                        boot_res = NULL,
+                        well_specified = NULL) {
 
   # Check parm is NULL valued
   # TODO: Allow this to be a vector of numbers or a vector of names to filter
@@ -65,6 +68,7 @@ get_confint <- function(mod_fit,
     mod_fit = mod_fit,
     sand = sand,
     boot_emp = boot_emp,
+    boot_sub = boot_sub,
     boot_res = boot_res,
     boot_mul = boot_mul,
     well_specified = well_specified

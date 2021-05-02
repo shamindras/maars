@@ -7,11 +7,12 @@ a fitted OLS \code{maars_lm, lm} class object}
 \usage{
 get_assumptions(
   mod_fit,
-  sand = FALSE,
-  boot_emp = FALSE,
-  boot_mul = FALSE,
-  boot_res = FALSE,
-  well_specified = FALSE
+  sand = NULL,
+  boot_emp = NULL,
+  boot_sub = NULL,
+  boot_mul = NULL,
+  boot_res = NULL,
+  well_specified = NULL
 )
 }
 \arguments{
@@ -21,6 +22,9 @@ get_assumptions(
 \code{FALSE} to exclude this output from the request}
 
 \item{boot_emp}{(logical) : \code{TRUE} if empirical bootstrap standard error
+output is required, \code{FALSE} to exclude this output from the request}
+
+\item{boot_sub}{(logical) : \code{TRUE} if subsampling standard error
 output is required, \code{FALSE} to exclude this output from the request}
 
 \item{boot_mul}{(logical) : \code{TRUE} if multiplier bootstrap standard error
@@ -62,9 +66,9 @@ common_vars <- c("term", "estimate")
 # Empirical Bootstrap check
 set.seed(454354534)
 comp_var1 <- comp_var(
-  mod_fit = lm_fit, boot_emp = list(B = 20, m = 200),
-  boot_res = list(B = 30),
-  boot_mul = NULL
+  mod_fit = lm_fit,
+  boot_emp = list(B = 20, m = 200),
+  boot_res = list(B = 30)
 )
 
 # This returns everything but boot_mul, since we didn't run it in the original

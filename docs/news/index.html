@@ -77,7 +77,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">maars</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
 
@@ -147,6 +147,49 @@
       <small>Source: <a href='https://github.com/shamindras/maars/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="maars-110" class="section level1">
+<h1 class="page-header" data-toc-text="1.1.0">
+<a href="#maars-110" class="anchor"></a>maars 1.1.0</h1>
+<ul>
+<li>Change <code>Significance</code> heading in our summary output to be abbreviated to <code>Signif:</code> to be consistent with <code><a href="https://rdrr.io/r/stats/lm.html">lm()</a></code> output</li>
+<li>Change column ordering for bootstrap standard errors and t-statistics rigorously</li>
+<li>Change p-value format to be <code>2</code>/<code>3</code> digits</li>
+<li>Clean <code>R/scripts_and_filters/experiments/</code> dir, remove old experiments</li>
+<li>Clean up script that gets metadata of <code>maars</code> function <strong>metadata</strong> from <code>pkgdown</code>
+</li>
+<li>Remove all <code>base::</code> prefix use e.g. <code><a href="https://rdrr.io/r/base/function.html">base::return()</a></code>
+</li>
+<li>Change <code><a href="https://dplyr.tidyverse.org/reference/summarise.html">dplyr::summarise</a></code> to <code><a href="https://dplyr.tidyverse.org/reference/summarise.html">dplyr::summarize</a></code> for spelling consistency</li>
+<li>Ensure all <code>stats</code> functions use the <code>stats::</code> prefix</li>
+<li>Fix <code>.data</code> related <code>rlang</code> issues</li>
+<li>We shouldn’t name a variable <code>df</code> since this conflicts with <code><a href="https://rdrr.io/r/stats/Fdist.html">stats::df</a></code>. We should change this after the demo</li>
+<li>Clean vignette. Leave the plot in the vignette (to be moved elsewhere)</li>
+<li>Updated the corrected <code>Boston Housing</code> Dataset with citations. Add unit tests for the corrections</li>
+<li>Clean up spelling notes</li>
+<li>Change multiplier weights code to use <code>switch</code> based approach</li>
+<li>Switch to <code>model.matrix</code> in sandwich variance and use residuals in the computation</li>
+<li>Update <code>maars</code> to have a package level doc. Add <code>@importFrom</code> statements</li>
+<li>Fix <code>NOTE</code> by adding <code>.gitkeep</code> in vignettes to <code>.RBuildignore</code>
+</li>
+<li>Fix <code>NOTE</code> by DESCRIPTION meta-information by making it a couple of sentences. This is a placeholder and we should refine it before official <code>CRAN</code> release.</li>
+<li>Consolidate <code>boston-housing.R</code> and <code>la-county.R</code> files into a single <code>data-maars.R</code> files. Consolidate <code>test</code> files accordingly</li>
+<li>Make some minor changes to the vignette</li>
+<li>Add <code>styling</code> to our code using the <code>Makefile</code> and <code><a href="https://styler.r-lib.org/reference/style_dir.html">styler::style_dir(here::here('R'))</a></code> and for <code>tests</code>
+</li>
+<li>Have a <code>make style</code> which does both <code>R</code> and <code>tests</code>
+</li>
+<li>Make sure styling does not include vignettes</li>
+<li>Ensure that <code>url_check()</code> are all resolved for <code>CRAN</code>
+</li>
+<li>Remove DOI entries from <code>inst/REFERENCES.bib</code> since they can cause <code>CRAN</code> url issues</li>
+<li>Add search functionality to <code>pkgdown</code> our site.</li>
+<li>Use MIT License</li>
+<li>Fix the no visible binding for global variable errors in our code</li>
+<li>Remove mixture of <code><a href="../reference/%&gt;%.html">%&gt;%</a></code> and base code, and just break pipes into variables</li>
+<li>Change all <code>attr(obj, "class") &lt;- c("obj_class_name")</code> to be of the form <code>class(obj) &lt;- "obj_class_name"</code> for consistency</li>
+<li>Change <code>dplyr::_all</code> scoped words using the superseded <code>across</code> function</li>
+</ul>
+</div>
     <div id="maars-100" class="section level1">
 <h1 class="page-header" data-toc-text="1.0.0">
 <a href="#maars-100" class="anchor"></a>maars 1.0.0</h1>
@@ -339,7 +382,7 @@
 
       <footer>
       <div class="copyright">
-  <p>Developed by Shamindra Shrotriya, Riccardo Fogliato.</p>
+  <p>Developed by Shamindra Shrotriya, Riccardo Fogliato, Arun Kumar Kuchibhotla.</p>
 </div>
 
 <div class="pkgdown">

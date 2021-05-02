@@ -10,6 +10,7 @@
   level = 0.95,
   sand = TRUE,
   boot_emp = FALSE,
+  boot_sub = FALSE,
   boot_res = FALSE,
   boot_mul = FALSE,
   well_specified = FALSE,
@@ -31,6 +32,9 @@ value is \code{NULL}.}
 \code{FALSE} to exclude this output from the request.}
 
 \item{boot_emp}{(logical) : \code{TRUE} if empirical bootstrap standard error
+output is required, \code{FALSE} to exclude this output from the request.}
+
+\item{boot_sub}{(logical) : \code{TRUE} if subsampling standard error
 output is required, \code{FALSE} to exclude this output from the request.}
 
 \item{boot_res}{(logical) : \code{TRUE} if residual bootstrap standard error

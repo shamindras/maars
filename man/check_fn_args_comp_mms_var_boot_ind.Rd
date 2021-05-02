@@ -41,8 +41,8 @@ these will be addressed explicitly in \code{\link{comp_boot_mul}} as
 invalid inputs.}
 
 \item{boot_type}{(character) : Can take one of the values
-\code{c('boot_emp', 'boot_res', 'boot_mul')}, which are for empirical,
-residual, and multiplier bootstrap respectively.}
+\code{c('boot_emp', 'boot_sub', 'boot_res', 'boot_mul')}, which are for
+empirical, subsampling, residual, and multiplier bootstrap respectively.}
 }
 \value{
 : A \code{TRUE} if assertions pass, or an error if there is an

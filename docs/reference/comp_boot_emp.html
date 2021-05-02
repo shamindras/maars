@@ -79,7 +79,7 @@ a fitted lm or glm model." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">maars</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.0.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
       </span>
     </div>
 
@@ -155,7 +155,7 @@ a fitted lm or glm model." />
 a fitted <code><a href='https://rdrr.io/r/stats/lm.html'>lm</a></code> or <code><a href='https://rdrr.io/r/stats/glm.html'>glm</a></code> model.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>comp_boot_emp</span><span class='op'>(</span><span class='va'>mod_fit</span>, B <span class='op'>=</span> <span class='fl'>100</span>, m <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>comp_boot_emp</span><span class='op'>(</span><span class='va'>mod_fit</span>, B <span class='op'>=</span> <span class='fl'>100</span>, m <span class='op'>=</span> <span class='cn'>NULL</span>, replace <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -175,6 +175,10 @@ the family.</p></td>
       <th>m</th>
       <td><p>Number of observations to be sampled with replacement from the
 dataset for each bootstrap repetition.</p></td>
+    </tr>
+    <tr>
+      <th>replace</th>
+      <td><p>TODO: ADD</p></td>
     </tr>
     </table>
 
@@ -228,7 +232,7 @@ of the dataset.</p>
 
       <footer>
       <div class="copyright">
-  <p>Developed by Shamindra Shrotriya, Riccardo Fogliato.</p>
+  <p>Developed by Shamindra Shrotriya, Riccardo Fogliato, Arun Kumar Kuchibhotla.</p>
 </div>
 
 <div class="pkgdown">

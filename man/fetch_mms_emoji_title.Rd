@@ -9,7 +9,7 @@ fetch_mms_emoji_title(var_type_abb, title_type)
 \arguments{
 \item{var_type_abb}{(\code{character}) : The abbreviated variance type.
 Must be one of the following values
-\code{"lm", "sand" , "emp" , "res" , "mul"}}
+\code{"lm", "sand" , "emp" , "sub", "res" , "mul"}}
 
 \item{title_type}{(\code{character}) : The type of title required.
 Must be one of the following values

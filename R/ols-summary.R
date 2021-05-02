@@ -11,6 +11,8 @@
 #'   \code{FALSE} to exclude this output from the request
 #' @param boot_emp (logical) : \code{TRUE} if empirical bootstrap standard error
 #'   output is required, \code{FALSE} to exclude this output from the request
+#' @param boot_sub (logical) : \code{TRUE} if subsampling bootstrap standard error
+#'   output is required, \code{FALSE} to exclude this output from the request
 #' @param boot_res (logical) : \code{TRUE} if residual bootstrap standard error
 #'   output is required, \code{FALSE} to exclude this output from the request
 #' @param boot_mul (logical) : \code{TRUE} if multiplier bootstrap standard error
@@ -41,7 +43,9 @@
 #' # Create a maars_lm model with empirical bootstrap, sandwich, and
 #' # well-specified variance estimates
 #' comp_var1 <- comp_var(
-#'   mod_fit = lm_fit, boot_emp = list(B = 20, m = 200),
+#'   mod_fit = lm_fit,
+#'   boot_emp = list(B = 20, m = 200),
+#'   boot_sub = list(B = 20, m = 100),
 #'   boot_res = NULL,
 #'   boot_mul = NULL
 #' )
@@ -51,76 +55,94 @@
 #' # and it is available in the fitted maars_lm model
 #' check_fn_args_summary(
 #'   mod_fit = comp_var1, sand = FALSE,
-#'   boot_emp = TRUE, boot_res = FALSE, boot_mul = FALSE,
+#'   boot_emp = TRUE, boot_sub = FALSE,
+#'   boot_res = FALSE, boot_mul = FALSE,
 #'   well_specified = FALSE
 #' )
 #' }
 check_fn_args_summary <- function(mod_fit,
                                   sand,
                                   boot_emp,
+                                  boot_sub,
                                   boot_mul,
                                   boot_res,
                                   well_specified) {
 
   # Assertion checking for mod_fit is of class "maars_lm", "lm"
   assertthat::assert_that(all(c("maars_lm", "lm") == class(mod_fit)),
-                          msg = glue::glue("mod_fit must only be of class: ['maars_lm', 'lm']")
+                          msg = glue::glue("mod_fit must only be of class:",
+                                           "['maars_lm', 'lm']",
+                                           .sep = " ")
   )
 
   # Input variance parameter names
-  var_param_nms <- c("sand", "boot_emp", "boot_res", "boot_mul", "well_specified")
+  var_param_nms <- c("sand", "boot_emp", "boot_sub",
+                     "boot_res", "boot_mul", "well_specified")
   # Get the combined variance related parameter values
   var_param_vals <- purrr::map(.x = var_param_nms, ~ get(x = .x))
   # Rename the list values to correspond to the input names
   names(var_param_vals) <- var_param_nms
-  # var_param_vals <- c(sand, boot_emp, boot_res, boot_mul, well_specified)
 
   # Check all input parameters, other than mod_fit are of class logical
   assertthat::assert_that(
-    all(purrr::map_lgl(.x = var_param_vals, ~ is.logical(.x))),
+    all(purrr::map_lgl(.x = var_param_vals, ~ (is.logical(.x) | is.null(.x)))),
     msg = glue::glue(
-      "All input variance parameters: [sand, boot_emp, boot_res, boot_mul, well_specified]",
+      "All input variance parameters:",
+      "[sand, boot_emp, boot_sub, boot_res, boot_mul, well_specified]",
       "must be of class logical",
       .sep = " "
     )
   )
 
-  # Now that we have assertion checked all variance input parameters are of
-  # class logical, let's convert them into a logical vector (not list) to
-  # make future assertion checking easier
-  var_param_vals_lgl <- var_param_vals %>%
-    purrr::map_lgl(.x = ., ~.x) %>%
-    unname(obj = .)
+  # extract *all* available types of variance estimators
+  available_var_nms <- purrr::pluck(.x = mod_fit, 'var') %>%
+    purrr::compact(.x = .) %>%
+    purrr::map(~ purrr::pluck(.x, 'var_type')) %>%
+    unname() %>% unlist()
 
+  # this assignment would not be needed (modify var_param_vals directly)
+  var_param_nms_filt <- var_param_vals
 
-  if (!any(var_param_vals_lgl)) {
-    # TODO: delete these lines
-    # warning(glue::glue("You have passed in FALSE for all input variance parameters:",
-    #                    "\n[sand, boot_emp, boot_res, boot_mul, well_specified].",
-    #                    "\n\nReturning the default sandwich variance estimator...\n",
-    #                    .sep = " "
-    # ))
-    # comm_nms <- c("var_sand")
+  # handle the several cases
+  # if all NULL, then return all estimates available
+  if(all(purrr::map_lgl(.x = var_param_vals, .f = ~is.null(.x)))){
+    var_param_nms_filt <- available_var_nms
 
-    # extract available types of variance estimators
-    available_var_nms <- purrr::pluck(.x = mod_fit, 'var') %>%
-      purrr::compact(.x = .) %>%
-      purrr::map(~ purrr::pluck(.x, 'var_type')) %>%
-      unname() %>% unlist()
-    # set to true the arguments based on availability
-    var_param_vals_lgl <-  var_param_nms %in% available_var_nms
+  # at least one TRUE, then return TRUEs
+  } else if(any(purrr::map_lgl(.x = var_param_vals, .f = ~isTRUE(.x)))){
+    var_param_nms_filt <- var_param_nms %>%
+      setdiff(x = .,
+              y = var_param_vals %>%
+                purrr::keep(~ isFALSE(.x) | is.null(.x)) %>% names()) %>%
+      intersect(x = .,
+                y = var_param_vals %>%
+                  purrr::keep(~ isTRUE(.x)) %>% names())
+
+  # otherwise (i.e., no TRUE, not all NULLs), then return all available
+  # estimates other than FALSEs
+  } else{
+    var_param_nms_filt <- setdiff(x = available_var_nms,
+                                 y = var_param_vals %>%
+                                    purrr::keep(~ isFALSE(.x) & !is.null(.x)) %>%
+                                   names())
   }
 
-  # Filter to only the selected variance params i.e. those with TRUE values
-  var_param_nms_filt <- var_param_nms[var_param_vals_lgl]
+  # if any of the estimators is not available, then return all those that
+  # are available and print warning
+  if (any(!(var_param_nms_filt %in% available_var_nms))){
+    var_param_nms_filt <- available_var_nms
+
+    warning(glue::glue("You have not passed in TRUE for any of the ",
+                       "following available estimates: ",
+                        "{paste0(available_var_nms, collapse = ', ')}.",
+                        "\nReturning all estimates available...\n",
+                        .sep = " "
+     ))
+
+  }
 
   # Get the comp_mms_var output from the fitted maars_lm object
   out_comp_mms_var <- purrr::pluck(mod_fit, 'var')
-  # out_comp_mms_var_nms <- names(out_comp_mms_var)
-  # Get the abbreviated names i.e. remove the "var_" prefix to align with summary
-  # inputs
-  # out_comp_mms_var_nms_abb <- names(out_comp_mms_var) %>%
-  #     stringr::str_replace_all(string = ., pattern = "var_", "")
 
   # Filter out the non-NULL variance values
   out_comp_mms_var_filt <- purrr::compact(.x = out_comp_mms_var)
@@ -163,7 +185,7 @@ check_fn_args_summary <- function(mod_fit,
 #'
 #' @param var_type_abb (\code{character}) : The abbreviated variance type.
 #'   Must be one of the following values
-#'   \code{"lm", "sand" , "emp" , "res" , "mul"}
+#'   \code{"lm", "sand" , "emp" , "sub", "res" , "mul"}
 #' @param title_type (\code{character}) : The type of title required.
 #'   Must be one of the following values
 #'   \code{"title", "emoji", "emoji_title"}
@@ -184,6 +206,7 @@ fetch_mms_emoji_title <- function(var_type_abb, title_type) {
     var_type_abb == "lm" ~ "Well Specified Model",
     var_type_abb == "sand" ~ "Sandwich",
     var_type_abb == "emp" ~ "Empirical Bootstrap",
+    var_type_abb == "sub" ~ "Subsampling",
     var_type_abb == "res" ~ "Residual Bootstrap",
     var_type_abb == "mul" ~ "Multiplier Bootstrap"
   ) %>%
@@ -194,6 +217,7 @@ fetch_mms_emoji_title <- function(var_type_abb, title_type) {
     var_type_abb == "lm" ~ "\U1F4C9\U1F4C8",
     var_type_abb == "sand" ~ "\U1F969\U1F35E", # \U1F96A
     var_type_abb == "emp" ~ "\U1F9EE\U1F45F",
+    var_type_abb == "sub" ~ "\U1F9EE\U1F45F",
     var_type_abb == "res" ~ "\U2696\U1F45F",
     var_type_abb == "mul" ~ "\U274C\U1F45F" # \U2716
   ) %>%
@@ -281,6 +305,8 @@ fetch_mms_comp_var_attr <- function(comp_var_ind, req_type) {
 #'   \code{FALSE} to exclude this output from the request
 #' @param boot_emp (logical) : \code{TRUE} if empirical bootstrap standard error
 #'   output is required, \code{FALSE} to exclude this output from the request
+#' @param boot_sub (logical) : \code{TRUE} if subsampling standard error
+#'   output is required, \code{FALSE} to exclude this output from the request
 #' @param boot_res (logical) : \code{TRUE} if residual bootstrap standard error
 #'   output is required, \code{FALSE} to exclude this output from the request
 #' @param boot_mul (logical) : \code{TRUE} if multiplier bootstrap standard error
@@ -328,11 +354,12 @@ fetch_mms_comp_var_attr <- function(comp_var_ind, req_type) {
 #'
 #' }
 get_summary <- function(mod_fit,
-                        sand = FALSE,
-                        boot_emp = FALSE,
-                        boot_mul = FALSE,
-                        boot_res = FALSE,
-                        well_specified = FALSE) {
+                        sand = NULL,
+                        boot_emp = NULL,
+                        boot_sub = NULL,
+                        boot_mul = NULL,
+                        boot_res = NULL,
+                        well_specified = NULL) {
 
   # Get the variance types the user has requested. This performs assertion
   # Checking, so if there is no error it will return the required names,
@@ -341,6 +368,7 @@ get_summary <- function(mod_fit,
     mod_fit = mod_fit,
     sand = sand,
     boot_emp = boot_emp,
+    boot_sub = boot_sub,
     boot_res = boot_res,
     boot_mul = boot_mul,
     well_specified = well_specified
@@ -380,6 +408,8 @@ get_summary <- function(mod_fit,
 #'   \code{FALSE} to exclude this output from the request
 #' @param boot_emp (logical) : \code{TRUE} if empirical bootstrap standard error
 #'   output is required, \code{FALSE} to exclude this output from the request
+#' @param boot_sub (logical) : \code{TRUE} if subsampling standard error
+#'   output is required, \code{FALSE} to exclude this output from the request
 #' @param boot_res (logical) : \code{TRUE} if residual bootstrap standard error
 #'   output is required, \code{FALSE} to exclude this output from the request
 #' @param boot_mul (logical) : \code{TRUE} if multiplier bootstrap standard error
@@ -414,9 +444,9 @@ get_summary <- function(mod_fit,
 #' # Empirical Bootstrap check
 #' set.seed(454354534)
 #' comp_var1 <- comp_var(
-#'   mod_fit = lm_fit, boot_emp = list(B = 20, m = 200),
-#'   boot_res = list(B = 30),
-#'   boot_mul = NULL
+#'   mod_fit = lm_fit,
+#'   boot_emp = list(B = 20, m = 200),
+#'   boot_res = list(B = 30)
 #' )
 #'
 #' # This returns everything but boot_mul, since we didn't run it in the original
@@ -425,11 +455,12 @@ get_summary <- function(mod_fit,
 #'   mod_fit = comp_var1)
 #' }
 get_assumptions <- function(mod_fit,
-                            sand = FALSE,
-                            boot_emp = FALSE,
-                            boot_mul = FALSE,
-                            boot_res = FALSE,
-                            well_specified = FALSE) {
+                            sand = NULL,
+                            boot_emp = NULL,
+                            boot_sub = NULL,
+                            boot_mul = NULL,
+                            boot_res = NULL,
+                            well_specified = NULL) {
 
   # Get the variance types the user has requested. This performs assertion
   # Checking, so if there is no error it will return the required names,
@@ -438,6 +469,7 @@ get_assumptions <- function(mod_fit,
     mod_fit = mod_fit,
     sand = sand,
     boot_emp = boot_emp,
+    boot_sub = boot_sub,
     boot_res = boot_res,
     boot_mul = boot_mul,
     well_specified = well_specified

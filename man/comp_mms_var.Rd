@@ -4,7 +4,13 @@
 \alias{comp_mms_var}
 \title{Generates list containing several estimates of the variance}
 \usage{
-comp_mms_var(mod_fit, boot_emp = NULL, boot_res = NULL, boot_mul = NULL)
+comp_mms_var(
+  mod_fit,
+  boot_emp = NULL,
+  boot_sub = NULL,
+  boot_res = NULL,
+  boot_mul = NULL
+)
 }
 \arguments{
 \item{mod_fit}{An lm (OLS) object}
@@ -19,6 +25,8 @@ but this assertion checking is handled explicitly in the
 in \code{list(B = -15, m = -20)} will pass this function without errors,
 these will be addressed explicitly in \code{\link{comp_boot_emp}} as
 invalid inputs.}
+
+\item{boot_sub}{(list) TODO: ADD}
 
 \item{boot_res}{(list) : In the case of residual bootstrap the expected
 input is of the form \code{list(B = 10)}. Note that technically \code{B}
@@ -64,7 +72,9 @@ mod_fit <- stats::lm(y ~ X)
 
 # Run the multiplier bootstrap on the fitted (OLS) linear model
 set.seed(162632)
-out <- comp_mms_var(mod_fit, boot_mul = list(B = 100, weights_type = "rademacher"))
+out <- comp_mms_var(mod_fit,
+boot_mul = list(B = 100, weights_type = "rademacher"),
+boot_sub = list(B = 100, m = 50))
 
 # print output
 print(out)

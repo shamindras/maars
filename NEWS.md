@@ -1,3 +1,39 @@
+# maars 1.1.0
+
+- Change `Significance` heading in our summary output to be abbreviated to `Signif:` to be consistent with `lm()` output
+- Change column ordering for bootstrap standard errors and t-statistics rigorously
+- Change p-value format to be `2`/`3` digits
+- Clean `R/scripts_and_filters/experiments/` dir, remove old experiments
+- Clean up script that gets metadata of `maars` function **metadata** from `pkgdown`
+- Remove all `base::` prefix use e.g. `base::return()`
+- Change `dplyr::summarise` to `dplyr::summarize` for spelling consistency
+- Ensure all `stats` functions use the `stats::` prefix
+- Fix `.data` related `rlang` issues
+- We shouldn't name a variable `df` since this conflicts with `stats::df`. We should change this after the demo
+- Clean vignette. Leave the plot in the vignette (to be moved elsewhere)
+- Updated the corrected `Boston Housing` Dataset with citations. Add unit tests 
+for the corrections
+- Clean up spelling notes
+- Change multiplier weights code to use `switch` based approach
+- Switch to `model.matrix` in sandwich variance and use residuals in the computation
+- Update `maars` to have a package level doc. Add `@importFrom` statements
+- Fix `NOTE` by adding `.gitkeep` in vignettes to `.RBuildignore`
+- Fix `NOTE` by DESCRIPTION meta-information by making it a couple of sentences. This is a placeholder and we should refine it before official `CRAN` release.
+- Consolidate `boston-housing.R` and `la-county.R` files into a single `data-maars.R` files. Consolidate `test` files accordingly
+- Make some minor changes to the vignette
+- Add `styling` to our code using the `Makefile` and `styler::style_dir(here::here('R'))` 
+and for `tests`
+- Have a `make style` which does both `R` and `tests`
+- Make sure styling does not include vignettes
+- Ensure that `url_check()` are all resolved for `CRAN`
+- Remove DOI entries from `inst/REFERENCES.bib` since they can cause `CRAN` url issues
+- Add search functionality to `pkgdown` our site.
+- Use MIT License
+- Fix the no visible binding for global variable errors in our code
+- Remove mixture of `%>%` and base code, and just break pipes into variables
+- Change all `attr(obj, "class") <- c("obj_class_name")` to be of the form `class(obj) <- "obj_class_name"` for consistency
+- Change `dplyr::_all` scoped words using the superseded `across` function
+
 # maars 1.0.0
 
 - Set the default `digits = 3` formatting in `summary.maars_lm` printed output
