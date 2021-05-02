@@ -1,14 +1,17 @@
-# Setup Libraries ---------------------------------------------------------
+# Setup Libraries --------------------------------------------------------
+#library(furrr)
+#library(progressr)
 library(tidyverse)
 #library(progress)
 library(glue)
-library(furrr)
+#library(parallel)
 
-devtools::document()
+#devtools::document()
 devtools::load_all()
+pbo = pbapply::pboptions(type="txt")
 
 # Global variables --------------------------------------------------------
-NUM_COVG_REPS <- 500 # Number of coverage replications
+NUM_COVG_REPS <- 1e3 # Number of coverage replications
 N <- 1e5
 
 # Generate replication data + model fit -----------------------------------
@@ -16,104 +19,99 @@ N <- 1e5
 gen_ind_mod_fit <- function(n){
     # X <- stats::rnorm(n, 0, 1)
     # y <- 2 + X * 1 + stats::rnorm(n, 0, 1)
-    d <- 1e2
-    X <- matrix(rnorm(d*n,0,10), nrow = n)
+    d <- 1e2#0.5*1e2
+    X <- matrix(rt(d*n,df=3), nrow = n)
     beta <- rep(1,d)
     y <- X%*%beta + rnorm(n, 0, 10)
     lm_fit <- stats::lm(y ~ 0+X)
     return(lm_fit)
 }
 
-# Generate all fitted models on our replication datasets
-# Note: This could be generated on the fly as well, but here we will reuse this
-#       multiple times, so more efficient to generate this up front
-set.seed(35542)
-replication_mod_fits <- map(1:NUM_COVG_REPS, ~gen_ind_mod_fit(n = N))
-length(replication_mod_fits)
-replication_mod_fits[[1]]
+# generate data
+#replication_mod_fits <- map(1:NUM_COVG_REPS, ~gen_ind_mod_fit(n = N))
 
-# Create grid sequences -----------------------------------------------
-# Generate the grid of all the variance calculation parameters
-# This time run it without the filtering
-#grid_B <- seq(50, 100, by = 50)
-# grid_m <- seq(from = 40, to = 120, by = 40)
-grid_B <- seq(2, 50, by = 2)
-#grid_m <- c(floor(N**(1/3)))
-#grid_m <- c(floor(N**(1/3)), 50, 100, 200, 500, 1e3, 1e4, 4e4) # cleaner version of grid_m
-#grid_m <- c(floor(seq(N**(1/3), to = N, length = 3)), (N^2)/4, (N^2)/2, N^2)
-#length(grid_B) * length(grid_m)
+grid_B <- 2:50
 
-grid_params <- tibble(
-    B = grid_B
-) %>%
-    mutate(
-        boot_emp = map(B, ~ list(B = .x, m = N)),
-        boot_mul = map(B, ~ list(B = .x)),
-        boot_sub = map(B, ~ list(B = .x, m = floor(sqrt(N)))),
-        boot_res = map(B, ~ list(B = .x))
-    )
-
-
-# grid_params$boot_emp[[1]]
-# grid_params$boot_emp[[2]]
-# grid_params$boot_mul[[1]]
-# grid_params$boot_sub[[1]]
-
-# Now cross join on all of the replications to this dataset
-# This intentionally contains some duplication redundancy, to make downstream
-# code a single application of pmap!
-out_all <- tidyr::crossing(replication_mod_fits, grid_params) %>%
-    rename(mod_fit = replication_mod_fits) %>%
-    rownames_to_column(var = "covg_rep_idx") %>%
-    select(covg_rep_idx, B, everything())
-nrow(out_all)
-# Quickly examine our table
-head(out_all)
-#out_all$boot_sub[[1]]
-#lobstr::obj_size(out_all)*1e-6
-
-# We can get the confint for a single replication
-get_ind_confint <- function(covg_rep_idx, B, mod_fit, boot_emp, boot_sub, boot_mul, boot_res){
-    # TODO: Remove the print message later
-    print(glue::glue("Running coverage replication index: {covg_rep_idx}...\n"))
-    print(glue::glue("B: {B}...\n"))
-    # TODO: Perhaps we don't need a boot_res column i.e. can just set it
-    #       manually to NULL below
-    confint_fit <- comp_var(mod_fit = mod_fit, boot_emp = boot_emp,
-                            boot_sub = boot_sub, boot_mul = boot_mul,
-                            boot_res = boot_res) %>%
-        get_confint(mod_fit = ., level = 0.95,
-                    sand = TRUE, boot_emp = TRUE, boot_sub = TRUE,
-                    boot_mul = TRUE, boot_res = FALSE) %>%
-        mutate(covg_rep_idx = covg_rep_idx, B = B) %>%
-        select(covg_rep_idx, B, everything())
-    return(confint_fit)
+#mc <- getOption("mc.cores", 10)
+comp_ci <- function(iter, grid_B, n){
+    #print(iter)
+    #browser()
+    mod_fit <- gen_ind_mod_fit(n = n)
+    out <- grid_B %>%
+        map_dfr(~ comp_var(mod_fit = mod_fit,
+                           boot_emp = list(B = ., m = floor(n^0.6))#,
+                           #boot_sub = list(B = ., m = floor(sqrt(n))),
+                           #boot_mul = list(B = .)
+        ) %>%
+            get_confint(mod_fit = ., level = 0.95),
+        .id = 'B'
+        )
+    return(out)
 }
 
-# Use furrr to run in parallel
-# https://github.com/DavisVaughan/furrr#example
-plan(multicore, workers = 50)
+out <- pbapply::pblapply(
+    #lapply(
+    X = as.list(1:NUM_COVG_REPS),
+    FUN = comp_ci,
+    grid_B = grid_B,
+    n = N
+    ,cl = 10
+    #mc.cores = getOption("cores", 50)
+)
 
-# ORIGINAL CODE - using purrr not furrr
-# system.time(confint_replications <- out_all %>%
-#                 mutate(confint_fit = purrr::pmap(.l = ., .f = get_ind_confint)))
+out <- out %>%
+    bind_rows(.)
 
-# Run the confidence interval replications
-system.time(confint_replications <- out_all %>%
-                mutate(confint_fit = furrr::future_pmap(.l = ., .f = get_ind_confint)))
 
-# Check the output
-head(confint_replications)
-# confint_replications$confint_fit[[1]] %>% View()
 
+# plan(multicore, workers = 1)
+# with_progress({
+#     p <- progressor(steps = NUM_COVG_REPS)
+#     # for each
+#     out <- 1:NUM_COVG_REPS %>%
+#         future_map( ~ comp_ci(., grid_B),
+#                     seed = TRUE
+#                     #,progress = TRUE
+#         )
+# })
+
+
+# comp_ci <- function(mod_fit, grid_B){
+#     print('Iteration')
+#     out <- grid_B %>%
+#         map_dfr(~ comp_var(mod_fit = mod_fit,
+#                            boot_emp = list(B = .),
+#                            boot_sub = list(B = ., m = sqrt(N)),
+#                            boot_mul = list(B = .)) %>%
+#                     get_confint(mod_fit = ., level = 0.95),
+#                 .id = 'B'
+#         )
+#     return(out)
+# }
+#
+#
+# with_progress({
+#     p <- progressor(steps = length(replication_mod_fits))
+# # for each
+#     out <- replication_mod_fits %>%
+#         future_map( ~ comp_ci(., grid_B),
+#                 seed = TRUE
+#                 #,progress = TRUE
+#                 )
+# })
+
+
+
+
+
+confint_replications <- out
 # Get combined confidence intervals ---------------------------------------
 all_confint <- confint_replications %>%
-    pull(confint_fit) %>%
-    purrr::map_dfr(.f = ~.x) %>%
-    # Add plotting code here
     filter(stat_type == "conf.low" |
                stat_type == "conf.high") %>%
     pivot_wider(names_from = stat_type, values_from = stat_val)
+
+write_csv(x = all_confint, file = here::here("R/scripts_and_filters/experiments/confidence3.2.csv"))
 
 #df_mod <- gen_ind_mod_fit(1e8)
 
@@ -134,17 +132,18 @@ all_confint_coverage <- all_confint %>%
     filter(term != '(Intercept)')
 
 # Coverage seems to be working here i.e. most of the values are in the 86-100% range
-summary(all_confint_coverage$coverage)
-hist(all_confint_coverage$coverage, breaks = 10, xlim = c(0, 1))
+#summary(all_confint_coverage$coverage)
+#hist(all_confint_coverage$coverage, breaks = 10, xlim = c(0, 1))
 
 all_confint_plt <- all_confint_coverage %>%
+    mutate(B = as.numeric(B)) %>%
     #filter(var_type_abb != 'sand') %>%
     ggplot(aes(B, coverage, col = var_type_abb)) +
     geom_line() +
     labs(y = "Coverage") +
     theme_bw() +
     ylim(0,1)
-
+all_confint_plt
 
 # TODO: Check if we should be plotting avg_width?
 # Should this be coverage instead?
@@ -175,16 +174,17 @@ all_confint_plt <- all_confint_coverage %>%
 #     labs(y = "Coverage") +
 #     geom_hline(yintercept = (all_confint_coverage %>% filter(var_type_abb == 'sand') %>% pull(coverage))[1], linetype = "dashed") +
 #     theme_bw()
-all_confint_plt
+#all_confint_plt
 # Save the plot
 # Note: It may be good to pre-run this script and read it in our paper, rather
 #       than knit the pdf with this time consuming run
 ggsave(filename = here::here("R/scripts_and_filters/experiments/experiment-vignette3.1_coverage.png"), plot = all_confint_plt)
 # Plot interactively using plotly
-plotly::ggplotly(p = all_confint_plt)
+#plotly::ggplotly(p = all_confint_plt)
 
 
 all_avgwidth_plt <- all_confint_coverage %>%
+    mutate(B = as.numeric(B)) %>%
     ggplot(aes(B, avg_width, col = var_type_abb)) +
     geom_line() +
     labs(y = "Average width of confidence inverval") +
@@ -195,4 +195,9 @@ all_avgwidth_plt
 #       than knit the pdf with this time consuming run
 ggsave(filename = here::here("R/scripts_and_filters/experiments/experiment-vignette3.1_width.png"), plot = all_avgwidth_plt)
 # Plot interactively using plotly
-plotly::ggplotly(p = all_confint_plt)
+#plotly::ggplotly(p = all_confint_plt)
+
+
+
+
+
