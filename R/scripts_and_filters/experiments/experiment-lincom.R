@@ -23,14 +23,19 @@ mms_var <- comp_var(lm_fit)
 # https://www.stata.com/manuals/rtest.pdf page 21
 
 
-# rename lincom -> test_lincom OR test_wald
-# call it wald test
-# add possibility to do Bonferroni correction?
-test_mms_lincom <- function(coef_est, R, r, cov_mat) {
-  # add "alt" option -> use it only when alt is R is one row and return the t-stat
+## questions:
+# for test_lincom, we report the chi2 stat. Instead, for test_wald,
+# we report the z stat.
 
-  coef_est <- as.matrix(coef_est)
+
+
+test_wald <- function(coef_est, R, r, cov_mat,
+                            alt = 'two.sided',
+                            stat_type = 'chi2'
+                            ) {
+
   # if R is a vector, convert it into a matrix
+  coef_est <- as.matrix(coef_est)
   if (is.vector(R)) R <- matrix(R, nrow = 1)
 
   assertthat::assert_that(is.matrix(R) || is.vector(R),
@@ -43,31 +48,70 @@ test_mms_lincom <- function(coef_est, R, r, cov_mat) {
   msg = glue::glue("The rank of R must be equal to the number of its rows.")
   )
   assertthat::assert_that(length(r) == nrow(R),
-    msg = glue::glue("r and R must be compatible.")
+    msg = glue::glue("The dimensions of r and R must be compatible.")
   )
+  assertthat::assert_that(alt %in% c('two.sided', 'greater', 'less'),
+                          msg = glue::glue('"alt" needs to be either ',
+                                           '"two.sided", "greater", or "less"')
+  )
+  if(alt != 'two.sided'){
+    assertthat::assert_that(nrow(R) == 1,
+                            msg = glue::glue("R must have only one row when ",
+                                             "the alternative hypothesis is not ",
+                                             "two sided.")
+    )
+  }
 
+  # compute chi square stats
   # reference: page 58 of Wooldridge
-  chisq_stats <- as.vector(t(R %*% coef_est - r) %*%
+  chisq_stat <- as.vector(t(R %*% coef_est - r) %*%
     solve(
       R %*% cov_mat %*% t(R),
       R %*% coef_est - r
     ))
 
+  # rank of R
   R_rank <- nrow(R)
 
+  # see how computation is handled in stata
+  # https://www.stata.com/support/faqs/statistics/one-sided-tests-for-coefficients/
+  # https://www.stata.com/manuals15/rztest.pdf
+  # compute p-value
+
+  if(alt == 'two.sided' & stat_type == 'chi2'){
+      p_value <- 1 - pchisq(chisq_stat, df = R_rank)
+  } else{
+    z_stat <- sqrt(chisq_stat) * sign(R %*% coef_est - r)
+    if(alt == 'greater'){
+      p_value <- 1 - pnorm(z_stat)[,1]
+    } else if(alt == 'less'){
+      p_value <- pnorm(z_stat)[,1]
+    } else{
+      p_value <- 2 * (1 - pnorm(abs(z_stat))[,1])
+    }
+  }
+
+  # store output
   out <- tibble::tibble(
-    chisq = chisq_stats,
-    df = R_rank,
-    p.value = 1 - pchisq(chisq_stats, df = R_rank)
+    stat.type = ifelse(stat_type == 'chi2', 'chi2', 'z'),
+    statistic = ifelse(stat_type == 'chi2', chisq_stat, z_stat),
+    #df = ifelse(alt == 'two.sided', R_rank, NA),
+    p.value = p_value
   )
+
+  if(stat_type == 'chi2'){
+    out <- out %>%
+      tibble::add_column(.data = ., df = R_rank, .before = 'p.value')
+  }
 
   return(out)
 }
 
-# add alt and allow it only when R has only one row
+
 test_lincom <- function(mod_fit,
                            R,
                            r,
+                           alt = 'two.sided',
                            sand = NULL,
                            boot_emp = NULL,
                            boot_sub = NULL,
@@ -93,12 +137,12 @@ test_lincom <- function(mod_fit,
     setNames(stringr::str_replace(req_var_nms, "var_", ""))
 
   out <- comp_var_ind_filt %>%
-    purrr::map_dfr(.f = ~ test_mms_lincom(
-      # for coef_est, should we use the estimates from
+    purrr::map_dfr(.f = ~ test_wald(
       coef_est = purrr::pluck(.x, "var_summary") %>% dplyr::pull(estimate),
       R = R,
       r = r,
-      cov_mat = purrr::pluck(.x, "cov_mat")
+      cov_mat = purrr::pluck(.x, "cov_mat"),
+      alt = alt
     ),
     .id = "var_type_abb"
     )
@@ -106,23 +150,9 @@ test_lincom <- function(mod_fit,
   return(out)
 }
 
-print.test.maars <- function(x,  ...) {
-  x %>%
-    dplyr::mutate(
-      sig = stats::symnum(.data$p.value,
-        corr = FALSE, na = FALSE,
-        legend = FALSE,
-        cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),
-        symbols = c("***", "**", "*", ".", " ")
-      ),
-      p.value = format.pval(.data$p.value)
-    ) %>%
-    print.data.frame(x = .)
-}
 
-# alt needs to be specified for all coefficients
-test_wald <- function(mod_fit,
-                      alt = NULL,
+test_coef <- function(mod_fit,
+                      alt = 'two.sided',
                       sand = NULL,
                       boot_emp = NULL,
                       boot_sub = NULL,
@@ -149,140 +179,144 @@ test_wald <- function(mod_fit,
 
   out <- purrr::map_dfr(
     .x = comp_var_ind_filt,
-    .f = ~ test_wald_indcoef(
+    .f = ~ test_mms_coef(
       coef_est = purrr::pluck(.x, "var_summary") %>%
         dplyr::pull(estimate),
-      cov_mat = purrr::pluck(.x, "cov_mat")
+      cov_mat = purrr::pluck(.x, "cov_mat"),
+      alt = alt
       ),
     .id = 'var_type_abb')
-  class(out) <- c("test.maars", class(out))
+  class(out) <- c("test.maars_lm", class(out))
   return(out)
 }
 
-test_wald_indcoef <- function(coef_est, cov_mat){
+# internal function for testing
+test_mms_coef <- function(coef_est, cov_mat, alt = 'two.sided'){
 
-  d <- length(coef_est)
+  d <- length(coef_est) # dimension
   R_iter <- diag(d)
 
   wald_stats <- purrr::map_dfr(.x = 1:d,
-                               .f = ~ test_mms_lincom(
+                               .f = ~ test_wald(
                                  coef_est = coef_est,
                                  R = matrix(R_iter[.x,], ncol = d),
                                  r = 0,
-                                 cov_mat = cov_mat
+                                 cov_mat = cov_mat,
+                                 alt = alt,
+                                 stat_type = 'z'
                                )) %>%
-  dplyr::select(chisq, p.value)
+  dplyr::select(statistic, p.value)
 
   out <- tibble::tibble(
     term = colnames(cov_mat),
     estimate = coef_est,
     std.error = sqrt(diag(cov_mat)),
-    statistic = sqrt(wald_stats$chisq),
+    statistic = wald_stats$statistic,
     p.value = wald_stats$p.value
   )
 
   out
 }
 
+print.test.maars_lm <- function(x,  ...) {
+  x <- x %>%
+    dplyr::mutate(
+      sig = stats::symnum(.data$p.value,
+                          corr = FALSE, na = FALSE,
+                          legend = FALSE,
+                          cutpoints = c(0, 0.001, 0.01, 0.05, 0.1, 1),
+                          symbols = c("***", "**", "*", ".", " ")
+      ),
+      p.value = format.pval(.data$p.value, digits = 4)
+    )
+  colnames(x)[colnames(x)=='sig'] <- ''
+
+  print.data.frame(x = x)
+}
 
 
-# test linear combination of coefficients
+## test linear combination of coefficients
+# returns chi2 stat
 test_lincom(mms_var,
   R = matrix(c(1, 0, 0, 1), ncol = 2),
   r = c(0, 0)
 )
-# show erorr handling
+# test linear combination and one-sided alternative
+# returns z stat
+test_lincom(mms_var,
+            R = matrix(c(1, 0), ncol = 2),
+            r = 0,
+            alt = 'greater'
+)
+# test linear combination and one-sided alternative
+# returns z stat
+test_lincom(mms_var,
+            R = matrix(c(1, 0), ncol = 2),
+            r = 0,
+            alt = 'less'
+)
+
+## test individual coefficients
+# returns z stats but does not show the type of stat
+test_coef(mms_var)
+
+
+## error handling
+# R has rank 1 instead of 2
 test_lincom(mms_var,
   R = matrix(c(1, 0, 0, 0), ncol = 2),
   r = c(0, 0)
 )
-# show error handling
+# dimensions of R and r do not match
 test_lincom(mms_var,
-  R = matrix(c(1, 0), ncol = 1),
-  r = 0
-)
-
-
-# check lincom vs function from car package
-test_lincom(
-  mms_var,
-  R = matrix(c(0, 1, 1, 1), ncol = 2),
+  R = matrix(c(1, 0), ncol = 2),
   r = c(0,0)
 )
-# lincom(
-#   coef_est = coef(lm_fit),
-#   R = matrix(c(0, 1, 1, 1), ncol = 2),
-#   r = c(0,0),
-#   cov_mat = vcov(lm_fit)
-# )
-car::linearHypothesis(lm_fit,
-                      matrix(c(0, 1, 1, 1), ncol = 2),
-                      test = c("Chisq"))
-(coef(lm_fit)[2]/(sqrt(diag(vcov(lm_fit)))[2]))^2
-# should we add additional output?
-
-
-# our function vs lmtest
-test_wald(mms_var)
-lmtest::coeftest(lm_fit, sandwich::sandwich(lm_fit))
-# this function will be used within all the individual variance functions
-# leveraged by comp_var
-# how to do the one-sided test???
-
-
-
-
-
-
-# other experiments ----
-
-
-lincom(
-  coef_est = coef(lm_fit),
-  R = matrix(c(0, 1), ncol = 2),
-  r = 0,
-  cov_mat = vcov(lm_fit)
+# alternative hypothesis is nonsense
+test_lincom(mms_var,
+            R = matrix(c(1, 0), ncol = 2),
+            r = 0,
+            alt = 'hi'
 )
 
 
 
-lincom(
-  coef_est = coef(lm_fit),
-  R = matrix(c(0, 1, 1, 2, 23, 3), ncol = 3),
-  r = c(0, 1),
-  cov_mat = vcov(lm_fit)
-)
 
-# get p-value for each coefficient
-diag(length(coef(lm_fit))) %>%
-  apply(
-    ., 2,
-    function(x) lincom(coef_est = coef(lm_fit), R = x, r = c(0), cov_mat = vcov(lm_fit))
-  )
-
-
-
-
-x <- car::linearHypothesis(lm_fit, c(0, 1, 0), test = c("Chisq"))
-lmtest::coeftest(lm_fit, sandwich::sandwich(lm_fit))
-lmtest::waldtest(lm_fit)
-x <- car::linearHypothesis(lm_fit, c("(Intercept) = 0", "x = 1"), test = "Chisq")
-car::linearHypothesis(lm_fit, c(0, 1), test = "Chisq")
-car::linearHypothesis(lm_fit, matrix(c(1, 1, -1, 2), ncol = 2), test = "Chisq")
-car::linearHypothesis(lm_fit, c("(Intercept) = 0", "z = 1"), test = "Chisq")
+## tests
+# test lincom vs similar function from car package
+test_that("chi2 and p-value from car package and our package coincide", {
+  for(i in 1:100){
+    n_constraints <- sample(1:5, 1)
+    R <- matrix(rnorm(2*n_constraints), ncol = 2)
+    if(Matrix::rankMatrix(R) == nrow(R)){
+      mms_stats <- test_lincom(mms_var,
+                               R = R,
+                               r = rep(0, n_constraints))
+      car_stats <- car::linearHypothesis(lm_fit,
+                                         R,
+                                         test = c("Chisq"))
+      expect_equal(car_stats$Chisq[2], mms_stats$statistic[1], tol = 1e-2)
+      expect_equal(car_stats$`Pr(>Chisq)`[2], mms_stats$p.value[1], tol = 1e-2)
+    }
+  }
+})
 
 
-# anova
-anova(lm_fit)
-aov(y ~ x, data = tibble::tibble(x = x, y = y))
-# https://github.com/cran/car/blob/master/R/linearHypothesis.R
+test_that('z-stats and p-values from sandwich package and our package coincide', {
+  # two-sided test
+  mms_stats <- test_coef(mms_var, alt = 'two.sided', sand = TRUE)
+  lmtest_stats <- (lmtest::coeftest(lm_fit,
+                                   sandwich::sandwich(lm_fit),
+                                   alternative = 'two.sided') %>%
+    capture.output())[5:6] %>%
+    stringr::str_squish(.) %>%
+    stringr::str_split(., ' ') %>%
+    purrr::map(.f = ~ .x %>% purrr::pluck(4)) %>%
+    unlist() %>% as.numeric()
+  expect_equal(lmtest_stats, mms_stats$statistic[1:2], tol = 1e-3)
+})
 
-# try anova with as.factor
 
-mm <- sample(c(1, 2), replace = TRUE, size = 12)
-size <- c(3, 4, 5, 6, 4, 5, 6, 7, 7, 8, 9, 10)
-pop <- c("A", "A", "A", "A", "B", "B", "B", "B", "C", "C", "C", "C")
-gg <- sample(c("c", "d", "f", "g"), replace = TRUE, size = 12)
-anova(lm(size ~ pop + gg + mm))
-aov.model <- aov(size ~ pop + gg + mm)
-summary(aov.model)
+
+
+
