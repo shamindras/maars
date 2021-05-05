@@ -164,4 +164,5 @@ mms_fit2$var$var_boot_res
 mms_fit2$var$var_boot_emp
 mms_fit2$var$var_boot_sub
 
-
+# Check that get assumptions is working correctly
+mms_fit2 %>% get_assumptions(mod_fit = .)

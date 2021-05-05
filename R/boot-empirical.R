@@ -255,20 +255,6 @@ comp_boot_emp <- function(mod_fit, B = 100, m = NULL, replace = TRUE) {
     boot_type = boot_type # check if subsampling needs any modification
   )
 
-  # out <- list(
-  #   var_type = glue::glue("boot_{boot_type}"),
-  #   var_type_abb = boot_type,
-  #   var_summary = summary_boot,
-  #   var_assumptions = c(
-  #     glue::glue("Observations are assumed to be independent",
-  #                .sep = " "
-  #     ),
-  #     glue::glue("Parameters: B = {B}, m = {m}, n = {n}")
-  #   ),
-  #   cov_mat = cov_mat,
-  #   boot_out = boot_out
-  # )
-
   out <- get_mms_comp_var_ind(var_type_abb = boot_type,
                               summary_tbl = summary_boot,
                               cov_mat = cov_mat,
