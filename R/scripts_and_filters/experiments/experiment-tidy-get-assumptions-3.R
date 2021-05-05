@@ -1,204 +1,167 @@
+# Setup Libraries ---------------------------------------------------------
 library(tidyverse)
-proto_gen_comp_var_ind <- function(var_type_abb,
-                                   summary_tbl = NULL, # TODO: Should be passed in, no NULLS
-                                   cov_mat = NULL,
-                                   B = NULL, m = NULL, replace = NULL) {
+devtools::document()
+devtools::load_all()
 
-  # Define the emoji lookup table.
-  # Ensure that output is a {glue} string from consistency
-  # TODO: We might delete this, if we are happy with just constructing
-  #       a glue string directly, as per code below, rather than filtering
-  #       this tibble. For discussion
-  var_emoji_tbl <-
-    tibble::tribble(
-      ~"var_abb", ~"var_emoji",
-      "lm", "\U1F4C9\U1F4C8",
-      "sand", "\U1F969\U1F35E",
-      "emp", "\U1F9EE\U1F45F",
-      "res", "\U2696\U1F45F",
-      "mul", "\U274C\U1F45F"
-    ) %>%
-    dplyr::mutate(dplyr::across(dplyr::everything(), glue::as_glue))
+# Prototype individual comp_var function ----------------------------------
+proto_get_mms_comp_var_ind <- function(var_type_abb,
+                                       summary_tbl = NULL,
+                                       cov_mat = NULL,
+                                       B = NULL,
+                                       m = NULL,
+                                       n = NULL,
+                                       weights_type = NULL,
+                                       boot_out = NULL) {
 
-  # Define the Title lookup table.
-  # Ensure that output is a {glue} string from consistency
-  # TODO: We might delete this, if we are happy with just constructing
-  #       a glue string directly, as per code below, rather than filtering
-  #       this tibble. For discussion
-  var_title_tbl <-
-    tibble::tribble(
-      ~"var_abb", ~"var_title",
-      "lm", "Well Specified Model",
-      "sand", "Sandwich",
-      "emp", "Empirical Bootstrap",
-      "res", "Residual Bootstrap",
-      "mul", "Multiplier Bootstrap"
-    ) %>%
-    dplyr::mutate(dplyr::across(dplyr::everything(), glue::as_glue))
+  # Get the title only for the specific variance type
+  var_title <- dplyr::case_when(
+    var_type_abb == "lm" ~ "Well Specified Model",
+    var_type_abb == "sand" ~ "Sandwich",
+    var_type_abb == "emp" ~ "Empirical Bootstrap",
+    var_type_abb == "sub" ~ "Subsampling",
+    var_type_abb == "res" ~ "Residual Bootstrap",
+    var_type_abb == "mul" ~ "Multiplier Bootstrap"
+  ) %>%
+    glue::as_glue(x = .)
 
-  # Define the Emoji Title lookup table.
-  # Ensure that output is a {glue} string from consistency
-  # TODO: We might delete this, if we are happy with just constructing
-  #       a glue string directly, as per code below, rather than filtering
-  #       this tibble. For discussion
-  var_emoji_title_tbl <- var_emoji_tbl %>%
-    dplyr::left_join(x = ., y = var_title_tbl, by = "var_abb") %>%
-    dplyr::mutate(
-      .data = .,
-      var_emoji_title = glue::glue("{var_emoji}: {var_title}:")
-    )
+  # Get the title only for the specific variance type
+  var_type <- dplyr::case_when(
+    var_type_abb == "lm" ~ "well_specified",
+    var_type_abb == "sand" ~ "sand",
+    var_type_abb == "emp" ~ "boot_emp",
+    var_type_abb == "sub" ~ "boot_sub",
+    var_type_abb == "res" ~ "boot_res",
+    var_type_abb == "mul" ~ "boot_mul"
+  ) %>%
+    glue::as_glue(x = .)
 
-  # Define the Emoji Title lookup table. Second version
-  # This one only requires the var_emoji_tbl to be created
-  # Ensure that output is a {glue} string from consistency
-  # TODO: We might delete this, if we are happy with just constructing
-  #       a glue string directly, as per code below, rather than filtering
-  #       this tibble. For discussion
-  var_emoji_title_tbl2 <-
-    tibble::tribble(
-      ~"var_abb", ~"var_emoji",
-      "lm", "\U1F4C9\U1F4C8",
-      "sand", "\U1F969\U1F35E",
-      "emp", "\U1F9EE\U1F45F",
-      "res", "\U2696\U1F45F",
-      "mul", "\U274C\U1F45F"
-    ) %>%
-    dplyr::mutate(
-      .data = .,
-      var_title = dplyr::case_when(
-        var_abb == "lm" ~ "Well Specified Model",
-        var_abb == "sand" ~ "Sandwich",
-        var_abb == "emp" ~ "Empirical Bootstrap",
-        var_abb == "res" ~ "Residual Bootstrap",
-        var_abb == "mul" ~ "Multiplier Bootstrap"
-      ),
-      var_emoji_title = glue::glue("{var_emoji}: {var_title}:")
-    ) %>%
-    dplyr::mutate(dplyr::across(dplyr::everything(), glue::as_glue))
+  # Get the emoji only for the specific variance type
+  var_emoji <- dplyr::case_when(
+    var_type_abb == "lm" ~ "\U1F4C9\U1F4C8",
+    var_type_abb == "sand" ~ "\U1F969\U1F35E", # \U1F96A
+    var_type_abb == "emp" ~ "\U1F9EE\U1F45F",
+    var_type_abb == "sub" ~ "\U1F9EE\U1F45F",
+    var_type_abb == "res" ~ "\U2696\U1F45F",
+    var_type_abb == "mul" ~ "\U274C\U1F45F" # \U2716
+  ) %>%
+    glue::as_glue(x = .)
 
-  # Get the specific type of individual variance variable
-  out <- switch(var_type_abb,
+  # Get the combined emoji: title for the specific variance type
+  var_emoji_title <- glue::glue("{var_emoji}: {var_title}:")
+
+  # Get the variance type abbreviation as a glue string
+  var_type_abb <- glue::glue("{var_type_abb}")
+
+  # Get the assumptions vector only for the specific variance type
+  var_assumptions <- switch(var_type_abb,
     "lm" = {
-      var_emoji <- glue::glue("\U1F4C9\U1F4C8")
-      var_title <- glue::glue("Well Specified Model")
-      out_list <- list(
-        "var_type" = glue::glue("well_specified"),
-        "var_type_abb" = glue::glue("{var_type_abb}"),
-        var_emoji = var_emoji,
-        var_title = var_title,
-        "var_emoji_title" = glue::glue("{var_emoji}: {var_title}:"),
-        "var_summary" = summary_tbl,
-        "var_assumptions" = tibble::tribble(
-          ~"var_abb", ~"var_assumption_type", ~"var_assumption_val",
-          glue::glue("{var_type_abb}"), "text", "Observations are assumed to be independent",
-          glue::glue("{var_type_abb}"), "text", "Residuals are assumed to be homoscedastic",
-          glue::glue("{var_type_abb}"), "text", "Linearity of the conditional expectation is assumed"
-        ) %>%
-          dplyr::mutate(dplyr::across(dplyr::everything(), glue::as_glue)),
-        "cov_mat" = cov_mat
+      c(
+        glue::glue("Observations are assumed to be independent"),
+        glue::glue("Residuals are assumed to be homoscedastic"),
+        glue::glue("Linearity of the conditional expectation is assumed")
       )
     },
     "sand" = {
-      var_emoji <- glue::glue("\U1F969\U1F35E")
-      var_title <- glue::glue("Sandwich")
-      out_list <- list(
-        "var_type" = glue::glue("sand"),
-        "var_type_abb" = glue::glue("{var_type_abb}"),
-        var_emoji = var_emoji,
-        var_title = var_title,
-        "var_emoji_title" = glue::glue("{var_emoji}: {var_title}:"),
-        "var_summary" = summary_tbl,
-        "var_assumptions" = tibble::tribble(
-          ~"var_abb", ~"var_assumption_type", ~"var_assumption_val",
-          glue::glue("{var_type_abb}"), "text", "Observations are assumed to be independent"
-        ) %>%
-          dplyr::mutate(dplyr::across(dplyr::everything(), glue::as_glue)),
-        "cov_mat" = cov_mat
+      c(
+        glue::glue("Observations are assumed to be independent")
       )
     },
     "emp" = {
-      var_emoji <- glue::glue("\U1F9EE\U1F45F")
-      var_title <- glue::glue("Empirical Bootstrap")
-      out_list <- list(
-        "var_type" = glue::glue("boot_emp"),
-        "var_type_abb" = glue::glue("{var_type_abb}"),
-        var_emoji = var_emoji,
-        var_title = var_title,
-        "var_emoji_title" = glue::glue("{var_emoji}: {var_title}:"),
-        "var_summary" = summary_tbl,
-        "var_assumptions" = tibble::tribble(
-          ~"var_abb", ~"var_assumption_type", ~"var_assumption_val",
-          glue::glue("{var_type_abb}"), "text", "Observations are assumed to be independent",
-          glue::glue("{var_type_abb}"), "text", "Linearity of the conditional expectation is assumed",
-          glue::glue("{var_type_abb}"), "B", glue::glue("{B}"),
-          glue::glue("{var_type_abb}"), "m", glue::glue("{m}"),
-          glue::glue("{var_type_abb}"), "replace", glue::glue("{replace}")
-        ) %>%
-          dplyr::mutate(dplyr::across(dplyr::everything(), glue::as_glue)),
-        "cov_mat" = cov_mat
+      c(
+        glue::glue("Observations are assumed to be independent",
+                   .sep = " "
+        ),
+        glue::glue("Parameters: B = {B}, m = {m}, n = {n}")
+      )
+    },
+    "sub" = {
+      c(
+        glue::glue("Observations are assumed to be independent",
+                   .sep = " "
+        ),
+        glue::glue("Parameters: B = {B}, m = {m}, n = {n}")
       )
     },
     "res" = {
-      var_emoji <- glue::glue("\U2696\U1F45F")
-      var_title <- glue::glue("Residual Bootstrap")
-      out_list <- list(
-        "var_type" = glue::glue("boot_res"),
-        "var_type_abb" = glue::glue("{var_type_abb}"),
-        var_emoji = var_emoji,
-        var_title = var_title,
-        # "var_emoji" = dplyr::filter(.data = var_emoji_tbl,
-        #                             var_abb == var_type_abb),
-        # "var_title" = dplyr::filter(.data = var_title_tbl,
-        #                             var_abb == var_type_abb),
-        "var_emoji_title" = glue::glue("{var_emoji}: {var_title}:"),
-        "var_summary" = summary_tbl,
-        "var_assumptions" = tibble::tribble(
-          ~"var_abb", ~"var_assumption_type", ~"var_assumption_val",
-          glue::glue("{var_type_abb}"), "text", "Observations are assumed to be independent",
-          glue::glue("{var_type_abb}"), "text", "Residuals are assumed to be homoscedastic",
-          glue::glue("{var_type_abb}"), "text", "Linearity of the conditional expectation is assumed"
-        ) %>%
-          dplyr::mutate(dplyr::across(dplyr::everything(), glue::as_glue)),
-        "cov_mat" = cov_mat
+      c(
+        glue::glue("Observations are assumed to be independent"),
+        glue::glue("Residuals are assumed to be homoscedastic"),
+        glue::glue("Linearity of the conditional expectation is assumed")
       )
     },
     "mul" = {
-      var_emoji <- glue::glue("\U274C\U1F45F")
-      var_title <- glue::glue("Multiplier Bootstrap")
-      out_list <- list(
-        "var_type" = glue::glue("boot_mul"),
-        "var_type_abb" = glue::glue("{var_type_abb}"),
-        var_emoji = var_emoji,
-        var_title = var_title,
-        "var_emoji_title" = glue::glue("{var_emoji}: {var_title}:"),
-        "var_summary" = summary_tbl,
-        "var_assumptions" = tibble::tribble(
-          ~"var_abb", ~"var_assumption_type", ~"var_assumption_val",
-          glue::glue("{var_type_abb}"), "text", "Observations are assumed to be independent",
-          glue::glue("{var_type_abb}"), "text", "Linearity of the conditional expectation is assumed",
-          glue::glue("{var_type_abb}"), "B", glue::glue("{B}")
-        ) %>%
-          dplyr::mutate(dplyr::across(dplyr::everything(), glue::as_glue)),
-        "cov_mat" = cov_mat
+      c(
+        glue::glue("Observations are assumed to be independent",
+                   .sep = " "
+        ),
+        glue::glue("Parameters: B = {B}, weights = {weights_type}")
       )
     }
   )
-  return(out)
+
+  # Construct comp_var list only for the specific variance type
+  out_list <- list(
+    "var_type" = var_type,
+    "var_type_abb" = var_type_abb,
+    # "var_emoji" = var_emoji,
+    # "var_title" = var_title,
+    # "var_emoji_title" = var_emoji_title,
+    "var_summary" = summary_tbl,
+    "var_assumptions" = var_assumptions,
+    "cov_mat" = cov_mat,
+    boot_out = boot_out
+  )
+
+  return(out_list)
 }
 
-
+# Run basic checks --------------------------------------------------------
 # Variables as they would be passed in from individual functions
 B <- 150
 m <- 60
-replace <- TRUE
+n <- 1000
 cov_mat <- diag(3)
 
 # Run the get_assumptions
-proto_gen_comp_var_ind(
-  var_type_abb = "res",
+proto_get_mms_comp_var_ind(
+  var_type_abb = "emp",
   summary_tbl = NULL, # TODO: Should be passed in, no NULLS
   cov_mat = cov_mat,
   B = B,
   m = m,
-  replace = replace
+  n = 1000,
+  weights_type = NULL,
+  boot_out = NULL
 )
+
+# Check internal function applied correctly -------------------------------
+# A demo on simple linear regression!
+# Comp var examples ----
+set.seed(1243434)
+
+# generate modeling data ----
+n <- 1e3
+x <- stats::rnorm(n, 0, 1)
+y <- 2 + x * 1 + 1 * x^{2} + exp(0.2 * abs(x)) * rnorm(n)
+lm_fit <- stats::lm(y ~ x)
+
+# Let's get another set of estimates, now also asking for residual and multiplier
+# bootstraps.
+set.seed(454354534)
+mms_fit2 <- comp_var(
+  mod_fit = lm_fit,
+  boot_emp = list(B = 50, m = 200),
+  boot_sub = list(B = 100, m = 100),
+  boot_res = list(B = 70),
+  boot_mul = list(B = 60))
+mms_fit2
+
+# Multiplier/Residual should contain a non-NULL boot_out
+mms_fit2$var$var_boot_mul
+mms_fit2$var$var_boot_res
+
+# Empirical/Subsampling should contain a NULL boot_out
+mms_fit2$var$var_boot_emp
+mms_fit2$var$var_boot_sub
+
+

@@ -295,19 +295,28 @@ comp_boot_mul <- function(mod_fit, B, weights_type = "rademacher") {
     boot_type = "mul"
   )
 
-  out <- list(
-    var_type = "boot_mul",
-    var_type_abb = "mul",
-    var_summary = summary_boot,
-    var_assumptions = c(
-      glue::glue("Observations are assumed to be independent",
-        .sep = " "
-      ),
-      glue::glue("Parameters: B = {B}, weights = {weights_type}")
-    ),
-    cov_mat = cov_mat,
-    boot_out = boot_out
-  )
+  # out <- list(
+  #   var_type = "boot_mul",
+  #   var_type_abb = "mul",
+  #   var_summary = summary_boot,
+  #   var_assumptions = c(
+  #     glue::glue("Observations are assumed to be independent",
+  #       .sep = " "
+  #     ),
+  #     glue::glue("Parameters: B = {B}, weights = {weights_type}")
+  #   ),
+  #   cov_mat = cov_mat,
+  #   boot_out = boot_out
+  # )
+
+  out <- get_mms_comp_var_ind(var_type_abb = "mul",
+                              summary_tbl = summary_boot,
+                              cov_mat = cov_mat,
+                              B = B,
+                              m = NULL,
+                              n = NULL,
+                              weights_type = weights_type,
+                              boot_out = boot_out)
 
   return(out)
 }
