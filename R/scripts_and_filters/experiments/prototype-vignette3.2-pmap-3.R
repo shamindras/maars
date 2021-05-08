@@ -13,10 +13,12 @@ library(furrr)
 library(glue)
 library(cli)
 library(broom)
+library(progressr)
 
 #+ setup, include=FALSE
 devtools::document()
 devtools::load_all()
+
 
 # effect of increasing B in (n-out-of-n) empirical / multiplier /
 # (sqrt(n) out of n) subsampling bootstrap samples on coverage when
@@ -61,7 +63,7 @@ grid_n <- c(20, 50, 100)
 grid_params <- crossing(covg = 1:NUM_COVG_REPS, n = grid_n) %>%
     mutate(lm_fit = map(n, ~gen_ind_mod_fit(n = .x))) %>%
     crossing(B = grid_B) %>%
-    select(covg, n, B, m_sub, lm_fit)
+    select(covg, n, B, lm_fit)
 grid_params
 
 length(grid_B) * length(grid_n) * NUM_COVG_REPS - nrow(grid_params)
@@ -69,9 +71,10 @@ length(grid_B) * length(grid_n) * NUM_COVG_REPS - nrow(grid_params)
 # We can get the confint for a single replication
 get_ind_confint <- function(covg, n, B, lm_fit){
     # TODO: Remove the print message later
-    cli_text(glue::glue("Running coverage replication index: {covg}..."))
-    cli_text(glue::glue("n: {n}..."))
-    cli_text(glue::glue("B: {B}..."))
+    #cli_text(glue::glue("Running coverage replication index: {covg}..."))
+    #cli_text(glue::glue("n: {n}..."))
+    #cli_text(glue::glue("B: {B}..."))
+  pb()
     confint_fit <- comp_var(mod_fit = lm_fit,
                             boot_emp = list(B = B),
                             boot_sub = list(B = B, m = floor(sqrt(n))),
@@ -87,8 +90,13 @@ get_ind_confint <- function(covg, n, B, lm_fit){
 plan(multicore, workers = 50)
 
 # TODO: replace pmap with future_pmap
-system.time(confint_replications <- grid_params %>%
-    mutate(out_confint = pmap(.l = ., .f = get_ind_confint)))
+#system.time(
+with_progress({
+  pb <- progressor(steps = nrow(grid_params))
+  confint_replications <- grid_params %>%
+    mutate(out_confint = future_pmap(.l = ., .f = get_ind_confint))
+})
+  #)
 
 # Check the output
 head(confint_replications)
@@ -106,6 +114,14 @@ df_mod
 # Get the broom output
 df_mod_summ <- tidy(df_mod) %>% select(term, estimate) %>% rename(true_param = estimate)
 
+sd_bootstrap <- function(x, B = 1e3, alpha = 0.95){
+  len_x <- length(x)
+  out_sample <- 1:B %>%
+    map_dbl(~ mean(sample(x, size = len_x, replace = TRUE)))
+  #quants <- quantile(out, c((1 - alpha)/2, alpha + (1 - alpha)/2))
+  return(sd(out_sample))
+}
+
 all_confint_coverage <- all_confint %>%
     left_join(df_mod_summ, by = "term") %>%
     mutate(coverage_ind = ifelse(conf.low <= true_param &
@@ -113,21 +129,21 @@ all_confint_coverage <- all_confint %>%
     group_by(term, B, n, var_type_abb) %>%
     summarize(
         coverage = mean(coverage_ind),
-        avg_width = mean(conf.high - conf.low)
+        avg_width = mean(conf.high - conf.low),
+        std.error.avg_width = sd_bootstrap(conf.high - conf.low),
+        std.error.coverage = sd_bootstrap(coverage_ind)
     ) %>%
     filter(term == 'x1')
+
+write_csv(x = all_confint_coverage, file = here::here("R/scripts_and_filters/experiments/confidence3.1.csv"))
 
 # Coverage seems to be working here i.e. most of the values are in the 86-100% range
 summary(all_confint_coverage$coverage)
 hist(all_confint_coverage$coverage, breaks = 10, xlim = c(0, 1))
 
-# TODO: Check if we should be plotting avg_width?
-# Should this be coverage instead?
+
 all_confint_plt <- all_confint_coverage %>%
-    mutate(var_type_abb = as.factor(var_type_abb),
-           std.error.coverage = sqrt(coverage*(1-coverage)/NUM_COVG_REPS),
-           n_text = as.factor(glue("n = {n}"))) %>%
-    filter(var_type_abb != 'sand') %>%
+    mutate(n_text = as.factor(glue("n = {n}"))) %>%
     ggplot(aes(x = B, y = coverage, fill = var_type_abb, col = var_type_abb)) +
     geom_point() +
     geom_line() +
@@ -144,31 +160,24 @@ all_confint_plt
 #       than knit the pdf with this time consuming run
 ggsave(filename = here::here("R/scripts_and_filters/experiments/experiment-vignette3.1_coverage.png"), plot = all_confint_plt)
 # Plot interactively using plotly
-plotly::ggplotly(p = all_confint_plt)
+#plotly::ggplotly(p = all_confint_plt)
 
 all_avgwidth_plt <- all_confint_coverage %>%
-    filter(!var_type_abb %in% c('sand', 'lm')) %>%
-  all_confint_coverage %>%
-  mutate(var_type_abb = as.factor(var_type_abb),
-         std.error.avgwidth = sqrt(coverage*(1-coverage)/NUM_COVG_REPS),
-         n_text = as.factor(glue("n = {n}"))) %>%
-  filter(var_type_abb != 'sand') %>%
-  ggplot(aes(x = B, y = coverage, fill = var_type_abb, col = var_type_abb)) +
+  mutate(n_text = as.factor(glue("n = {n}"))) %>%
+  ggplot(aes(x = B, y = avg_width, fill = var_type_abb, col = var_type_abb)) +
   geom_point() +
   geom_line() +
-  geom_ribbon(aes(ymin = coverage-1.96*std.error.coverage,
-                  ymax = coverage+1.96*std.error.coverage), alpha = 0.3) +
+  geom_ribbon(aes(ymin = avg_width-1.96*std.error.avg_width,
+                  ymax = avg_width+1.96*std.error.avg_width), alpha = 0.3) +
   facet_grid(~ n_text) +
   labs(y = "Coverage") +
-  theme_bw() +
-  geom_hline(yintercept = 0.95, linetype = "dashed") +
-    geom_hline(yintercept =  (all_confint_coverage %>% filter(var_type_abb == 'sand') %>% pull(avg_width))[1], linetype = 'dashed')
+  theme_bw()
 all_avgwidth_plt
 # Save the plot
 # Note: It may be good to pre-run this script and read it in our paper, rather
 #       than knit the pdf with this time consuming run
 ggsave(filename = here::here("R/scripts_and_filters/experiments/experiment-vignette3.1_width.png"), plot = all_avgwidth_plt)
 # Plot interactively using plotly
-plotly::ggplotly(p = all_confint_plt)
+#plotly::ggplotly(p = all_confint_plt)
 
 
