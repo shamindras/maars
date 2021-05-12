@@ -63,6 +63,10 @@ paper/submission/*.tar.gz
 auto/
 inst/doc
 
+# Experiments and Prototypes
+R/scripts_and_filters/experiments/*.csv
+R/scripts_and_filters/experiments/*.png
+
 # macOS related
 # Source: https://raw.githubusercontent.com/github/gitignore/master/Global/macOS.gitignore
 # General
