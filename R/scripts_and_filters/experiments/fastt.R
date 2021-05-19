@@ -16,6 +16,8 @@ library(broom)
 library(vroom)
 library(progressr)
 
+pbo = pbapply::pboptions(type="txt")
+
 #+ setup, include=FALSE
 devtools::document()
 devtools::load_all()
@@ -32,23 +34,23 @@ NUM_COVG_REPS <- 5 * 1e3 # Number of coverage replications
 # Generate replication data + model fit -----------------------------------
 # Helper function to generate a single replication dataset and `lm` fit
 gen_ind_mod_fit <- function(n) {
-  x1 <- runif(n, -1, 1)
-  x2 <- runif(n, -1, 1)
-  e1 <- runif(n, -1, 1)
-  e2 <- runif(n, -1, 1)
-  x3 <- 0.2 * x1 + 0.2 * (x2 + 2)^2 + 0.2 * e1
-  x4 <- 0.1 + 0.1 * (x1 + x2) + 0.3 * (x1 + 1.5)^2 + 0.2 * e2
-  x5 <- rbinom(n, 1, exp(x1) / {
-    1 + exp(x1)
-  })
-  x6 <- rbinom(n, 1, exp(x2) / {
-    1 + exp(x2)
-  })
-  x <- cbind(x1, x2, x3, x4, x5, x6)
-  beta0 <- c(1.3, -1.3, 1, -0.5, 0.5, -0.5) / sqrt(5.13)
-  y <- abs(x %*% beta0) + rnorm(n)
-  mod_data <- as_tibble(x) %>% add_column(y = as.vector(y))
-  return(lm(y ~ ., data = mod_data))
+    x1 <- runif(n, -1, 1)
+    x2 <- runif(n, -1, 1)
+    e1 <- runif(n, -1, 1)
+    e2 <- runif(n, -1, 1)
+    x3 <- 0.2 * x1 + 0.2 * (x2 + 2)^2 + 0.2 * e1
+    x4 <- 0.1 + 0.1 * (x1 + x2) + 0.3 * (x1 + 1.5)^2 + 0.2 * e2
+    x5 <- rbinom(n, 1, exp(x1) / {
+        1 + exp(x1)
+    })
+    x6 <- rbinom(n, 1, exp(x2) / {
+        1 + exp(x2)
+    })
+    x <- cbind(x1, x2, x3, x4, x5, x6)
+    beta0 <- c(1.3, -1.3, 1, -0.5, 0.5, -0.5) / sqrt(5.13)
+    y <- abs(x %*% beta0) + rnorm(n)
+    mod_data <- as_tibble(x) %>% add_column(y = as.vector(y))
+    return(lm(y ~ ., data = mod_data))
 }
 
 # Generate all fitted models on our replication datasets
@@ -59,26 +61,34 @@ gen_ind_mod_fit <- function(n) {
 # Generate the grid of all the variance calculation parameters
 # This time run it without the filtering
 grid_B <- c(seq(5, 40, by = 5), c(seq(45, 120, by = 10)))
-grid_n <- 500
-#grid_n <- c(20, 50, 100, 150)#, 500) %>% rev()
+grid_n <- c(20, 50, 100, 150)#, 500) %>% rev()
 # grid_B <- seq(2,10, by = 2)
 # grid_n <- seq(20,40,length = 2)
 
 grid_params <- crossing(covg = 1:NUM_COVG_REPS, n = grid_n) %>%
     #mutate(lm_fit = map(n, ~gen_ind_mod_fit(n = .x))) %>%
     crossing(B = grid_B) %>%
-    select(covg, n, B)
+    select(covg, n, B) %>%
+    rowwise() %>%
+    mutate(l_iter = list(lst(covg = covg, n = n, B = B))) %>% ungroup
+
+
+
 grid_params
 
 length(grid_B) * length(grid_n) * NUM_COVG_REPS - nrow(grid_params)
 
 # We can get the confint for a single replication
-get_ind_confint <- function(covg, n, B){
+get_ind_confint <- function(iter_params){
     # TODO: Remove the print message later
     #cli_text(glue::glue("Running coverage replication index: {covg}..."))
     #cli_text(glue::glue("n: {n}..."))
     #cli_text(glue::glue("B: {B}..."))
-  #pb()
+    #pb()
+
+    B <- iter_params$B
+    n <- iter_params$n
+
     confint_fit <- comp_var(mod_fit = gen_ind_mod_fit(n = n),
                             boot_emp = list(B = B),
                             boot_sub = list(B = B, m = floor(sqrt(n))),
@@ -89,21 +99,34 @@ get_ind_confint <- function(covg, n, B){
 
 # Use furrr to run in parallel
 # https://github.com/DavisVaughan/furrr#example
-plan(multicore, workers = 25)
+#plan(multicore, workers = 25)
 
 cli_h1('Confint replications...')
 #with_progress({
-  #pb <- progressor(steps = nrow(grid_params))
+#pb <- progressor(steps = nrow(grid_params))
+# confint_replications <- grid_params %>%
+#     mutate(out_confint = future_pmap(.l = .,
+#                                      .f = get_ind_confint,
+#                                      .options = furrr_options(seed = TRUE),
+#                                      .progress = TRUE))
+# #})
+
+confint_replications <-
+    pbapply::pblapply(
+    #sapply(
+    X = grid_params$l_iter,
+    FUN = get_ind_confint
+    ,cl = 25
+    #mc.cores = getOption("cores", 50)
+) %>%
+    bind_rows(.id = 'iter') %>%
+    nest(out_confint = c(term, estimate, stat_type, stat_val, var_type_abb))
+
 confint_replications <- grid_params %>%
-    mutate(out_confint = future_pmap(.l = .,
-                                     .f = get_ind_confint,
-                                     .options = furrr_options(seed = TRUE),
-                                     .progress = TRUE))
-#})
+    bind_cols(confint_replications)
 
 # Check the output
 head(confint_replications)
-
 
 # Get combined confidence intervals ---------------------------------------
 cli_h1('Process confidence interval data')
@@ -121,13 +144,13 @@ df_mod
 df_mod_summ <- tidy(df_mod) %>% select(term, estimate) %>% rename(true_param = estimate)
 
 sd_bootstrap <- function(x, B = 1e3, alpha = 0.95){
-  #len_x <- length(x)
-  #out_sample <- 1:B %>%
-  #  future_map_dbl(~ mean(sample(x, size = len_x, replace = TRUE)),
-  #                 .options = furrr_options(seed = TRUE))
-  #quants <- quantile(out, c((1 - alpha)/2, alpha + (1 - alpha)/2))
-  #return(sd(out_sample))
-  return(sd(x))
+    #len_x <- length(x)
+    #out_sample <- 1:B %>%
+    #  future_map_dbl(~ mean(sample(x, size = len_x, replace = TRUE)),
+    #                 .options = furrr_options(seed = TRUE))
+    #quants <- quantile(out, c((1 - alpha)/2, alpha + (1 - alpha)/2))
+    #return(sd(out_sample))
+    return(sd(x))
 }
 
 cli_h1('Confint coverage and width plots...')
@@ -135,7 +158,7 @@ cli_h1('Confint coverage and width plots...')
 all_confint_coverage <- all_confint %>%
     left_join(df_mod_summ, by = "term") %>%
     mutate(coverage_ind = ifelse(conf.low <= true_param &
-                                   conf.high >= true_param, 1, 0)) %>%
+                                     conf.high >= true_param, 1, 0)) %>%
     group_by(term, B, n, var_type_abb) %>%
     summarize(
         coverage = mean(coverage_ind),
@@ -147,7 +170,7 @@ all_confint_coverage <- all_confint %>%
 vroom_write(x = all_confint_coverage, path = here::here("R/scripts_and_filters/experiments/confidence3.1.csv"))
 
 all_confint_coverage <- all_confint_coverage %>%
-  filter(term == 'x1')
+    filter(term == 'x1')
 
 # Coverage seems to be working here i.e. most of the values are in the 86-100% range
 summary(all_confint_coverage$coverage)
@@ -155,13 +178,13 @@ hist(all_confint_coverage$coverage, breaks = 10, xlim = c(0, 1))
 
 all_confint_plt <- all_confint_coverage %>%
     mutate(
-      n_text = as.factor(glue("n = {n}"))
+        n_text = as.factor(glue("n = {n}"))
     ) %>%
     ggplot(aes(x = B, y = coverage, fill = var_type_abb, col = var_type_abb)) +
     geom_point() +
     geom_line() +
-  geom_ribbon(aes(ymin = coverage-1.96*std.error.coverage,
-                  ymax = coverage+1.96*std.error.coverage), alpha = 0.3) +
+    geom_ribbon(aes(ymin = coverage-1.96*std.error.coverage,
+                    ymax = coverage+1.96*std.error.coverage), alpha = 0.3) +
     facet_grid(~ n_text) +
     labs(y = "Coverage") +
     theme_bw() +
@@ -176,15 +199,15 @@ ggsave(filename = here::here("R/scripts_and_filters/experiments/experiment-vigne
 #plotly::ggplotly(p = all_confint_plt)
 
 all_avgwidth_plt <- all_confint_coverage %>%
-  mutate(n_text = as.factor(glue("n = {n}"))) %>%
-  ggplot(aes(x = B, y = avg_width, fill = var_type_abb, col = var_type_abb)) +
-  geom_point() +
-  geom_line() +
-  geom_ribbon(aes(ymin = avg_width-1.96*std.error.avg_width,
-                  ymax = avg_width+1.96*std.error.avg_width), alpha = 0.3) +
-  facet_grid(~ n_text) +
-  labs(y = "Coverage") +
-  theme_bw()
+    mutate(n_text = as.factor(glue("n = {n}"))) %>%
+    ggplot(aes(x = B, y = avg_width, fill = var_type_abb, col = var_type_abb)) +
+    geom_point() +
+    geom_line() +
+    geom_ribbon(aes(ymin = avg_width-1.96*std.error.avg_width,
+                    ymax = avg_width+1.96*std.error.avg_width), alpha = 0.3) +
+    facet_grid(~ n_text) +
+    labs(y = "Coverage") +
+    theme_bw()
 all_avgwidth_plt
 # Save the plot
 # Note: It may be good to pre-run this script and read it in our paper, rather
