@@ -15,6 +15,9 @@ library(cli)
 library(broom)
 library(progressr)
 
+# Load maars
+# TODO: Need to do this using library(maars), or ignore it completely in the
+#       final run
 #+ setup, include=FALSE
 devtools::document()
 devtools::load_all()
