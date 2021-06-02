@@ -144,7 +144,7 @@ In order to run our simulation in a _tidy_ manner,
 we will need to set up a `tibble` of grid of parameters. 
 
 ```{r grid_params}
-NUM_COVG_REPS <- 100 # Number of coverage replications
+NUM_COVG_REPS <- 1e4 # Number of coverage replications
 grid_n <- 500 # Sample size for each modeling dataset
 
 grid_B <- c(
@@ -182,8 +182,11 @@ First, we do the most computationally intensive step. Since our grid of paramete
 `purrr` package to map our custom confidence interval function we have
 previously created. We do this by simply mapping it across each row of our grid
 of parameters.
+Since the following computation is quite computationally intensive, we have previously
+run it on a cluster and stored the data. Here, we load the data in the background 
+just for plotting.
 
-```{r confint_replications}
+```{r confint_replications, eval = FALSE}
 plan(multicore, workers = 4)
 confint_replications <- grid_params %>%
   mutate(out_confint = future_pmap(
@@ -198,7 +201,7 @@ Since our output is in a tidy tibble, we can use the power and flexibility of
 data frame manipulation of say the `tidyverse` set of packages to consolidate
 our results as follows:
 
-```{r all_confint_coverage}
+```{r all_confint_coverage, eval = FALSE}
 # Get tidy format of maars confidence interval output
 all_confint <- confint_replications %>%
   unnest(out_confint) %>%
@@ -231,7 +234,7 @@ purposes.
 First let's get the required results for `lm` and `sandwich` estimators. We take our function `all_confint_coverage` and simply average over all replications
 and values of `B`.
 
-```{r cw}
+```{r cw, eval = FALSE}
 # summarise sandwich and lm
 cw <- all_confint_coverage %>%
   filter(var_type_abb %in% c("sand", "lm")) %>%
@@ -241,12 +244,13 @@ cw <- all_confint_coverage %>%
     avg_width = mean(conf.high - conf.low),
     std.error.avg_width = sd(conf.high - conf.low) / sqrt(n()),
     std.error.coverage = sd(ind_coverage) / sqrt(n())
-  )
+  ) %>%
+  crossing(B = grid_B) # for plotting
 ```
 
 We then obtain our three bootstrap summaries. 
 
-```{r cw_x_B}
+```{r cw_x_B, eval = FALSE}
 # summarise empirical, multiplier, subsampling
 cw_x_B <- all_confint_coverage %>%
   filter(var_type_abb %in% c("emp", "mult", "sub")) %>%
@@ -268,9 +272,17 @@ Since our results have followed a `tidy` workflow, which is naturally encouraged
 by design in `maars`, we can now combine our output tibbles for the various confidence coverages and widths.
 This is simply done as follows:
 
-```{r cw_all}
+```{r cw_all, eval = FALSE}
 cw_all <- cw %>%
   bind_rows(cw_x_B)
+```
+
+```{r cw_all_load, echo = FALSE}
+cw_all <- read_csv(here::here('data-vignettes', 'vignette_31.csv'))
+cw_all <- cw_all %>% filter(var_type_abb == 'lm' | var_type_abb == 'sand') %>%
+  select(-B) %>%
+  crossing(B = grid_B) %>%
+  bind_rows(cw_all %>% filter(var_type_abb != 'lm' & var_type_abb != 'sand'))
 ```
 
 ## Plot results
@@ -289,8 +301,7 @@ confint_plt <- cw_all %>%
   ), alpha = 0.3) +
   labs(y = "Coverage") +
   theme_bw() +
-  facet_wrap(~term, scales = "free") +
-  geom_hline(yintercept = 0.95, linetype = "dashed")
+  facet_wrap(~term, scales = "free")
 confint_plt
 ```
 
@@ -315,19 +326,14 @@ avgwidth_plt
 
 ## Discussion
 
-TO REVISE
 In the plot, we observe that
 
-  - as `B` increases, both subsampling, empirical bootstrap, and multiplier bootstrap confidence intervals
-    coverage converge to the specified 95% level with less than 50 bootstrap resample.
-  - In particular empirical is particularly stable at an earlier `B` value of
-    TODO ADD compared to multiplier and residual bootstrap
-  - It is interesting to note that residual bootstrap only works under the same
-    assumptions as `lm()` i.e. observations need to be independently and
-    identically distributed. This is certainly the case for this simulation, but
-    empirical/multiplier bootstrap require only the weaker condition of
-    independence among observations
-
+  - as `B` increases, both subsampling, empirical bootstrap, and multiplier bootstrap confidence intervals coverage converge to the specified 95% level. Note that coverage for subsampling 
+  converges more slowly than the empirical bootstrap's. Sandwich also achieves 95% coverage. In contrast, `lm` coverage is only about 90%.
+  - The width of the confidence intervals for sandwich and empirical bootstrap 
+  are largest, followed by subsampling. `lm` has substantially narrower confidence intervals, which, however, cover the projected parameter of interest in a smaller share 
+  of the repetitions.
+  
 We want to emphasize that from a practical point of view using `maars` enables
 such experiments to be conducted in a principled manner. More specifically,
 using `maars` encourages a tidy workflow to systematically analyze problems of this kind.
