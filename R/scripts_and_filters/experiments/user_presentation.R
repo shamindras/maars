@@ -1,11 +1,21 @@
+# Set seed ----
+set.seed(14352)
+
+# Load standard libraries ----
+library(tidyverse)
+# library(maars) # Uncomment line
+
+# Load development maars code ----
+devtools::document()
+devtools::load_all()
 
 # fit model ----
-n <- 1e2
-x <- runif(n,-10,10)
+n <- 1e3
+x <- runif(n, -10, 10)
 y <- 2 * x + sapply(sqrt(abs(x)), rnorm, n = 1, mean = 0)
 df <- data.frame(x = x, y = y)
 
-# plot
+# plot the data sample
 df %>%
     ggplot(aes(x, y)) +
     geom_point() +
@@ -53,8 +63,7 @@ get_confint(mod_fit, level = 0.95,
                col = 'black')
 
 
-# get coverage ------
-
+# get coverage for well specified model over 10000 replications ------
 conf <- c()
 for(i in 1:1e4){
     x <- runif(n,-10,10)
@@ -70,7 +79,7 @@ high <- if_else(conf[,2] -  2 > 0, 1 , 0)
 covers <- pmin(low, high)
 mean(covers)
 
-
+# Plot the coverage for lm() model, compare to 95% coverage
 data.frame(x = 'well-specified model', coverage = mean(covers)) %>%
     ggplot(aes(x = x, y = coverage)) +
     geom_col() +
@@ -79,33 +88,41 @@ data.frame(x = 'well-specified model', coverage = mean(covers)) %>%
     xlab('') +
     scale_y_continuous('Coverage', breaks = seq(0,1,by=0.25),
                        labels = paste0(seq(0,1,by=0.25)*100, '%'),
-                       limits = c(0,1))
+                       limits = c(0,1)) +
+    ggtitle('Coverage for coefficient')
 
 
-#
-
+# maars fits on sample data ----
 lm_fit <- lm(y ~ 0 + x)
-
 confint(lm_fit)
+summary(lm_fit)
 
+# Fit the required standard variance
 maars_fit <- lm_fit %>%
     comp_var(boot_emp = list(B = 1e3),
              boot_mul = list(B = 1e3),
-             boot_sub = list(B = 1e3, m = floor(n^(2/3))),
              boot_res = list(B = 1e3))
 
 print(maars_fit)
 summary(maars_fit)
+get_summary(maars_fit)
 
-maars_plots <- maars_fit %>%
-    get_plot()
+# maars_plots <- maars_fit %>%
+#     get_plot()
+#
+# maars_plots %>%
+#     pluck('p7') +
+#     ylim(1.75, 2.1) +
+#     geom_hline(yintercept = 2,
+#                linetype = 'dashed',
+#                col = 'black')
 
-maars_plots %>%
+maars_fit %>%
+    get_plot() %>%
     pluck('p7') +
-    ylim(1.9, 2.1) +
+    ylim(1.75, 2.1) +
     geom_hline(yintercept = 2,
                linetype = 'dashed',
                col = 'black')
-
 
 

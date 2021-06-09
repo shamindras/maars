@@ -24,6 +24,9 @@
 vignettes/*.html
 vignettes/*.pdf
 
+# VSCode
+.vscode/
+
 # produced paper
 paper/paper/*.pdf
 paper/paper/*.log
