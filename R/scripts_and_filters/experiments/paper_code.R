@@ -1,5 +1,5 @@
 set.seed(132423)
-#devtools::install_github("shamindras/maars", force = TRUE)
+devtools::install_github("shamindras/maars", force = TRUE)
 
 library(tidyverse)
 library(maars)
@@ -98,7 +98,16 @@ p7 <- get_confint(maars_var, level = 0.95,
     #ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 30, hjust = 1)) +
     ggplot2::guides(col = ggplot2::guide_legend(title = "Type of standard error")) +
     NULL
-p7 + ggtitle('')
+p7 +
+  ggtitle('') +
+  guides(fill=guide_legend(nrow=2,byrow=TRUE)) +
+  theme(legend.position="bottom", legend.box="vertical",
+        legend.text=element_text(size=12),
+        legend.title=element_blank(),
+        axis.title.y = element_text(size = 12),
+        axis.title.x = element_text(size = 12),
+        strip.text.x = element_text(size = 12)) +
+  NULL
 
 # QQnorm
 boot_names <- c('var_boot_emp', 'var_boot_mul', 'var_boot_res')
@@ -114,7 +123,12 @@ if(length(boot_vars)>0){
 } else{
     p8 <- NULL
 }
-p8
+p8 +
+  theme(axis.title.y = element_text(size = 12),
+        axis.title.x = element_text(size = 12),
+        strip.text.x = element_text(size = 12)) +
+  ggtitle('') +
+  NULL
 
 
 
@@ -131,4 +145,8 @@ mod_fit %>% diag_nl_detect(coef_rwgt)
 mod_fit %>% diag_foc_rwgt(coef_rwgt,'PercVacant')
 
 # focal slope for "PercVacant" withotu intercept
-mod_fit %>% diag_foc_slope(coef_rwgt %>% filter(term_rwgt != '(Intercept)'), 'PercVacant')
+mod_fit %>%
+  diag_foc_slope(coef_rwgt %>% filter(term_rwgt != '(Intercept)'), 'PercVacant') +
+  theme(axis.title.y = element_text(size = 12),
+        axis.title.x = element_text(size = 12),
+        strip.text.x = element_text(size = 12))
