@@ -1,3 +1,5 @@
+# maars 1.2.0
+
 # maars 1.1.0
 
 - Change `Significance` heading in our summary output to be abbreviated to `Signif:` to be consistent with `lm()` output

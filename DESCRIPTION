@@ -1,6 +1,6 @@
 Package: maars
 Title: Tidy Inference Under Misspecified Statistical Models in R
-Version: 1.1.0
+Version: 1.2.0
 Authors@R: 
     c(person(given = "Shamindra",
              family = "Shrotriya",
