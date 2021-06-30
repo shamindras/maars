@@ -41,6 +41,7 @@ Suggests:
     bench,
     kableExtra,
     knitr,
+    furrr,
     xtable,
     forcats,
     spelling,
