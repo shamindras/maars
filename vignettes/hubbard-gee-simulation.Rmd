@@ -7,7 +7,7 @@ bibliography: ../inst/REFERENCES.bib
 resource_files:
   - figures/buja1_table1.png
 vignette: >
-  %\VignetteIndexEntry{CI width and coverage as a function of bootstrap replications}
+  %\VignetteIndexEntry{CI width and coverage<br>as a function of bootstrap replications}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -38,7 +38,11 @@ commands in a new `R` session before running the vignette code below:
 <details><summary>Required package installation and load</summary>
 ``` {r setup_libraries}
 # Load the required packages
-library(tidyverse)
+library(purrr)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(readr)
 library(furrr)
 library(glue)
 library(cli)
@@ -90,9 +94,10 @@ data-generating mechanism:
 $$Y = 3 X^{2} + \epsilon, \: X \sim U[0, 10], ; \epsilon \sim
 \mathcal{N}(0, \sigma^2)$$
 
-In this vignette, we are interested in fitting a misspecified model to the data. 
-We will simply consider OLS regression with an intercept and a term that is linear in $X$. The following function generates i.i.d. data according to the described 
-data-generating mechanism and fits the OLS model.  
+In this vignette, we are interested in fitting a misspecified model to the data.
+We will simply consider OLS regression with an intercept and a term that is
+linear in $X$. The following function generates i.i.d. data according to the
+described data-generating mechanism and fits the OLS model.
 
 ```{r gen_ind_mod_fit}
 gen_ind_mod_fit <- function(n) {
@@ -123,8 +128,10 @@ get_ind_confint <- function(covg, n, B) {
 ## Derive projection parameters
 
 For simulation purposes, we need to first compute the projection parameters for
-the fitted model. Exact computation of such parameters requires analytical derivation. Alternatively, we can obtain their approximations by simply fitting an OLS
-on data with large sample size. Here, we do that by drawing $10^{7}$ observations.
+the fitted model. Exact computation of such parameters requires analytical
+derivation. Alternatively, we can obtain their approximations by simply fitting
+an OLS on data with large sample size. Here, we do that by drawing $10^{7}$
+observations.
 
 ```{r comp_proj_params}
 proj_par <- gen_ind_mod_fit(1e7) %>%
@@ -173,18 +180,19 @@ replications.
 
 ## Run simulations over the grid of parameters
 
-We are finally ready to run the simulations with a focus on getting the coverage and average width of confidence intervals average as a function of
-$B$. The basic hypothesis driving the simulations is that the values of $B$
-increase, we get better coverage and smaller width, but also, more importantly, we get tighter confidence bands as the number of replications increases.
+We are finally ready to run the simulations with a focus on getting the coverage
+and average width of confidence intervals average as a function of $B$. The
+basic hypothesis driving the simulations is that the values of $B$ increase, we
+get better coverage and smaller width, but also, more importantly, we get
+tighter confidence bands as the number of replications increases.
 
-First, we do the most computationally intensive step. Since our grid of parameters
-`grid_params` consists of a single tibble, we can utilize the power of the
-`purrr` package to map our custom confidence interval function we have
+First, we do the most computationally intensive step. Since our grid of
+parameters `grid_params` consists of a single tibble, we can utilize the power
+of the `purrr` package to map our custom confidence interval function we have
 previously created. We do this by simply mapping it across each row of our grid
-of parameters.
-Since the following computation is quite computationally intensive, we have previously
-run it on a cluster and stored the data. Here, we load the data in the background 
-just for plotting.
+of parameters. Since the following computation is quite computationally
+intensive, we have previously run it on a cluster and stored the data. Here, we
+load the data in the background just for plotting.
 
 ```{r confint_replications, eval = FALSE}
 plan(multicore, workers = 4)
@@ -222,17 +230,18 @@ confidence interval coverage levels, and also the average confidence widths.
 
 ## Compute confidence intervals and average confidence width vs. replications
 
-Ideally, it would be nice to compute the confidence intervals
-coverage and average width not only for subsampling, empirical and multiplier bootstrap, but also for the well-specified values from
-`lm()` and the sandwich estimator values. Note that the latter two estimators
-are not dependent on the replication parameter `B`, which is the central object
-of study. So our approach is to simply split the `lm` and sandwich estimator
-values and for the subsampling, empirical and multiplier bootstrap outputs. These can
-be easily combined together afterwards into a single tibble for plotting
-purposes.
+Ideally, it would be nice to compute the confidence intervals coverage and
+average width not only for subsampling, empirical and multiplier bootstrap, but
+also for the well-specified values from `lm()` and the sandwich estimator
+values. Note that the latter two estimators are not dependent on the replication
+parameter `B`, which is the central object of study. So our approach is to
+simply split the `lm` and sandwich estimator values and for the subsampling,
+empirical and multiplier bootstrap outputs. These can be easily combined
+together afterwards into a single tibble for plotting purposes.
 
-First let's get the required results for `lm` and `sandwich` estimators. We take our function `all_confint_coverage` and simply average over all replications
-and values of `B`.
+First let's get the required results for `lm` and `sandwich` estimators. We take
+our function `all_confint_coverage` and simply average over all replications and
+values of `B`.
 
 ```{r cw, eval = FALSE}
 # summarise sandwich and lm
@@ -263,14 +272,15 @@ cw_x_B <- all_confint_coverage %>%
   )
 ```
 
-Note that, in order to be entirely consistent with our `maars` philosophy, we should 
-have computed the standard errors above with the bootstrap, and not be using the normal
-approximation of the sample average. However, that operation would require some 
-more computational effort for our machine, which we would like to avoid for now.
+Note that, in order to be entirely consistent with our `maars` philosophy, we
+should have computed the standard errors above with the bootstrap, and not be
+using the normal approximation of the sample average. However, that operation
+would require some more computational effort for our machine, which we would
+like to avoid for now.
 
 Since our results have followed a `tidy` workflow, which is naturally encouraged
-by design in `maars`, we can now combine our output tibbles for the various confidence coverages and widths.
-This is simply done as follows:
+by design in `maars`, we can now combine our output tibbles for the various
+confidence coverages and widths. This is simply done as follows:
 
 ```{r cw_all, eval = FALSE}
 cw_all <- cw %>%
@@ -328,14 +338,19 @@ avgwidth_plt
 
 In the plot, we observe that
 
-  - as `B` increases, both subsampling, empirical bootstrap, and multiplier bootstrap confidence intervals coverage converge to the specified 95% level. Note that coverage for subsampling 
-  converges more slowly than the empirical bootstrap's. Sandwich also achieves 95% coverage. In contrast, `lm` coverage is only about 90%.
-  - The width of the confidence intervals for sandwich and empirical bootstrap 
-  are largest, followed by subsampling. `lm` has substantially narrower confidence intervals, which, however, cover the projected parameter of interest in a smaller share 
-  of the repetitions.
+  - as `B` increases, both subsampling, empirical bootstrap, and multiplier
+    bootstrap confidence intervals coverage converge to the specified 95% level.
+    Note that coverage for subsampling converges more slowly than the empirical
+    bootstrap's. Sandwich also achieves 95% coverage. In contrast, `lm` coverage
+    is only about 90%.
+  - The width of the confidence intervals for sandwich and empirical bootstrap
+    are largest, followed by subsampling. `lm` has substantially narrower
+    confidence intervals, which, however, cover the projected parameter of
+    interest in a smaller share of the repetitions.
   
 We want to emphasize that from a practical point of view using `maars` enables
 such experiments to be conducted in a principled manner. More specifically,
-using `maars` encourages a tidy workflow to systematically analyze problems of this kind.
+using `maars` encourages a tidy workflow to systematically analyze problems of
+this kind.
 
 ## References

@@ -2,8 +2,9 @@ pandoc: '2.11'
 pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
+  hubbard-gee-simulation: hubbard-gee-simulation.html
   se-la-county-data: se-la-county-data.html
-last_built: 2021-05-05T04:11Z
+last_built: 2021-06-30T01:59Z
 urls:
   reference: https://shamindras.github.io/maars/reference
   article: https://shamindras.github.io/maars/articles
