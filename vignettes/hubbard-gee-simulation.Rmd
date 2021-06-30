@@ -288,7 +288,7 @@ cw_all <- cw %>%
 ```
 
 ```{r cw_all_load, echo = FALSE}
-cw_all <- read_csv(here::here('data-vignettes', 'vignette_31.csv'))
+cw_all <- vroom(here::here('data-vignettes', 'vignette_31.csv'))
 cw_all <- cw_all %>% filter(var_type_abb == 'lm' | var_type_abb == 'sand') %>%
   select(-B) %>%
   crossing(B = grid_B) %>%
