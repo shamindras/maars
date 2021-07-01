@@ -48,7 +48,6 @@ test_that("model fitted with conditional_model return the same outputs as the or
                broom::tidy(lm_fit) %>% dplyr::pull(estimate))
 })
 
-
 test_that("test sample mean of coefficients estimated via bootstrap matches the original coefficients", {
   # ols
   boot_out <- comp_boot_emp(lm_fit, B = 1e3)$boot_out %>% tidyr::unnest(cols = boot_out)

@@ -71,11 +71,14 @@ comp_sand_var <- function(mod_fit) {
       ))
     )
 
-  out <- list(var_type = "sand",
-              var_type_abb = "sand",
-              var_summary =  summary_sand,
-              var_assumptions = "Observations are assumed to be independent",
-              cov_mat = cov_mat)
+  out <- get_mms_comp_var_ind(var_type_abb = "sand",
+                              summary_tbl = summary_sand,
+                              cov_mat = cov_mat,
+                              B = NULL,
+                              m = NULL,
+                              n = NULL,
+                              weights_type = NULL,
+                              boot_out = NULL)
 
   return(out)
 }
@@ -127,22 +130,14 @@ comp_lm_var <- function(mod_fit) {
     as.numeric(x = .) %>%
     purrr::set_names(x = ., nm = names(x = lmg))
 
-  # Default output to be with 4 digits
-  FMT_NUM_DIGITS <- 4
-  assumptions_lm <-
-    c(
-      glue::glue("Observations are assumed to be independent"),
-      glue::glue("Residuals are assumed to be homoscedastic"),
-      glue::glue("Linearity of the conditional expectation is assumed")
-    )
-
-  out <- list(
-    var_type = "well_specified",
-    var_type_abb = "lm",
-    var_summary = summary_lm,
-    var_assumptions = assumptions_lm,
-    cov_mat = vcov(mod_fit)
-  )
+  out <- get_mms_comp_var_ind(var_type_abb = "lm",
+                              summary_tbl = summary_lm,
+                              cov_mat = vcov(mod_fit),
+                              B = NULL,
+                              m = NULL,
+                              n = NULL,
+                              weights_type = NULL,
+                              boot_out = NULL)
 
   return(out)
 }

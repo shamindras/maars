@@ -87,19 +87,14 @@ comp_boot_res <- function(mod_fit, B = 100) {
     boot_type = "res"
   )
 
-  out <- list(
-    var_type = "boot_res",
-    var_type_abb = "res",
-    var_summary = summary_boot,
-    var_assumptions = c(
-      glue::glue("Observations are assumed to be independent"),
-      glue::glue("Residuals are assumed to be homoscedastic"),
-      glue::glue("Linearity of the conditional expectation is assumed"),
-      glue::glue("Parameters: B = {B}")
-    ),
-    cov_mat = cov_mat,
-    boot_out = boot_out
-  )
+  out <- get_mms_comp_var_ind(var_type_abb = "res",
+                              summary_tbl = summary_boot,
+                              cov_mat = cov_mat,
+                              B = B,
+                              m = NULL,
+                              n = NULL,
+                              weights_type = NULL,
+                              boot_out = boot_out)
 
   return(out)
 }

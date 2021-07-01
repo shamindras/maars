@@ -24,6 +24,9 @@
 vignettes/*.html
 vignettes/*.pdf
 
+# VSCode
+.vscode/
+
 # produced paper
 paper/paper/*.pdf
 paper/paper/*.log
@@ -62,6 +65,10 @@ paper/submission/*.tar.gz
 # Rdpack
 auto/
 inst/doc
+
+# Experiments and Prototypes
+R/scripts_and_filters/experiments/*.csv
+R/scripts_and_filters/experiments/*.png
 
 # macOS related
 # Source: https://raw.githubusercontent.com/github/gitignore/master/Global/macOS.gitignore
