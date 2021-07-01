@@ -19,6 +19,9 @@
     <loc>https://shamindras.github.io/maars/SUPPORT.html</loc>
   </url>
   <url>
+    <loc>https://shamindras.github.io/maars/articles/hubbard-gee-simulation.html</loc>
+  </url>
+  <url>
     <loc>https://shamindras.github.io/maars/articles/index.html</loc>
   </url>
   <url>
@@ -131,6 +134,9 @@
   </url>
   <url>
     <loc>https://shamindras.github.io/maars/reference/get_mms_assumptions_cli.html</loc>
+  </url>
+  <url>
+    <loc>https://shamindras.github.io/maars/reference/get_mms_comp_var_ind.html</loc>
   </url>
   <url>
     <loc>https://shamindras.github.io/maars/reference/get_mms_print_cli.html</loc>

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>A wrapper for the residual bootstrap of a fitted OLS regression model — comp_boot_res • maars</title>
+<title>Generates list containing estimates for an individual variance type — get_mms_comp_var_ind • maars</title>
 
 
 <!-- jquery -->
@@ -45,9 +45,12 @@
 
 
 
-<meta property="og:title" content="A wrapper for the residual bootstrap of a fitted OLS regression model — comp_boot_res" />
-<meta property="og:description" content="comp_boot_res is a wrapper for the empirical bootstrap of
-a fitted lm model." />
+<meta property="og:title" content="Generates list containing estimates for an individual variance type — get_mms_comp_var_ind" />
+<meta property="og:description" content="get_mms_comp_var_ind generates the final output list for an
+individual variance type. This is a helper function to be used in the
+following functions: comp_lm_var, comp_sand_var,
+comp_boot_emp, comp_boot_mul,
+comp_boot_res." />
 
 
 
@@ -153,73 +156,87 @@ a fitted lm model." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>A wrapper for the residual bootstrap of a fitted OLS regression model</h1>
-    <small class="dont-index">Source: <a href='https://github.com/shamindras/maars/blob/master/R/ols-boot-residual.R'><code>R/ols-boot-residual.R</code></a></small>
-    <div class="hidden name"><code>comp_boot_res.Rd</code></div>
+    <h1>Generates list containing estimates for an individual variance type</h1>
+    <small class="dont-index">Source: <a href='https://github.com/shamindras/maars/blob/master/R/ols-var.R'><code>R/ols-var.R</code></a></small>
+    <div class="hidden name"><code>get_mms_comp_var_ind.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p><code>comp_boot_res</code> is a wrapper for the empirical bootstrap of
-a fitted <code><a href='https://rdrr.io/r/stats/lm.html'>lm</a></code> model.</p>
+    <p><code>get_mms_comp_var_ind</code> generates the final output list for an
+individual variance type. This is a helper function to be used in the
+following functions: <code><a href='comp_lm_var.html'>comp_lm_var</a></code>, <code><a href='comp_sand_var.html'>comp_sand_var</a></code>,
+<code><a href='comp_boot_emp.html'>comp_boot_emp</a></code>, <code><a href='comp_boot_mul.html'>comp_boot_mul</a></code>,
+<code><a href='comp_boot_res.html'>comp_boot_res</a></code>.</p>
     </div>
 
-    <div class="ref-usage sourceCode"><pre class='sourceCode r'><code><span class='fu'>comp_boot_res</span><span class='op'>(</span><span class='va'>mod_fit</span>, B <span class='op'>=</span> <span class='fl'>100</span><span class='op'>)</span></code></pre></div>
+    <div class="ref-usage sourceCode"><pre class='sourceCode r'><code><span class='fu'>get_mms_comp_var_ind</span><span class='op'>(</span>
+  <span class='va'>var_type_abb</span>,
+  summary_tbl <span class='op'>=</span> <span class='cn'>NULL</span>,
+  cov_mat <span class='op'>=</span> <span class='cn'>NULL</span>,
+  B <span class='op'>=</span> <span class='cn'>NULL</span>,
+  m <span class='op'>=</span> <span class='cn'>NULL</span>,
+  n <span class='op'>=</span> <span class='cn'>NULL</span>,
+  weights_type <span class='op'>=</span> <span class='cn'>NULL</span>,
+  boot_out <span class='op'>=</span> <span class='cn'>NULL</span>
+<span class='op'>)</span></code></pre></div>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>mod_fit</th>
-      <td><p>An object of class <code><a href='https://rdrr.io/r/stats/lm.html'>lm</a></code> to fit on the data.
-This object should contain the formula and the data.</p></td>
+      <th>var_type_abb</th>
+      <td><p>(character) : The abbreviation used to classify the type
+of variance. The choice is one of the following
+<code>"lm", "sand", "emp", "sub", "res", "mul"</code>.</p></td>
+    </tr>
+    <tr>
+      <th>summary_tbl</th>
+      <td><p>(tibble) : The summary table of standard errors for the
+type of variance.</p></td>
+    </tr>
+    <tr>
+      <th>cov_mat</th>
+      <td><p>(matrix) : The covariance matrix for the type of variance.</p></td>
     </tr>
     <tr>
       <th>B</th>
-      <td><p>Bootstrap repetitions or number of bootstrap samples to be drawn.</p></td>
+      <td><p>(integer) : The number of bootstrap replications.</p></td>
+    </tr>
+    <tr>
+      <th>m</th>
+      <td><p>(integer) : The number of observations to be sampled with or without
+replacement from the dataset for each bootstrap repetition.</p></td>
+    </tr>
+    <tr>
+      <th>n</th>
+      <td><p>(integer) : The number of observations from the original modeling
+dataset.</p></td>
+    </tr>
+    <tr>
+      <th>weights_type</th>
+      <td><p>: The type of multiplier bootstrap weights to generate.
+Based on the <code>weighttype</code> option in the Stata <code>boottest</code> package,
+this can only take the following five prespecified values
+<code>"rademacher", "mammen", "webb", "std_gaussian", "gamma"</code>.
+For more details see the documentation for
+<code><a href='comp_boot_mul_wgt.html'>comp_boot_mul_wgt</a></code>. The default value is "rademacher".</p></td>
+    </tr>
+    <tr>
+      <th>boot_out</th>
+      <td><p>(tibble) : A tibble of the boostrap replication datasets
+used in <code><a href='comp_boot_mul.html'>comp_boot_mul</a></code>, <code><a href='comp_boot_res.html'>comp_boot_res</a></code>. In all
+other variance types this should be set to <code>NULL</code>.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A list containing the following elements.
-<code>var_type</code>: The type of estimator for the variance of the coefficients
-estimates. An abbreviated string representing the
-type of the estimator of the variance  (<code>var_type_abb</code>).
-<code>var_summary</code>: A tibble containing the summary statistics for the model:
-terms (<code>term</code>), standard errors (<code>std.error</code>),
-statistics (<code>statistic</code>), p-values (<code>p.values</code>). The format
-of the tibble is exactly identical to the one generated by
-<code><a href='https://generics.r-lib.org/reference/tidy.html'>tidy</a></code>, but the standard errors and p-values are computed
-via the bootstrap.
-<code>var_assumptions</code>: The assumptions under which the estimator of the
-variance is consistent.
-<code>cov_mat</code>: The covariance matrix of the coefficients estimates.
-<code>boot_out</code>: A tibble of the model's coefficients estimated (<code>term</code> and
-<code>estimate</code>) on the bootstrapped datasets,
-the size of the original dataset (<code>n</code>), and the number of the
-bootstrap repetition (<code>b</code>). In case of empirical bootstrap, it will
-also contain the size of each bootstrapped dataset (<code>m</code>).</p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+    <p>(list) : A list containing essential computed variance output for the
+type of variance specified. The computed parameter types are the common
+output for the following functions: <code><a href='comp_lm_var.html'>comp_lm_var</a></code>,
+<code><a href='comp_sand_var.html'>comp_sand_var</a></code>, <code><a href='comp_boot_emp.html'>comp_boot_emp</a></code>,
+<code><a href='comp_boot_mul.html'>comp_boot_mul</a></code>, <code><a href='comp_boot_res.html'>comp_boot_res</a></code>.</p>
 
-    <p>The residual bootstrap consists of fitting the chosen statistical
-model (<code>mod_fit</code>) <code>B</code> times. Each of the <code>B</code> datasets
-consists of the original independent variables and of dependent variable
-given by the sum of the estimates of the original model and a
-bootstrap versions of the residuals.</p>
-
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <div class="ref-examples sourceCode"><pre class='sourceCode r'><code><span class='r-in'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span>
-<span class='r-in'><span class='co'># Obtain estimates of the coefficients on bootstrapped versions of the dataset</span></span>
-<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>35542</span><span class='op'>)</span></span>
-<span class='r-in'><span class='va'>n</span> <span class='op'>&lt;-</span> <span class='fl'>1e3</span></span>
-<span class='r-in'><span class='va'>X</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span></span>
-<span class='r-in'><span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fl'>2</span> <span class='op'>+</span> <span class='va'>X</span> <span class='op'>*</span> <span class='fl'>1</span> <span class='op'>+</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span></span>
-<span class='r-in'><span class='va'>lm_fit</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>y</span> <span class='op'>~</span> <span class='va'>X</span><span class='op'>)</span></span>
-<span class='r-in'><span class='va'>out</span> <span class='op'>&lt;-</span> <span class='fu'>comp_boot_res</span><span class='op'>(</span><span class='va'>lm_fit</span>, B <span class='op'>=</span> <span class='fl'>100</span><span class='op'>)</span></span>
-<span class='r-in'></span>
-<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>out</span><span class='op'>)</span></span>
-<span class='r-in'><span class='op'>}</span></span>
-</code></pre></div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

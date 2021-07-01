@@ -64,9 +64,6 @@
 
 
 
-<!-- dependencies from examples -->
-
-
   
 
   
@@ -89,7 +86,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">maars</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.0</span>
       </span>
     </div>
 
@@ -97,7 +94,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
+    <span class="fa fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -164,7 +161,7 @@
     <p><code>fit_reg</code> fits an OLS or GLM on the input dataset.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>fit_reg</span><span class='op'>(</span><span class='va'>mod_fit</span>, <span class='va'>data</span>, weights <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <div class="ref-usage sourceCode"><pre class='sourceCode r'><code><span class='fu'>fit_reg</span><span class='op'>(</span><span class='va'>mod_fit</span>, <span class='va'>data</span>, weights <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></code></pre></div>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -200,37 +197,37 @@ fitted on <code>data</code>. The user can choose to fit a weighted
 regression using the argument <code>weights</code>.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>457468</span><span class='op'>)</span>
-<span class='co'># Estimate ols from a bootstraped dataset</span>
-<span class='va'>n</span> <span class='op'>&lt;-</span> <span class='fl'>1e3</span>
-<span class='va'>X</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>
-<span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fl'>2</span> <span class='op'>+</span> <span class='va'>X</span> <span class='op'>*</span> <span class='fl'>1</span> <span class='op'>+</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>
-<span class='va'>lm_fit</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>y</span> <span class='op'>~</span> <span class='va'>X</span><span class='op'>)</span>
-<span class='va'>boot</span> <span class='op'>&lt;-</span> <span class='fu'><a href='comp_boot_emp_samples.html'>comp_boot_emp_samples</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/model.frame.html'>model.frame</a></span><span class='op'>(</span><span class='va'>lm_fit</span><span class='op'>)</span><span class='op'>)</span><span class='op'>$</span><span class='va'>data</span><span class='op'>[[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>]</span>
-<span class='va'>mod</span> <span class='op'>&lt;-</span> <span class='fu'>fit_reg</span><span class='op'>(</span><span class='va'>lm_fit</span>, <span class='va'>boot</span><span class='op'>)</span>
-
-<span class='co'># Display the output</span>
-<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>mod</span><span class='op'>)</span>
-
-<span class='co'>#' # Estimate OLS from a dataset with weights</span>
-<span class='va'>n</span> <span class='op'>&lt;-</span> <span class='fl'>1e3</span>
-<span class='va'>X</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>
-<span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fl'>2</span> <span class='op'>+</span> <span class='va'>X</span> <span class='op'>*</span> <span class='fl'>1</span> <span class='op'>+</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>
-<span class='va'>mod_fit</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>y</span> <span class='op'>~</span> <span class='va'>X</span><span class='op'>)</span>
-
-<span class='co'># fit weighted regression</span>
-<span class='va'>reg_df</span> <span class='op'>&lt;-</span> <span class='fu'>tibble</span><span class='fu'>::</span><span class='fu'><a href='https://tibble.tidyverse.org/reference/tibble.html'>tibble</a></span><span class='op'>(</span>y <span class='op'>=</span> <span class='va'>y</span>, X <span class='op'>=</span> <span class='va'>X</span>, weights <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>X</span><span class='op'>)</span><span class='op'>)</span>
-<span class='va'>mod</span> <span class='op'>&lt;-</span> <span class='fu'>fit_reg</span><span class='op'>(</span><span class='va'>mod_fit</span>, <span class='va'>reg_df</span>, <span class='st'>"weights"</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>mod</span><span class='op'>)</span>
-
-<span class='co'># fit unweighted regression</span>
-<span class='va'>mod</span> <span class='op'>&lt;-</span> <span class='fu'>fit_reg</span><span class='op'>(</span><span class='va'>mod_fit</span>, <span class='va'>reg_df</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>mod</span><span class='op'>)</span>
-<span class='co'># compare this output with the output from lm</span>
-<span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>y</span> <span class='op'>~</span> <span class='va'>X</span>, <span class='va'>reg_df</span><span class='op'>)</span><span class='op'>)</span>
-<span class='op'>}</span>
-</div></pre>
+    <div class="ref-examples sourceCode"><pre class='sourceCode r'><code><span class='r-in'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>457468</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'># Estimate ols from a bootstraped dataset</span></span>
+<span class='r-in'><span class='va'>n</span> <span class='op'>&lt;-</span> <span class='fl'>1e3</span></span>
+<span class='r-in'><span class='va'>X</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fl'>2</span> <span class='op'>+</span> <span class='va'>X</span> <span class='op'>*</span> <span class='fl'>1</span> <span class='op'>+</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>lm_fit</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>y</span> <span class='op'>~</span> <span class='va'>X</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>boot</span> <span class='op'>&lt;-</span> <span class='fu'><a href='comp_boot_emp_samples.html'>comp_boot_emp_samples</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/model.frame.html'>model.frame</a></span><span class='op'>(</span><span class='va'>lm_fit</span><span class='op'>)</span><span class='op'>)</span><span class='op'>$</span><span class='va'>data</span><span class='op'>[[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>]</span></span>
+<span class='r-in'><span class='va'>mod</span> <span class='op'>&lt;-</span> <span class='fu'>fit_reg</span><span class='op'>(</span><span class='va'>lm_fit</span>, <span class='va'>boot</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Display the output</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>mod</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>#' # Estimate OLS from a dataset with weights</span></span>
+<span class='r-in'><span class='va'>n</span> <span class='op'>&lt;-</span> <span class='fl'>1e3</span></span>
+<span class='r-in'><span class='va'>X</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fl'>2</span> <span class='op'>+</span> <span class='va'>X</span> <span class='op'>*</span> <span class='fl'>1</span> <span class='op'>+</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>mod_fit</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>y</span> <span class='op'>~</span> <span class='va'>X</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># fit weighted regression</span></span>
+<span class='r-in'><span class='va'>reg_df</span> <span class='op'>&lt;-</span> <span class='fu'>tibble</span><span class='fu'>::</span><span class='fu'><a href='https://tibble.tidyverse.org/reference/tibble.html'>tibble</a></span><span class='op'>(</span>y <span class='op'>=</span> <span class='va'>y</span>, X <span class='op'>=</span> <span class='va'>X</span>, weights <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>X</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>mod</span> <span class='op'>&lt;-</span> <span class='fu'>fit_reg</span><span class='op'>(</span><span class='va'>mod_fit</span>, <span class='va'>reg_df</span>, <span class='st'>"weights"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>mod</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># fit unweighted regression</span></span>
+<span class='r-in'><span class='va'>mod</span> <span class='op'>&lt;-</span> <span class='fu'>fit_reg</span><span class='op'>(</span><span class='va'>mod_fit</span>, <span class='va'>reg_df</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>mod</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'># compare this output with the output from lm</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/stats/coef.html'>coef</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>y</span> <span class='op'>~</span> <span class='va'>X</span>, <span class='va'>reg_df</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='op'>}</span></span>
+</code></pre></div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

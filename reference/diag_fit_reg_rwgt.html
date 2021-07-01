@@ -68,9 +68,6 @@ configurations of the reweighting of the reweighting of each regressor." />
 
 
 
-<!-- dependencies from examples -->
-
-
   
 
   
@@ -93,7 +90,7 @@ configurations of the reweighting of the reweighting of each regressor." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">maars</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.0</span>
       </span>
     </div>
 
@@ -101,7 +98,7 @@ configurations of the reweighting of the reweighting of each regressor." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
+    <span class="fa fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -171,7 +168,7 @@ multiple regressors. The function estimates a set of coefficients for several
 configurations of the reweighting of the reweighting of each regressor.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>diag_fit_reg_rwgt</span><span class='op'>(</span>
+    <div class="ref-usage sourceCode"><pre class='sourceCode r'><code><span class='fu'>diag_fit_reg_rwgt</span><span class='op'>(</span>
   <span class='va'>mod_fit</span>,
   <span class='va'>terms_to_rwgt</span>,
   B <span class='op'>=</span> <span class='fl'>100</span>,
@@ -179,7 +176,7 @@ configurations of the reweighting of the reweighting of each regressor.</p>
   grid_centers <span class='op'>=</span> <span class='cn'>NULL</span>,
   grid_method <span class='op'>=</span> <span class='st'>"quantiles"</span>,
   n_grid <span class='op'>=</span> <span class='fl'>9</span>
-<span class='op'>)</span></pre>
+<span class='op'>)</span></code></pre></div>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -247,27 +244,27 @@ Using the default parameters, the function will compute the estimates for
 a grid based on the second to first to the ninth deciles of each regressor.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>1321312</span><span class='op'>)</span>
-<span class='co'># Get OLS estimates under reweighting of all regressors with default grid</span>
-<span class='va'>n</span> <span class='op'>&lt;-</span> <span class='fl'>1e3</span>
-<span class='va'>X1</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>
-<span class='va'>X2</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>3</span><span class='op'>)</span>
-<span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fl'>2</span> <span class='op'>+</span> <span class='va'>X1</span> <span class='op'>+</span> <span class='va'>X2</span> <span class='op'>*</span> <span class='fl'>0.3</span> <span class='op'>+</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span>
-<span class='va'>reg_df</span> <span class='op'>&lt;-</span> <span class='fu'>tibble</span><span class='fu'>::</span><span class='fu'><a href='https://tibble.tidyverse.org/reference/tibble.html'>tibble</a></span><span class='op'>(</span>y <span class='op'>=</span> <span class='va'>y</span>, X1 <span class='op'>=</span> <span class='va'>X1</span>, X2 <span class='op'>=</span> <span class='va'>X2</span>, n_obs <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>X1</span><span class='op'>)</span><span class='op'>)</span>
-<span class='va'>mod_fit</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>y</span> <span class='op'>~</span> <span class='va'>X1</span> <span class='op'>+</span> <span class='va'>X2</span>, <span class='va'>reg_df</span><span class='op'>)</span>
-<span class='va'>ols_rwgt</span> <span class='op'>&lt;-</span> <span class='fu'>diag_fit_reg_rwgt</span><span class='op'>(</span><span class='va'>mod_fit</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"X1"</span>, <span class='st'>"X2"</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='co'># Display the output</span>
-<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>ols_rwgt</span><span class='op'>)</span>
-
-<span class='co'># Get OLS estimates under reweighting of all regressors by feeding grid of centers into the function</span>
-<span class='va'>ols_rwgt_grid_fixed</span> <span class='op'>&lt;-</span> <span class='fu'>diag_fit_reg_rwgt</span><span class='op'>(</span><span class='va'>mod_fit</span>, <span class='st'>"X1"</span>, grid_centers <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>X1 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='co'>#' # Display the output</span>
-<span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>ols_rwgt_grid_fixed</span><span class='op'>)</span>
-<span class='op'>}</span>
-</div></pre>
+    <div class="ref-examples sourceCode"><pre class='sourceCode r'><code><span class='r-in'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>1321312</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'># Get OLS estimates under reweighting of all regressors with default grid</span></span>
+<span class='r-in'><span class='va'>n</span> <span class='op'>&lt;-</span> <span class='fl'>1e3</span></span>
+<span class='r-in'><span class='va'>X1</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>X2</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>3</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>y</span> <span class='op'>&lt;-</span> <span class='fl'>2</span> <span class='op'>+</span> <span class='va'>X1</span> <span class='op'>+</span> <span class='va'>X2</span> <span class='op'>*</span> <span class='fl'>0.3</span> <span class='op'>+</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='va'>n</span>, <span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>reg_df</span> <span class='op'>&lt;-</span> <span class='fu'>tibble</span><span class='fu'>::</span><span class='fu'><a href='https://tibble.tidyverse.org/reference/tibble.html'>tibble</a></span><span class='op'>(</span>y <span class='op'>=</span> <span class='va'>y</span>, X1 <span class='op'>=</span> <span class='va'>X1</span>, X2 <span class='op'>=</span> <span class='va'>X2</span>, n_obs <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>X1</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>mod_fit</span> <span class='op'>&lt;-</span> <span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/lm.html'>lm</a></span><span class='op'>(</span><span class='va'>y</span> <span class='op'>~</span> <span class='va'>X1</span> <span class='op'>+</span> <span class='va'>X2</span>, <span class='va'>reg_df</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>ols_rwgt</span> <span class='op'>&lt;-</span> <span class='fu'>diag_fit_reg_rwgt</span><span class='op'>(</span><span class='va'>mod_fit</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"X1"</span>, <span class='st'>"X2"</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Display the output</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>ols_rwgt</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># Get OLS estimates under reweighting of all regressors by feeding grid of centers into the function</span></span>
+<span class='r-in'><span class='va'>ols_rwgt_grid_fixed</span> <span class='op'>&lt;-</span> <span class='fu'>diag_fit_reg_rwgt</span><span class='op'>(</span><span class='va'>mod_fit</span>, <span class='st'>"X1"</span>, grid_centers <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>X1 <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>, <span class='fl'>1</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>#' # Display the output</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/print.html'>print</a></span><span class='op'>(</span><span class='va'>ols_rwgt_grid_fixed</span><span class='op'>)</span></span>
+<span class='r-in'><span class='op'>}</span></span>
+</code></pre></div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

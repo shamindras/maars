@@ -63,7 +63,6 @@
 
 
 
-
   
 
   
@@ -86,7 +85,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">maars</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.1.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.0</span>
       </span>
     </div>
 
@@ -94,7 +93,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
+    <span class="fa fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -156,11 +155,15 @@
       <small>Source: <a href='https://github.com/shamindras/maars/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="maars-120" class="section level1">
+<h1 class="page-header" data-toc-text="1.2.0">
+<a href="#maars-120" class="anchor" aria-hidden="true"></a>maars 1.2.0</h1>
+<ul><li>Write vignette on effect of increasing <code>B</code> in (<code>n</code>-out-of-<code>n</code>) empirical / multiplier / subsampling bootstrap samples on coverage when compared to sandwich</li>
+</ul></div>
     <div id="maars-110" class="section level1">
 <h1 class="page-header" data-toc-text="1.1.0">
 <a href="#maars-110" class="anchor" aria-hidden="true"></a>maars 1.1.0</h1>
-<ul>
-<li>Change <code>Significance</code> heading in our summary output to be abbreviated to <code>Signif:</code> to be consistent with <code><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm()</a></code> output</li>
+<ul><li>Change <code>Significance</code> heading in our summary output to be abbreviated to <code>Signif:</code> to be consistent with <code><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm()</a></code> output</li>
 <li>Change column ordering for bootstrap standard errors and t-statistics rigorously</li>
 <li>Change p-value format to be <code>2</code>/<code>3</code> digits</li>
 <li>Clean <code>R/scripts_and_filters/experiments/</code> dir, remove old experiments</li>
@@ -197,13 +200,11 @@
 <li>Remove mixture of <code>%&gt;%</code> and base code, and just break pipes into variables</li>
 <li>Change all <code>attr(obj, "class") &lt;- c("obj_class_name")</code> to be of the form <code>class(obj) &lt;- "obj_class_name"</code> for consistency</li>
 <li>Change <code>dplyr::_all</code> scoped words using the superseded <code>across</code> function</li>
-</ul>
-</div>
+</ul></div>
     <div id="maars-100" class="section level1">
 <h1 class="page-header" data-toc-text="1.0.0">
 <a href="#maars-100" class="anchor" aria-hidden="true"></a>maars 1.0.0</h1>
-<ul>
-<li>Set the default <code>digits = 3</code> formatting in <code>summary.maars_lm</code> printed output</li>
+<ul><li>Set the default <code>digits = 3</code> formatting in <code>summary.maars_lm</code> printed output</li>
 <li>Move <code>summary.maars_lm</code>, <code>print.maars_lm</code>, <code>plot.maars_lm</code> methods into <code>maars-lm.R</code> file</li>
 <li>Merge <code>lm-var.R</code> code into into <code>sandwich-var.R</code> since they are both default estimators</li>
 <li>Use the <code>la_county</code> tibble directly from <code>maars</code> in our vignette</li>
@@ -226,13 +227,11 @@
 <li>Write residual bootstrap assumptions to be the same as the well specified <code><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm()</a></code> model</li>
 <li>Include <code>weights</code> type in assumptions for multiplier bootstrap</li>
 <li>Include <code>n</code> in assumptions for empirical bootstrap</li>
-</ul>
-</div>
+</ul></div>
     <div id="maars-070" class="section level1">
 <h1 class="page-header" data-toc-text="0.7.0">
 <a href="#maars-070" class="anchor" aria-hidden="true"></a>maars 0.7.0</h1>
-<ul>
-<li>Write function to create <code>maars_lm</code> object from <code>comp_var</code>
+<ul><li>Write function to create <code>maars_lm</code> object from <code>comp_var</code>
 </li>
 <li>write a <code>as.maars_lm</code> function to be run on an <code>lm</code> object</li>
 <li>write <code>confint.maars_lm</code> method</li>
@@ -245,13 +244,11 @@
 </li>
 <li>Remove the <code>MIT LICENCE</code> files</li>
 <li>We would like to thank <a href="https://www.refsmmat.com/" class="external-link">Alex Reinhart</a> for his kind assistance in various aspects of this release</li>
-</ul>
-</div>
+</ul></div>
     <div id="maars-060" class="section level1">
 <h1 class="page-header" data-toc-text="0.6.0">
 <a href="#maars-060" class="anchor" aria-hidden="true"></a>maars 0.6.0</h1>
-<ul>
-<li>update the documentation of <code>comp_var</code> and of the estimators of the variance</li>
+<ul><li>update the documentation of <code>comp_var</code> and of the estimators of the variance</li>
 <li>Adapt tests to handle the new function <code>comp_var</code>
 </li>
 <li>create a function to nicely return a string containing the assumptions behind each computation of the variance (e.g., call it <code>get_assumptions</code>)</li>
@@ -276,25 +273,21 @@
 <li>Add <code>residual</code> bootstrap to <code>comp_var</code>
 </li>
 <li>Update tests for <code>comp_var</code> for empirical bootstrap, multiplier bootstrap, residual bootstrap</li>
-</ul>
-</div>
+</ul></div>
     <div id="maars-050" class="section level1">
 <h1 class="page-header" data-toc-text="0.5.0">
 <a href="#maars-050" class="anchor" aria-hidden="true"></a>maars 0.5.0</h1>
-<ul>
-<li>Rename function names to be more consistent e.g. remove <code>qr</code> from <code>empirical</code> bootstrap names</li>
+<ul><li>Rename function names to be more consistent e.g. remove <code>qr</code> from <code>empirical</code> bootstrap names</li>
 <li>Ensure renamed function names are also correctly changed in the corresponding test files</li>
 <li>Split our <code>pkgdown</code> references into suitable categories <a href="https://usethis.r-lib.org/reference/index.html" class="external-link">like usethis</a>, here is <a href="https://github.com/r-lib/usethis/blob/45d0fef414fd69ac7ed468d196e93db7f2008e27/_pkgdown.yml" class="external-link">an example</a>
 </li>
 <li>Change specific functions to be private by removing <code>#' <a href='https://github.com/export'>@export</a></code> in <code>roxygen2</code> and replacing it with <code>#' <a href='https://github.com/keywords'>@keywords</a> internal</code>
 </li>
-</ul>
-</div>
+</ul></div>
     <div id="maars-040" class="section level1">
 <h1 class="page-header" data-toc-text="0.4.0">
 <a href="#maars-040" class="anchor" aria-hidden="true"></a>maars 0.4.0</h1>
-<ul>
-<li>Include <code>.gitattributes</code> file</li>
+<ul><li>Include <code>.gitattributes</code> file</li>
 <li>We need to <code>set.seed</code> in all our vignette chunks. This is for reproducibility, but to also avoid merge conflicts every time we rebuild the package using <code>make build_package</code>
 </li>
 <li>
@@ -343,13 +336,11 @@
 </li>
 <li>Update credits in <code>Licence</code> and <a href="https://github.com/shamindras/maars/blob/main/LICENSE.md" class="external-link">License.md</a>
 </li>
-</ul>
-</div>
+</ul></div>
     <div id="maars-030" class="section level1">
 <h1 class="page-header" data-toc-text="0.3.0">
 <a href="#maars-030" class="anchor" aria-hidden="true"></a>maars 0.3.0</h1>
-<ul>
-<li>Implement an efficient <code>multiplier</code> bootstrap for <code>lm</code> standard errors</li>
+<ul><li>Implement an efficient <code>multiplier</code> bootstrap for <code>lm</code> standard errors</li>
 <li>Implement the <code>empirical</code> bootstrap for <code>lm</code> standard errors</li>
 <li>Implement the <code>empirical</code> bootstrap for <code>glm</code> standard errors</li>
 <li>Change the input <code>lm_fit</code> to be <code>mod_object</code> in all of our functions</li>
@@ -358,15 +349,12 @@
 <li>Add input validation for our bootstrap and variance estimation functions e.g. <code>B</code> must be a positive integer</li>
 <li>Set a seed for the unit tests</li>
 <li>Update <code>Readme.Rmd</code> to add installation instructions and link to official package</li>
-</ul>
-</div>
+</ul></div>
     <div id="maars-020" class="section level1">
 <h1 class="page-header" data-toc-text="0.2.0">
 <a href="#maars-020" class="anchor" aria-hidden="true"></a>maars 0.2.0</h1>
-<ul>
-<li>Create the <code>comp_sandwich_qr_var</code> function with documentation, tests, benchmarking</li>
-</ul>
-</div>
+<ul><li>Create the <code>comp_sandwich_qr_var</code> function with documentation, tests, benchmarking</li>
+</ul></div>
     <div id="maars-010" class="section level1">
 <h1 class="page-header" data-toc-text="0.1.0">
 <a href="#maars-010" class="anchor" aria-hidden="true"></a>maars 0.1.0</h1>
@@ -374,10 +362,8 @@
     <div id="maars-0009000" class="section level1">
 <h1 class="page-header" data-toc-text="0.0.0.9000">
 <a href="#maars-0009000" class="anchor" aria-hidden="true"></a>maars 0.0.0.9000</h1>
-<ul>
-<li>Added a <code>NEWS.md</code> file to track changes to the package.</li>
-</ul>
-</div>
+<ul><li>Added a <code>NEWS.md</code> file to track changes to the package.</li>
+</ul></div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
