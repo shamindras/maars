@@ -18,6 +18,8 @@ navbar:
     menu:
     - text: Reproducing Buja et. al. Tables
       href: articles/se-la-county-data.html
+    - text: Hubbard et. al simulation
+      href: articles/hubbard-gee-simulation.html
   - text: News
     menu:
     - text: "Changelog"
