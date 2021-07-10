@@ -32,12 +32,15 @@ reference:
     contents:
     - starts_with("comp_", internal = FALSE)
     - starts_with("fit_", internal = FALSE)
-    - starts_with("get_", internal = FALSE)
+    - get_assumptions
+    - get_confint
+    - get_summary
   - title: Diagnostic Utilities
     desc: >
       Utilities for performing **model fit diagnostics** under model misspecification
     contents:
     - starts_with("diag_", internal = FALSE)
+    - get_plot
   - title: Print, summarize, and plot data
     desc: >
       **Print, summarize, and plot** `maars` objects
