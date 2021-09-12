@@ -5,6 +5,8 @@
 coverage](https://codecov.io/gh/shamindras/maars/branch/master/graph/badge.svg)](https://codecov.io/gh/shamindras/maars?branch=master)
 [![R build
 status](https://github.com/shamindras/maars/workflows/R-CMD-check/badge.svg)](https://github.com/shamindras/maars/actions)
+[![MIT
+License](https://img.shields.io/apm/l/atomic-design-ui.svg?)](https://github.com/tterb/atomic-design-ui/blob/master/LICENSEs)
 <!-- badges: end -->
 
 # `maars` - an `R` implementation of Models As Approximations
@@ -40,6 +42,20 @@ Please note that the `maars` project is released with a [Contributor
 Code of
 Conduct](https://contributor-covenant.org/version/2/0/CODE_OF_CONDUCT.html).
 By contributing to this project, you agree to abide by its terms.
+
+## Related Packages
+
+While `maars` has it’s own approach and API for performing valid
+inference under model misspecification for OLS, it may not meet your
+particular needs. Here is a listing of other leading `R` packages in
+this field which you may want to try, with links to their project pages
+(listed alphabetically):
+
+-   [`{car}`](https://cran.r-project.org/web/packages/car/index.html)
+-   [`{clubSandwich}`](https://github.com/jepusto/clubSandwich)
+-   [`{estimatr}`](https://declaredesign.org/r/estimatr/articles/estimatr-in-the-tidyverse.html)
+-   [`{lmtest}`](https://cran.r-project.org/web/packages/lmtest/index.html)
+-   [`{sandwich}`](http://sandwich.r-forge.r-project.org/)
 
 ## Credits
 

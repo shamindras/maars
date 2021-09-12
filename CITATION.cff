@@ -1,0 +1,19 @@
+# YAML 1.2
+---
+authors: 
+  -
+    family-names: Fogliato
+    given-names: Riccardo
+  -
+    family-names: Shrotriya
+    given-names: Shamindra
+  -
+    family-names: Kuchibhotla
+    given-names: "Arun Kumar"
+cff-version: "1.1.0"
+license: MIT
+message: "If you use this software, please cite it using these metadata."
+repository-code: "https://github.com/shamindras/maars"
+title: "maars - an R implementation of Models As Approximations"
+version: "1.2.0"
+...

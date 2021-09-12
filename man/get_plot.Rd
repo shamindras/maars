@@ -41,4 +41,3 @@ mms_fit <- lm_fit \%>\% comp_var(
 plot(mms_fit)
 }
 }
-\keyword{internal}

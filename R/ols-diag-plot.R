@@ -6,8 +6,6 @@
 #' @return A list of standard diagnostic plots for OLS in the
 #'   \code{link[ggplot2]} package style.
 #'
-#' @keywords internal
-#'
 #' @examples
 #' \dontrun{
 #' set.seed(1243434)
