@@ -60,6 +60,9 @@
 <li>
       <a href="../articles/se-la-county-data.html">Reproducing Buja et. al. Tables</a>
     </li>
+    <li>
+      <a href="../articles/hubbard-gee-simulation.html">Hubbard et. al simulation</a>
+    </li>
   </ul>
 </li>
 <li class="dropdown">
@@ -199,7 +202,7 @@ estimate
 (Intercept)
 </td>
 <td style="text-align:center;">
--50.01
+-50
 </td>
 </tr>
 <tr>
@@ -207,7 +210,7 @@ estimate
 x
 </td>
 <td style="text-align:center;">
-30.00
+30
 </td>
 </tr>
 </tbody>
@@ -327,7 +330,7 @@ B
 <p>We are finally ready to run the simulations with a focus on getting the coverage and average width of confidence intervals average as a function of <span class="math inline">\(B\)</span>. The basic hypothesis driving the simulations is that the values of <span class="math inline">\(B\)</span> increase, we get better coverage and smaller width, but also, more importantly, we get tighter confidence bands as the number of replications increases.</p>
 <p>First, we do the most computationally intensive step. Since our grid of parameters <code>grid_params</code> consists of a single tibble, we can utilize the power of the <code>purrr</code> package to map our custom confidence interval function we have previously created. We do this by simply mapping it across each row of our grid of parameters. Since the following computation is quite computationally intensive, we have previously run it on a cluster and stored the data. Here, we load the data in the background just for plotting.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/pkg/future/man/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="va">multicore</span>, workers <span class="op">=</span> <span class="fl">4</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://future.futureverse.org/reference/plan.html" class="external-link">plan</a></span><span class="op">(</span><span class="va">multicore</span>, workers <span class="op">=</span> <span class="fl">4</span><span class="op">)</span>
 <span class="va">confint_replications</span> <span class="op">&lt;-</span> <span class="va">grid_params</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span>
   <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>out_confint <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/furrr/man/future_map2.html" class="external-link">future_pmap</a></span><span class="op">(</span>
     .l <span class="op">=</span> <span class="va">.</span>,
