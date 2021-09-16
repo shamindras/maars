@@ -29,14 +29,38 @@ as follows:
 devtools::install_github("shamindras/maars")
 ```
 
-More detailed instructions and user guides can be found at
-the [official package website](https://shamindras.github.io/maars/). The source
-code for the `maars` package can be 
-[found on github](https://github.com/shamindras/maars).
+More detailed instructions and user guides can be found at the [official package
+website](https://shamindras.github.io/maars/). The source code for the `maars`
+package can be [found on github](https://github.com/shamindras/maars).
+
+## Citation
+
+If you are in `R` you can simply run the following command to get the `BibTeX`
+citation for `maars`:
+
+```{r, eval=FALSE}
+citation("maars")
+```
+
+Alternatively, please use the following `BibTeX` citation:
+
+```{bibtex, eval=FALSE}
+@misc{fogliato2021maars,
+  title  = {maars: Tidy Inference under the 'Models as Approximations' Framework in R},
+  author = {Riccardo Fogliato and Shamindra Shrotriya and Arun Kumar Kuchibhotla},
+  year   = {2021},
+  eprint = {arXiv:2106.11188},
+  url    = {https://shamindras.github.io/maars/},
+  note   = {R package version 0.3.0}
+}
+```
+
 
 ## Code of Conduct
 
-Please note that the `maars` project is released with a [Contributor Code of Conduct](https://contributor-covenant.org/version/2/0/CODE_OF_CONDUCT.html). By contributing to this project, you agree to abide by its terms.
+Please note that the `maars` project is released with a [Contributor Code of
+Conduct](https://contributor-covenant.org/version/2/0/CODE_OF_CONDUCT.html). By
+contributing to this project, you agree to abide by its terms.
 
 ## Related Packages
 
