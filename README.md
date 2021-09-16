@@ -36,6 +36,28 @@ package website](https://shamindras.github.io/maars/). The source code
 for the `maars` package can be [found on
 github](https://github.com/shamindras/maars).
 
+## Citation
+
+If you are in `R` you can simply run the following command to get the
+`BibTeX` citation for `maars`:
+
+``` r
+citation("maars")
+```
+
+Alternatively, please use the following `BibTeX` citation:
+
+``` bibtex
+@misc{fogliato2021maars,
+  title  = {maars: Tidy Inference under the 'Models as Approximations' Framework in R},
+  author = {Riccardo Fogliato and Shamindra Shrotriya and Arun Kumar Kuchibhotla},
+  year   = {2021},
+  eprint = {arXiv:2106.11188},
+  url    = {https://shamindras.github.io/maars/},
+  note   = {R package version 0.3.0}
+}
+```
+
 ## Code of Conduct
 
 Please note that the `maars` project is released with a [Contributor
