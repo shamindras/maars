@@ -1,3 +1,5 @@
+# maars 1.3.0
+
 # maars 1.2.0
 
 - Write vignette on effect of increasing `B` in (`n`-out-of-`n`) empirical /
