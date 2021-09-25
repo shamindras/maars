@@ -77,7 +77,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">maars</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.3.0</span>
       </span>
     </div>
 
@@ -150,222 +150,199 @@
       <small>Source: <a href='https://github.com/shamindras/maars/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="maars-130" class="section level1">
+<h1 class="page-header" data-toc-text="1.3.0">
+<a href="#maars-130" class="anchor"></a>maars 1.3.0</h1>
+<ul>
+<li>Improve citation of <code>maars</code> in <code>README.md</code> and <code>inst/CITATION</code>.</li>
+<li>Thanks to <a href="https://github.com/bwiernik">@bwiernik</a> for flagging and testing utf8 title printing issues.</li>
+</ul>
+</div>
     <div id="maars-120" class="section level1">
 <h1 class="page-header" data-toc-text="1.2.0">
 <a href="#maars-120" class="anchor"></a>maars 1.2.0</h1>
 <ul>
-<li>Write vignette on effect of increasing <code>B</code> in (<code>n</code>-out-of-<code>n</code>) empirical / multiplier / subsampling bootstrap samples on coverage when compared to sandwich</li>
+<li>Write vignette on effect of increasing <code>B</code> in (<code>n</code>-out-of-<code>n</code>) empirical / multiplier / subsampling bootstrap samples on coverage when compared to sandwich.</li>
 </ul>
 </div>
     <div id="maars-110" class="section level1">
 <h1 class="page-header" data-toc-text="1.1.0">
 <a href="#maars-110" class="anchor"></a>maars 1.1.0</h1>
 <ul>
-<li>Change <code>Significance</code> heading in our summary output to be abbreviated to <code>Signif:</code> to be consistent with <code><a href="https://rdrr.io/r/stats/lm.html">lm()</a></code> output</li>
-<li>Change column ordering for bootstrap standard errors and t-statistics rigorously</li>
+<li>Change <code>Significance</code> heading in our summary output to be abbreviated to <code>Signif:</code> to be consistent with <code><a href="https://rdrr.io/r/stats/lm.html">lm()</a></code> output.</li>
+<li>Change column ordering for bootstrap standard errors and t-statistics rigorously.</li>
 <li>Change p-value format to be <code>2</code>/<code>3</code> digits</li>
-<li>Clean <code>R/scripts_and_filters/experiments/</code> dir, remove old experiments</li>
-<li>Clean up script that gets metadata of <code>maars</code> function <strong>metadata</strong> from <code>pkgdown</code>
-</li>
-<li>Remove all <code>base::</code> prefix use e.g. <code><a href="https://rdrr.io/r/base/function.html">base::return()</a></code>
-</li>
-<li>Change <code><a href="https://dplyr.tidyverse.org/reference/summarise.html">dplyr::summarise</a></code> to <code><a href="https://dplyr.tidyverse.org/reference/summarise.html">dplyr::summarize</a></code> for spelling consistency</li>
-<li>Ensure all <code>stats</code> functions use the <code>stats::</code> prefix</li>
-<li>Fix <code>.data</code> related <code>rlang</code> issues</li>
-<li>We shouldn’t name a variable <code>df</code> since this conflicts with <code><a href="https://rdrr.io/r/stats/Fdist.html">stats::df</a></code>. We should change this after the demo</li>
-<li>Clean vignette. Leave the plot in the vignette (to be moved elsewhere)</li>
-<li>Updated the corrected <code>Boston Housing</code> Dataset with citations. Add unit tests for the corrections</li>
-<li>Clean up spelling notes</li>
-<li>Change multiplier weights code to use <code>switch</code> based approach</li>
-<li>Switch to <code>model.matrix</code> in sandwich variance and use residuals in the computation</li>
-<li>Update <code>maars</code> to have a package level doc. Add <code>@importFrom</code> statements</li>
-<li>Fix <code>NOTE</code> by adding <code>.gitkeep</code> in vignettes to <code>.RBuildignore</code>
-</li>
+<li>Clean <code>R/scripts_and_filters/experiments/</code> dir, remove old experiments.</li>
+<li>Clean up script that gets metadata of <code>maars</code> function <strong>metadata</strong> from <code>pkgdown</code>.</li>
+<li>Remove all <code>base::</code> prefix use e.g. <code><a href="https://rdrr.io/r/base/function.html">base::return()</a></code>.</li>
+<li>Change <code><a href="https://dplyr.tidyverse.org/reference/summarise.html">dplyr::summarise</a></code> to <code><a href="https://dplyr.tidyverse.org/reference/summarise.html">dplyr::summarize</a></code> for spelling consistency.</li>
+<li>Ensure all <code>stats</code> functions use the <code>stats::</code> prefix.</li>
+<li>Fix <code>.data</code> related <code>rlang</code> issues.</li>
+<li>We shouldn’t name a variable <code>df</code> since this conflicts with <code><a href="https://rdrr.io/r/stats/Fdist.html">stats::df</a></code>. We should change this after the demo.</li>
+<li>Clean vignette. Leave the plot in the vignette (to be moved elsewhere).</li>
+<li>Updated the corrected <code>Boston Housing</code> Dataset with citations. Add unit tests for the corrections.</li>
+<li>Clean up spelling notes.</li>
+<li>Change multiplier weights code to use <code>switch</code> based approach.</li>
+<li>Switch to <code>model.matrix</code> in sandwich variance and use residuals in the computation.</li>
+<li>Update <code>maars</code> to have a package level doc. Add <code>@importFrom</code> statements.</li>
+<li>Fix <code>NOTE</code> by adding <code>.gitkeep</code> in vignettes to <code>.RBuildignore</code>.</li>
 <li>Fix <code>NOTE</code> by DESCRIPTION meta-information by making it a couple of sentences. This is a placeholder and we should refine it before official <code>CRAN</code> release.</li>
-<li>Consolidate <code>boston-housing.R</code> and <code>la-county.R</code> files into a single <code>data-maars.R</code> files. Consolidate <code>test</code> files accordingly</li>
-<li>Make some minor changes to the vignette</li>
-<li>Add <code>styling</code> to our code using the <code>Makefile</code> and <code><a href="https://styler.r-lib.org/reference/style_dir.html">styler::style_dir(here::here('R'))</a></code> and for <code>tests</code>
-</li>
-<li>Have a <code>make style</code> which does both <code>R</code> and <code>tests</code>
-</li>
-<li>Make sure styling does not include vignettes</li>
-<li>Ensure that <code>url_check()</code> are all resolved for <code>CRAN</code>
-</li>
-<li>Remove DOI entries from <code>inst/REFERENCES.bib</code> since they can cause <code>CRAN</code> url issues</li>
+<li>Consolidate <code>boston-housing.R</code> and <code>la-county.R</code> files into a single <code>data-maars.R</code> files. Consolidate <code>test</code> files accordingly.</li>
+<li>Make some minor changes to the vignette.</li>
+<li>Add <code>styling</code> to our code using the <code>Makefile</code> and <code><a href="https://styler.r-lib.org/reference/style_dir.html">styler::style_dir(here::here('R'))</a></code> and for <code>tests</code>.</li>
+<li>Have a <code>make style</code> which does both <code>R</code> and <code>tests</code>.</li>
+<li>Make sure styling does not include vignettes.</li>
+<li>Ensure that <code>url_check()</code> are all resolved for <code>CRAN</code>.</li>
+<li>Remove DOI entries from <code>inst/REFERENCES.bib</code> since they can cause <code>CRAN</code> url issues.</li>
 <li>Add search functionality to <code>pkgdown</code> our site.</li>
-<li>Use MIT License</li>
-<li>Fix the no visible binding for global variable errors in our code</li>
-<li>Remove mixture of <code><a href="../reference/%&gt;%.html">%&gt;%</a></code> and base code, and just break pipes into variables</li>
-<li>Change all <code>attr(obj, "class") &lt;- c("obj_class_name")</code> to be of the form <code>class(obj) &lt;- "obj_class_name"</code> for consistency</li>
-<li>Change <code>dplyr::_all</code> scoped words using the superseded <code>across</code> function</li>
+<li>Use MIT License.</li>
+<li>Fix the no visible binding for global variable errors in our code.</li>
+<li>Remove mixture of <code><a href="../reference/%&gt;%.html">%&gt;%</a></code> and base code, and just break pipes into variables.</li>
+<li>Change all <code>attr(obj, "class") &lt;- c("obj_class_name")</code> to be of the form <code>class(obj) &lt;- "obj_class_name"</code> for consistency.</li>
+<li>Change <code>dplyr::_all</code> scoped words using the superseded <code>across</code> function.</li>
 </ul>
 </div>
     <div id="maars-100" class="section level1">
 <h1 class="page-header" data-toc-text="1.0.0">
 <a href="#maars-100" class="anchor"></a>maars 1.0.0</h1>
 <ul>
-<li>Set the default <code>digits = 3</code> formatting in <code>summary.maars_lm</code> printed output</li>
-<li>Move <code>summary.maars_lm</code>, <code>print.maars_lm</code>, <code>plot.maars_lm</code> methods into <code>maars-lm.R</code> file</li>
-<li>Merge <code>lm-var.R</code> code into into <code>sandwich-var.R</code> since they are both default estimators</li>
-<li>Use the <code>la_county</code> tibble directly from <code>maars</code> in our vignette</li>
-<li>Re-write vignette to produce Table 1 from Buja et. al. 1 to include new <code><a href="../reference/get_summary.html">get_summary()</a></code> function</li>
-<li>Write <code><a href="../reference/get_plot.html">get_plot()</a></code>, <code><a href="../reference/get_summary.html">get_summary()</a></code>, <code><a href="../reference/summary.maars_lm.html">summary.maars_lm()</a></code>, and <code><a href="../reference/get_confint.html">get_confint()</a></code>, <code><a href="../reference/confint.maars_lm.html">confint.maars_lm()</a></code> functionality for <code>maars_lm()</code> objects</li>
-<li>Change the statistic based on the F-distribution to one based on the Chi-square</li>
-<li>Write <code>plots</code> function with default options and wrap around <code><a href="../reference/get_plot.html">get_plot()</a></code>
-</li>
-<li>Add more Cook’s distance plots similar to <code><a href="https://rdrr.io/r/stats/lm.html">lm()</a></code> output</li>
-<li>Add confidence interval plots to the <code>maars_lm</code> plot output</li>
-<li>Print assumptions i.e. for all run <code>maars</code> standard errors. So <code>sand</code>, <code>well_specified</code> assumptions are printed by default, and other standard errors</li>
-<li>Add assumption string for <code>comp_lm_var</code> using <code><a href="https://glue.tidyverse.org/reference/glue.html">glue::glue()</a></code> and improve formatting</li>
-<li>Amend <code><a href="../reference/get_confint.html">get_confint()</a></code> to return tidy tibble output</li>
-<li>Just show <code>term</code>, <code>conf.low</code>, <code>conf.high</code> for <code><a href="https://rdrr.io/r/stats/confint.html">confint(maars_lm)</a></code>. Fix it to be the same as <code><a href="https://rdrr.io/r/stats/confint.html">confint(lm)</a></code>
-</li>
-<li>Add <code>la_county</code> <code>tibble</code> to our package</li>
-<li>Change <code>README.Rmd</code> to use <code>devtools</code> rather than <code>remotes</code> as the preferred package installation</li>
-<li>Add <code>devtools</code> to <code>Suggests</code> in <code>DESCRIPTION</code> so that vignettes use our latest code</li>
-<li>Ensure that the <code>la_county</code> <code>tibble</code> is documented method</li>
-<li>Write residual bootstrap assumptions to be the same as the well specified <code><a href="https://rdrr.io/r/stats/lm.html">lm()</a></code> model</li>
-<li>Include <code>weights</code> type in assumptions for multiplier bootstrap</li>
-<li>Include <code>n</code> in assumptions for empirical bootstrap</li>
+<li>Set the default <code>digits = 3</code> formatting in <code>summary.maars_lm</code> printed output.</li>
+<li>Move <code>summary.maars_lm</code>, <code>print.maars_lm</code>, <code>plot.maars_lm</code> methods into <code>maars-lm.R</code> file.</li>
+<li>Merge <code>lm-var.R</code> code into into <code>sandwich-var.R</code> since they are both default estimators.</li>
+<li>Use the <code>la_county</code> tibble directly from <code>maars</code> in our vignette.</li>
+<li>Re-write vignette to produce Table 1 from Buja et. al. 1 to include new <code><a href="../reference/get_summary.html">get_summary()</a></code> function.</li>
+<li>Write <code><a href="../reference/get_plot.html">get_plot()</a></code>, <code><a href="../reference/get_summary.html">get_summary()</a></code>, <code><a href="../reference/summary.maars_lm.html">summary.maars_lm()</a></code>, and <code><a href="../reference/get_confint.html">get_confint()</a></code>, <code><a href="../reference/confint.maars_lm.html">confint.maars_lm()</a></code> functionality for <code>maars_lm()</code> objects.</li>
+<li>Change the statistic based on the F-distribution to one based on the Chi-square.</li>
+<li>Write <code>plots</code> function with default options and wrap around <code><a href="../reference/get_plot.html">get_plot()</a></code>.</li>
+<li>Add more Cook’s distance plots similar to <code><a href="https://rdrr.io/r/stats/lm.html">lm()</a></code> output.</li>
+<li>Add confidence interval plots to the <code>maars_lm</code> plot output.</li>
+<li>Print assumptions i.e. for all run <code>maars</code> standard errors. So <code>sand</code>, <code>well_specified</code> assumptions are printed by default, and other standard errors.</li>
+<li>Add assumption string for <code>comp_lm_var</code> using <code><a href="https://glue.tidyverse.org/reference/glue.html">glue::glue()</a></code> and improve formatting.</li>
+<li>Amend <code><a href="../reference/get_confint.html">get_confint()</a></code> to return tidy tibble output.</li>
+<li>Just show <code>term</code>, <code>conf.low</code>, <code>conf.high</code> for <code><a href="https://rdrr.io/r/stats/confint.html">confint(maars_lm)</a></code>. Fix it to be the same as <code><a href="https://rdrr.io/r/stats/confint.html">confint(lm)</a></code>.</li>
+<li>Add <code>la_county</code> <code>tibble</code> to our package.</li>
+<li>Change <code>README.Rmd</code> to use <code>devtools</code> rather than <code>remotes</code> as the preferred package installation.</li>
+<li>Add <code>devtools</code> to <code>Suggests</code> in <code>DESCRIPTION</code> so that vignettes use our latest code.</li>
+<li>Ensure that the <code>la_county</code> <code>tibble</code> is documented method.</li>
+<li>Write residual bootstrap assumptions to be the same as the well specified <code><a href="https://rdrr.io/r/stats/lm.html">lm()</a></code> model.</li>
+<li>Include <code>weights</code> type in assumptions for multiplier bootstrap.</li>
+<li>Include <code>n</code> in assumptions for empirical bootstrap.</li>
 </ul>
 </div>
     <div id="maars-070" class="section level1">
 <h1 class="page-header" data-toc-text="0.7.0">
 <a href="#maars-070" class="anchor"></a>maars 0.7.0</h1>
 <ul>
-<li>Write function to create <code>maars_lm</code> object from <code>comp_var</code>
-</li>
-<li>write a <code>as.maars_lm</code> function to be run on an <code>lm</code> object</li>
-<li>write <code>confint.maars_lm</code> method</li>
-<li>write <code>print.maars_lm</code> method</li>
-<li>Write <code>summary.maars_lm</code> method</li>
-<li>Write <code>plot.maars_lm</code>, currently for <code>lm</code> objects</li>
-<li>Correct typo in <code>maars</code> release <code>0.6.0</code> in <code>NEWS.md</code>
-</li>
-<li>Use <code>GPL-2</code> and <code>GPL-3</code> <code>LICENCE</code>
-</li>
-<li>Remove the <code>MIT LICENCE</code> files</li>
-<li>We would like to thank <a href="https://www.refsmmat.com/">Alex Reinhart</a> for his kind assistance in various aspects of this release</li>
+<li>Write function to create <code>maars_lm</code> object from <code>comp_var</code>.</li>
+<li>write a <code>as.maars_lm</code> function to be run on an <code>lm</code> object.</li>
+<li>write <code>confint.maars_lm</code> method.</li>
+<li>write <code>print.maars_lm</code> method.</li>
+<li>Write <code>summary.maars_lm</code> method.</li>
+<li>Write <code>plot.maars_lm</code>, currently for <code>lm</code> objects.</li>
+<li>Correct typo in <code>maars</code> release <code>0.6.0</code> in <code>NEWS.md</code>.</li>
+<li>Use <code>GPL-2</code> and <code>GPL-3</code> <code>LICENCE</code>.</li>
+<li>Remove the <code>MIT LICENCE</code> files.</li>
+<li>We would like to thank <a href="https://github.com/capnrefsmmat">@capnrefsmmat</a> for his kind assistance in various aspects of this release.</li>
 </ul>
 </div>
     <div id="maars-060" class="section level1">
 <h1 class="page-header" data-toc-text="0.6.0">
 <a href="#maars-060" class="anchor"></a>maars 0.6.0</h1>
 <ul>
-<li>update the documentation of <code>comp_var</code> and of the estimators of the variance</li>
-<li>Adapt tests to handle the new function <code>comp_var</code>
-</li>
-<li>create a function to nicely return a string containing the assumptions behind each computation of the variance (e.g., call it <code>get_assumptions</code>)</li>
-<li>compute covariance matrix <code>V</code> of coefficients estimates for the bootstrap</li>
-<li>Make <code>weights_type</code> for <code>comp_boot_mul</code> to be default <code>rademacher</code>
-</li>
-<li>Handle assertions for multiplier bootstrap</li>
-<li>rewrite <code>comp_var</code> to handle the list outputs generated by the estimators of the variance</li>
-<li>adapt tests to handle the list outputs generated by the variance estimators</li>
-<li>change the bootstrap functions such that they return a list and compute <code>get_summary</code> within the function</li>
-<li>make the names of the lists generated by the estimators of the variance consistent</li>
-<li>rewrite the sandwich function to return a list</li>
-<li>write documentation for <code>get_summary</code>
-</li>
-<li>Check that we define/design inputs consistently for <code>comp_var</code>
-</li>
-<li>Ensure that default values for all inputs is set to <code>NULL</code> for empirical bootstrap, multiplier bootstrap, residual bootstrap</li>
-<li>Perform input assertion checking for all inputs consistently for <code>comp_var</code>
-</li>
-<li>Create an <code>if-then-else</code> skeleton for <code>comp_var</code>
-</li>
-<li>Add <code>residual</code> bootstrap to <code>comp_var</code>
-</li>
-<li>Update tests for <code>comp_var</code> for empirical bootstrap, multiplier bootstrap, residual bootstrap</li>
+<li>update the documentation of <code>comp_var</code> and of the estimators of the variance.</li>
+<li>Adapt tests to handle the new function <code>comp_var</code>.</li>
+<li>create a function to nicely return a string containing the assumptions behind each computation of the variance (e.g., call it <code>get_assumptions</code>).</li>
+<li>compute covariance matrix <code>V</code> of coefficients estimates for the bootstrap.</li>
+<li>Make <code>weights_type</code> for <code>comp_boot_mul</code> to be default <code>rademacher</code>.</li>
+<li>Handle assertions for multiplier bootstrap.</li>
+<li>rewrite <code>comp_var</code> to handle the list outputs generated by the estimators of the variance.</li>
+<li>adapt tests to handle the list outputs generated by the variance estimators.</li>
+<li>change the bootstrap functions such that they return a list and compute <code>get_summary</code> within the function.</li>
+<li>make the names of the lists generated by the estimators of the variance consistent.</li>
+<li>rewrite the sandwich function to return a list.</li>
+<li>write documentation for <code>get_summary</code>.</li>
+<li>Check that we define/design inputs consistently for <code>comp_var</code>.</li>
+<li>Ensure that default values for all inputs is set to <code>NULL</code> for empirical bootstrap, multiplier bootstrap, residual bootstrap.</li>
+<li>Perform input assertion checking for all inputs consistently for <code>comp_var</code>.</li>
+<li>Create an <code>if-then-else</code> skeleton for <code>comp_var</code>.</li>
+<li>Add <code>residual</code> bootstrap to <code>comp_var</code>.</li>
+<li>Update tests for <code>comp_var</code> for empirical bootstrap, multiplier bootstrap, residual bootstrap.</li>
 </ul>
 </div>
     <div id="maars-050" class="section level1">
 <h1 class="page-header" data-toc-text="0.5.0">
 <a href="#maars-050" class="anchor"></a>maars 0.5.0</h1>
 <ul>
-<li>Rename function names to be more consistent e.g. remove <code>qr</code> from <code>empirical</code> bootstrap names</li>
-<li>Ensure renamed function names are also correctly changed in the corresponding test files</li>
-<li>Split our <code>pkgdown</code> references into suitable categories <a href="https://usethis.r-lib.org/reference/index.html">like usethis</a>, here is <a href="https://github.com/r-lib/usethis/blob/45d0fef414fd69ac7ed468d196e93db7f2008e27/_pkgdown.yml">an example</a>
-</li>
-<li>Change specific functions to be private by removing <code>#' <a href='https://github.com/export'>@export</a></code> in <code>roxygen2</code> and replacing it with <code>#' <a href='https://github.com/keywords'>@keywords</a> internal</code>
-</li>
+<li>Rename function names to be more consistent e.g. remove <code>qr</code> from <code>empirical</code> bootstrap names.</li>
+<li>Ensure renamed function names are also correctly changed in the corresponding test files.</li>
+<li>Split our <code>pkgdown</code> references into suitable categories <a href="https://usethis.r-lib.org/reference/index.html">like usethis</a>, here is <a href="https://github.com/r-lib/usethis/blob/45d0fef414fd69ac7ed468d196e93db7f2008e27/_pkgdown.yml">an example</a>.</li>
+<li>Change specific functions to be private by removing <code>#' <a href='https://github.com/export'>@export</a></code> in <code>roxygen2</code> and replacing it with <code>#' <a href='https://github.com/keywords'>@keywords</a> internal</code>.</li>
 </ul>
 </div>
     <div id="maars-040" class="section level1">
 <h1 class="page-header" data-toc-text="0.4.0">
 <a href="#maars-040" class="anchor"></a>maars 0.4.0</h1>
 <ul>
-<li>Include <code>.gitattributes</code> file</li>
-<li>We need to <code>set.seed</code> in all our vignette chunks. This is for reproducibility, but to also avoid merge conflicts every time we rebuild the package using <code>make build_package</code>
+<li>Include <code>.gitattributes</code> file.</li>
+<li>We need to <code>set.seed</code> in all our vignette chunks. This is for. reproducibility, but to also avoid merge conflicts every time we rebuild the package using <code>make build_package</code>
 </li>
 <li>
-<strong>roxygen2:</strong> Rewrite documentation of the functions making the style more consistent across functions. For example, we could adopt the style used for the <a href="https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/quantile">quantile function</a>
+<strong>roxygen2:</strong> Rewrite documentation of the functions making the style more. consistent across functions. For example, we could adopt the style used for the <a href="https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/quantile">quantile function</a>
 </li>
 <li>
-<strong>roxygen2:</strong> insert dots at end of sentences in roxygen2. <a href="https://github.com/shamindras/maars/issues/24?fbclid=IwAR0JsSrXZGUpYyuizsTFIL8Q0dUvOy_WVbUWBuvZlygg4rmjuo0rU5xNGvM#issuecomment-751913442">See below</a>
-</li>
+<strong>roxygen2:</strong> insert dots at end of sentences in roxygen2.. <a href="https://github.com/shamindras/maars/issues/24?fbclid=IwAR0JsSrXZGUpYyuizsTFIL8Q0dUvOy_WVbUWBuvZlygg4rmjuo0rU5xNGvM#issuecomment-751913442">See below</a>.</li>
 <li>
-<strong>roxygen2:</strong> use <code>@details</code> responsibly. <a href="https://github.com/shamindras/maars/issues/24?fbclid=IwAR0JsSrXZGUpYyuizsTFIL8Q0dUvOy_WVbUWBuvZlygg4rmjuo0rU5xNGvM#issuecomment-751913442">See below</a>
-</li>
+<strong>roxygen2:</strong> use <code>@details</code> responsibly.. <a href="https://github.com/shamindras/maars/issues/24?fbclid=IwAR0JsSrXZGUpYyuizsTFIL8Q0dUvOy_WVbUWBuvZlygg4rmjuo0rU5xNGvM#issuecomment-751913442">See below</a>.</li>
 <li>
-<strong>roxygen2:</strong> replace <code>var_name</code> with <code>\code{var_name}</code>. <a href="https://github.com/shamindras/maars/issues/24?fbclid=IwAR0JsSrXZGUpYyuizsTFIL8Q0dUvOy_WVbUWBuvZlygg4rmjuo0rU5xNGvM#issuecomment-751913442">See below</a>
-</li>
+<strong>roxygen2:</strong> replace <code>var_name</code> with <code>\code{var_name}</code>.. <a href="https://github.com/shamindras/maars/issues/24?fbclid=IwAR0JsSrXZGUpYyuizsTFIL8Q0dUvOy_WVbUWBuvZlygg4rmjuo0rU5xNGvM#issuecomment-751913442">See below</a>.</li>
 <li>
-<strong>ggplot2:</strong> Replace hardcoded values <code>1.96</code> with appropriate outputs from statistics functions, in <code>vignettes</code>
+<strong>ggplot2:</strong> Replace hardcoded values <code>1.96</code> with appropriate outputs. from statistics functions, in <code>vignettes</code>
 </li>
-<li>Check the order in which we have our functions written in each file</li>
+<li>Check the order in which we have our functions written in each file.</li>
 <li>
-<strong>ggplot2:</strong> We should break up our <code>ggplot2</code> code into separate plots and then combine them using <code><a href="https://rdrr.io/r/base/Arithmetic.html">+</a></code>. This will make it much easier to manage the code and make it readable</li>
+<strong>ggplot2:</strong> We should break up our <code>ggplot2</code> code into separate plots. and then combine them using <code><a href="https://rdrr.io/r/base/Arithmetic.html">+</a></code>. This will make it much easier to manage the code and make it readable</li>
 <li>
-<strong>ggplot2:</strong> Need to be consistent with our <code>ggplot2</code> themes used in our plots. <a href="https://github.com/shamindras/maars/issues/24?fbclid=IwAR0JsSrXZGUpYyuizsTFIL8Q0dUvOy_WVbUWBuvZlygg4rmjuo0rU5xNGvM#issuecomment-751917061">See ggplot2 theme wrapper below</a>
-</li>
+<strong>ggplot2:</strong> Need to be consistent with our <code>ggplot2</code> themes used in. our plots. <a href="https://github.com/shamindras/maars/issues/24?fbclid=IwAR0JsSrXZGUpYyuizsTFIL8Q0dUvOy_WVbUWBuvZlygg4rmjuo0rU5xNGvM#issuecomment-751917061">See ggplot2 theme wrapper below</a>.</li>
 <li>
-<strong>ggplot2:</strong> Need to be consistent with the <code>ggplot2</code> font and other settings used in our plots. As a preference we should only use <code>labs</code> for example. <a href="https://github.com/shamindras/maars/issues/24?fbclid=IwAR0JsSrXZGUpYyuizsTFIL8Q0dUvOy_WVbUWBuvZlygg4rmjuo0rU5xNGvM#issuecomment-751917061">See ggplot2 theme wrapper below</a>
-</li>
+<strong>ggplot2:</strong> Need to be consistent with the <code>ggplot2</code> font and. other settings used in our plots. As a preference we should only use <code>labs</code> for example. <a href="https://github.com/shamindras/maars/issues/24?fbclid=IwAR0JsSrXZGUpYyuizsTFIL8Q0dUvOy_WVbUWBuvZlygg4rmjuo0rU5xNGvM#issuecomment-751917061">See ggplot2 theme wrapper below</a>.</li>
 <li>
-<strong>ggplot2:</strong> Add <code>names_prefix = "q"</code> to <code>pivot_wider</code> for the <code>ggplot2</code> code i.e. to avoid <strong>.data$<code>0.275</code></strong> issue. Note the <code>"q"</code> here stands for <code>quantile</code>.</li>
-<li>Create a <code>utils-common.R</code> similar to the <a href="https://github.com/selective-inference/R-software/blob/master/selectiveInference/R/funs.common.R#L87-L123">selectiveInference package</a>, ensure that common functions are put in this file</li>
-<li>clean up the <code>tests</code> directory i.e. delete unused <code>R</code> test files</li>
-<li>clean up the <code>R</code> directory i.e. delete unused <code>R</code> files</li>
-<li>We should add <code>#' <a href='https://github.com/importFrom'>@importFrom</a> rlang .data</code> in all our functions under <code>#' <a href='https://github.com/export'>@export</a></code>
-</li>
-<li>Fix <code>R CMD CHECK</code> error caused in <code>vignette</code>, namely <a href="https://github.com/shamindras/maars/pull/21/checks?check_run_id=1555124560">this one</a>
-</li>
-<li>Add <code>stringr</code> to <code>DESCRIPTION</code>
-</li>
-<li>Change <code>multiplier</code> bootstrap weights to be applied inside <code>purrr</code> e.g using <code><a href="https://purrr.tidyverse.org/reference/map2.html">purrr::map2</a></code> rather than generating the <code>e</code> matrix up front. Conduct benchmarks of this to test speed, so that current version still has it’s place in benchmarking</li>
-<li>For <code>vignette</code> should <code><a href="https://rdrr.io/pkg/knitr/man/kable.html">knitr::kable</a></code> package instead of <code>DT</code> package and just need to ensure Table 1 is correctly populated</li>
-<li>For <code>vignette</code> we just need to ensure Table 1 is correctly formatted i.e. use <code>LaTeX</code> for headings, consistent width, and captions. See <a href="https://bookdown.org/yihui/rmarkdown-cookbook/kable.html#escape-special-characters">here</a> for the use of LaTeX in <code><a href="https://rdrr.io/pkg/knitr/man/kable.html">knitr::kable</a></code> heading rows</li>
-<li>Add <code>Rmd</code> line wrap hooks similar to <a href="https://github.com/yihui/knitr-examples/blob/master/077-wrap-output.Rmd#L14-L27">Yihui Xie’s approach</a> and the <a href="https://github.com/ulyngs/oxforddown/blob/master/index.Rmd#L69-L72">oxforddown approach</a>
-</li>
-<li>Add doc for <code>weight_type</code> in <code>multiplier</code> bootstrap</li>
-<li>Remove default value of <code>B</code> in <code>multiplier</code> variance</li>
-<li>Allow for 5 types of weights for multiplier bootstrap i.e. <code>std_gaussian</code>, <code>rademacher</code>, and <code>mammen</code>, <code>webb</code>, <code>gamma</code>
-</li>
-<li>Update credits in <code>Licence</code> and <a href="https://github.com/shamindras/maars/blob/main/LICENSE.md">License.md</a>
-</li>
+<strong>ggplot2:</strong> Add <code>names_prefix = "q"</code> to <code>pivot_wider</code> for. the <code>ggplot2</code> code i.e. to avoid <strong>.data$<code>0.275</code></strong> issue. Note the <code>"q"</code> here stands for <code>quantile</code>.</li>
+<li>Create a <code>utils-common.R</code> similar to the. <a href="https://github.com/selective-inference/R-software/blob/master/selectiveInference/R/funs.common.R#L87-L123">selectiveInference package</a>, ensure that common functions are put in this file.</li>
+<li>clean up the <code>tests</code> directory i.e. delete unused <code>R</code> test files.</li>
+<li>clean up the <code>R</code> directory i.e. delete unused <code>R</code> files.</li>
+<li>We should add <code>#' <a href='https://github.com/importFrom'>@importFrom</a> rlang .data</code> in all our functions under <code>#' <a href='https://github.com/export'>@export</a></code>.</li>
+<li>Fix <code>R CMD CHECK</code> error caused in <code>vignette</code>, namely <a href="https://github.com/shamindras/maars/pull/21/checks?check_run_id=1555124560">this one</a>.</li>
+<li>Add <code>stringr</code> to <code>DESCRIPTION</code>.</li>
+<li>Change <code>multiplier</code> bootstrap weights to be applied inside <code>purrr</code> e.g using <code><a href="https://purrr.tidyverse.org/reference/map2.html">purrr::map2</a></code> rather than generating the <code>e</code> matrix up front. Conduct benchmarks of this to test speed, so that current version still has it’s place in benchmarking.</li>
+<li>For <code>vignette</code> should <code><a href="https://rdrr.io/pkg/knitr/man/kable.html">knitr::kable</a></code> package instead of <code>DT</code> package and just need to ensure Table 1 is correctly populated.</li>
+<li>For <code>vignette</code> we just need to ensure Table 1 is correctly formatted i.e. use <code>LaTeX</code> for headings, consistent width, and captions. See <a href="https://bookdown.org/yihui/rmarkdown-cookbook/kable.html#escape-special-characters">here</a> for the use of LaTeX in <code><a href="https://rdrr.io/pkg/knitr/man/kable.html">knitr::kable</a></code> heading rows.</li>
+<li>Add <code>Rmd</code> line wrap hooks similar to <a href="https://github.com/yihui/knitr-examples/blob/master/077-wrap-output.Rmd#L14-L27">Yihui Xie’s approach</a> and the <a href="https://github.com/ulyngs/oxforddown/blob/master/index.Rmd#L69-L72">oxforddown approach</a>.</li>
+<li>Add doc for <code>weight_type</code> in <code>multiplier</code> bootstrap.</li>
+<li>Remove default value of <code>B</code> in <code>multiplier</code> variance.</li>
+<li>Allow for 5 types of weights for multiplier bootstrap i.e. <code>std_gaussian</code>, <code>rademacher</code>, and <code>mammen</code>, <code>webb</code>, <code>gamma</code>.</li>
+<li>Update credits in <code>Licence</code> and <a href="https://github.com/shamindras/maars/blob/main/LICENSE.md">License.md</a>.</li>
 </ul>
 </div>
     <div id="maars-030" class="section level1">
 <h1 class="page-header" data-toc-text="0.3.0">
 <a href="#maars-030" class="anchor"></a>maars 0.3.0</h1>
 <ul>
-<li>Implement an efficient <code>multiplier</code> bootstrap for <code>lm</code> standard errors</li>
-<li>Implement the <code>empirical</code> bootstrap for <code>lm</code> standard errors</li>
-<li>Implement the <code>empirical</code> bootstrap for <code>glm</code> standard errors</li>
-<li>Change the input <code>lm_fit</code> to be <code>mod_object</code> in all of our functions</li>
-<li>Check that we have referenced functions using <code>stats::</code>, <code>dplyr::</code>, etc</li>
-<li>Add the <code>t-test</code> values in Table 1 of the <code>Models As Approximations - Part 1</code> paper</li>
-<li>Add input validation for our bootstrap and variance estimation functions e.g. <code>B</code> must be a positive integer</li>
-<li>Set a seed for the unit tests</li>
-<li>Update <code>Readme.Rmd</code> to add installation instructions and link to official package</li>
+<li>Implement an efficient <code>multiplier</code> bootstrap for <code>lm</code> standard errors.</li>
+<li>Implement the <code>empirical</code> bootstrap for <code>lm</code> standard errors.</li>
+<li>Implement the <code>empirical</code> bootstrap for <code>glm</code> standard errors.</li>
+<li>Change the input <code>lm_fit</code> to be <code>mod_object</code> in all of our functions.</li>
+<li>Check that we have referenced functions using <code>stats::</code>, <code>dplyr::</code>, etc.</li>
+<li>Add the <code>t-test</code> values in Table 1 of the <code>Models As Approximations - Part 1</code> paper.</li>
+<li>Add input validation for our bootstrap and variance estimation functions. e.g. <code>B</code> must be a positive integer</li>
+<li>Set a seed for the unit tests.</li>
+<li>Update <code>Readme.Rmd</code> to add installation instructions and link to official package.</li>
 </ul>
 </div>
     <div id="maars-020" class="section level1">
 <h1 class="page-header" data-toc-text="0.2.0">
 <a href="#maars-020" class="anchor"></a>maars 0.2.0</h1>
 <ul>
-<li>Create the <code>comp_sandwich_qr_var</code> function with documentation, tests, benchmarking</li>
+<li>Create the <code>comp_sandwich_qr_var</code> function with documentation, tests, benchmarking.</li>
 </ul>
 </div>
     <div id="maars-010" class="section level1">
